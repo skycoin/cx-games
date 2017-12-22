@@ -98,27 +98,27 @@ func charActions (window str, key i32, scancode i32, action i32, mods i32) () {
 	
 	//vx=0.5;
 	if i32.eq(key,263){
-	//test=i32.add(test,1)
-	//str.print("test")
-	//i32.print(test)
-	
-	//test_floating=f32.add(test_floating,0.0001)
-	//f32.print(test_floating)
-	vx=f32.sub(vx,0.01)
-	display()
+		//test=i32.add(test,1)
+		//str.print("test")
+		//i32.print(test)
+		
+		//test_floating=f32.add(test_floating,0.0001)
+		//f32.print(test_floating)
+		vx=f32.sub(vx,0.01)
+		display()
 	}
 	
 	if i32.eq(key,262){//right
-	vx=f32.add(vx,0.01)
-	display()
+		vx=f32.add(vx,0.01)
+		display()
 	}
 	if i32.eq(key,265){
-	vy=f32.add(vy,0.01)
-	display()
+		vy=f32.add(vy,0.01)
+		display()
 	}
 	if i32.eq(key,264){//down
-	vy=f32.sub(vy,0.01)
-	display()
+		vy=f32.sub(vy,0.01)
+		display()
 	}
 	//if and(i32.eq(key,264),i32.eq(key,262)){//down
 	//vy=f32.sub(vy,0.01)
@@ -126,7 +126,7 @@ func charActions (window str, key i32, scancode i32, action i32, mods i32) () {
 	//display()
 	//}
 	
-	}
+}
 
 
 
@@ -144,7 +144,7 @@ func main () () {
 	glfw.WindowHint(glfw.Resizable, glfw.False)
 	glfw.WindowHint(glfw.ContextVersionMajor, 2)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
-    //initGlfw("window")
+	//initGlfw("window")
 
 	
 	
@@ -157,24 +157,24 @@ func main () () {
 	gl.Init()
 	program := gl.CreateProgram()
 	gl.LinkProgram(program)
-glfw.SetKeyCallback("window", "charActions")
+	glfw.SetKeyCallback("window", "charActions")
 	init()
 	
 	stop := not(glfw.ShouldClose("window"))
 	
-		gl.Enable(gl.BLEND)
+	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	gl.DepthMask(true)
 	
 	for not(glfw.ShouldClose("window")) {
 		//gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
 		gl.UseProgram(program)
-//cube.x=100
+		//cube.x=100
 
 
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
-	
+		gl.Clear(gl.COLOR_BUFFER_BIT)
+		
 		display()
 		display2()
 		
