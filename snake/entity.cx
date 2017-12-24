@@ -1,0 +1,24 @@
+package entity
+
+type Entity struct {
+	x f32
+	y f32
+	//radius f32
+}
+
+var numEnts i32 = 16
+var entitiesX []f32
+var entitiesY []f32
+
+
+
+func Init() () {
+	str.print("in entity.cx.Init")
+
+	for i := 0; i < numEnts; i++ {
+		x := i32.f32(i32.rand(0, 4)) * 0.25
+		y := i32.f32(i32.rand(0, 4)) * 0.25
+		[]f32.append(entitiesX, x)
+		[]f32.append(entitiesY, y)
+	}
+}
