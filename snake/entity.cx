@@ -16,9 +16,15 @@ func Init() () {
 	str.print("in entity.cx.Init")
 
 	for i := 0; i < numEnts; i++ {
+		str.print("appending an entity")
 		x := i32.f32(i32.rand(0, 4)) * 0.25
 		y := i32.f32(i32.rand(0, 4)) * 0.25
-		[]f32.append(entitiesX, x)
-		[]f32.append(entitiesY, y)
+		f32.print(x)
+		f32.print(y)
+		entitiesX = []f32.append(entitiesX, x)
+		entitiesY = []f32.append(entitiesY, y)
 	}
+
+	str.print("len of entitiesX:")
+	i32.print([]f32.len(entitiesX))
 }

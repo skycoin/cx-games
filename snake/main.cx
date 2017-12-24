@@ -114,24 +114,24 @@ func moveObjects() () {
 
 func draw(ball Ball) () {
 	for j := 0; j < 6; j++ {
-		drawBall(ball, j)
+		drawBall(ball.x + 0.2 * i32.f32(j), ball.y, ball.radius)
 	}
 
-/*	for i := 0; i < entity.numEnts; i++ {
-		drawBall(ball, j)
-	}*/
+	for i := 0; i < entity.numEnts; i++ {
+		drawBall([]f32.read(entity.entitiesX, i), []f32.read(entity.entitiesY, i), 0.01)
+	}
 }
 
 
-func drawBall(ball Ball, j i32) () {
+func drawBall(x f32, y f32, radius f32) () {
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(1.0, 0.2, 1.0)
 
 	for i := 0; i < 20; i++ {
-		x := ball.x + ball.radius * f32.cos(i32.f32(i) * dubPi / 20.0)
-		y := ball.y + ball.radius * f32.sin(i32.f32(i) * dubPi / 20.0)
+		finalX := x + radius * f32.cos(i32.f32(i) * dubPi / 20.0)
+		finalY := y + radius * f32.sin(i32.f32(i) * dubPi / 20.0)
 
-		gl.Vertex2f(x + 0.2 * i32.f32(j), y)
+		gl.Vertex2f(finalX, finalY)
 	}
 
 	gl.End()
