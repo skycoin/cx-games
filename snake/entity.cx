@@ -3,15 +3,12 @@ import "game"
 
 
 
-type Entity struct {
-	x f32
-	y f32
-	//radius f32
-}
-
 var numEnts i32 = 16
 var entitiesX []f32
 var entitiesY []f32
+var Red []f32
+var Green []f32
+var Blue []f32
 
 
 
@@ -19,19 +16,17 @@ func Init() () {
 	str.print("in entity.cx.Init")
 
 	pixelSpan := 2.0 / i32.f32(game.Height)
+	gradientSpan := 1.0 / 300.0
 
 
 
 	for i := 0; i < numEnts; i++ {
-		str.print("appending an entity")
 		x := -1.0 + i32.f32(i32.rand(0, game.Height + 1)) * pixelSpan
 		y := -1.0 + i32.f32(i32.rand(0, game.Height + 1)) * pixelSpan
-		f32.print(x)
-		f32.print(y)
 		entitiesX = []f32.append(entitiesX, x)
 		entitiesY = []f32.append(entitiesY, y)
+		Red =   []f32.append(Red, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
+		Green = []f32.append(Green, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
+		Blue =  []f32.append(Blue, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 	}
-
-	str.print("len of entitiesX:")
-	i32.print([]f32.len(entitiesX))
 }
