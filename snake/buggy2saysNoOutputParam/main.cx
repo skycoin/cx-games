@@ -58,7 +58,7 @@ func main () () {
 		gl.Ortho(f32.mul(ratio, -1.0), ratio, -1.0, 1.0, 1.0, -1.0)
 		gl.MatrixMode(gl.MODELVIEW)
 
-		respondToCollisions()
+		bounce()
 		moveObjects()
 		draw(ball)
 
@@ -97,7 +97,7 @@ var head Ball
 
 
 
-func respondToCollisions() () {
+func bounce() () {
 	if ball.x + ball.radius <= -1.0 {
 		ball.vx += ball.gravity
 	} 
@@ -167,10 +167,6 @@ var	GLFW_KEY_I i32 = 73
 var GLFW_KEY_J i32 = 74
 var GLFW_KEY_K i32 = 75
 var GLFW_KEY_L i32 = 76
-var headMoveLeft bool
-var headMoveRight bool
-var headMoveUp bool
-var headMoveDown bool
 
 func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 	if /* press */ action == 1 {
@@ -187,38 +183,15 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 			str.print("pressed 5 key")
 			glfw.SetShouldClose("window", true)
 		}
-
-
-
-		// snake head motion 
-		if key == GLFW_KEY_J {
-			headMoveLeft = true
-		} else {
-			headMoveLeft = false
-		}
-
-		if key == GLFW_KEY_L {
-			headMoveRight = true
-		} else {
-			headMoveRight = false
-		}
-
-		if key == GLFW_KEY_I {
-			headMoveUp = true
-		} else {
-			headMoveUp = false
-		}
-
-		if key == GLFW_KEY_K {
-			headMoveDown = true
-		} else {
-			headMoveDown = false
-		}
 	} 
 
 	if /* release */ action == 0 {
 		str.print("released key")
 	}
+
+
+
+	hurr := keyCurrentlyDown()
 }
 
 

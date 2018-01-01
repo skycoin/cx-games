@@ -34,15 +34,6 @@ func main () () {
 		gravity: 0.01
 	}
 
-	head = new Ball{
-		radius: 0.07,
-		x: 0.1,
-		y: 0.1,
-		vx: 0.0,
-		vy: 0.0,
-		gravity: 0.01
-	}
-
 	var ratio f32
 
 	for not(glfw.ShouldClose("window")) {
@@ -58,7 +49,7 @@ func main () () {
 		gl.Ortho(f32.mul(ratio, -1.0), ratio, -1.0, 1.0, 1.0, -1.0)
 		gl.MatrixMode(gl.MODELVIEW)
 
-		respondToCollisions()
+		bounce()
 		moveObjects()
 		draw(ball)
 
@@ -93,11 +84,10 @@ type Ball struct {
 }
 
 var ball Ball
-var head Ball
 
 
 
-func respondToCollisions() () {
+func bounce() () {
 	if ball.x + ball.radius <= -1.0 {
 		ball.vx += ball.gravity
 	} 
@@ -121,10 +111,9 @@ func moveObjects() () {
 
 
 func draw(ball Ball) () {
-	j := 0 //; j < 6; j++ {
+	for j := 0; j < 6; j++ {
 		drawBall(ball.x + 0.2 * i32.f32(j), ball.y, ball.radius)
-		drawBall(head.x, head.y, head.radius)
-	//}
+	}
 
 	for i := 0; i < entity.numEnts; i++ {
 		drawBall(
@@ -162,16 +151,6 @@ func drawBall(x f32, y f32, radius f32) () {
 
 
 //input
-
-var	GLFW_KEY_I i32 = 73
-var GLFW_KEY_J i32 = 74
-var GLFW_KEY_K i32 = 75
-var GLFW_KEY_L i32 = 76
-var headMoveLeft bool
-var headMoveRight bool
-var headMoveUp bool
-var headMoveDown bool
-
 func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 	if /* press */ action == 1 {
 		if /* left */ key == 263 {
@@ -187,41 +166,9 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 			str.print("pressed 5 key")
 			glfw.SetShouldClose("window", true)
 		}
-
-
-
-		// snake head motion 
-		if key == GLFW_KEY_J {
-			headMoveLeft = true
-		} else {
-			headMoveLeft = false
-		}
-
-		if key == GLFW_KEY_L {
-			headMoveRight = true
-		} else {
-			headMoveRight = false
-		}
-
-		if key == GLFW_KEY_I {
-			headMoveUp = true
-		} else {
-			headMoveUp = false
-		}
-
-		if key == GLFW_KEY_K {
-			headMoveDown = true
-		} else {
-			headMoveDown = false
-		}
 	} 
 
 	if /* release */ action == 0 {
-		str.print("released key")
+			str.print("released key")
 	}
-}
-
-
-func keyCurrentlyDown() (out bool) {
-	return true
 }
