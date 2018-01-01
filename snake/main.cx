@@ -206,10 +206,18 @@ func moveObjects() () {
 
 
 func draw(ball Ball) () {
-	j := 0 //; j < 6; j++ {
-		drawBall(ball.x + 0.2 * i32.f32(j), ball.y, ball.radius)
-		drawBall(head.x, head.y, head.radius)
-	//}
+	numSegments := 6
+	xOff /* head offset from the tail */ := head.x - ball.x
+	yOff /* head offset from the tail */ := head.y - ball.y
+	xSpan /* between segments */ := xOff / i32.f32(numSegments)
+	ySpan /* between segments */ := yOff / i32.f32(numSegments)
+
+	for j := 0; j <= numSegments; j++ {
+		drawBall(
+			ball.x + xSpan * i32.f32(j), 
+			ball.y + ySpan * i32.f32(j), 
+			ball.radius)
+	}
 
 	for i := 0; i < entity.numEnts; i++ {
 		drawBall(
