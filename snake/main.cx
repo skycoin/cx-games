@@ -114,7 +114,28 @@ func respondToCollisions() () {
 }
 
 
+var velocityInc f32 = 0.001
+var maxVelocity f32 = 0.01
 func moveObjects() () {
+	if headMoveRight {
+		head.vx += velocityInc
+
+		if head.vx > maxVelocity {
+			head.vx = maxVelocity
+		}
+	} else {
+		head.vx -= velocityInc
+
+		if head.vx < 0.0 {
+			head.vx = 0.0
+		}
+	}
+
+
+	head.x += head.vx
+	head.y += head.vy
+	
+	// tail
 	ball.x += ball.vx
 	ball.y += ball.vy
 }
@@ -162,15 +183,27 @@ func drawBall(x f32, y f32, radius f32) () {
 
 
 //input
+var GLFW_KEY_5 i32 = 53
+
+var	GLFW_KEY_A i32 = 65
+var	GLFW_KEY_D i32 = 68
+var	GLFW_KEY_W i32 = 87
+var	GLFW_KEY_S i32 = 83
 
 var	GLFW_KEY_I i32 = 73
 var GLFW_KEY_J i32 = 74
 var GLFW_KEY_K i32 = 75
 var GLFW_KEY_L i32 = 76
+
 var headMoveLeft bool
 var headMoveRight bool
 var headMoveUp bool
 var headMoveDown bool
+
+var tailMoveLeft bool
+var tailMoveRight bool
+var tailMoveUp bool
+var tailMoveDown bool
 
 func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 	if /* press */ action == 1 {
@@ -193,31 +226,38 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 		// snake head motion 
 		if key == GLFW_KEY_J {
 			headMoveLeft = true
-		} else {
-			headMoveLeft = false
 		}
 
 		if key == GLFW_KEY_L {
 			headMoveRight = true
-		} else {
-			headMoveRight = false
 		}
 
 		if key == GLFW_KEY_I {
 			headMoveUp = true
-		} else {
-			headMoveUp = false
 		}
 
 		if key == GLFW_KEY_K {
 			headMoveDown = true
-		} else {
-			headMoveDown = false
 		}
 	} 
 
 	if /* release */ action == 0 {
-		str.print("released key")
+		// snake head motion 
+		if key == GLFW_KEY_J {
+			headMoveLeft = false
+		}
+
+		if key == GLFW_KEY_L {
+			headMoveRight = false
+		}
+
+		if key == GLFW_KEY_I {
+			headMoveUp = false
+		}
+
+		if key == GLFW_KEY_K {
+			headMoveDown = false
+		}
 	}
 }
 
