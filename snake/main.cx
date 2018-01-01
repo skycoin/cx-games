@@ -116,20 +116,84 @@ func respondToCollisions() () {
 
 var velocityInc f32 = 0.001
 var maxVelocity f32 = 0.01
+var maxNegativeVelocity f32 = -0.01
 func moveObjects() () {
+	if headMoveLeft {
+		head.vx -= velocityInc
+
+		if head.vx < maxNegativeVelocity {
+			head.vx = maxNegativeVelocity
+		}
+	} 
+	
 	if headMoveRight {
 		head.vx += velocityInc
 
 		if head.vx > maxVelocity {
 			head.vx = maxVelocity
 		}
-	} else {
-		head.vx -= velocityInc
+	} 
+
+
+
+	if !headMoveLeft && !headMoveRight {
+		if head.vx > 0.0 {
+			head.vx -= velocityInc
+
+			if head.vx < 0.0 {
+				head.vx = 0.0
+			}
+		}
 
 		if head.vx < 0.0 {
-			head.vx = 0.0
+			head.vx += velocityInc
+
+			if head.vx > 0.0 {
+				head.vx = 0.0
+			}
 		}
 	}
+
+
+
+
+	if headMoveDown {
+		head.vy -= velocityInc
+
+		if head.vy < maxNegativeVelocity {
+			head.vy = maxNegativeVelocity
+		}
+	} 
+	
+	if headMoveUp {
+		head.vy += velocityInc
+
+		if head.vy > maxVelocity {
+			head.vy = maxVelocity
+		}
+	} 
+
+
+
+	if !headMoveUp && !headMoveDown {
+		if head.vy > 0.0 {
+			head.vy -= velocityInc
+
+			if head.vy < 0.0 {
+				head.vy = 0.0
+			}
+		}
+
+		if head.vy < 0.0 {
+			head.vy += velocityInc
+
+			if head.vy > 0.0 {
+				head.vy = 0.0
+			}
+		}
+	}
+
+
 
 
 	head.x += head.vx
@@ -215,9 +279,7 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 			ball.vx = 0.03
 		}
 
-		//"5" key 
-		if key == 53 {
-			str.print("pressed 5 key")
+		if key == GLFW_KEY_5 {
 			glfw.SetShouldClose("window", true)
 		}
 
