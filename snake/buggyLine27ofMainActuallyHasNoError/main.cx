@@ -12,15 +12,14 @@ var dubPi f32
 
 func main () () {
 	dubPi = 2.0 * 3.141592654
-	posVelocity := 0.03
-	negVelocity := -0.03
-
+	initVelocity := 0.02
+	
 	tail = new Ball{
-		radius: 0.02,
+		radius: 0.03,
 		x: -0.1,
 		y: -0.1,
-		vx: negVelocity,
-		vy: negVelocity,
+		vx: -initVelocity,
+		vy: -initVelocity,
 		gravity: 0.01
 	}
 
@@ -28,8 +27,8 @@ func main () () {
 		radius: 0.07,
 		x: 0.2,
 		y: 0.1,
-		vx: posVelocity,
-		vy: posVelocity,
+		vx: initVelocity,
+		vy: initVelocity,
 		gravity: 0.01
 	}
 
