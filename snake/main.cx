@@ -63,6 +63,10 @@ func main () () {
 	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
 	os.Close(fontFile)
 
+	gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.LESS)
+	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
+
 
 
 
@@ -72,13 +76,14 @@ func main () () {
 
 	var ratio f32
 
-	for not(glfw.ShouldClose("window")) {
+	for !glfw.ShouldClose("window") {
 		bufferWidth, bufferHeight := glfw.GetFramebufferSize("window")
 		ratio = f32.div(i32.f32(bufferWidth), i32.f32(bufferHeight))
 
-		gl.Clear(gl.COLOR_BUFFER_BIT)
+		//gl.Clear(gl.COLOR_BUFFER_BIT) // original bouncing-ball sample
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-		gl.UseProgram(program)
+		//gl.UseProgram(program)
 		
 		gl.MatrixMode(gl.PROJECTION)
 		gl.LoadIdentity()
@@ -87,7 +92,7 @@ func main () () {
 
 		//respondToCollisions() // atm, just the left, right, & bottom edge of screen
 		moveObjects()
-		draw(tail)
+		draw()
 
 
 		
@@ -345,7 +350,9 @@ func moveObjects() () {
 
 
 
-func draw(tail Ball) () {
+func draw() () {
+	drawEntities()
+
 	numSegments := 6
 	radius := tail.radius
 	radiusIncrement := (head.radius - tail.radius) * 0.7 / i32.f32(numSegments) 
@@ -370,6 +377,11 @@ func draw(tail Ball) () {
 		radius += radiusIncrement
 	}
 
+	drawText()
+}
+
+
+func drawEntities() () {
 	for i := 0; i < entity.numEnts; i++ {
 		drawBall(
 			[]f32.read(entity.X, i), 
@@ -379,6 +391,15 @@ func draw(tail Ball) () {
 			[]f32.read(entity.Green, i), 
 			[]f32.read(entity.Blue, i))
 	}
+}
+
+
+func drawText() () {
+	gl.Color4f(0.5, 0.3, 0.8, 1.0)
+	gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
+
+	gl.Color4f(0.5, 0.7, 0.5, 1.0)
+	gltext.Printf("Roboto50", 600.0, 400.0, "I'm some text")
 }
 
 
