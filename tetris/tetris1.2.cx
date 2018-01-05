@@ -104,28 +104,125 @@ for c := 0; c < []Block.len(blocks); c++ {
 			var block Block
 			block := []Block.read(blocks, c)
 			str.print(str.concat("block_id: ", i32.str(block.id)))
-			if(position==1){
-			//block.x=0.0
-			if(block.id==4){
-			str.print(str.concat("block: ", f32.str(block.x)))
-			block.x=block.x+0.5
-			//block.y=block.y-30.0
+		if(position==1){
+			
+			if(block.id==1){
+			
+			block.x=block.x + 0.15
+			block.y=block.y + 0.09
+			
 			}
-			if(block.id==3){
-			//str.print("came here: ")
+			if(block.id==2){
+			
 			//block.x=block.x+0.05
 			//block.y=block.y+30
-			str.print(str.concat("block: ", f32.str(block.x)))
+			str.print("pos1")
 			
 			}
 			
-			/*if(block.id==4){
-			//str.print("came here: ")
-			block.x=block.x+30
-			block.y=block.y+30
+			if(block.id==3)
+			{
+			block.x=block.x - 0.15
+			block.y=block.y - 0.09
+			}
 			
-			}*/
+			if(block.id==4){
+			
+			block.x=block.x+0.15
+			block.y=block.y - 0.09
+			
+			}
 		}
+		
+		if(position==2){
+			
+			if(block.id==1){
+			
+			block.x=block.x + 0.15
+			block.y=block.y - 0.09
+			
+			}
+			if(block.id==2){
+			
+			//block.x=block.x+0.05
+			//block.y=block.y+30
+			str.print("pos2")
+			
+			}
+			
+			if(block.id==3)
+			{
+			block.x=block.x - 0.15
+			block.y=block.y + 0.09
+			}
+			
+			if(block.id==4){
+			
+			block.x=block.x - 0.15
+			block.y=block.y - 0.09
+			
+			}
+		}
+		
+		if(position==3){
+			
+			if(block.id==1){
+			
+			block.x=block.x - 0.15
+			block.y=block.y - 0.09
+			
+			}
+			if(block.id==2){
+			
+			//block.x=block.x+0.05
+			//block.y=block.y+30
+			str.print("pos3")
+			
+			}
+			
+			if(block.id==3)
+			{
+			block.x=block.x + 0.15
+			block.y=block.y + 0.09
+			}
+			
+			if(block.id==4){
+			
+			block.x=block.x - 0.15
+			block.y=block.y + 0.09
+			
+			}
+		}
+		if(position==4){
+			
+			if(block.id==1){
+			
+			block.x=block.x - 0.15
+			block.y=block.y + 0.09
+			
+			}
+			if(block.id==2){
+			
+			//block.x=block.x+0.05
+			//block.y=block.y+30
+			str.print("pos4")
+			
+			}
+			
+			if(block.id==3)
+			{
+			block.x=block.x + 0.15
+			block.y=block.y - 0.09
+			}
+			
+			if(block.id==4){
+			
+			block.x=block.x + 0.15
+			block.y=block.y + 0.09
+			
+			}
+		}
+		
 		
 		str.print(str.concat("block: ", f32.str(block.x)))
 		 //[]Block.write(blocks, index, newCoin)
@@ -150,10 +247,12 @@ func keyPress (window str, key i32, scancode i32, action i32, mods i32) {
 if (key==262&& action ==1){
 
 position=position+1
-if(position==4){position=0}
 
-str.print(str.concat("position: ", i32.str(position)))
+
+//str.print(str.concat("position: ", i32.str(position)))
 repositionBlock()
+
+if(position==4){position=0}
 }
 
 	if key == 32 && action == 1 {
