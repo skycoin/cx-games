@@ -351,8 +351,6 @@ func moveObjects() () {
 
 
 func draw() () {
-	drawEntities()
-
 	numSegments := 6
 	radius := tail.radius
 	radiusIncrement := (head.radius - tail.radius) * 0.7 / i32.f32(numSegments) 
@@ -377,6 +375,7 @@ func draw() () {
 		radius += radiusIncrement
 	}
 
+	drawEntities()
 	drawText()
 }
 
@@ -394,12 +393,17 @@ func drawEntities() () {
 }
 
 
+var mostNegative /* edge of visibility, along the bottom*/ f32 = -1.0
 func drawText() () {
-	gl.Color4f(0.5, 0.3, 0.8, 1.0)
-	gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
+	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
+	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 
 	gl.Color4f(0.5, 0.7, 0.5, 1.0)
-	gltext.Printf("Roboto50", 600.0, 400.0, "I'm some text")
+	gltext.Printf(
+		"Roboto50", 
+		600.0, 
+		i32.f32(game.Height) - (head.y - mostNegative) * (i32.f32(game.Height) / 2.0), 
+		"I'm some text")
 }
 
 
@@ -474,76 +478,52 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 
 
 
-	// snake tail motion 
-	if key == GLFW_KEY_A {
-		if /* release */ action == 0 {
-			tailMoveLeft = false
-		} else {
-			tailMoveLeft = true
+	if /* not repeat */ action != 2 {
+		// snake tail motion 
+
+		if key == GLFW_KEY_A {
+			tailMoveLeft = getMoveStatus(action, key)
 		}
-	}
 
-	if key == GLFW_KEY_D {
-		if /* release */ action == 0 {
-			tailMoveRight = false
-		} else {
-			tailMoveRight = true
+		if key == GLFW_KEY_D {
+			tailMoveRight = getMoveStatus(action, key)
 		}
-	}
 
-	if key == GLFW_KEY_W {
-		if /* release */ action == 0 {
-			tailMoveUp = false
-		} else {
-			tailMoveUp = true
+		if key == GLFW_KEY_W {
+			tailMoveUp = getMoveStatus(action, key)
 		}
-	}
 
-	if key == GLFW_KEY_S {
-		if /* release */ action == 0 {
-			tailMoveDown = false
-		} else {
-			tailMoveDown = true
+		if key == GLFW_KEY_S {
+			tailMoveDown = getMoveStatus(action, key)
 		}
-	}
 
 
 
-	// snake head motion 
-	if key == GLFW_KEY_J {
-		if /* release */ action == 0 {
-			headMoveLeft = false
-		} else {
-			headMoveLeft = true
+		// snake head motion 
+
+		if key == GLFW_KEY_J {
+			headMoveLeft = getMoveStatus(action, key)
 		}
-	}
 
-	if key == GLFW_KEY_L {
-		if /* release */ action == 0 {
-			headMoveRight = false
-		} else {
-			headMoveRight = true
+		if key == GLFW_KEY_L {
+			headMoveRight = getMoveStatus(action, key)
 		}
-	}
 
-	if key == GLFW_KEY_I {
-		if /* release */ action == 0 {
-			headMoveUp = false
-		} else {
-			headMoveUp = true
+		if key == GLFW_KEY_I {
+			headMoveUp = getMoveStatus(action, key)
 		}
-	}
 
-	if key == GLFW_KEY_K {
-		if /* release */ action == 0 {
-			headMoveDown = false
-		} else {
-			headMoveDown = true
+		if key == GLFW_KEY_K {
+			headMoveDown = getMoveStatus(action, key)
 		}
 	}
 }
 
 
-func keyCurrentlyDown() (out bool) {
-	return true
+func getMoveStatus(action i32, key i32) (out bool) {
+	if /* release */ action == 0 {
+		return false
+	} else {
+		return true
+	}
 }
