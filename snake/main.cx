@@ -3,6 +3,8 @@ package main
 import "gl"
 import "glfw"
 import "gltext"
+
+import "ccInput"
 import "game"
 import "entity"
 
@@ -102,6 +104,9 @@ func main () () {
 }
 
 
+func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
+	ccInput.OnKeyEvent(window, key, scancode, action, mods)
+}
 
 
 
@@ -163,7 +168,7 @@ var velocityInc f32 = 0.001
 var maxVelocity f32 = 0.01
 var maxNegativeVelocity f32 = -0.01
 func moveObjects() () {
-	if tailMoveLeft {
+	if ccInput.tailMoveLeft {
 		tail.vx -= velocityInc
 
 		if tail.vx < maxNegativeVelocity {
@@ -171,7 +176,7 @@ func moveObjects() () {
 		}
 	} 
 	
-	if tailMoveRight {
+	if ccInput.tailMoveRight {
 		tail.vx += velocityInc
 
 		if tail.vx > maxVelocity {
@@ -181,7 +186,7 @@ func moveObjects() () {
 
 
 
-	if !tailMoveLeft && !tailMoveRight {
+	if !ccInput.tailMoveLeft && !ccInput.tailMoveRight {
 		if tail.vx > 0.0 {
 			tail.vx -= velocityInc
 
@@ -202,7 +207,7 @@ func moveObjects() () {
 
 
 
-	if tailMoveDown {
+	if ccInput.tailMoveDown {
 		tail.vy -= velocityInc
 
 		if tail.vy < maxNegativeVelocity {
@@ -210,7 +215,7 @@ func moveObjects() () {
 		}
 	} 
 	
-	if tailMoveUp {
+	if ccInput.tailMoveUp {
 		tail.vy += velocityInc
 
 		if tail.vy > maxVelocity {
@@ -220,7 +225,7 @@ func moveObjects() () {
 
 
 
-	if !tailMoveUp && !tailMoveDown {
+	if !ccInput.tailMoveUp && !ccInput.tailMoveDown {
 		if tail.vy > 0.0 {
 			tail.vy -= velocityInc
 
@@ -241,7 +246,7 @@ func moveObjects() () {
 
 
 
-	if headMoveLeft {
+	if ccInput.headMoveLeft {
 		head.vx -= velocityInc
 
 		if head.vx < maxNegativeVelocity {
@@ -249,7 +254,7 @@ func moveObjects() () {
 		}
 	} 
 	
-	if headMoveRight {
+	if ccInput.headMoveRight {
 		head.vx += velocityInc
 
 		if head.vx > maxVelocity {
@@ -259,7 +264,7 @@ func moveObjects() () {
 
 
 
-	if !headMoveLeft && !headMoveRight {
+	if !ccInput.headMoveLeft && !ccInput.headMoveRight {
 		if head.vx > 0.0 {
 			head.vx -= velocityInc
 
@@ -280,7 +285,7 @@ func moveObjects() () {
 
 
 
-	if headMoveDown {
+	if ccInput.headMoveDown {
 		head.vy -= velocityInc
 
 		if head.vy < maxNegativeVelocity {
@@ -288,7 +293,7 @@ func moveObjects() () {
 		}
 	} 
 	
-	if headMoveUp {
+	if ccInput.headMoveUp {
 		head.vy += velocityInc
 
 		if head.vy > maxVelocity {
@@ -298,7 +303,7 @@ func moveObjects() () {
 
 
 
-	if !headMoveUp && !headMoveDown {
+	if !ccInput.headMoveUp && !ccInput.headMoveDown {
 		if head.vy > 0.0 {
 			head.vy -= velocityInc
 
@@ -419,111 +424,4 @@ func drawBall(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 	}
 
 	gl.End()
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//input
-var GLFW_KEY_5 i32 = 53
-
-var	GLFW_KEY_A i32 = 65
-var	GLFW_KEY_D i32 = 68
-var	GLFW_KEY_W i32 = 87
-var	GLFW_KEY_S i32 = 83
-
-var	GLFW_KEY_I i32 = 73
-var GLFW_KEY_J i32 = 74
-var GLFW_KEY_K i32 = 75
-var GLFW_KEY_L i32 = 76
-
-var headMoveLeft bool
-var headMoveRight bool
-var headMoveUp bool
-var headMoveDown bool
-
-var tailMoveLeft bool
-var tailMoveRight bool
-var tailMoveUp bool
-var tailMoveDown bool
-
-func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
-	//action == 2, is an autorepeat event, generated for keys that are held longer than a second
-
-	if key == GLFW_KEY_5 {
-		glfw.SetShouldClose("window", true)
-	}
-
-
-
-	if /* not repeat */ action != 2 {
-		// snake tail motion 
-
-		if key == GLFW_KEY_A {
-			tailMoveLeft = getMoveStatus(action, key)
-		}
-
-		if key == GLFW_KEY_D {
-			tailMoveRight = getMoveStatus(action, key)
-		}
-
-		if key == GLFW_KEY_W {
-			tailMoveUp = getMoveStatus(action, key)
-		}
-
-		if key == GLFW_KEY_S {
-			tailMoveDown = getMoveStatus(action, key)
-		}
-
-
-
-		// snake head motion 
-
-		if key == GLFW_KEY_J {
-			headMoveLeft = getMoveStatus(action, key)
-		}
-
-		if key == GLFW_KEY_L {
-			headMoveRight = getMoveStatus(action, key)
-		}
-
-		if key == GLFW_KEY_I {
-			headMoveUp = getMoveStatus(action, key)
-		}
-
-		if key == GLFW_KEY_K {
-			headMoveDown = getMoveStatus(action, key)
-		}
-	}
-}
-
-
-func getMoveStatus(action i32, key i32) (out bool) {
-	if /* release */ action == 0 {
-		return false
-	} else {
-		return true
-	}
 }
