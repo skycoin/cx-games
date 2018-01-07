@@ -184,123 +184,51 @@ func moveObjects() () {
 
 
 
-
 	// tail vertical motion
 
 	if ccInput.tailMoveDown {
-		tail.vy -= velocityInc
-
-		if tail.vy < maxNegativeVelocity {
-			tail.vy = maxNegativeVelocity
-		}
+		tail.vy = boundedDecrease(tail.vy)
 	} 
 	
 	if ccInput.tailMoveUp {
-		tail.vy += velocityInc
-
-		if tail.vy > maxVelocity {
-			tail.vy = maxVelocity
-		}
+		tail.vy = boundedIncrease(tail.vy)
 	} 
 
-
-
 	if !ccInput.tailMoveUp && !ccInput.tailMoveDown {
-		if tail.vy > 0.0 {
-			tail.vy -= velocityInc
-
-			if tail.vy < 0.0 {
-				tail.vy = 0.0
-			}
-		}
-
-		if tail.vy < 0.0 {
-			tail.vy += velocityInc
-
-			if tail.vy > 0.0 {
-				tail.vy = 0.0
-			}
-		}
+		tail.vy = rampDownToStop(tail.vy)
 	}
 
 
 
+	// head horizontal motion
 
 	if ccInput.headMoveLeft {
-		head.vx -= velocityInc
-
-		if head.vx < maxNegativeVelocity {
-			head.vx = maxNegativeVelocity
-		}
+		head.vx = boundedDecrease(head.vx)
 	} 
 	
 	if ccInput.headMoveRight {
-		head.vx += velocityInc
-
-		if head.vx > maxVelocity {
-			head.vx = maxVelocity
-		}
+		head.vx = boundedIncrease(head.vx)
 	} 
 
-
-
 	if !ccInput.headMoveLeft && !ccInput.headMoveRight {
-		if head.vx > 0.0 {
-			head.vx -= velocityInc
-
-			if head.vx < 0.0 {
-				head.vx = 0.0
-			}
-		}
-
-		if head.vx < 0.0 {
-			head.vx += velocityInc
-
-			if head.vx > 0.0 {
-				head.vx = 0.0
-			}
-		}
+		head.vx = rampDownToStop(head.vx)
 	}
 
 
 
+	// head vertical motion
 
 	if ccInput.headMoveDown {
-		head.vy -= velocityInc
-
-		if head.vy < maxNegativeVelocity {
-			head.vy = maxNegativeVelocity
-		}
+		head.vy = boundedDecrease(head.vy)
 	} 
 	
 	if ccInput.headMoveUp {
-		head.vy += velocityInc
-
-		if head.vy > maxVelocity {
-			head.vy = maxVelocity
-		}
+		head.vy = boundedIncrease(head.vy)
 	} 
 
-
-
 	if !ccInput.headMoveUp && !ccInput.headMoveDown {
-		if head.vy > 0.0 {
-			head.vy -= velocityInc
-
-			if head.vy < 0.0 {
-				head.vy = 0.0
-			}
-		}
-
-		if head.vy < 0.0 {
-			head.vy += velocityInc
-
-			if head.vy > 0.0 {
-				head.vy = 0.0
-			}
-		}
+		head.vy = rampDownToStop(head.vy)
 	}
-
 
 
 
