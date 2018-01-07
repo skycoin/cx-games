@@ -17,7 +17,7 @@ func main () () {
 	posVelocity := 0.03
 	negVelocity := -0.03
 
-	tail = new Ball{
+	tail = new entity.Ball{
 		radius: 0.02,
 		x: -0.1,
 		y: -0.1,
@@ -133,17 +133,9 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 
 
 //game
-type Ball struct {
-	x f32
-	y f32
-	vx f32
-	vy f32
-	gravity f32
-	radius f32
-}
 
-var tail Ball
-var head Ball
+var tail entity.Ball
+var head entity.Ball
 
 
 
