@@ -164,48 +164,28 @@ func respondToCollisions() () {
 }
 
 
-var velocityInc f32 = 0.001
+var velocityInc f32 = 0.001 // increment
 var maxVelocity f32 = 0.01
 var maxNegativeVelocity f32 = -0.01
 func moveObjects() () {
-	if ccInput.tailMoveLeft {
-		tail.vx -= velocityInc
+	// tail horizontal motion
 
-		if tail.vx < maxNegativeVelocity {
-			tail.vx = maxNegativeVelocity
-		}
+	if ccInput.tailMoveLeft {
+		tail.vx = boundedDecrease(tail.vx)
 	} 
 	
 	if ccInput.tailMoveRight {
-		tail.vx += velocityInc
-
-		if tail.vx > maxVelocity {
-			tail.vx = maxVelocity
-		}
+		tail.vx = boundedIncrease(tail.vx)
 	} 
 
-
-
 	if !ccInput.tailMoveLeft && !ccInput.tailMoveRight {
-		if tail.vx > 0.0 {
-			tail.vx -= velocityInc
-
-			if tail.vx < 0.0 {
-				tail.vx = 0.0
-			}
-		}
-
-		if tail.vx < 0.0 {
-			tail.vx += velocityInc
-
-			if tail.vx > 0.0 {
-				tail.vx = 0.0
-			}
-		}
+		tail.vx = rampDownToStop(tail.vx)
 	}
 
 
 
+
+	// tail vertical motion
 
 	if ccInput.tailMoveDown {
 		tail.vy -= velocityInc
@@ -331,6 +311,47 @@ func moveObjects() () {
 }
 
 
+func boundedDecrease(vel f32) (out f32) {
+	vel -= velocityInc
+
+	if vel < maxNegativeVelocity {
+		vel = maxNegativeVelocity
+	}
+
+	return vel
+}
+
+
+func boundedIncrease(vel f32) (out f32) {
+	vel += velocityInc
+
+	if vel > maxVelocity {
+		vel = maxVelocity
+	}
+
+	return vel
+}
+
+
+func rampDownToStop(vel f32) (out f32) {
+	if vel > 0.0 {
+		vel -= velocityInc
+
+		if vel < 0.0 {
+			vel = 0.0
+		}
+	}
+
+	if vel < 0.0 {
+		vel += velocityInc
+
+		if vel > 0.0 {
+			vel = 0.0
+		}
+	}
+
+	return vel
+}
 
 
 
