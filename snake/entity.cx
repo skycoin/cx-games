@@ -30,8 +30,8 @@ func Init() () {
 		X = []f32.append(X, x)
 		Y = []f32.append(Y, y)
 		
-		vx := i32.f32(i32.rand(0, 100)) * game.AsteroidVelocityGrain
-		vy := i32.f32(i32.rand(0, 100)) * game.AsteroidVelocityGrain
+		vx := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
+		vy := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
 		VelX = []f32.append(VelX, vx)
 		VelY = []f32.append(VelY, vy)
 		
