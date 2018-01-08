@@ -149,6 +149,15 @@ var head Ball
 
 
 
+func Shoot() () {
+	fraction := 0.1
+
+	entity.SpawnEntity(head.x, head.y, 
+		fraction * (head.x - tail.x),
+		fraction * (head.y - tail.y))
+}
+
+
 func respondToCollisions() () {
 	if tail.x + tail.radius <= -1.0 {
 		tail.vx += tail.gravity
@@ -337,7 +346,7 @@ func draw() () {
 
 
 func drawEntities() () {
-	for i := 0; i < entity.numEnts; i++ {
+	for i := 0; i < []f32.len(entity.X); i++ {
 		drawBall(
 			[]f32.read(entity.X, i), 
 			[]f32.read(entity.Y, i), 
