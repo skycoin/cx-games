@@ -35,6 +35,7 @@ func main () () {
 		gravity: 0.01
 	}
 
+	game.Init()
 	entity.Init()
 
 
@@ -347,17 +348,27 @@ func drawEntities() () {
 }
 
 
-var mostNegative /* edge of visibility, along the bottom*/ f32 = -1.0
 func drawText() () {
 	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
 	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
+	drawLine(0.0,   -25.0, "i")
+	drawLine(-25.0,  25.0, "j")
+	drawLine(0.0,    25.0, "k")
+	drawLine( 25.0,  25.0, "l")
+}
 
-	gl.Color4f(0.5, 0.7, 0.5, 1.0)
-	gltext.Printf(
-		"Roboto50", 
-		600.0, 
-		i32.f32(game.Height) - (head.y - mostNegative) * (i32.f32(game.Height) / 2.0), 
-		"I'm some text")
+
+var mostNegative /* edge of visibility, along the bottom*/ f32 = -1.0
+func drawLine(offsetX f32, offsetY f32, s str) () {
+	// text space positions 
+	midX := i32.f32(game.Width)  / 2.0
+	midY := i32.f32(game.Height) / 2.0
+	dfc /* distance from center */ := head.x / game.ScreenBoundsRight
+	x := offsetX + midX + midX * dfc
+	y := offsetY + i32.f32(game.Height) - (head.y - mostNegative) * midY
+
+	gl.Color4f(0.8, 0.0, 0.8, 1.0)
+	gltext.Printf("Roboto50", x, y, s)
 }
 
 

@@ -13,25 +13,15 @@ var Blue []f32
 
 
 func Init() () {
-	str.print("in entity.cx.Init")
-
-	// making a lot of assumptions, such as vertical span being -1.0 thru 1.0
-	horizontalScreenSpan = i32.f32(game.Width) / i32.f32(game.Height)
-	var screenBounds game.Rect
-	screenBounds.Top = 1.0
-	screenBounds.Right = horizontalScreenSpan
-	screenBounds.Bottom = -1.0
-	screenBounds.Left = 0.0 - horizontalScreenSpan
+	str.print("--- entity.Init()")
 
 	pixelSpanX := 2.0 / i32.f32(game.Width)
 	pixelSpanY := 2.0 / i32.f32(game.Height)
 	gradientSpan := 1.0 / 300.0
 
-
-
 	for i := 0; i < numEnts; i++ {
-		x := screenBounds.Left   + i32.f32(i32.rand(0, game.Width + 1)) * pixelSpanY
-		y := screenBounds.Bottom + i32.f32(i32.rand(0, game.Height + 1)) * pixelSpanY
+		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.Width + 1)) * pixelSpanY
+		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.Height + 1)) * pixelSpanY
 		X = []f32.append(X, x)
 		Y = []f32.append(Y, y)
 		Red =   []f32.append(Red, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
