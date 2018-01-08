@@ -31,8 +31,9 @@ func Init() () {
 		Y = []f32.append(Y, y)
 		
 		vx := i32.f32(i32.rand(0, 100)) * game.AsteroidVelocityGrain
+		vy := i32.f32(i32.rand(0, 100)) * game.AsteroidVelocityGrain
 		VelX = []f32.append(VelX, vx)
-		VelY = []f32.append(VelY, 0.0)
+		VelY = []f32.append(VelY, vy)
 		
 		Red =   []f32.append(Red, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 		Green = []f32.append(Green, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
@@ -47,8 +48,28 @@ func Update() () {
 		vy := []f32.read(VelY, i)
 
 		if vx != 0.0 || vy != 0.0 {
-			[]f32.write(X, i, []f32.read(X, i) + vx)
-			//[]f32.write(X, i, []f32.read(X, i) + vx)
+			x := []f32.read(X, i) + vx
+			y := []f32.read(Y, i) + vy
+
+			// teleport objects to the opposite edge when they leave the screen
+			if x < game.ScreenBoundsLeft {
+				x = game.ScreenBoundsRight
+			}
+
+			if x > game.ScreenBoundsRight {
+				x = game.ScreenBoundsLeft
+			}
+
+			if y > game.ScreenBoundsTop {
+				y = game.ScreenBoundsBottom
+			}
+
+			if y < game.ScreenBoundsBottom {
+				y = game.ScreenBoundsTop
+			}
+
+			[]f32.write(X, i, x)
+			[]f32.write(Y, i, y)
 		}
 	}
 }
