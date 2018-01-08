@@ -95,6 +95,7 @@ func main () () {
 
 		//respondToCollisions() // ATM, just the left, right, & bottom edge of screen
 		moveObjects()
+		entity.Update()
 		draw()
 
 

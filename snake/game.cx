@@ -10,6 +10,8 @@ var ScreenBoundsRight f32
 var ScreenBoundsBottom f32
 var ScreenBoundsLeft f32
 
+var AsteroidVelocityGrain f32 = 0.0002
+
 type Rect struct {
 	Top f32
 	Right f32
@@ -22,7 +24,7 @@ type Rect struct {
 func Init() () {
 	str.print("--- game.Init()")
 
-	// making a lot of assumptions, such as vertical span being -1.0 thru 1.0
+	// FIXME: making assumptions about vertical span 
 	horizontalScreenSpan := i32.f32(Width) / i32.f32(Height)
 	ScreenBoundsTop = 1.0
 	ScreenBoundsRight = horizontalScreenSpan

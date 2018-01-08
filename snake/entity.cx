@@ -6,6 +6,10 @@ import "game"
 var numEnts i32 = 48
 var X []f32
 var Y []f32
+
+var VelX []f32 // velocity
+var VelY []f32
+
 var Red []f32
 var Green []f32
 var Blue []f32
@@ -22,10 +26,29 @@ func Init() () {
 	for i := 0; i < numEnts; i++ {
 		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.Width + 1)) * pixelSpanY
 		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.Height + 1)) * pixelSpanY
+		
 		X = []f32.append(X, x)
 		Y = []f32.append(Y, y)
+		
+		vx := i32.f32(i32.rand(0, 100)) * game.AsteroidVelocityGrain
+		VelX = []f32.append(VelX, vx)
+		VelY = []f32.append(VelY, 0.0)
+		
 		Red =   []f32.append(Red, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 		Green = []f32.append(Green, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 		Blue =  []f32.append(Blue, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
+	}
+}
+
+
+func Update() () {
+	for i := 0; i < numEnts; i++ {
+		vx := []f32.read(VelX, i) 
+		vy := []f32.read(VelY, i)
+
+		if vx != 0.0 || vy != 0.0 {
+			[]f32.write(X, i, []f32.read(X, i) + vx)
+			//[]f32.write(X, i, []f32.read(X, i) + vx)
+		}
 	}
 }
