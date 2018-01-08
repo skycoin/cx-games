@@ -11,12 +11,16 @@ var gradientSpan f32
 
 // entities
 
-var numEnts i32 = 32
+var numEnts i32 = 24
 var X []f32
 var Y []f32
 
 var VelX []f32 // velocity
 var VelY []f32
+
+var Rad []f32 // radius 
+
+var Expiry []f64
 
 var Red []f32
 var Green []f32
@@ -36,7 +40,7 @@ func Init() () {
 		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.Height + 1)) * pixelSpanY
 		vx := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
 		vy := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
-		SpawnEntity(x, y, vx, vy)
+		SpawnEntity(x, y, vx, vy, 0.016, 0.0D)
 	}
 }
 
@@ -74,13 +78,16 @@ func Update() () {
 }
 
 
-func SpawnEntity(x f32, y f32, velX f32, velY f32) () {
+func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f64) () {
 	X = []f32.append(X, x)
 	Y = []f32.append(Y, y)
 	
 	VelX = []f32.append(VelX, velX)
 	VelY = []f32.append(VelY, velY)
 	
+	Rad = []f32.append(Rad, rad)
+	Expiry = []f64.append(Expiry, expiry)
+
 	Red =   []f32.append(Red, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 	Green = []f32.append(Green, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 	Blue =  []f32.append(Blue, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)	

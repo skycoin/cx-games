@@ -14,8 +14,8 @@ var dubPi f32
 
 func main () () {
 	dubPi = 2.0 * 3.141592654
-	posVelocity := 0.03
-	negVelocity := -0.03
+	posVelocity := 0.02
+	negVelocity := -0.02
 
 	tail = new Ball{
 		radius: 0.02,
@@ -154,7 +154,9 @@ func Shoot() () {
 
 	entity.SpawnEntity(head.x, head.y, 
 		fraction * (head.x - tail.x),
-		fraction * (head.y - tail.y))
+		fraction * (head.y - tail.y),
+		0.01, // radius
+		glfw.GetTime() + 0.5D) // expiry
 }
 
 
@@ -347,13 +349,15 @@ func draw() () {
 
 func drawEntities() () {
 	for i := 0; i < []f32.len(entity.X); i++ {
-		drawBall(
-			[]f32.read(entity.X, i), 
-			[]f32.read(entity.Y, i), 
-			0.016,
-			[]f32.read(entity.Red, i), 
-			[]f32.read(entity.Green, i), 
-			[]f32.read(entity.Blue, i))
+		if []f64.read(entity.Expiry, i) == 0.0D || []f64.read(entity.Expiry, i) > glfw.GetTime() {
+			drawBall(
+				[]f32.read(entity.X, i), 
+				[]f32.read(entity.Y, i), 
+				[]f32.read(entity.Rad, i),
+				[]f32.read(entity.Red, i), 
+				[]f32.read(entity.Green, i), 
+				[]f32.read(entity.Blue, i))
+		}
 	}
 }
 
