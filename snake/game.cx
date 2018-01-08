@@ -4,3 +4,9 @@ var Name str = "  S  N  A  K  E  "
 var Width i32 = 1600
 var Height i32 = 900
 
+type Rect struct {
+	Top f32
+	Right f32
+	Bottom f32
+	Left f32
+}
