@@ -1,0 +1,377 @@
+package main
+
+import "gl"
+import "glfw"
+import "gltext"
+
+import "ccInput"
+import "game"
+import "entity"
+
+var dubPi f32
+
+
+
+func main () () {
+	dubPi = 2.0 * 3.141592654
+	posVelocity := 0.03
+	negVelocity := -0.03
+
+	tail = new Ball{
+		radius: 0.02,
+		x: -0.1,
+		y: -0.1,
+		vx: negVelocity,
+		vy: negVelocity,
+		gravity: 0.01
+	}
+
+	head = new Ball{
+		radius: 0.07,
+		x: 0.2,
+		y: 0.1,
+		vx: posVelocity,
+		vy: posVelocity,
+		gravity: 0.01
+	}
+
+	game.Init()
+	entity.Init()
+
+
+
+	// gl setup
+
+	glfw.Init()
+	glfw.CreateWindow("window", game.Width, game.Height, game.Name)
+	glfw.MakeContextCurrent("window")
+	glfw.SetKeyCallback("window", "onKeyEvent")
+	
+	gl.Init()
+	program := gl.CreateProgram()
+	gl.LinkProgram(program)
+
+
+
+	// font setup
+
+	wd := os.GetWorkingDirectory()
+	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
+
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto100", fontFile, 100, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+	
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+
+	gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.LESS)
+	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
+
+
+
+
+
+
+
+
+	var ratio f32
+
+	for !glfw.ShouldClose("window") {
+		bufferWidth, bufferHeight := glfw.GetFramebufferSize("window")
+		ratio = f32.div(i32.f32(bufferWidth), i32.f32(bufferHeight))
+
+		//gl.Clear(gl.COLOR_BUFFER_BIT) // original bouncing-ball sample
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+		//gl.UseProgram(program)
+		
+		gl.MatrixMode(gl.PROJECTION)
+		gl.LoadIdentity()
+		gl.Ortho(f32.mul(ratio, -1.0), ratio, -1.0, 1.0, 1.0, -1.0)
+		gl.MatrixMode(gl.MODELVIEW)
+
+		//respondToCollisions() // ATM, just the left, right, & bottom edge of screen
+		moveObjects()
+		draw()
+
+
+		
+		glfw.PollEvents()
+		glfw.SwapBuffers("window")
+	}
+}
+
+
+func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
+	ccInput.OnKeyEvent(window, key, scancode, action, mods)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//game
+type Ball struct {
+	x f32
+	y f32
+	vx f32
+	vy f32
+	gravity f32
+	radius f32
+}
+
+var tail Ball
+var head Ball
+
+
+
+func respondToCollisions() () {
+	if tail.x + tail.radius <= -1.0 {
+		tail.vx += tail.gravity
+	} 
+
+	if tail.x + tail.radius >= 1.0 {
+		tail.vx -= tail.gravity
+	}
+
+	if tail.y + tail.radius <= -1.0 {
+		tail.vy = f32.abs(tail.vy)
+	} else {
+		tail.vy -= tail.gravity
+	}
+}
+
+
+var velocityInc f32 = 0.001 // increment
+var maxVelocity f32 = 0.01
+var maxNegativeVelocity f32 = -0.01
+func moveObjects() () {
+	// tail horizontal motion
+
+	if ccInput.tailMoveLeft {
+		tail.vx = boundedDecrease(tail.vx)
+	} 
+	
+	if ccInput.tailMoveRight {
+		tail.vx = boundedIncrease(tail.vx)
+	} 
+
+	if !ccInput.tailMoveLeft && !ccInput.tailMoveRight {
+		tail.vx = rampDownToStop(tail.vx)
+	}
+
+
+
+	// tail vertical motion
+
+	if ccInput.tailMoveDown {
+		tail.vy = boundedDecrease(tail.vy)
+	} 
+	
+	if ccInput.tailMoveUp {
+		tail.vy = boundedIncrease(tail.vy)
+	} 
+
+	if !ccInput.tailMoveUp && !ccInput.tailMoveDown {
+		tail.vy = rampDownToStop(tail.vy)
+	}
+
+
+
+	// head horizontal motion
+
+	if ccInput.headMoveLeft {
+		head.vx = boundedDecrease(head.vx)
+	} 
+	
+	if ccInput.headMoveRight {
+		head.vx = boundedIncrease(head.vx)
+	} 
+
+	if !ccInput.headMoveLeft && !ccInput.headMoveRight {
+		head.vx = rampDownToStop(head.vx)
+	}
+
+
+
+	// head vertical motion
+
+	if ccInput.headMoveDown {
+		head.vy = boundedDecrease(head.vy)
+	} 
+	
+	if ccInput.headMoveUp {
+		head.vy = boundedIncrease(head.vy)
+	} 
+
+	if !ccInput.headMoveUp && !ccInput.headMoveDown {
+		head.vy = rampDownToStop(head.vy)
+	}
+
+
+
+	head.x += head.vx
+	head.y += head.vy
+	tail.x += tail.vx
+	tail.y += tail.vy
+}
+
+
+func boundedDecrease(vel f32) (out f32) {
+	vel -= velocityInc
+
+	if vel < maxNegativeVelocity {
+		vel = maxNegativeVelocity
+	}
+
+	return vel
+}
+
+
+func boundedIncrease(vel f32) (out f32) {
+	vel += velocityInc
+
+	if vel > maxVelocity {
+		vel = maxVelocity
+	}
+
+	return vel
+}
+
+
+func rampDownToStop(vel f32) (out f32) {
+	if vel > 0.0 {
+		vel -= velocityInc
+
+		if vel < 0.0 {
+			vel = 0.0
+		}
+	}
+
+	if vel < 0.0 {
+		vel += velocityInc
+
+		if vel > 0.0 {
+			vel = 0.0
+		}
+	}
+
+	return vel
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+func draw() () {
+	numSegments := 6
+	radius := tail.radius
+	radiusIncrement := (head.radius - tail.radius) * 0.7 / i32.f32(numSegments) 
+	xOff /* head offset from the tail */ := head.x - tail.x
+	yOff /* head offset from the tail */ := head.y - tail.y
+	xSpan /* between segments */ := xOff / i32.f32(numSegments)
+	ySpan /* between segments */ := yOff / i32.f32(numSegments)
+
+	for j := 0; j <= numSegments; j++ {
+		if j == numSegments {
+			radius = head.radius
+		}
+
+		drawBall(
+			tail.x + xSpan * i32.f32(j), 
+			tail.y + ySpan * i32.f32(j), 
+			radius,
+			1.0,
+			1.0,
+			1.0)
+
+		radius += radiusIncrement
+	}
+
+	drawEntities()
+	drawText()
+}
+
+
+func drawEntities() () {
+	for i := 0; i < entity.numEnts; i++ {
+		drawBall(
+			[]f32.read(entity.X, i), 
+			[]f32.read(entity.Y, i), 
+			0.016,
+			[]f32.read(entity.Red, i), 
+			[]f32.read(entity.Green, i), 
+			[]f32.read(entity.Blue, i))
+	}
+}
+
+
+var mostNegative /* edge of visibility, along the bottom*/ f32 = -1.0
+func drawText() () {
+	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
+	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
+
+	gl.Color4f(0.5, 0.7, 0.5, 1.0)
+	gltext.Printf(
+		"Roboto50", 
+		600.0, 
+		i32.f32(game.Height) - (head.y - mostNegative) * (i32.f32(game.Height) / 2.0), 
+		"I'm some text")
+}
+
+
+func drawBall(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
+	gl.Begin(gl.POLYGON)
+	gl.Color3f(red, green, blue)
+
+	for i := 0; i < 20; i++ {
+		finalX := x + radius * f32.cos(i32.f32(i) * dubPi / 20.0)
+		finalY := y + radius * f32.sin(i32.f32(i) * dubPi / 20.0)
+
+		gl.Vertex2f(finalX, finalY)
+	}
+
+	gl.End()
+}

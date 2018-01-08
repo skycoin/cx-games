@@ -1,0 +1,28 @@
+package game
+
+
+
+var Name str = "  S  N  A  K  E  "
+var Width i32 = 1600
+var Height i32 = 900
+var ScreenBounds Rect
+
+type Rect struct {
+	Top f32
+	Right f32
+	Bottom f32
+	Left f32
+}
+
+
+
+func Init() () {
+	str.print("--- game.Init()")
+
+	// making a lot of assumptions, such as vertical span being -1.0 thru 1.0
+	horizontalScreenSpan = i32.f32(Width) / i32.f32(Height)
+	screenBounds.Top = 1.0
+	screenBounds.Right = horizontalScreenSpan
+	screenBounds.Bottom = -1.0
+	screenBounds.Left = 0.0 - horizontalScreenSpan
+}
