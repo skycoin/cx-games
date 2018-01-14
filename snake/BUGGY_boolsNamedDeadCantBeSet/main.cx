@@ -46,6 +46,7 @@ func main () () {
 	glfw.CreateWindow("window", game.Width, game.Height, game.Name)
 	glfw.MakeContextCurrent("window")
 	
+	//GLFW_CURSOR_DISABLED   0x00034003 (212995)
 	glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
 	glfw.SetKeyCallback("window", "onKeyEvent")
 	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")

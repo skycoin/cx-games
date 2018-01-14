@@ -11,8 +11,9 @@ var ScreenBoundsBottom f32
 var ScreenBoundsLeft f32
 
 var AsteroidVelocityGrain f32 = 0.0002
-var MinSnakeLength f32 = 0.2
+var MinSnakeLength f32 = 0.05
 var MaxSnakeLength f32 = 0.9
+var SnakeLength f32 = 0.1 // current length
 
 type Rect struct {
 	Top f32

@@ -45,11 +45,7 @@ func main () () {
 	glfw.Init()
 	glfw.CreateWindow("window", game.Width, game.Height, game.Name)
 	glfw.MakeContextCurrent("window")
-	
-	glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
 	glfw.SetKeyCallback("window", "onKeyEvent")
-	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
-	glfw.SetCursorPosCallback("window", "onCursorPosEvent")
 	
 	gl.Init()
 	program := gl.CreateProgram()
@@ -110,23 +106,12 @@ func main () () {
 }
 
 
-func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
+func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 	ccInput.OnKeyEvent(window, key, scancode, action, mods)
 }
 
-func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
-	if action == glfw.Press {
-		Shoot()
-	}
-}
 
 
-func onCursorPosEvent(window str, x f64, y f64) () {
-	//x, y := glfw.GetCursorPos("window")
-	str.print("mmmouse cursor at:")
-	str.print(str.concat("x: ", f64.str(x)))
-	str.print(str.concat("y: ", f64.str(y)))
-}
 
 
 
@@ -218,14 +203,26 @@ func updateSnake() () {
 
 	if ccInput.tailMoveDown {
 		tail.vy = boundedDecrease(tail.vy)
+
+		if shouldMirrorMovementOnTheOtherEnd() {
+			head.vy = boundedDecrease(head.vy)
+		}
 	} 
 	
 	if ccInput.tailMoveUp {
 		tail.vy = boundedIncrease(tail.vy)
+
+		if shouldMirrorMovementOnTheOtherEnd() {
+			head.vy = boundedIncrease(head.vy)
+		}
 	} 
 
 	if !ccInput.tailMoveUp && !ccInput.tailMoveDown {
 		tail.vy = rampDownToStop(tail.vy)
+
+		if shouldMirrorMovementOnTheOtherEnd() {
+			head.vy = rampDownToStop(head.vy)
+		}
 	}
 
 
@@ -269,21 +266,29 @@ func updateSnake() () {
 }
 
 
-var snakeLength f32 // current length
 func setSnakeLength() () {
 	// figure head offset from tail 
 	xOff := head.x - tail.x
 	yOff := head.y - tail.y
-	snakeLength = f32.pow((xOff ** 2.0) + (yOff ** 2.0), 0.5)
+
+	game.SnakeLength = f32.pow((xOff ** 2.0) + (yOff ** 2.0), 0.5)
+	blablablahLength = f32.pow((xOff ** 2.0) + (yOff ** 2.0), 0.5)
+	//str.print("snakeLength")
+	f32.print(game.SnakeLength)
+	f32.print(blablablahLength)
 }
 
 
-func shouldMirrorMoveOnOtherEnd() (out bool) {
-	if snakeLength > game.MaxSnakeLength {
+func shouldMirrorMovementOnTheOtherEnd() (out bool) {
+	if game.SnakeLength >= game.MaxSnakeLength {
+		str.print("GREATER, should mirror")
+
 		return true
 	}
 
-	if snakeLength < game.MinSnakeLength {
+	if game.SnakeLength <= game.MinSnakeLength {
+		str.print("LESSER, should mirror")
+		f32.print(game.SnakeLength)
 		return true
 	}
 
@@ -388,7 +393,7 @@ func draw() () {
 
 func drawEntities() () {
 	for i := 0; i < []f32.len(entity.X); i++ {
-		if []bool.read(entity.Dead, i) == false {
+		if []f64.read(entity.Expiry, i) == 0.0D || []f64.read(entity.Expiry, i) > glfw.GetTime() {
 			drawBall(
 				[]f32.read(entity.X, i), 
 				[]f32.read(entity.Y, i), 
