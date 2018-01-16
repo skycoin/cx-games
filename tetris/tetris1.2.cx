@@ -1,0 +1,456 @@
+package main
+
+import "gl"
+import "glfw"
+import "gltext"
+
+var width i32 = 590
+var height i32 = 960
+
+var Block_TEXTURE i32
+var STAR_TEXTURE i32
+var BG_TEXTURE i32
+
+var blocks []Block
+var stars []Star
+
+var position i32 =0
+
+type Bg struct{
+x f32
+y f32
+}
+var bg Bg
+type Block struct {
+	x f32
+	y f32
+	id i32
+}
+
+type Star struct {
+	x f32
+	y f32
+	b f32
+}
+
+func (block Block) Move () {
+	// We need pointers
+	block.x += 0.05
+}
+
+func (bg Bg) Draw () {
+	gl.LoadIdentity()
+	gl.Translatef(bg.x, bg.y, 0.0)
+	// this is the only difference between Coin.Draw and Star.Draw actually
+	gl.BindTexture(gl.TEXTURE_2D, BG_TEXTURE)
+	gl.Scalef(1.0, 1.0, 0.0)
+	gl.Begin(gl.QUADS)
+	gl.TexCoord2d(0.0, 0.0)
+	gl.Vertex3f(-1.0, 1.0, 0.0)
+	gl.TexCoord2d(1.0, 0.0)
+	gl.Vertex3f(1.0, 1.0, 0.0)
+	gl.TexCoord2d(1.0, 1.0)
+	gl.Vertex3f(1.0, -1.0, 0.0)
+	gl.TexCoord2d(0.0, 1.0)
+	gl.Vertex3f(-1.0, -1.0, 0.0)
+	gl.End()
+}
+
+
+
+func (block Block) Draw () {
+	gl.LoadIdentity()
+	gl.Translatef(block.x, block.y, 0.0)
+	// this is the only difference between Coin.Draw and Star.Draw actually
+	gl.BindTexture(gl.TEXTURE_2D, Block_TEXTURE)
+	gl.Scalef(0.07627, 0.04687, 0.0)
+	gl.Begin(gl.QUADS)
+	gl.TexCoord2d(0.0, 0.0)
+	gl.Vertex3f(-1.0, 1.0, 0.0)
+	gl.TexCoord2d(1.0, 0.0)
+	gl.Vertex3f(1.0, 1.0, 0.0)
+	gl.TexCoord2d(1.0, 1.0)
+	gl.Vertex3f(1.0, -1.0, 0.0)
+	gl.TexCoord2d(0.0, 1.0)
+	gl.Vertex3f(-1.0, -1.0, 0.0)
+	gl.End()
+}
+
+func (star Star) Draw () {
+	gl.LoadIdentity()
+	gl.Translatef(star.x, star.y, 0.0)
+	// this is the only difference between Coin.Draw and Star.Draw actually
+	gl.BindTexture(gl.TEXTURE_2D, STAR_TEXTURE)
+	gl.Scalef(0.05, 0.05, 0.0)
+	gl.Begin(gl.QUADS)
+	gl.TexCoord2d(0.0, 0.0)
+	gl.Vertex3f(-1.0, 1.0, 0.0)
+	gl.TexCoord2d(1.0, 0.0)
+	gl.Vertex3f(1.0, 1.0, 0.0)
+	gl.TexCoord2d(1.0, 1.0)
+	gl.Vertex3f(1.0, -1.0, 0.0)
+	gl.TexCoord2d(0.0, 1.0)
+	gl.Vertex3f(-1.0, -1.0, 0.0)
+	gl.End()
+}
+
+
+func repositionBlock(){
+var newBlocks []Block
+
+for c := 0; c < []Block.len(blocks); c++ {
+
+			
+			var block Block
+			block := []Block.read(blocks, c)
+			str.print(str.concat("block_id: ", i32.str(block.id)))
+		if(position==1){
+			
+			if(block.id==1){
+			
+			block.x=block.x + 0.15
+			block.y=block.y + 0.09
+			
+			}
+			if(block.id==2){
+			
+			//block.x=block.x+0.05
+			//block.y=block.y+30
+			str.print("pos1")
+			
+			}
+			
+			if(block.id==3)
+			{
+			block.x=block.x - 0.15
+			block.y=block.y - 0.09
+			}
+			
+			if(block.id==4){
+			
+			block.x=block.x+0.15
+			block.y=block.y - 0.09
+			
+			}
+		}
+		
+		if(position==2){
+			
+			if(block.id==1){
+			
+			block.x=block.x + 0.15
+			block.y=block.y - 0.09
+			
+			}
+			if(block.id==2){
+			
+			//block.x=block.x+0.05
+			//block.y=block.y+30
+			str.print("pos2")
+			
+			}
+			
+			if(block.id==3)
+			{
+			block.x=block.x - 0.15
+			block.y=block.y + 0.09
+			}
+			
+			if(block.id==4){
+			
+			block.x=block.x - 0.15
+			block.y=block.y - 0.09
+			
+			}
+		}
+		
+		if(position==3){
+			
+			if(block.id==1){
+			
+			block.x=block.x - 0.15
+			block.y=block.y - 0.09
+			
+			}
+			if(block.id==2){
+			
+			//block.x=block.x+0.05
+			//block.y=block.y+30
+			str.print("pos3")
+			
+			}
+			
+			if(block.id==3)
+			{
+			block.x=block.x + 0.15
+			block.y=block.y + 0.09
+			}
+			
+			if(block.id==4){
+			
+			block.x=block.x - 0.15
+			block.y=block.y + 0.09
+			
+			}
+		}
+		if(position==4){
+			
+			if(block.id==1){
+			
+			block.x=block.x - 0.15
+			block.y=block.y + 0.09
+			
+			}
+			if(block.id==2){
+			
+			//block.x=block.x+0.05
+			//block.y=block.y+30
+			str.print("pos4")
+			
+			}
+			
+			if(block.id==3)
+			{
+			block.x=block.x + 0.15
+			block.y=block.y - 0.09
+			}
+			
+			if(block.id==4){
+			
+			block.x=block.x + 0.15
+			block.y=block.y + 0.09
+			
+			}
+		}
+		
+		
+		str.print(str.concat("block: ", f32.str(block.x)))
+		 //[]Block.write(blocks, index, newCoin)
+		 newBlocks = []Block.append(newBlocks, block)
+		}
+
+//newBlocks = []Block.append(newBlocks, block)
+blocks = newBlocks
+}
+
+func keyPress (window str, key i32, scancode i32, action i32, mods i32) {
+	// 77 is the keycode corresponding to keyboard key "m"
+	if key == 77 && action == 1 {
+		for c := 0; c < []Block.len(blocks); c++ {
+			block := []Block.read(blocks, c)
+			block.Move()
+			//block.x=block.x+0.5
+		}
+	}
+
+
+if (key==262&& action ==1){
+
+position=position+1
+
+
+//str.print(str.concat("position: ", i32.str(position)))
+repositionBlock()
+
+if(position==4){position=0}
+}
+
+	if key == 32 && action == 1 {
+		var newBlocks []Block
+		var newStars []Star
+
+		// first we'll find what stars are not being overlapped
+		for s := 0; s < []Star.len(stars); s++ {
+			var star Star
+			star = []Star.read(stars, s)
+
+			isOverlapped := false
+
+			for c := 0; c < []Block.len(blocks); c++ {
+				var block Block
+				block = []Block.read(blocks, c)
+				
+				if star.x + 0.05 > block.x && star.x - 0.05 < block.x &&
+					star.y + 0.05 > block.y && star.y - 0.05 < block.y {
+					isOverlapped = true
+				}
+			}
+
+			if !isOverlapped {
+				// we save the stars that are not being overlapped
+				newStars = []Star.append(newStars, star)
+			}
+		}
+
+		// now we'll find what coins are not being overlapped
+		for c := 0; c < []Block.len(blocks); c++ {
+			var block Block
+			block = []Block.read(blocks, c)
+
+			isOverlapped := false
+
+			for s := 0; s < []Star.len(stars); s++ {
+				var star Star
+				star = []Star.read(stars, s)
+				
+				if block.x + 0.05 > star.x && block.x - 0.05 < star.x &&
+					block.y + 0.05 > star.y && block.y - 0.05 < star.y {
+					isOverlapped = true
+				}
+			}
+
+			// we save the coins that are not being overlapped
+			if !isOverlapped {
+				newBlocks = []Block.append(newBlocks, block)
+			}
+		}
+
+		// we overwrite the old struct instances with the new ones
+		blocks = newBlocks
+		stars = newStars
+	}
+}
+
+func mouseButton (window str, key i32, action i32, mods i32) {
+	x, y := glfw.GetCursorPos("window")
+	/*if key == glfw.MouseButtonLeft {
+		if action == glfw.Press {
+			blocks = []Block.append(blocks, new Block{
+				// we need to scale the width and height to min = -1.0 and max = 1.0
+				x: (2.0 * f64.f32(x) / i32.f32(width)) - 1.0,
+				y: -1.0 * ((2.0 * f64.f32(y) / i32.f32(height)) - 1.0)
+			})
+		}
+	}*/
+
+	/*if key == glfw.MouseButtonRight {
+		if action == glfw.Press {
+
+			// we'll create a new array of coins, which will contain all the old coins
+			// except for the one we clicked on
+			var newBlocks []Block
+			
+			for c := 0; c < []Block.len(blocks); c++ {
+				block := []Block.read(blocks, c)
+				sx := (2.0 * f64.f32(x) / i32.f32(width)) - 1.0
+				sy := -1.0 * ((2.0 * f64.f32(y) / i32.f32(height)) - 1.0)
+
+				// the size of a coin is 0.05, so we use that as an offset for the boundaries
+				if !(sx + 0.05 > block.x && sx - 0.05 < block.x &&
+					sy + 0.05 > block.y && sy - 0.05 < block.y) {
+					newBlocks = []Block.append(newBlocks, block)
+				}
+			}
+
+			// we replace the old coins with the new coins
+			blocks = newBlocks
+		}
+	}*/
+}
+
+func init () {
+	wd := os.GetWorkingDirectory()
+	Block_TEXTURE = gl.NewTexture(str.concat(wd, "textures/tile113.png"))
+	STAR_TEXTURE = gl.NewTexture(str.concat(wd, "textures/star.png"))
+	BG_TEXTURE = gl.NewTexture(str.concat(wd, "textures/background.jpg"))
+}
+
+func main () {
+	glfw.Init()
+
+	glfw.CreateWindow("window", width, height, "Tetris 1.0")
+	glfw.MakeContextCurrent("window")
+	
+	gl.Init()
+	program := gl.CreateProgram()
+	gl.LinkProgram(program)
+
+	wd := os.GetWorkingDirectory()
+	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
+
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+
+	init()
+
+	glfw.SetKeyCallback("window", "keyPress")
+	glfw.SetMouseButtonCallback("window", "mouseButton")
+	
+	/*for c := 0; c < 10; c++ {
+		stars = []Star.append(stars, new Star{
+			x: i32.f32(i32.rand(0, 200)) / 100.0 - 1.0,
+			y: i32.f32(i32.rand(0, 200)) / 100.0 - 1.0
+		})
+	}*/
+	
+	
+	blocks = []Block.append(blocks, new Block{
+				// we need to scale the width and height to min = -1.0 and max = 1.0
+				//x: (2.0 * 100.0 / i32.f32(width)) - 1.0,
+				//y: -1.0 * ((2.0 * 200.0/ i32.f32(height)) - 1.0),
+				
+				x: -0.87 ,
+				y: 0.0 ,
+				id: 1
+			})
+	blocks = []Block.append(blocks, new Block{
+				// we need to scale the width and height to min = -1.0 and max = 1.0
+				//x: (2.0 * 120.0 / i32.f32(width)) - 1.0,
+				//y: -1.0 * ((2.0 * 200.0/ i32.f32(height)) - 1.0),
+				x:-0.87+0.15,
+				y:0.0,
+				id: 2
+			})	
+	blocks = []Block.append(blocks, new Block{
+				// we need to scale the width and height to min = -1.0 and max = 1.0
+				//x: (2.0 * 140.0 / i32.f32(width)) - 1.0,
+				//y: -1.0 * ((2.0 * 200.0/ i32.f32(height)) - 1.0),
+				x:-0.87+0.3,
+				y:0.0,
+				id: 3
+			})	
+	blocks = []Block.append(blocks, new Block{
+				// we need to scale the width and height to min = -1.0 and max = 1.0
+				//x: (2.0 * 120.0 / i32.f32(width)) - 1.0,
+				//y: -1.0 * ((2.0 * 180.0/ i32.f32(height)) - 1.0),
+				x:-0.87+0.15,
+				y: 0.09,
+				id: 4
+			})
+	/*bg= new Bg{
+	x:0.0,
+	y:0.0
+	}*/
+	bg.x=0.0
+	bg.y=0.0
+	//bg.Draw()
+	//
+	
+	
+	//
+	gl.Enable(gl.BLEND)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.DepthMask(true)
+
+	for not(glfw.ShouldClose("window")) {
+		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
+		gl.Clear(gl.COLOR_BUFFER_BIT)
+		
+		gl.Enable(gl.TEXTURE_2D)
+		bg.Draw()
+		for c := 0; c < []Block.len(blocks); c++ {
+			block := []Block.read(blocks, c)
+			block.Draw()
+		}
+		for c := 0; c < []Star.len(stars); c++ {
+			star := []Star.read(stars, c)
+			star.Draw()
+		}
+		
+		gl.UseProgram(program)
+		
+		glfw.PollEvents()
+		glfw.SwapBuffers("window")
+	}
+}
