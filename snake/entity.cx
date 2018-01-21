@@ -11,7 +11,7 @@ var gradientSpan f32
 
 // entities
 
-var numEnts i32 = 24
+var numEnts i32 = 6
 var X []f32
 var Y []f32
 

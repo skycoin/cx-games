@@ -1,6 +1,10 @@
 package ccInput        // "input" must be reserved?  got errors until I renamed this
+
 import "main"
 import "entity"
+import "game"
+
+
 
 var GLFW_KEY_5     i32 = 53
 var GLFW_KEY_SPACE i32 = 32
@@ -94,3 +98,40 @@ func GetMoveStatus(action i32, key i32) (out bool) {
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// mouse
+
+var prevMouseX f64
+var prevMouseY f64
+func OnCursorPosEvent(window str, x f64, y f64) () {
+	//x, y := glfw.GetCursorPos("window")
+	//str.print("mouse cursor at:")
+
+	deltaX := x - prevMouseX
+	deltaY := y - prevMouseY
+	game.AdjustSnakeAimAndSize(deltaX, deltaY)
+	prevMouseX = x
+	prevMouseY = y
+}

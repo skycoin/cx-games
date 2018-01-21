@@ -35,3 +35,14 @@ func Init() () {
 	ScreenBoundsBottom = -1.0
 	ScreenBoundsLeft = 0.0 - horizontalScreenSpan
 }
+
+
+
+var divisor f64 = 1000.0D
+func AdjustSnakeAimAndSize(deltaX f64, deltaY f64) () {
+	CurrSnakeAim    += (deltaX / divisor)
+	CurrSnakeExtent += (deltaY / divisor)
+
+	str.print(str.concat("CurrSnakeAim: ", f64.str(CurrSnakeAim)))
+	str.print(str.concat("CurrSnakeExtent: ", f64.str(CurrSnakeExtent)))
+}

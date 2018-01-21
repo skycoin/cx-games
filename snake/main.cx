@@ -112,6 +112,7 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 	ccInput.OnKeyEvent(window, key, scancode, action, mods)
 }
 
+
 func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 	if action == glfw.Press {
 		Shoot()
@@ -119,24 +120,8 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 }
 
 
-var prevMouseX f64
-var prevMouseY f64
 func onCursorPosEvent(window str, x f64, y f64) () {
-	//x, y := glfw.GetCursorPos("window")
-	//str.print("mouse cursor at:")
-
-	deltaX := x - prevMouseX
-	deltaY := y - prevMouseY
-	blar := game.CurrSnakeAim + deltaX
-	game.CurrSnakeAim = blar
-	str.print(str.concat("blar: ", f64.str(blar)))
-	game.CurrSnakeExtent += deltaY// / 10.0D
-
-	str.print(str.concat("game.CurrSnakeAim: ", f64.str(game.CurrSnakeAim)))
-	str.print(str.concat("game.CurrSnakeExtent: ", f64.str(game.CurrSnakeExtent)))
-
-	prevMouseX = x
-	prevMouseY = y
+	ccInput.OnCursorPosEvent(window, x, y)
 }
 
 
@@ -368,16 +353,16 @@ func rampDownToStop(vel f32) (out f32) {
 
 
 func draw() () {
-	drawOLDSnake()
+	//drawOLDSnake()
 	drawSnake()
 	drawEntities()
-	drawText()
+	//drawText()
 }
 
 
 func drawSnake() () {
-	xOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim))
-	yOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim)) 
+	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
+	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
 		
 		drawBall(
 			[]f32.read(entity.X, 0) + xOff, 
