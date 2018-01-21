@@ -355,7 +355,6 @@ func rampDownToStop(vel f32) (out f32) {
 
 
 func draw() () {
-	//drawOLDSnake()
 	drawSnake()
 	drawEntities()
 	//drawText()
@@ -374,30 +373,18 @@ func drawSnake() () {
 	hX := []f32.read(entity.X, 0) + xOff
 	hY := []f32.read(entity.Y, 0) + yOff
 		
-	// tail
-	drawBall(tX, tY,
-		0.025, //radius
-		1.0,
-		1.0,
-		1.0)
-
-	// head
-	drawBall(hX, hY,
-		0.05, //radius
-		1.0,
-		1.0,
-		1.0)
-}
+	
 
 
-func drawOLDSnake() () {
+
+
 	numSegments := 6
 	radius := tail.radius
 	radiusIncrement := (head.radius - tail.radius) * 0.7 / i32.f32(numSegments) 
-	xOff /* head offset from the tail */ := head.x - tail.x
-	yOff /* head offset from the tail */ := head.y - tail.y
-	xSpan /* between segments */ := xOff / i32.f32(numSegments)
-	ySpan /* between segments */ := yOff / i32.f32(numSegments)
+	hoftX /* head offset from tail */ := hX - tX
+	hoftY /* head offset from tail */ := hY - tY
+	xSpan /* between segments */ := hoftX / i32.f32(numSegments)
+	ySpan /* between segments */ := hoftY / i32.f32(numSegments)
 
 	for j := 0; j <= numSegments; j++ {
 		if j == numSegments {
@@ -405,8 +392,8 @@ func drawOLDSnake() () {
 		}
 
 		drawBall(
-			tail.x + xSpan * i32.f32(j), 
-			tail.y + ySpan * i32.f32(j), 
+			tX + xSpan * i32.f32(j), 
+			tY + ySpan * i32.f32(j), 
 			radius,
 			1.0,
 			1.0,
@@ -414,6 +401,16 @@ func drawOLDSnake() () {
 
 		radius += radiusIncrement
 	}
+
+
+
+
+
+
+
+
+	// tail		0.025, //radius
+	// head		0.05,  //radius
 }
 
 
