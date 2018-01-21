@@ -365,20 +365,24 @@ func draw() () {
 func drawSnake() () {
 	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
 	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
+	
+	// tail 
+	tX := []f32.read(entity.X, 0) - xOff
+	tY := []f32.read(entity.Y, 0) - yOff
+	
+	// head
+	hX := []f32.read(entity.X, 0) + xOff
+	hY := []f32.read(entity.Y, 0) + yOff
 		
 	// tail
-	drawBall(
-		[]f32.read(entity.X, 0) - xOff, 
-		[]f32.read(entity.Y, 0) - yOff, 
+	drawBall(tX, tY,
 		0.025, //radius
 		1.0,
 		1.0,
 		1.0)
 
 	// head
-	drawBall(
-		[]f32.read(entity.X, 0) + xOff, 
-		[]f32.read(entity.Y, 0) + yOff, 
+	drawBall(hX, hY,
 		0.05, //radius
 		1.0,
 		1.0,

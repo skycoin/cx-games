@@ -129,9 +129,12 @@ func OnCursorPosEvent(window str, x f64, y f64) () {
 	//x, y := glfw.GetCursorPos("window")
 	//str.print("mouse cursor at:")
 
-	deltaX := x - prevMouseX
-	deltaY := y - prevMouseY
-	game.AdjustSnakeAimAndSize(deltaX, deltaY)
+	if prevMouseX != 0.0D && prevMouseY != 0.0D {
+		deltaX := x - prevMouseX
+		deltaY := y - prevMouseY
+		game.AdjustSnakeAimAndSize(deltaX, deltaY)
+	}
+	
 	prevMouseX = x
 	prevMouseY = y
 }

@@ -40,8 +40,8 @@ func Init() () {
 
 var divisor f64 = 1000.0D
 func AdjustSnakeAimAndSize(deltaX f64, deltaY f64) () {
-	CurrSnakeAim    += (deltaX / divisor * 2.0D)
-	CurrSnakeExtent += (deltaY / divisor)
+	CurrSnakeAim    -= (deltaX / divisor * 2.0D)
+	CurrSnakeExtent -= (deltaY / divisor)
 
 	if CurrSnakeExtent > MaxSnakeExtent {
 		CurrSnakeExtent = MaxSnakeExtent
@@ -51,6 +51,6 @@ func AdjustSnakeAimAndSize(deltaX f64, deltaY f64) () {
 		CurrSnakeExtent = MinSnakeExtent
 	}
 
-	str.print(str.concat("CurrSnakeAim: ", f64.str(CurrSnakeAim)))
-	str.print(str.concat("CurrSnakeExtent: ", f64.str(CurrSnakeExtent)))
+	//str.print(str.concat("CurrSnakeAim: ", f64.str(CurrSnakeAim)))
+	//str.print(str.concat("CurrSnakeExtent: ", f64.str(CurrSnakeExtent)))
 }
