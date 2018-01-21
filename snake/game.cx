@@ -3,8 +3,8 @@ package game
 
 
 var Name str = "  S  N  A  K  E  "
-var Width i32 = 1600
-var Height i32 = 900
+var Width i32 = 1280
+var Height i32 = 720
 var ScreenBoundsTop f32
 var ScreenBoundsRight f32
 var ScreenBoundsBottom f32
@@ -13,6 +13,8 @@ var ScreenBoundsLeft f32
 var AsteroidVelocityGrain f32 = 0.0002
 var MinSnakeLength f32 = 0.2
 var MaxSnakeLength f32 = 0.9
+var CurrSnakeExtent f64 = 0.275D
+var CurrSnakeAim f64 = 0.0D
 
 type Rect struct {
 	Top f32

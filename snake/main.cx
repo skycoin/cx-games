@@ -85,7 +85,7 @@ func main () () {
 
 	for !glfw.ShouldClose("window") {
 		bufferWidth, bufferHeight := glfw.GetFramebufferSize("window")
-		ratio = f32.div(i32.f32(bufferWidth), i32.f32(bufferHeight))
+		ratio = i32.f32(bufferWidth) / i32.f32(bufferHeight)
 
 		//gl.Clear(gl.COLOR_BUFFER_BIT) // original bouncing-ball sample
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -94,7 +94,7 @@ func main () () {
 		
 		gl.MatrixMode(gl.PROJECTION)
 		gl.LoadIdentity()
-		gl.Ortho(f32.mul(ratio, -1.0), ratio, -1.0, 1.0, 1.0, -1.0)
+		gl.Ortho(ratio * -1.0, ratio, -1.0, 1.0, 1.0, -1.0)
 		gl.MatrixMode(gl.MODELVIEW)
 
 		//respondToCollisions() // ATM, just the left, right, & bottom edge of screen
@@ -102,8 +102,6 @@ func main () () {
 		entity.Update()
 		draw()
 
-
-		
 		glfw.PollEvents()
 		glfw.SwapBuffers("window")
 	}
@@ -121,11 +119,24 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 }
 
 
+var prevMouseX f64
+var prevMouseY f64
 func onCursorPosEvent(window str, x f64, y f64) () {
 	//x, y := glfw.GetCursorPos("window")
-	str.print("mmmouse cursor at:")
-	str.print(str.concat("x: ", f64.str(x)))
-	str.print(str.concat("y: ", f64.str(y)))
+	//str.print("mouse cursor at:")
+
+	deltaX := x - prevMouseX
+	deltaY := y - prevMouseY
+	blar := game.CurrSnakeAim + deltaX
+	game.CurrSnakeAim = blar
+	str.print(str.concat("blar: ", f64.str(blar)))
+	game.CurrSnakeExtent += deltaY// / 10.0D
+
+	str.print(str.concat("game.CurrSnakeAim: ", f64.str(game.CurrSnakeAim)))
+	str.print(str.concat("game.CurrSnakeExtent: ", f64.str(game.CurrSnakeExtent)))
+
+	prevMouseX = x
+	prevMouseY = y
 }
 
 
@@ -357,6 +368,28 @@ func rampDownToStop(vel f32) (out f32) {
 
 
 func draw() () {
+	drawOLDSnake()
+	drawSnake()
+	drawEntities()
+	drawText()
+}
+
+
+func drawSnake() () {
+	xOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim))
+	yOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim)) 
+		
+		drawBall(
+			[]f32.read(entity.X, 0) + xOff, 
+			[]f32.read(entity.Y, 0) + yOff, 
+			0.1, //radius
+			1.0,
+			1.0,
+			1.0)
+}
+
+
+func drawOLDSnake() () {
 	numSegments := 6
 	radius := tail.radius
 	radiusIncrement := (head.radius - tail.radius) * 0.7 / i32.f32(numSegments) 
@@ -380,9 +413,6 @@ func draw() () {
 
 		radius += radiusIncrement
 	}
-
-	drawEntities()
-	drawText()
 }
 
 

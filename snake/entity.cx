@@ -40,6 +40,14 @@ func Init() () {
 		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.Height + 1)) * pixelSpanY
 		vx := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
 		vy := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
+
+		if i == 0 {
+			x = 0.0
+			y = 0.0
+			vx = 0.0
+			vy = 0.0
+		}
+
 		SpawnEntity(x, y, vx, vy, 0.016, 0.0D)
 	}
 }
@@ -92,15 +100,16 @@ func Update() () {
 func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f64) () {
 	spawnNew := true
 
-	for i := 0; i < []f32.len(X); i++ {
+	// reserving 0 for player's snake (all other slots up for recycling)
+	for i := 1; i < []f32.len(X); i++ {
 		if []bool.read(Dead, i) == true {
 			[]bool.write(Dead, i, false)
-			[]f32.write(X, x)
-			[]f32.write(Y, y)
-			[]f32.write(VelX, velX)
-			[]f32.write(VelY, velY)
-			[]f32.write(Rad, rad)
-			[]f32.write(Expiry, expiry)
+			[]f32.write(X, i, x)
+			[]f32.write(Y, i, y)
+			[]f32.write(VelX, i, velX)
+			[]f32.write(VelY, i, velY)
+			[]f32.write(Rad, i, rad)
+			[]f32.write(Expiry, i, expiry)
 			spawnNew = false
 			// set color?
 		}
