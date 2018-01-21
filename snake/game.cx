@@ -54,3 +54,11 @@ func AdjustSnakeAimAndSize(deltaX f64, deltaY f64) () {
 	//str.print(str.concat("CurrSnakeAim: ", f64.str(CurrSnakeAim)))
 	//str.print(str.concat("CurrSnakeExtent: ", f64.str(CurrSnakeExtent)))
 }
+
+
+func GetDistance(aX f32, aY f32, bX f32, bY f32) (out f32) {
+	xOff := bX - aX
+	yOff := bY - aY
+	return f32.pow((xOff ** 2.0) + (yOff ** 2.0), 0.5)
+}
+

@@ -267,28 +267,6 @@ func updateSnake() () {
 }
 
 
-var snakeLength f32 // current length
-func setSnakeLength() () {
-	// figure head offset from tail 
-	xOff := head.x - tail.x
-	yOff := head.y - tail.y
-	snakeLength = f32.pow((xOff ** 2.0) + (yOff ** 2.0), 0.5)
-}
-
-
-func shouldMirrorMoveOnOtherEnd() (out bool) {
-	if snakeLength > game.MaxSnakeLength {
-		return true
-	}
-
-	if snakeLength < game.MinSnakeLength {
-		return true
-	}
-
-	return false
-}
-
-
 func boundedDecrease(vel f32) (out f32) {
 	vel -= velocityInc
 
@@ -373,21 +351,21 @@ func drawSnake() () {
 	hX := []f32.read(entity.X, 0) + xOff
 	hY := []f32.read(entity.Y, 0) + yOff
 		
-	
+	// draw line connecting head to tail	
 
 
 
 
-	numSegments := 6
+	numBodySpheres := 6
 	radius := tail.radius
-	radiusIncrement := (head.radius - tail.radius) * 0.7 / i32.f32(numSegments) 
+	radiusIncrement := (head.radius - tail.radius) * 0.7 / i32.f32(numBodySpheres) 
 	hoftX /* head offset from tail */ := hX - tX
 	hoftY /* head offset from tail */ := hY - tY
-	xSpan /* between segments */ := hoftX / i32.f32(numSegments)
-	ySpan /* between segments */ := hoftY / i32.f32(numSegments)
+	xSpan /* between segments */ := hoftX / i32.f32(numBodySpheres)
+	ySpan /* between segments */ := hoftY / i32.f32(numBodySpheres)
 
-	for j := 0; j <= numSegments; j++ {
-		if j == numSegments {
+	for j := 0; j <= numBodySpheres; j++ {
+		if j == numBodySpheres {
 			radius = head.radius
 		}
 
