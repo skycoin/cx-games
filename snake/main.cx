@@ -162,11 +162,13 @@ var head Ball
 
 func Shoot() () {
 	fraction := 0.1
+	x := []f32.read(entity.X, 0)
+	y := []f32.read(entity.Y, 0) 
+	velX := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
+	velY := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim))
 
-	entity.SpawnEntity(head.x, head.y, 
-		fraction * (head.x - tail.x),
-		fraction * (head.y - tail.y),
-		0.01, // radius
+	entity.SpawnEntity(x, y, velX, velY,
+		0.015, // radius
 		glfw.GetTime() + 0.5D) // expiry
 }
 
@@ -364,13 +366,23 @@ func drawSnake() () {
 	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
 	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
 		
-		drawBall(
-			[]f32.read(entity.X, 0) + xOff, 
-			[]f32.read(entity.Y, 0) + yOff, 
-			0.1, //radius
-			1.0,
-			1.0,
-			1.0)
+	// tail
+	drawBall(
+		[]f32.read(entity.X, 0) - xOff, 
+		[]f32.read(entity.Y, 0) - yOff, 
+		0.025, //radius
+		1.0,
+		1.0,
+		1.0)
+
+	// head
+	drawBall(
+		[]f32.read(entity.X, 0) + xOff, 
+		[]f32.read(entity.Y, 0) + yOff, 
+		0.05, //radius
+		1.0,
+		1.0,
+		1.0)
 }
 
 

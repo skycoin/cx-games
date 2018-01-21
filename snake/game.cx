@@ -11,8 +11,8 @@ var ScreenBoundsBottom f32
 var ScreenBoundsLeft f32
 
 var AsteroidVelocityGrain f32 = 0.0002
-var MinSnakeLength f32 = 0.2
-var MaxSnakeLength f32 = 0.9
+var MinSnakeExtent f64 = 0.1D
+var MaxSnakeExtent f64 = 0.5D
 var CurrSnakeExtent f64 = 0.275D
 var CurrSnakeAim f64 = 0.0D
 
@@ -40,8 +40,16 @@ func Init() () {
 
 var divisor f64 = 1000.0D
 func AdjustSnakeAimAndSize(deltaX f64, deltaY f64) () {
-	CurrSnakeAim    += (deltaX / divisor)
+	CurrSnakeAim    += (deltaX / divisor * 2.0D)
 	CurrSnakeExtent += (deltaY / divisor)
+
+	if CurrSnakeExtent > MaxSnakeExtent {
+		CurrSnakeExtent = MaxSnakeExtent
+	}
+
+	if CurrSnakeExtent < MinSnakeExtent {
+		CurrSnakeExtent = MinSnakeExtent
+	}
 
 	str.print(str.concat("CurrSnakeAim: ", f64.str(CurrSnakeAim)))
 	str.print(str.concat("CurrSnakeExtent: ", f64.str(CurrSnakeExtent)))
