@@ -14,26 +14,8 @@ var dubPi f32
 
 func main () () {
 	dubPi = 2.0 * 3.141592654
-	posVelocity := 0.02
-	negVelocity := -0.02
 
-	tail = new Ball{
-		radius: 0.02,
-		x: -0.1,
-		y: -0.1,
-		vx: negVelocity,
-		vy: negVelocity,
-		gravity: 0.01
-	}
 
-	head = new Ball{
-		radius: 0.07,
-		x: 0.2,
-		y: 0.1,
-		vx: posVelocity,
-		vy: posVelocity,
-		gravity: 0.01
-	}
 
 	game.Init()
 	entity.Init()
@@ -146,19 +128,6 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 
 
 //game
-type Ball struct {
-	x f32
-	y f32
-	vx f32
-	vy f32
-	gravity f32
-	radius f32
-}
-
-var tail Ball
-var head Ball
-
-
 
 func Shoot() () {
 	fraction := 0.1
@@ -173,29 +142,10 @@ func Shoot() () {
 }
 
 
-func respondToCollisions() () {
-	if tail.x + tail.radius <= -1.0 {
-		tail.vx += tail.gravity
-	} 
-
-	if tail.x + tail.radius >= 1.0 {
-		tail.vx -= tail.gravity
-	}
-
-	if tail.y + tail.radius <= -1.0 {
-		tail.vy = f32.abs(tail.vy)
-	} else {
-		tail.vy -= tail.gravity
-	}
-}
-
-
 var velocityInc f32 = 0.001 // increment
 var maxVelocity f32 = 0.01
 var maxNegativeVelocity f32 = -0.01
 func updateSnake() () {
-	setSnakeLength()
-
 	// tail horizontal motion
 
 	if ccInput.tailMoveLeft {
@@ -301,6 +251,18 @@ func draw() () {
 
 
 func drawSnake() () {
+	// ***** HERE IS THE GENERAL IDEA *****
+	// (ACTUAL DETAILS ARE LOSSY BECAUSE WE DON'T NEED A PRECISE AMOUNT OF SPHERE OVERLAPPING)
+	
+	// start with tip of tail (drawn at minimum size), then space out the
+	// remaining spheres (increasing in size as we progress to the head) 
+	// overlapping them by approximately half their radius
+	
+	/* progress along snake length */
+	pasl := 0.0
+	/* max progress */
+	mp := f64.f32(game.CurrSnakeExtent) * 2.0
+	
 	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
 	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
 	
@@ -312,39 +274,27 @@ func drawSnake() () {
 	hX := []f32.read(entity.X, 0) + xOff
 	hY := []f32.read(entity.Y, 0) + yOff
 		
+	
 	// draw line connecting head to tail	
 
-
-
-
-	numBodySpheres := 6
-	radius := tail.radius
-	radiusIncrement := (head.radius - tail.radius) * 0.7 / i32.f32(numBodySpheres) 
+	cr := /* current */ game.TailRadius
+	radDelta /* from tail radius to increased head radius */ := game.HeadRadius - cr
 	hoftX /* head offset from tail */ := hX - tX
 	hoftY /* head offset from tail */ := hY - tY
-	xSpan /* between segments */ := hoftX / i32.f32(numBodySpheres)
-	ySpan /* between segments */ := hoftY / i32.f32(numBodySpheres)
 
-	for j := 0; j <= numBodySpheres; j++ {
-		if j == numBodySpheres {
-			radius = head.radius
-		}
+	for pasl <= mp {
+		drawBall(tX, tY, /* 0.005 */ cr, 1.0, 1.0, 1.0)
 
-		drawBall(
-			tX + xSpan * i32.f32(j), 
-			tY + ySpan * i32.f32(j), 
-			radius,
-			1.0,
-			1.0,
-			1.0)
+		fracSamp /* fractional sample point */ := pasl / mp
+		tX += fracSamp * hoftX 
+		tY += fracSamp * hoftY
+		cr += fracSamp * radDelta
 
-		radius += radiusIncrement
+
+
+		pasl += cr
+
 	}
-
-
-
-
-
 
 
 
@@ -372,25 +322,17 @@ func drawText() () {
 	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
 	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	
-	drawEntityText(tail, 0.0,   -25.0, "W")
-	drawEntityText(tail, -25.0,  25.0, "a")
-	drawEntityText(tail, 0.0,    25.0, "s")
-	drawEntityText(tail,  25.0,  25.0, "d")
-	
-	drawEntityText(head, 0.0,   -25.0, "i")
-	drawEntityText(head, -25.0,  25.0, "j")
-	drawEntityText(head, 0.0,    25.0, "k")
-	drawEntityText(head,  25.0,  25.0, "l")
+	drawEntityText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "W")
 }
 
 
-func drawEntityText(ent Ball, offsetX f32, offsetY f32, s str) () {
+func drawEntityText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
 	// text space positions 
 	midX := i32.f32(game.Width)  / 2.0
 	midY := i32.f32(game.Height) / 2.0
-	dfc /* distance from center */ := ent.x / game.ScreenBoundsRight
+	dfc /* distance from center */ := x / game.ScreenBoundsRight
 	x := offsetX + midX + midX * dfc
-	y := offsetY + i32.f32(game.Height) - (ent.y - game.ScreenBounds.Bottom) * midY
+	y := offsetY + i32.f32(game.Height) - (y - game.ScreenBounds.Bottom) * midY
 
 	gl.Color4f(0.8, 0.0, 0.8, 1.0)
 	gltext.Printf("Roboto50", x, y, s)

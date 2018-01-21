@@ -15,6 +15,8 @@ var MinSnakeExtent f64 = 0.1D
 var MaxSnakeExtent f64 = 0.5D
 var CurrSnakeExtent f64 = 0.275D
 var CurrSnakeAim f64 = 0.0D
+var TailRadius f32 = 0.02
+var HeadRadius f32 = 0.07
 
 type Rect struct {
 	Top f32

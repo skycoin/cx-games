@@ -44,8 +44,8 @@ func Init() () {
 		if i == 0 {
 			x = 0.0
 			y = 0.0
-			vx = 0.0
-			vy = 0.0
+			vx = 0.02
+			vy = 0.02
 		}
 
 		SpawnEntity(x, y, vx, vy, 0.016, 0.0D)
