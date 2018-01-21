@@ -199,15 +199,15 @@ func updateSnake() () {
 	// tail horizontal motion
 
 	if ccInput.tailMoveLeft {
-		tail.vx = boundedDecrease(tail.vx)
+		[]f32.write(entity.VelX, 0, boundedDecrease([]f32.read(entity.VelX, 0)))
 	} 
 	
 	if ccInput.tailMoveRight {
-		tail.vx = boundedIncrease(tail.vx)
+		[]f32.write(entity.VelX, 0, boundedIncrease([]f32.read(entity.VelX, 0)))
 	} 
 
 	if !ccInput.tailMoveLeft && !ccInput.tailMoveRight {
-		tail.vx = rampDownToStop(tail.vx)
+		[]f32.write(entity.VelX, 0, rampDownToStop([]f32.read(entity.VelX, 0)))
 	}
 
 
@@ -215,55 +215,16 @@ func updateSnake() () {
 	// tail vertical motion
 
 	if ccInput.tailMoveDown {
-		tail.vy = boundedDecrease(tail.vy)
+		[]f32.write(entity.VelY, 0, boundedDecrease([]f32.read(entity.VelY, 0)))
 	} 
 	
 	if ccInput.tailMoveUp {
-		tail.vy = boundedIncrease(tail.vy)
+		[]f32.write(entity.VelY, 0, boundedIncrease([]f32.read(entity.VelY, 0)))
 	} 
 
 	if !ccInput.tailMoveUp && !ccInput.tailMoveDown {
-		tail.vy = rampDownToStop(tail.vy)
+		[]f32.write(entity.VelY, 0, rampDownToStop([]f32.read(entity.VelY, 0)))
 	}
-
-
-
-	// head horizontal motion
-
-	if ccInput.headMoveLeft {
-		head.vx = boundedDecrease(head.vx)
-	} 
-	
-	if ccInput.headMoveRight {
-		head.vx = boundedIncrease(head.vx)
-	} 
-
-	if !ccInput.headMoveLeft && !ccInput.headMoveRight {
-		head.vx = rampDownToStop(head.vx)
-	}
-
-
-
-	// head vertical motion
-
-	if ccInput.headMoveDown {
-		head.vy = boundedDecrease(head.vy)
-	} 
-	
-	if ccInput.headMoveUp {
-		head.vy = boundedIncrease(head.vy)
-	} 
-
-	if !ccInput.headMoveUp && !ccInput.headMoveDown {
-		head.vy = rampDownToStop(head.vy)
-	}
-
-
-
-	head.x += head.vx
-	head.y += head.vy
-	tail.x += tail.vx
-	tail.y += tail.vy
 }
 
 
