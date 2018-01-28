@@ -39,22 +39,7 @@ func main () () {
 
 
 
-	// font setup
-
-	wd := os.GetWorkingDirectory()
-	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
-
-	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto100", fontFile, 100, 32, 127, gltext.LeftToRight)
-	os.Close(fontFile)
-	
-	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
-	os.Close(fontFile)
-
-	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
-	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
+	setupFonts()
 
 
 
@@ -75,6 +60,7 @@ func main () () {
 }
 
 
+
 func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 	ccInput.OnKeyEvent(window, key, scancode, action, mods)
 }
@@ -82,7 +68,7 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 
 func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 	if action == glfw.Press {
-		Shoot()
+		entity.Shoot(0)
 	}
 }
 
@@ -91,6 +77,24 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 	ccInput.OnCursorPosEvent(window, x, y)
 }
 
+
+
+func setupFonts() () {
+	wd := os.GetWorkingDirectory()
+	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
+
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto100", fontFile, 100, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+	
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+
+	gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.LESS)
+	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
+}
 
 
 func pre() () { // per frame boilerplate 
@@ -132,19 +136,6 @@ func post() () { // per frame boilerplate
 
 
 
-//game
-
-func Shoot() () {
-	fraction := 0.1
-	x := []f32.read(entity.X, 0)
-	y := []f32.read(entity.Y, 0) 
-	velX := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
-	velY := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim))
-
-	entity.SpawnEntity(x, y, velX, velY,
-		0.015, // radius
-		glfw.GetTime() + 0.5D) // expiry
-}
 
 
 
@@ -164,12 +155,7 @@ func Shoot() () {
 
 
 
-
-
-
-
-
-
+// app drawing 
 
 func draw() () {
 	drawSnake()

@@ -107,6 +107,20 @@ func Update() () {
 }
 
 
+func Shoot(index i32) () {
+	fraction := 0.05D
+
+	x := []f32.read(X, index)
+	y := []f32.read(Y, index) 
+	velX := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim) * fraction)
+	velY := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim) * fraction)
+
+	SpawnEntity(x, y, velX, velY,
+		0.015, // radius
+		glfw.GetTime() + 0.5D) // expiry
+}
+
+
 func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f64) () {
 	spawnNew := true
 
