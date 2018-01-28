@@ -1,5 +1,7 @@
 package ccInput        // "input" must be reserved?  got errors until I renamed this
 
+import "glfw"
+
 import "main"
 import "entity"
 import "game"
@@ -23,14 +25,22 @@ var tailMoveDown bool
 
 
 
-func OnMouseButtonEvent(window str, key i32, action i32, mods i32) () {
+func Init() () {
+	glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
+	glfw.SetKeyCallback("window", "onKeyEvent")
+	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
+	glfw.SetCursorPosCallback("window", "onCursorPosEvent")
+}
+
+
+func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 	if action == /* Press */ 1 {
 		entity.Shoot(0)
 	}
 }
 
 
-func OnKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
+func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 	//action == 2, is an autorepeat event, generated for keys that are held longer than a second
 
 	if key == GLFW_KEY_5 {
@@ -136,7 +146,7 @@ func SetSnakeVelocity() () {
 
 var prevMouseX f64
 var prevMouseY f64
-func OnCursorPosEvent(window str, x f64, y f64) () {
+func onCursorPosEvent(window str, x f64, y f64) () {
 	//x, y := glfw.GetCursorPos("window")
 	//str.print("mouse cursor at:")
 

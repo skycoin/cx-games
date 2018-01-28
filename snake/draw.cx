@@ -16,6 +16,7 @@ var dubPi f32
 func Init() () {
 	dubPi = 2.0 * 3.141592654
 	str.print("--- draw.Init()")
+	setupFonts()
 }
 
 
@@ -26,7 +27,7 @@ func All() () {
 }
 
 
-func SetupFonts() () {
+func setupFonts() () {
 	wd := os.GetWorkingDirectory()
 	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
 

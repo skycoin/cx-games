@@ -10,11 +10,9 @@ import "game"
 
 
 func main () () {
-	draw.Init()
-	game.Init()
-
 	setupGL()
-	draw.SetupFonts()
+	game.Init()
+	draw.Init()
 
 
 
@@ -31,32 +29,11 @@ func main () () {
 
 
 
-func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
-	ccInput.OnKeyEvent(window, key, scancode, action, mods)
-}
-
-
-func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
-	ccInput.OnMouseButtonEvent(window, key, action, mods)
-}
-
-
-func onCursorPosEvent(window str, x f64, y f64) () {
-	ccInput.OnCursorPosEvent(window, x, y)
-}
-
-
-
 func setupGL() () {
 	glfw.Init()
 	glfw.CreateWindow("window", game.Width, game.Height, game.Name)
 	glfw.MakeContextCurrent("window")
-	
-	glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
-	glfw.SetKeyCallback("window", "onKeyEvent")
-	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
-	glfw.SetCursorPosCallback("window", "onCursorPosEvent")
-	
+	ccInput.Init()
 	gl.Init()
 	gl.LinkProgram(gl.CreateProgram())
 }
@@ -77,7 +54,6 @@ func pre() () { // per frame boilerplate
 	gl.Ortho(ratio * -1.0, ratio, -1.0, 1.0, 1.0, -1.0)
 	gl.MatrixMode(gl.MODELVIEW)
 }
-
 
 
 func post() () { // per frame boilerplate 
