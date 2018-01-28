@@ -1,5 +1,8 @@
 package game
 
+import "ccInput"
+import "entity"
+
 
 
 var Name str = "  S  N  A  K  E  "
@@ -10,7 +13,7 @@ var ScreenBoundsRight f32
 var ScreenBoundsBottom f32
 var ScreenBoundsLeft f32
 
-var AsteroidVelocityGrain f32 = 0.0002
+var AsteroidVelocityGrain f32 = 0.00002
 var MinSnakeExtent f64 = 0.1D
 var MaxSnakeExtent f64 = 0.5D
 var CurrSnakeExtent f64 = 0.275D
@@ -63,4 +66,23 @@ func GetDistance(aX f32, aY f32, bX f32, bY f32) (out f32) {
 	yOff := bY - aY
 	return f32.pow((xOff ** 2.0) + (yOff ** 2.0), 0.5)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+func Update() () {
+	ccInput.SetSnakeVelocity()
+	entity.Update()
+}
+
 

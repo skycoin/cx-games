@@ -62,30 +62,15 @@ func main () () {
 
 
 
-
-	var ratio f32
-
+	// update loop
+	
 	for !glfw.ShouldClose("window") {
-		bufferWidth, bufferHeight := glfw.GetFramebufferSize("window")
-		ratio = i32.f32(bufferWidth) / i32.f32(bufferHeight)
-
-		//gl.Clear(gl.COLOR_BUFFER_BIT) // original bouncing-ball sample
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-
-		//gl.UseProgram(program)
+		pre()
 		
-		gl.MatrixMode(gl.PROJECTION)
-		gl.LoadIdentity()
-		gl.Ortho(ratio * -1.0, ratio, -1.0, 1.0, 1.0, -1.0)
-		gl.MatrixMode(gl.MODELVIEW)
-
-		//respondToCollisions() // ATM, just the left, right, & bottom edge of screen
-		updateSnake()
-		entity.Update()
+		game.Update()
 		draw()
-
-		glfw.PollEvents()
-		glfw.SwapBuffers("window")
+ 		
+ 		post()
 	}
 }
 
@@ -108,8 +93,28 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 
 
 
+func pre() () { // per frame boilerplate 
+	w, h := glfw.GetFramebufferSize("window")
+	ratio := i32.f32(w) / i32.f32(h)
+
+	// original sample lacked 2nd | param 
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT) 
+
+	// original sample 
+	// gl.UseProgram(program)
+	
+	gl.MatrixMode(gl.PROJECTION)
+	gl.LoadIdentity()
+	gl.Ortho(ratio * -1.0, ratio, -1.0, 1.0, 1.0, -1.0)
+	gl.MatrixMode(gl.MODELVIEW)
+}
 
 
+
+func post() () { // per frame boilerplate 
+	glfw.PollEvents()
+	glfw.SwapBuffers("window")
+}
 
 
 
@@ -142,83 +147,6 @@ func Shoot() () {
 }
 
 
-var velocityInc f32 = 0.001 // increment
-var maxVelocity f32 = 0.01
-var maxNegativeVelocity f32 = -0.01
-func updateSnake() () {
-	// tail horizontal motion
-
-	if ccInput.tailMoveLeft {
-		[]f32.write(entity.VelX, 0, boundedDecrease([]f32.read(entity.VelX, 0)))
-	} 
-	
-	if ccInput.tailMoveRight {
-		[]f32.write(entity.VelX, 0, boundedIncrease([]f32.read(entity.VelX, 0)))
-	} 
-
-	if !ccInput.tailMoveLeft && !ccInput.tailMoveRight {
-		[]f32.write(entity.VelX, 0, rampDownToStop([]f32.read(entity.VelX, 0)))
-	}
-
-
-
-	// tail vertical motion
-
-	if ccInput.tailMoveDown {
-		[]f32.write(entity.VelY, 0, boundedDecrease([]f32.read(entity.VelY, 0)))
-	} 
-	
-	if ccInput.tailMoveUp {
-		[]f32.write(entity.VelY, 0, boundedIncrease([]f32.read(entity.VelY, 0)))
-	} 
-
-	if !ccInput.tailMoveUp && !ccInput.tailMoveDown {
-		[]f32.write(entity.VelY, 0, rampDownToStop([]f32.read(entity.VelY, 0)))
-	}
-}
-
-
-func boundedDecrease(vel f32) (out f32) {
-	vel -= velocityInc
-
-	if vel < maxNegativeVelocity {
-		vel = maxNegativeVelocity
-	}
-
-	return vel
-}
-
-
-func boundedIncrease(vel f32) (out f32) {
-	vel += velocityInc
-
-	if vel > maxVelocity {
-		vel = maxVelocity
-	}
-
-	return vel
-}
-
-
-func rampDownToStop(vel f32) (out f32) {
-	if vel > 0.0 {
-		vel -= velocityInc
-
-		if vel < 0.0 {
-			vel = 0.0
-		}
-	}
-
-	if vel < 0.0 {
-		vel += velocityInc
-
-		if vel > 0.0 {
-			vel = 0.0
-		}
-	}
-
-	return vel
-}
 
 
 
@@ -251,12 +179,10 @@ func draw() () {
 
 
 func drawSnake() () {
-	// ***** HERE IS THE GENERAL IDEA *****
-	// (ACTUAL DETAILS ARE LOSSY BECAUSE WE DON'T NEED A PRECISE AMOUNT OF SPHERE OVERLAPPING)
-	
-	// start with tip of tail (drawn at minimum size), then space out the
-	// remaining spheres (increasing in size as we progress to the head) 
-	// overlapping them by approximately half their radius
+	// start with tip of tail (drawn at minimum size), 
+	// plot out the remaining spheres.
+	// overlap them by approximately half their radius.
+	// (+) resize as we go towards head. 
 	
 	/* progress along snake length */
 	pasl := 0.0
@@ -278,7 +204,7 @@ func drawSnake() () {
 	// draw line connecting head to tail	
 
 	cr := /* current */ game.TailRadius
-	radDelta /* from tail radius to increased head radius */ := game.HeadRadius - cr
+	hro /* head radius offset (to tail) */    := game.HeadRadius - cr
 	hoftX /* head offset from tail */ := hX - tX
 	hoftY /* head offset from tail */ := hY - tY
 
@@ -288,7 +214,7 @@ func drawSnake() () {
 		fracSamp /* fractional sample point */ := pasl / mp
 		tX += fracSamp * hoftX 
 		tY += fracSamp * hoftY
-		cr += fracSamp * radDelta
+		cr += fracSamp * hro
 
 
 

@@ -9,21 +9,13 @@ import "game"
 var GLFW_KEY_5     i32 = 53
 var GLFW_KEY_SPACE i32 = 32
 
+// directions 
 var	GLFW_KEY_A i32 = 65
 var	GLFW_KEY_D i32 = 68
 var	GLFW_KEY_W i32 = 87
 var	GLFW_KEY_S i32 = 83
 
-var	GLFW_KEY_I i32 = 73
-var GLFW_KEY_J i32 = 74
-var GLFW_KEY_K i32 = 75
-var GLFW_KEY_L i32 = 76
-
-var headMoveLeft bool
-var headMoveRight bool
-var headMoveUp bool
-var headMoveDown bool
-
+// move state 
 var tailMoveLeft bool
 var tailMoveRight bool
 var tailMoveUp bool
@@ -52,45 +44,25 @@ func OnKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 		// snake tail motion 
 
 		if key == GLFW_KEY_A {
-			tailMoveLeft = ccInput.GetMoveStatus(action, key)
+			tailMoveLeft = getMoveStatus(action, key)
 		}
 
 		if key == GLFW_KEY_D {
-			tailMoveRight = ccInput.GetMoveStatus(action, key)
+			tailMoveRight = getMoveStatus(action, key)
 		}
 
 		if key == GLFW_KEY_W {
-			tailMoveUp = ccInput.GetMoveStatus(action, key)
+			tailMoveUp = getMoveStatus(action, key)
 		}
 
 		if key == GLFW_KEY_S {
-			tailMoveDown = ccInput.GetMoveStatus(action, key)
-		}
-
-
-
-		// snake head motion 
-
-		if key == GLFW_KEY_J {
-			headMoveLeft = ccInput.GetMoveStatus(action, key)
-		}
-
-		if key == GLFW_KEY_L {
-			headMoveRight = ccInput.GetMoveStatus(action, key)
-		}
-
-		if key == GLFW_KEY_I {
-			headMoveUp = ccInput.GetMoveStatus(action, key)
-		}
-
-		if key == GLFW_KEY_K {
-			headMoveDown = ccInput.GetMoveStatus(action, key)
+			tailMoveDown = getMoveStatus(action, key)
 		}
 	}
 }
 
 
-func GetMoveStatus(action i32, key i32) (out bool) {
+func getMoveStatus(action i32, key i32) (out bool) {
 	if /* release */ action == 0 {
 		return false
 	} else {
@@ -99,6 +71,38 @@ func GetMoveStatus(action i32, key i32) (out bool) {
 }
 
 
+func SetSnakeVelocity() () {
+	// horizontal motion
+
+	if tailMoveLeft {
+		entity.SubtractVelocity(0, true)
+	} else {
+		entity.SquishVelocity(0, true)
+		goto verticalMotion
+	}
+	
+	if tailMoveRight {
+		entity.AddVelocity(0, true)
+	} else { 
+		entity.SquishVelocity(0, true)
+	}
+
+
+
+	verticalMotion:
+
+	if tailMoveDown {
+		entity.SubtractVelocity(0, false)
+	} 
+	
+	if tailMoveUp {
+		entity.AddVelocity(0, false)
+	} 
+
+	if !tailMoveUp && !tailMoveDown {
+		entity.SquishVelocity(0, false)
+	}
+}
 
 
 

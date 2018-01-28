@@ -3,6 +3,8 @@ import "game"
 
 
 
+var mm f32 // movement multiplier 
+var velocityInc f32
 var pixelSpanX f32
 var pixelSpanY f32
 var gradientSpan f32
@@ -44,8 +46,8 @@ func Init() () {
 		if i == 0 {
 			x = 0.0
 			y = 0.0
-			vx = 0.02
-			vy = 0.02
+			vx = 0.005
+			vy = 0.005
 		}
 
 		SpawnEntity(x, y, vx, vy, 0.016, 0.0D)
@@ -53,11 +55,17 @@ func Init() () {
 }
 
 
+var prevFrame f64
 func Update() () {
+ 	currFrame  := glfw.GetTime()
+ 	deltaFrame := f64.f32(currFrame - prevFrame) 
+ 	mm          = deltaFrame * 200.0
+ 	velocityInc = deltaFrame / 50.0
+
 	for i := 0; i < []f32.len(X); i++ {
 		if []bool.read(Dead, i) == false {
 			if []f64.read(Expiry, i) != 0.0D && 
-				[]f64.read(Expiry, i) < glfw.GetTime() {
+				[]f64.read(Expiry, i) < currFrame {
 
 				str.print("deadinating bullet")
 				[]bool.write(Dead, i, true) 
@@ -69,8 +77,8 @@ func Update() () {
 			vy := []f32.read(VelY, i)
 
 			if /* moving */ vx != 0.0 || vy != 0.0 {
-				x := []f32.read(X, i) + vx
-				y := []f32.read(Y, i) + vy
+				x := []f32.read(X, i) + vx * mm
+				y := []f32.read(Y, i) + vy * mm
 
 				// teleport objects to the opposite edge when they leave the screen
 				if x < game.ScreenBoundsLeft {
@@ -94,6 +102,8 @@ func Update() () {
 			}
 		}
 	}
+
+	prevFrame = currFrame
 }
 
 
@@ -131,4 +141,88 @@ func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f64) () {
 		Green = []f32.append(Green, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 		Blue =  []f32.append(Blue, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)	
 	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+var maxVelocity f32 = 0.01
+var maxNegativeVelocity f32 = -0.01
+
+func AddVelocity(index i32, x bool) () {
+	if x {
+		[]f32.write(VelX, index, boundedIncrease([]f32.read(VelX, index)))
+	} else { // y
+		[]f32.write(VelY, index, boundedIncrease([]f32.read(VelY, index)))
+	}
+}
+
+func SubtractVelocity(index i32, x bool) () {
+	if x {
+		[]f32.write(VelX, index, boundedDecrease([]f32.read(VelX, index)))
+	} else { // y
+		[]f32.write(VelY, index, boundedDecrease([]f32.read(VelY, index)))
+	}
+}
+
+
+func SquishVelocity(index i32, x bool) () {
+	if x {
+		[]f32.write(VelX, 0, rampDownToStop([]f32.read(VelX, 0)))
+	} else { // y 
+		[]f32.write(VelY, 0, rampDownToStop([]f32.read(VelY, 0)))
+	}
+}
+
+
+func boundedDecrease(vel f32) (out f32) {
+	vel -= velocityInc
+
+	if vel < maxNegativeVelocity {
+		vel = maxNegativeVelocity
+	}
+
+	return vel
+}
+
+
+func boundedIncrease(vel f32) (out f32) {
+	vel += velocityInc
+
+	if vel > maxVelocity {
+		vel = maxVelocity
+	}
+
+	return vel
+}
+
+
+func rampDownToStop(vel f32) (out f32) {
+	/* multiplier */ m := 2.0
+
+	if vel > 0.0 { // increasing value
+		vel -= velocityInc * m
+
+		if vel < 0.0 {
+			vel = 0.0
+		}
+	}
+
+	if vel < 0.0 { // decreasing value
+		vel += velocityInc * m
+
+		if vel > 0.0 {
+			vel = 0.0
+		}
+	}
+
+	return vel
 }
