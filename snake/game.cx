@@ -44,6 +44,12 @@ func Init() () {
 }
 
 
+func Update() () {
+	ccInput.SetSnakeVelocity()
+	entity.Update()
+}
+
+
 
 var divisor f64 = 1000.0D
 func AdjustSnakeAimAndSize(deltaX f64, deltaY f64) () {
@@ -68,23 +74,3 @@ func GetDistance(aX f32, aY f32, bX f32, bY f32) (out f32) {
 	yOff := bY - aY
 	return f32.pow((xOff ** 2.0) + (yOff ** 2.0), 0.5)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-func Update() () {
-	ccInput.SetSnakeVelocity()
-	entity.Update()
-}
-
-

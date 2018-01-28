@@ -33,6 +33,8 @@ func Init() () {
 }
 
 
+// mouse buttons 
+
 func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 	if action == /* Press */ 1 {
 		entity.Shoot(0)
@@ -40,6 +42,26 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 }
 
 
+// mouse position
+
+var prevMouseX f64
+var prevMouseY f64
+func onCursorPosEvent(window str, x f64, y f64) () {
+	//x, y := glfw.GetCursorPos("window")
+	//str.print("mouse cursor at:")
+
+	if prevMouseX != 0.0D && prevMouseY != 0.0D {
+		deltaX := x - prevMouseX
+		deltaY := y - prevMouseY
+		game.AdjustSnakeAimAndSize(deltaX, deltaY / 7.0D)
+	}
+	
+	prevMouseX = x
+	prevMouseY = y
+}
+
+
+// keys 
 func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 	//action == 2, is an autorepeat event, generated for keys that are held longer than a second
 
@@ -88,6 +110,9 @@ func getMoveStatus(action i32, key i32) (out bool) {
 }
 
 
+
+
+
 func SetSnakeVelocity() () {
 	// horizontal motion
 
@@ -119,43 +144,4 @@ func SetSnakeVelocity() () {
 	if !tailMoveUp && !tailMoveDown {
 		entity.SquishVelocity(0, false)
 	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// mouse
-
-var prevMouseX f64
-var prevMouseY f64
-func onCursorPosEvent(window str, x f64, y f64) () {
-	//x, y := glfw.GetCursorPos("window")
-	//str.print("mouse cursor at:")
-
-	if prevMouseX != 0.0D && prevMouseY != 0.0D {
-		deltaX := x - prevMouseX
-		deltaY := y - prevMouseY
-		game.AdjustSnakeAimAndSize(deltaX, deltaY)
-	}
-	
-	prevMouseX = x
-	prevMouseY = y
 }
