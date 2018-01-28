@@ -39,6 +39,8 @@ func Init() () {
 	ScreenBoundsRight = horizontalScreenSpan
 	ScreenBoundsBottom = -1.0
 	ScreenBoundsLeft = 0.0 - horizontalScreenSpan
+
+	entity.Init()
 }
 
 

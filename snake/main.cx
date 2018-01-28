@@ -2,55 +2,28 @@ package main
 
 import "gl"
 import "glfw"
-import "gltext"
 
 import "ccInput"
 import "draw"
 import "game"
-import "entity"
-
 
 
 
 func main () () {
 	draw.Init()
 	game.Init()
-	entity.Init()
+
+	setupGL()
+	draw.SetupFonts()
 
 
 
-	// gl setup
-
-	glfw.Init()
-	glfw.CreateWindow("window", game.Width, game.Height, game.Name)
-	glfw.MakeContextCurrent("window")
-	
-	glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
-	glfw.SetKeyCallback("window", "onKeyEvent")
-	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
-	glfw.SetCursorPosCallback("window", "onCursorPosEvent")
-	
-	gl.Init()
-	program := gl.CreateProgram()
-	gl.LinkProgram(program)
-
-
-
-	setupFonts()
-
-
-
-
-
-
-
-	// update loop
-	
+	// update loop	
 	for !glfw.ShouldClose("window") {
 		pre()
 		
 		game.Update()
-		draw()
+		draw.All()
  		
  		post()
 	}
@@ -64,9 +37,7 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 
 
 func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
-	if action == glfw.Press {
-		entity.Shoot(0)
-	}
+	ccInput.OnMouseButtonEvent(window, key, action, mods)
 }
 
 
@@ -76,21 +47,18 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 
 
 
-func setupFonts() () {
-	wd := os.GetWorkingDirectory()
-	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
-
-	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto100", fontFile, 100, 32, 127, gltext.LeftToRight)
-	os.Close(fontFile)
+func setupGL() () {
+	glfw.Init()
+	glfw.CreateWindow("window", game.Width, game.Height, game.Name)
+	glfw.MakeContextCurrent("window")
 	
-	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
-	os.Close(fontFile)
-
-	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
-	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
+	glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
+	glfw.SetKeyCallback("window", "onKeyEvent")
+	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
+	glfw.SetCursorPosCallback("window", "onCursorPosEvent")
+	
+	gl.Init()
+	gl.LinkProgram(gl.CreateProgram())
 }
 
 
@@ -115,134 +83,4 @@ func pre() () { // per frame boilerplate
 func post() () { // per frame boilerplate 
 	glfw.PollEvents()
 	glfw.SwapBuffers("window")
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// app drawing 
-
-func draw() () {
-	drawSnake()
-	drawEntities()
-	//drawText()
-}
-
-
-func drawSnake() () {
-	// start with tip of tail (drawn at minimum size), 
-	// plot out the remaining spheres.
-	// overlap them by approximately half their radius.
-	// (+) resize as we go towards head. 
-	
-	/* progress along snake length */
-	pasl := 0.0
-	/* max progress */
-	mp := f64.f32(game.CurrSnakeExtent) * 2.0
-	
-	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
-	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
-	
-	// tail 
-	tX := []f32.read(entity.X, 0) - xOff
-	tY := []f32.read(entity.Y, 0) - yOff
-	
-	// head
-	hX := []f32.read(entity.X, 0) + xOff
-	hY := []f32.read(entity.Y, 0) + yOff
-		
-	
-	// draw line connecting head to tail	
-
-	cr := /* current */ game.TailRadius
-	hro /* head radius offset (to tail) */    := game.HeadRadius - cr
-	hoftX /* head offset from tail */ := hX - tX
-	hoftY /* head offset from tail */ := hY - tY
-
-	for pasl <= mp {
-		draw.Sphere(tX, tY, /* 0.005 */ cr, 1.0, 1.0, 1.0)
-
-		fracSamp /* fractional sample point */ := pasl / mp
-		tX += fracSamp * hoftX 
-		tY += fracSamp * hoftY
-		cr += fracSamp * hro
-
-
-
-		pasl += cr
-
-	}
-
-
-
-	// tail		0.025, //radius
-	// head		0.05,  //radius
-}
-
-
-func drawEntities() () {
-	for i := 0; i < []f32.len(entity.X); i++ {
-		if []bool.read(entity.Dead, i) == false {
-			draw.Sphere(
-				[]f32.read(entity.X, i), 
-				[]f32.read(entity.Y, i), 
-				[]f32.read(entity.Rad, i),
-				[]f32.read(entity.Red, i), 
-				[]f32.read(entity.Green, i), 
-				[]f32.read(entity.Blue, i))
-		}
-	}
-}
-
-
-func drawText() () {
-	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
-	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
-	
-	drawEntityText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "W")
-}
-
-
-func drawEntityText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
-	// text space positions 
-	midX := i32.f32(game.Width)  / 2.0
-	midY := i32.f32(game.Height) / 2.0
-	dfc /* distance from center */ := x / game.ScreenBoundsRight
-	x := offsetX + midX + midX * dfc
-	y := offsetY + i32.f32(game.Height) - (y - game.ScreenBounds.Bottom) * midY
-
-	gl.Color4f(0.8, 0.0, 0.8, 1.0)
-	gltext.Printf("Roboto50", x, y, s)
 }

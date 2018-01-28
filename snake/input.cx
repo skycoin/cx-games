@@ -23,6 +23,13 @@ var tailMoveDown bool
 
 
 
+func OnMouseButtonEvent(window str, key i32, action i32, mods i32) () {
+	if action == /* Press */ 1 {
+		entity.Shoot(0)
+	}
+}
+
+
 func OnKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 	//action == 2, is an autorepeat event, generated for keys that are held longer than a second
 

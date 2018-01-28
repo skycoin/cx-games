@@ -1,6 +1,11 @@
 package draw
+
 import "gl"
 //import "glfw"
+import "gltext"
+
+import "entity"
+import "game"
 
 
 
@@ -10,7 +15,32 @@ var dubPi f32
 
 func Init() () {
 	dubPi = 2.0 * 3.141592654
-	str.print("draw.Init()")
+	str.print("--- draw.Init()")
+}
+
+
+func All() () {
+	Snake()
+	Entities()
+	//Text()
+}
+
+
+func SetupFonts() () {
+	wd := os.GetWorkingDirectory()
+	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
+
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto100", fontFile, 100, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+	
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+
+	gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.LESS)
+	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
 }
 
 
@@ -26,4 +56,85 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 	}
 
 	gl.End()
+}
+
+
+func Snake() () {
+	// start with tip of tail (drawn at minimum size), 
+	// plot out the remaining spheres.
+	// overlap them by approximately half their radius.
+	// (+) resize as we go towards head. 
+	
+	/* progress along snake length */
+	pasl := 0.0
+	/* max progress */
+	mp := f64.f32(game.CurrSnakeExtent) * 2.0
+	
+	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
+	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
+	
+	// tail 
+	tX := []f32.read(entity.X, 0) - xOff
+	tY := []f32.read(entity.Y, 0) - yOff
+	
+	// head
+	hX := []f32.read(entity.X, 0) + xOff
+	hY := []f32.read(entity.Y, 0) + yOff
+		
+	
+	// draw line connecting head to tail	
+
+	cr := /* current */ game.TailRadius
+	hro /* head radius offset (to tail) */    := game.HeadRadius - cr
+	hoftX /* head offset from tail */ := hX - tX
+	hoftY /* head offset from tail */ := hY - tY
+
+	for pasl <= mp {
+		Sphere(tX, tY, /* 0.005 */ cr, 1.0, 1.0, 1.0)
+
+		fracSamp /* fractional sample point */ := pasl / mp
+		tX += fracSamp * hoftX 
+		tY += fracSamp * hoftY
+		cr += fracSamp * hro
+
+
+
+		pasl += cr
+	}
+}
+
+
+func Entities() () {
+	for i := 0; i < []f32.len(entity.X); i++ {
+		if []bool.read(entity.Dead, i) == false {
+			Sphere(
+				[]f32.read(entity.X, i), 
+				[]f32.read(entity.Y, i), 
+				[]f32.read(entity.Rad, i),
+				[]f32.read(entity.Red, i), 
+				[]f32.read(entity.Green, i), 
+				[]f32.read(entity.Blue, i))
+		}
+	}
+}
+
+
+func Text() () {
+	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
+	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
+	
+	EntityText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "test")
+}
+
+
+func EntityText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
+	// text space positions 
+	midX := i32.f32(game.Width)  / 2.0
+	midY := i32.f32(game.Height) / 2.0
+	dfc /* distance from center */ := x / game.ScreenBoundsRight
+	x := offsetX + midX + midX * dfc
+	y := offsetY + i32.f32(game.Height) - (y - game.ScreenBounds.Bottom) * midY
+
+	gl.Color4f(0.8, 0.0, 0.8, 1.0)
+	gltext.Printf("Roboto50", x, y, s)
 }
