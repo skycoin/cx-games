@@ -5,18 +5,15 @@ import "glfw"
 import "gltext"
 
 import "ccInput"
+import "draw"
 import "game"
 import "entity"
 
-var dubPi f32
 
 
 
 func main () () {
-	dubPi = 2.0 * 3.141592654
-
-
-
+	draw.Init()
 	game.Init()
 	entity.Init()
 
@@ -195,7 +192,7 @@ func drawSnake() () {
 	hoftY /* head offset from tail */ := hY - tY
 
 	for pasl <= mp {
-		drawBall(tX, tY, /* 0.005 */ cr, 1.0, 1.0, 1.0)
+		draw.Sphere(tX, tY, /* 0.005 */ cr, 1.0, 1.0, 1.0)
 
 		fracSamp /* fractional sample point */ := pasl / mp
 		tX += fracSamp * hoftX 
@@ -218,7 +215,7 @@ func drawSnake() () {
 func drawEntities() () {
 	for i := 0; i < []f32.len(entity.X); i++ {
 		if []bool.read(entity.Dead, i) == false {
-			drawBall(
+			draw.Sphere(
 				[]f32.read(entity.X, i), 
 				[]f32.read(entity.Y, i), 
 				[]f32.read(entity.Rad, i),
@@ -248,19 +245,4 @@ func drawEntityText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
 
 	gl.Color4f(0.8, 0.0, 0.8, 1.0)
 	gltext.Printf("Roboto50", x, y, s)
-}
-
-
-func drawBall(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
-	gl.Begin(gl.POLYGON)
-	gl.Color3f(red, green, blue)
-
-	for i := 0; i < 20; i++ {
-		finalX := x + radius * f32.cos(i32.f32(i) * dubPi / 20.0)
-		finalY := y + radius * f32.sin(i32.f32(i) * dubPi / 20.0)
-
-		gl.Vertex2f(finalX, finalY)
-	}
-
-	gl.End()
 }

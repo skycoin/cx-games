@@ -36,7 +36,7 @@ func OnKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 		// shoot 
 
 		if key == GLFW_KEY_SPACE && action == 1 {
-			main.Shoot()
+			entity.Shoot(0)
 		}
 
 

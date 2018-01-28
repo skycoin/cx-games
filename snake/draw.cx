@@ -1,0 +1,29 @@
+package draw
+import "gl"
+//import "glfw"
+
+
+
+var dubPi f32
+
+
+
+func Init() () {
+	dubPi = 2.0 * 3.141592654
+	str.print("draw.Init()")
+}
+
+
+func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
+	gl.Begin(gl.POLYGON)
+	gl.Color3f(red, green, blue)
+
+	for i := 0; i < 20; i++ {
+		finalX := x + radius * f32.cos(i32.f32(i) * dubPi / 20.0)
+		finalY := y + radius * f32.sin(i32.f32(i) * dubPi / 20.0)
+
+		gl.Vertex2f(finalX, finalY)
+	}
+
+	gl.End()
+}
