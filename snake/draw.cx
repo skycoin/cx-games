@@ -64,43 +64,54 @@ func Snake() () {
 	// start with tip of tail (drawn at minimum size), 
 	// plot out the remaining spheres.
 	// overlap them by approximately half their radius.
-	// (+) resize as we go towards head. 
+	// (+) resize them as we go towards head. 
 	
-	/* progress along snake length */
+	// progress along snake length 
 	pasl := 0.0
 	/* max progress */
 	mp := f64.f32(game.CurrSnakeExtent) * 2.0
 	
+	// offset from center 
 	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
 	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
 	
-	// tail 
+
+
+	// body sections
+
 	tX := []f32.read(entity.X, 0) - xOff
 	tY := []f32.read(entity.Y, 0) - yOff
-	
+	cr := /* current */ game.TailRadius
+
+
+
 	// head
+
 	hX := []f32.read(entity.X, 0) + xOff
 	hY := []f32.read(entity.Y, 0) + yOff
-		
 	
-	// draw line connecting head to tail	
+	// deltas/offsets from tail 
+	hOffX := hX - tX 
+	hOffY := hY - tY
+	radiusDelta := game.HeadRadius - cr
 
-	cr := /* current */ game.TailRadius
-	hro /* head radius offset (to tail) */    := game.HeadRadius - cr
-	hoftX /* head offset from tail */ := hX - tX
-	hoftY /* head offset from tail */ := hY - tY
+	Sphere(hX, hY, game.HeadRadius, 0.0, 0.0, 1.0)
+	
+
+
+	// draw body 
 
 	for pasl <= mp {
 		Sphere(tX, tY, /* 0.005 */ cr, 1.0, 1.0, 1.0)
-
-		fracSamp /* fractional sample point */ := pasl / mp
-		tX += fracSamp * hoftX 
-		tY += fracSamp * hoftY
-		cr += fracSamp * hro
-
+		fsp /* fractional sample point */ := pasl / mp
+		tX += fsp * hOffX
+		tY += fsp * hOffY
 
 
 		pasl += cr
+
+
+		cr += fsp * radiusDelta
 	}
 }
 

@@ -17,11 +17,11 @@ var	GLFW_KEY_D i32 = 68
 var	GLFW_KEY_W i32 = 87
 var	GLFW_KEY_S i32 = 83
 
-// move state 
-var tailMoveLeft bool
-var tailMoveRight bool
-var tailMoveUp bool
-var tailMoveDown bool
+// move direction 
+var moveLeft bool
+var moveRight bool
+var moveUp bool
+var moveDown bool
 
 
 
@@ -33,6 +33,7 @@ func Init() () {
 }
 
 
+
 // mouse buttons 
 
 func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
@@ -40,6 +41,7 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 		entity.Shoot(0)
 	}
 }
+
 
 
 // mouse position
@@ -53,7 +55,9 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 	if prevMouseX != 0.0D && prevMouseY != 0.0D {
 		deltaX := x - prevMouseX
 		deltaY := y - prevMouseY
-		game.AdjustSnakeAimAndSize(deltaX, deltaY / 7.0D)
+		game.AdjustSnakeAimAndSize(
+			deltaX * 1.4D, 
+			deltaY / 6.0D)
 	}
 	
 	prevMouseX = x
@@ -61,7 +65,9 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 }
 
 
-// keys 
+
+// keys
+
 func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 	//action == 2, is an autorepeat event, generated for keys that are held longer than a second
 
@@ -83,19 +89,19 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 		// snake tail motion 
 
 		if key == GLFW_KEY_A {
-			tailMoveLeft = getMoveStatus(action, key)
+			moveLeft = getMoveStatus(action, key)
 		}
 
 		if key == GLFW_KEY_D {
-			tailMoveRight = getMoveStatus(action, key)
+			moveRight = getMoveStatus(action, key)
 		}
 
 		if key == GLFW_KEY_W {
-			tailMoveUp = getMoveStatus(action, key)
+			moveUp = getMoveStatus(action, key)
 		}
 
 		if key == GLFW_KEY_S {
-			tailMoveDown = getMoveStatus(action, key)
+			moveDown = getMoveStatus(action, key)
 		}
 	}
 }
@@ -116,14 +122,14 @@ func getMoveStatus(action i32, key i32) (out bool) {
 func SetSnakeVelocity() () {
 	// horizontal motion
 
-	if tailMoveLeft {
+	if moveLeft {
 		entity.SubtractVelocity(0, true)
 	} else {
 		entity.SquishVelocity(0, true)
 		goto verticalMotion
 	}
 	
-	if tailMoveRight {
+	if moveRight {
 		entity.AddVelocity(0, true)
 	} else { 
 		entity.SquishVelocity(0, true)
@@ -133,15 +139,15 @@ func SetSnakeVelocity() () {
 
 	verticalMotion:
 
-	if tailMoveDown {
+	if moveDown {
 		entity.SubtractVelocity(0, false)
 	} 
 	
-	if tailMoveUp {
+	if moveUp {
 		entity.AddVelocity(0, false)
 	} 
 
-	if !tailMoveUp && !tailMoveDown {
+	if !moveUp && !moveDown {
 		entity.SquishVelocity(0, false)
 	}
 }

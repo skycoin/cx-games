@@ -6,20 +6,7 @@ import "entity"
 
 
 var Name str = "  S  N  A  K  E  "
-var Width i32 = 1280
-var Height i32 = 720
-var ScreenBoundsTop f32
-var ScreenBoundsRight f32
-var ScreenBoundsBottom f32
-var ScreenBoundsLeft f32
-
 var AsteroidVelocityGrain f32 = 0.00002
-var MinSnakeExtent f64 = 0.1D
-var MaxSnakeExtent f64 = 0.5D
-var CurrSnakeExtent f64 = 0.275D
-var CurrSnakeAim f64 = 0.0D
-var TailRadius f32 = 0.02
-var HeadRadius f32 = 0.07
 
 type Rect struct {
 	Top f32
@@ -28,11 +15,25 @@ type Rect struct {
 	Left f32
 }
 
+// screen 
+var Width i32 = 1280
+var Height i32 = 720
+var ScreenBoundsTop f32
+var ScreenBoundsRight f32
+var ScreenBoundsBottom f32
+var ScreenBoundsLeft f32
+
+// snake 
+var MinSnakeExtent f64 = 0.1D
+var MaxSnakeExtent f64 = 0.5D
+var CurrSnakeExtent f64 = 0.275D
+var CurrSnakeAim f64 = 0.0D
+var TailRadius f32 = 0.02
+var HeadRadius f32 = 0.07
+
 
 
 func Init() () {
-	str.print("--- game.Init()")
-
 	// FIXME: making assumptions about vertical span 
 	horizontalScreenSpan := i32.f32(Width) / i32.f32(Height)
 	ScreenBoundsTop = 1.0
@@ -41,6 +42,7 @@ func Init() () {
 	ScreenBoundsLeft = 0.0 - horizontalScreenSpan
 
 	entity.Init()
+	str.print("--- game.Init()")
 }
 
 
@@ -48,6 +50,8 @@ func Update() () {
 	ccInput.SetSnakeVelocity()
 	entity.Update()
 }
+
+
 
 
 
