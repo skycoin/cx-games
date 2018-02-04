@@ -66,10 +66,8 @@ func Snake() () {
 	// overlap them by approximately half their radius.
 	// (+) resize them as we go towards head. 
 	
-	// progress along snake length 
-	pasl := 0.0
-	/* max progress */
-	mp := f64.f32(game.CurrSnakeExtent) * 2.0
+	pasl := 0.0 // progress along snake length 
+	mp /* max progress */ := f64.f32(game.CurrSnakeExtent) * 2.0
 	
 	// offset from center 
 	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
@@ -102,10 +100,14 @@ func Snake() () {
 	// draw body 
 
 	for pasl <= mp {
-		Sphere(tX, tY, /* 0.005 */ cr, 1.0, 1.0, 1.0)
 		fsp /* fractional sample point */ := pasl / mp
-		tX += fsp * hOffX
-		tY += fsp * hOffY
+
+		Sphere(
+			tX + fsp * hOffX, 
+			tY + fsp * hOffY, 
+			/* 0.005 */ cr, 
+			1.0, 1.0, 1.0)
+
 		cr += fsp * radiusDelta
 
 

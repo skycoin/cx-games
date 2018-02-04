@@ -120,7 +120,7 @@ func getMoveStatus(action i32, key i32) (out bool) {
 
 
 func SetSnakeVelocity() () {
-	// horizontal motion
+	// horizontal 
 
 	if moveLeft {
 		entity.ForceNegativeVelocityAndBloomIt(0, true)
@@ -134,7 +134,7 @@ func SetSnakeVelocity() () {
 	
 
 
-	verticalMotion:
+	// vertical 
 
 	if moveDown {
 		entity.ForceNegativeVelocityAndBloomIt(0, false)
