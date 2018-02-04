@@ -123,12 +123,12 @@ func SetSnakeVelocity() () {
 	// horizontal motion
 
 	if moveLeft {
-		entity.NerfVelocity(0, true)
+		entity.ForceNegativeVelocityAndBloomIt(0, true)
 	} else {
 		if moveRight {
-			entity.BuffVelocity(0, true)
-		} else { 
-			entity.FadeVelocityTowards0(0, true)
+			entity.ForcePositiveVelocityAndBloomIt(0, true)
+		} else {
+			entity.SlowDownInAxis(0, true)
 		}
 	}
 	
@@ -137,14 +137,12 @@ func SetSnakeVelocity() () {
 	verticalMotion:
 
 	if moveDown {
-		entity.NerfVelocity(0, false)
-	} 
-	
-	if moveUp {
-		entity.BuffVelocity(0, false)
-	} 
-
-	if !moveUp && !moveDown {
-		entity.FadeVelocityTowards0(0, false)
+		entity.ForceNegativeVelocityAndBloomIt(0, false)
+	} else {
+		if moveUp {
+			entity.ForcePositiveVelocityAndBloomIt(0, false)
+		} else {
+			entity.SlowDownInAxis(0, false)
+		}
 	}
 }

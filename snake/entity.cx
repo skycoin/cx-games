@@ -171,7 +171,7 @@ func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f64) () {
 var maxVelocity f32 = 0.01
 var maxNegativeVelocity f32 = -0.01
 
-func BuffVelocity(index i32, inX bool) () {
+func ForcePositiveVelocityAndBloomIt(index i32, inX bool) () {
 	if inX {
 		[]f32.write(VelX, index, boundedIncrease([]f32.read(VelX, index)))
 	} else { // in y
@@ -179,7 +179,7 @@ func BuffVelocity(index i32, inX bool) () {
 	}
 }
 
-func NerfVelocity(index i32, inX bool) () {
+func ForceNegativeVelocityAndBloomIt(index i32, inX bool) () {
 	if inX {
 		[]f32.write(VelX, index, boundedDecrease([]f32.read(VelX, index)))
 	} else { // in y
@@ -188,7 +188,7 @@ func NerfVelocity(index i32, inX bool) () {
 }
 
 
-func FadeVelocityTowards0(index i32, inX bool) () {
+func SlowDownInAxis(index i32, inX bool) () {
 	if inX {
 		[]f32.write(VelX, 0, rampDownToStop([]f32.read(VelX, 0)))
 	} else { // in y 
@@ -198,6 +198,10 @@ func FadeVelocityTowards0(index i32, inX bool) () {
 
 
 func boundedDecrease(vel f32) (out f32) {
+	if vel > 0.0 {
+		vel = 0.0
+	}
+
 	vel -= velocityInc
 
 	if vel < maxNegativeVelocity {
@@ -209,6 +213,10 @@ func boundedDecrease(vel f32) (out f32) {
 
 
 func boundedIncrease(vel f32) (out f32) {
+	if vel < 0.0 {
+		vel = 0.0
+	}
+
 	vel += velocityInc
 
 	if vel > maxVelocity {
