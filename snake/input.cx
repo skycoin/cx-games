@@ -11,7 +11,7 @@ import "game"
 var GLFW_KEY_5     i32 = 53
 var GLFW_KEY_SPACE i32 = 32
 
-// directions 
+// directional keys 
 var	GLFW_KEY_A i32 = 65
 var	GLFW_KEY_D i32 = 68
 var	GLFW_KEY_W i32 = 87
@@ -123,31 +123,28 @@ func SetSnakeVelocity() () {
 	// horizontal motion
 
 	if moveLeft {
-		entity.SubtractVelocity(0, true)
+		entity.NerfVelocity(0, true)
 	} else {
-		entity.SquishVelocity(0, true)
-		goto verticalMotion
+		if moveRight {
+			entity.BuffVelocity(0, true)
+		} else { 
+			entity.FadeVelocityTowards0(0, true)
+		}
 	}
 	
-	if moveRight {
-		entity.AddVelocity(0, true)
-	} else { 
-		entity.SquishVelocity(0, true)
-	}
-
 
 
 	verticalMotion:
 
 	if moveDown {
-		entity.SubtractVelocity(0, false)
+		entity.NerfVelocity(0, false)
 	} 
 	
 	if moveUp {
-		entity.AddVelocity(0, false)
+		entity.BuffVelocity(0, false)
 	} 
 
 	if !moveUp && !moveDown {
-		entity.SquishVelocity(0, false)
+		entity.FadeVelocityTowards0(0, false)
 	}
 }

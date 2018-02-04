@@ -171,27 +171,27 @@ func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f64) () {
 var maxVelocity f32 = 0.01
 var maxNegativeVelocity f32 = -0.01
 
-func AddVelocity(index i32, x bool) () {
-	if x {
+func BuffVelocity(index i32, inX bool) () {
+	if inX {
 		[]f32.write(VelX, index, boundedIncrease([]f32.read(VelX, index)))
-	} else { // y
+	} else { // in y
 		[]f32.write(VelY, index, boundedIncrease([]f32.read(VelY, index)))
 	}
 }
 
-func SubtractVelocity(index i32, x bool) () {
-	if x {
+func NerfVelocity(index i32, inX bool) () {
+	if inX {
 		[]f32.write(VelX, index, boundedDecrease([]f32.read(VelX, index)))
-	} else { // y
+	} else { // in y
 		[]f32.write(VelY, index, boundedDecrease([]f32.read(VelY, index)))
 	}
 }
 
 
-func SquishVelocity(index i32, x bool) () {
-	if x {
+func FadeVelocityTowards0(index i32, inX bool) () {
+	if inX {
 		[]f32.write(VelX, 0, rampDownToStop([]f32.read(VelX, 0)))
-	} else { // y 
+	} else { // in y 
 		[]f32.write(VelY, 0, rampDownToStop([]f32.read(VelY, 0)))
 	}
 }

@@ -106,12 +106,12 @@ func Snake() () {
 		fsp /* fractional sample point */ := pasl / mp
 		tX += fsp * hOffX
 		tY += fsp * hOffY
+		cr += fsp * radiusDelta
 
 
 		pasl += cr
 
 
-		cr += fsp * radiusDelta
 	}
 }
 
