@@ -23,25 +23,25 @@ func Init() () {
 func All() () {
 	Snake()
 	Entities()
-	//Text()
+	Text()
 }
 
 
-func setupFonts() () {
-	wd := os.GetWorkingDirectory()
-	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
-
-	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto100", fontFile, 100, 32, 127, gltext.LeftToRight)
-	os.Close(fontFile)
-	
-	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
-	os.Close(fontFile)
-
-	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
-	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
+func Entities() () {
+	for i := 0; i < []f32.len(entity.X); i++ {
+		//BELOW LINE *SHOULD* WORK but can't seem to write to bool arrays 
+		//if []bool.read(entity.Dead, i) == false {
+		
+		if entity.IsAlive(i) {
+			Sphere(
+				[]f32.read(entity.X, i), 
+				[]f32.read(entity.Y, i), 
+				[]f32.read(entity.Rad, i),
+				[]f32.read(entity.Red, i), 
+				[]f32.read(entity.Green, i), 
+				[]f32.read(entity.Blue, i))
+		}
+	}
 }
 
 
@@ -118,26 +118,11 @@ func Snake() () {
 }
 
 
-func Entities() () {
-	for i := 0; i < []f32.len(entity.X); i++ {
-		if []bool.read(entity.Dead, i) == false {
-			Sphere(
-				[]f32.read(entity.X, i), 
-				[]f32.read(entity.Y, i), 
-				[]f32.read(entity.Rad, i),
-				[]f32.read(entity.Red, i), 
-				[]f32.read(entity.Green, i), 
-				[]f32.read(entity.Blue, i))
-		}
-	}
-}
-
-
 func Text() () {
 	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
 	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	
-	EntityText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "test")
+	EntityText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "W A S D")
 }
 
 
@@ -151,4 +136,25 @@ func EntityText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
 
 	gl.Color4f(0.8, 0.0, 0.8, 1.0)
 	gltext.Printf("Roboto50", x, y, s)
+}
+
+
+
+// private 
+
+func setupFonts() () {
+	wd := os.GetWorkingDirectory()
+	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
+
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto100", fontFile, 100, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+	
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+
+	gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.LESS)
+	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
 }

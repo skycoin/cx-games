@@ -8,6 +8,7 @@ var velocityInc f32
 var pixelSpanX f32
 var pixelSpanY f32
 var gradientSpan f32
+var currFrame f64
 
 
 
@@ -57,7 +58,7 @@ func Init() () {
 
 var prevFrame f64
 func Update() () {
- 	currFrame  := glfw.GetTime()
+ 	currFrame   = glfw.GetTime()
  	deltaFrame := f64.f32(currFrame - prevFrame) 
  	mm          = deltaFrame * 200.0
  	velocityInc = deltaFrame / 50.0
@@ -104,6 +105,17 @@ func Update() () {
 	}
 
 	prevFrame = currFrame
+}
+
+
+func IsAlive(i i32) (out bool) {
+	e := []f64.read(Expiry, i)
+
+	if e == 0.0D || e > currFrame {
+		return true
+	}
+
+	return false
 }
 
 
