@@ -14,7 +14,7 @@ var currFrame f64
 
 // entities
 
-var numEnts i32 = 3
+var numEnts i32 = 2 //4
 var X []f32
 var Y []f32
 
@@ -51,7 +51,7 @@ func Init() () {
 			vy = 0.005
 		}
 
-		SpawnEntity(x, y, vx, vy, 0.016, 0.0D)
+		SpawnEntity(x, y, vx, vy, 0.1, 0.0D)
 	}
 }
 
@@ -64,15 +64,7 @@ func Update() () {
  	velocityInc = deltaFrame / 50.0
 
 	for i := 0; i < []f32.len(X); i++ {
-		if []bool.read(Dead, i) == false {
-			if []f64.read(Expiry, i) != 0.0D && 
-				[]f64.read(Expiry, i) < currFrame {
-
-				[]bool.write(Dead, i, true) 
-				str.print("set dead to true...it is now:")
-				bool.print([]bool.read(Dead, i))
-			}
-
+		if IsAlive(i) {
 			// movement
 			vx := []f32.read(VelX, i) 
 			vy := []f32.read(VelY, i)
@@ -100,11 +92,49 @@ func Update() () {
 
 				[]f32.write(X, i, x)
 				[]f32.write(Y, i, y)
+
+				IsTouchingWillExplode(i)
 			}
 		}
 	}
 
 	prevFrame = currFrame
+}
+
+
+func IsTouchingWillExplode(moverId i32) (out bool) {
+	touching := false
+
+	for i := 0; i < []f32.len(X); i++ {
+		if IsAlive(i) && i != moverId { // don't check against self 
+			// current entity in list
+			cX := []f32.read(X, i)
+			cY := []f32.read(Y, i)
+
+			// moving entity 
+			mX := []f32.read(X, moverId)
+			mY := []f32.read(Y, moverId)
+
+			cRad := []f32.read(Rad, i)
+			mRad := []f32.read(Rad, moverId)
+			touchSpan := cRad + mRad
+			dist := game.GetDistance(cX, cY, mX, mY)
+			
+			if dist < touchSpan {
+				if moverId == 0 {
+					f32.print(dist)
+				}
+
+				touching = true
+
+				[]f64.write(Expiry, i, currFrame)
+				[]f64.write(Expiry, moverId, currFrame)
+			}
+
+		}
+	}
+
+	return touching
 }
 
 

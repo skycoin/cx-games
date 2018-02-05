@@ -28,7 +28,9 @@ func All() () {
 
 
 func Entities() () {
-	for i := 0; i < []f32.len(entity.X); i++ {
+	// skipping 0 (reserved for player entity), which has it's own draw func. 
+	// for now, all else are spheres 
+	for i := 1; i < []f32.len(entity.X); i++ {
 		//BELOW LINE *SHOULD* WORK but can't seem to write to bool arrays 
 		//if []bool.read(entity.Dead, i) == false {
 		
@@ -122,7 +124,7 @@ func Text() () {
 	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
 	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	
-	EntityText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "W A S D")
+	EntityText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "mouse + W A S D      5")
 }
 
 
