@@ -63,12 +63,12 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 
 
 func Snake() () {
-	// start with tip of tail (drawn at minimum size), 
+	// start with point A (tip of tail, for the snake) drawn at minimum size. 
 	// plot out the remaining spheres.
-	// overlap them by approximately half their radius.
-	// (+) resize them as we go towards head. 
-	
-	pasl := 0.0 // progress along snake length 
+	// overlapping them by about half their radius.
+	// resizing them as we go towards point B (final goal (head of snake) ). 
+		
+	csis := 0.0 // current spot in spectrum 
 	mp /* max progress */ := f64.f32(game.CurrSnakeExtent) * 2.0
 	
 	// offset from center 
@@ -77,11 +77,10 @@ func Snake() () {
 	
 
 
-	// body sections
+	// tail 
 
 	tX := []f32.read(entity.X, 0) - xOff
 	tY := []f32.read(entity.Y, 0) - yOff
-	cr := /* current */ game.TailRadius
 
 
 
@@ -90,10 +89,10 @@ func Snake() () {
 	hX := []f32.read(entity.X, 0) + xOff
 	hY := []f32.read(entity.Y, 0) + yOff
 	
-	// deltas/offsets from tail 
-	hOffX := hX - tX 
-	hOffY := hY - tY
-	radiusDelta := game.HeadRadius - cr
+	// point B's (snake head) deltas from point A (tail) 
+	delX := hX - tX 
+	delY := hY - tY
+	delRad := game.HeadRadius - game.TailRadius
 
 	Sphere(hX, hY, game.HeadRadius, 0.0, 0.0, 1.0)
 	
@@ -101,21 +100,17 @@ func Snake() () {
 
 	// draw body 
 
-	for pasl <= mp {
-		fsp /* fractional sample point */ := pasl / mp
+	for csis <= mp {
+		ftd /* fraction towards destination */ := csis / mp
+		cRad /* current radius */ := game.TailRadius + ftd * delRad
 
 		Sphere(
-			tX + fsp * hOffX, 
-			tY + fsp * hOffY, 
-			/* 0.005 */ cr, 
+			tX                                       + ftd * delX, 
+			tY                                       + ftd * delY, 
+			cRad, 
 			1.0, 1.0, 1.0)
 
-		cr += fsp * radiusDelta
-
-
-		pasl += cr
-
-
+		csis += cRad
 	}
 }
 

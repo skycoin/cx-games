@@ -63,13 +63,16 @@ func Update() () {
  	mm          = deltaFrame * 200.0
  	velocityInc = deltaFrame / 50.0
 
+	// per frame  
 	for i := 0; i < []f32.len(X); i++ {
+		// per relevant entity 			
 		if IsAlive(i) {
 			// movement
 			vx := []f32.read(VelX, i) 
 			vy := []f32.read(VelY, i)
 
 			if /* moving */ vx != 0.0 || vy != 0.0 {
+				// new spot 
 				x := []f32.read(X, i) + vx * mm
 				y := []f32.read(Y, i) + vy * mm
 
@@ -93,7 +96,7 @@ func Update() () {
 				[]f32.write(X, i, x)
 				[]f32.write(Y, i, y)
 
-				IsTouchingWillExplode(i)
+				IsTouching_WillExplode(i)
 			}
 		}
 	}
@@ -102,21 +105,22 @@ func Update() () {
 }
 
 
-func IsTouchingWillExplode(moverId i32) (out bool) {
+func IsTouching_WillExplode(moverId i32) (out bool) {
 	touching := false
+	// moving entity spot/radius 
+	mX := []f32.read(X, moverId)
+	mY := []f32.read(Y, moverId)
+	mRad := []f32.read(Rad, moverId)
+
 
 	for i := 0; i < []f32.len(X); i++ {
-		if IsAlive(i) && i != moverId { // don't check against self 
-			// current entity in list
+		// per relevant 
+		if IsAlive(i) && i != moverId {
+			// current entity spot/radius 
 			cX := []f32.read(X, i)
 			cY := []f32.read(Y, i)
+			cRad := []f32.read(Rad, i) // ...radius 
 
-			// moving entity 
-			mX := []f32.read(X, moverId)
-			mY := []f32.read(Y, moverId)
-
-			cRad := []f32.read(Rad, i)
-			mRad := []f32.read(Rad, moverId)
 			touchSpan := cRad + mRad
 			dist := game.GetDistance(cX, cY, mX, mY)
 			
@@ -130,7 +134,6 @@ func IsTouchingWillExplode(moverId i32) (out bool) {
 				[]f64.write(Expiry, i, currFrame)
 				[]f64.write(Expiry, moverId, currFrame)
 			}
-
 		}
 	}
 
