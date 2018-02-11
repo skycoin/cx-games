@@ -71,42 +71,46 @@ func Snake() () {
 	csis := 0.0 // current spot in spectrum 
 	mp /* max progress */ := f64.f32(game.CurrSnakeExtent) * 2.0
 	
-	// offset from center 
+	
+
+	// head/tail deltas (from center of snake) 
 	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
 	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
 	
-
-
-	// tail 
-
+	// tail pos 
 	tX := []f32.read(entity.X, 0) - xOff
 	tY := []f32.read(entity.Y, 0) - yOff
 
-
-
-	// head
-
+	// head pos 
 	hX := []f32.read(entity.X, 0) + xOff
 	hY := []f32.read(entity.Y, 0) + yOff
 	
-	// point B's (snake head) deltas from point A (tail) 
-	delX := hX - tX 
-	delY := hY - tY
-	delRad := game.HeadRadius - game.TailRadius
 
-	Sphere(hX, hY, game.HeadRadius, 0.0, 0.0, 1.0)
-	
+
+	entity.SetupStringFromPointAToPointB(
+		// tail 
+		tX, 
+		tY, 
+		game.TailRadius, 
+
+		// head 
+		hX, 
+		hY, 
+		game.HeadRadius)
+
+	Sphere(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
+
 
 
 	// draw body 
 
 	for csis <= mp {
 		ftd /* fraction towards destination */ := csis / mp
-		cRad /* current radius */ := game.TailRadius + ftd * delRad
+		cRad /* current radius */ := game.TailRadius + ftd * entity.DelRad
 
 		Sphere(
-			tX                                       + ftd * delX, 
-			tY                                       + ftd * delY, 
+			tX                                       + ftd * entity.DelX, 
+			tY                                       + ftd * entity.DelY, 
 			cRad, 
 			1.0, 1.0, 1.0)
 

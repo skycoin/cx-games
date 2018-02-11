@@ -31,6 +31,23 @@ var Blue []f32
 
 
 
+// string of entities 
+// (used to plot a variable amount from point A to point B)
+
+var /* point */ AX f32
+var /* point */ AY f32
+var /* radius */ ARad f32
+var /* point */ BX f32
+var /* point */ BY f32
+var /* radius */ BRad f32
+
+// ---- deltas from point A to point B 
+var DelX f32
+var DelY f32
+var DelRad f32
+
+
+
 func Init() () {
 	str.print("--- entity.Init()")
 
@@ -102,6 +119,23 @@ func Update() () {
 	}
 
 	prevFrame = currFrame
+}
+
+
+func SetupStringFromPointAToPointB(
+	aX f32, aY f32, aRad f32, 
+	bX f32, bY f32, bRad f32) () {
+
+	AX = aX;
+	AY = aY;
+	ARad = aRad;
+	BX = bX
+	BY = bY
+	BRad = bRad
+
+	DelX := bX - aX 
+	DelY := bY - aY
+	DelRad := bRad - aRad
 }
 
 
