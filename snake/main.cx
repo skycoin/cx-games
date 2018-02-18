@@ -43,7 +43,7 @@ func pre() () { // per frame boilerplate
 	w, h := glfw.GetFramebufferSize("window")
 	ratio := i32.f32(w) / i32.f32(h)
 
-	// original sample lacked 2nd | param 
+	// original sample lacked 2nd flag 
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT) 
 
 	// original sample 

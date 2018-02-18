@@ -15,6 +15,7 @@ var currFrame f64
 // entities
 
 var numEnts i32 = 2 //4
+var SnakeId i32
 var X []f32
 var Y []f32
 
@@ -31,9 +32,13 @@ var Blue []f32
 
 
 
-// string of entities 
-// (used to plot a variable amount from point A to point B)
+// chain of entities 
+// (used to plot a variable amount of spheres from point A to point B)
+var ChainLength f32 // distance between end/A/B points 
+var ChainProgress f32 // current fraction along chain's length (0.0 - 1.0) 
 
+
+// spots/points 
 var /* point */ AX f32
 var /* point */ AY f32
 var /* radius */ ARad f32
@@ -61,7 +66,7 @@ func Init() () {
 		vx := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
 		vy := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
 
-		if i == 0 {
+		if i == SnakeId {
 			x = 0.0
 			y = 0.0
 			vx = 0.005
@@ -122,9 +127,10 @@ func Update() () {
 }
 
 
-func SetupStringFromPointAToPointB(
+func SetupChainFromAToB(
 	aX f32, aY f32, aRad f32, 
-	bX f32, bY f32, bRad f32) () {
+	bX f32, bY f32, bRad f32,
+	isSnakeEntity bool) () {
 
 	AX = aX;
 	AY = aY;
@@ -136,6 +142,22 @@ func SetupStringFromPointAToPointB(
 	DelX := bX - aX 
 	DelY := bY - aY
 	DelRad := bRad - aRad
+
+
+
+	// overlap spheres by about half their radius.		
+	ChainProgress = 0.0 // current spot in distance spectrum (0.0 - 1.0) 
+	
+	if isSnakeEntity {
+		ChainLength = f64.f32(game.CurrSnakeExtent) * 2.0
+	} else {
+		ChainLength = game.GetDistance(aX, aY, bX, bY)
+	}
+}
+
+
+func AdvanceChainProgressBy(inc f32) () {
+	ChainProgress += inc
 }
 
 

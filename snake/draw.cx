@@ -63,31 +63,21 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 
 
 func Snake() () {
-	// start with point A (tip of tail, for the snake) drawn at minimum size. 
-	// plot out the remaining spheres.
-	// overlapping them by about half their radius.
-	// resizing them as we go towards point B (final goal (head of snake) ). 
-		
-	csis := 0.0 // current spot in spectrum 
-	mp /* max progress */ := f64.f32(game.CurrSnakeExtent) * 2.0
-	
-	
-
 	// head/tail deltas (from center of snake) 
 	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
 	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
 	
 	// tail pos 
-	tX := []f32.read(entity.X, 0) - xOff
-	tY := []f32.read(entity.Y, 0) - yOff
+	tX := []f32.read(entity.X, entity.SnakeId) - xOff
+	tY := []f32.read(entity.Y, entity.SnakeId) - yOff
 
 	// head pos 
-	hX := []f32.read(entity.X, 0) + xOff
-	hY := []f32.read(entity.Y, 0) + yOff
+	hX := []f32.read(entity.X, entity.SnakeId) + xOff
+	hY := []f32.read(entity.Y, entity.SnakeId) + yOff
 	
 
 
-	entity.SetupStringFromPointAToPointB(
+	entity.SetupChainFromAToB(
 		// tail 
 		tX, 
 		tY, 
@@ -96,17 +86,23 @@ func Snake() () {
 		// head 
 		hX, 
 		hY, 
-		game.HeadRadius)
+		game.HeadRadius,
 
+		true)
+
+	// draw head 
 	Sphere(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
 
 
 
 	// draw body 
 
-	for csis <= mp {
-		ftd /* fraction towards destination */ := csis / mp
-		cRad /* current radius */ := game.TailRadius + ftd * entity.DelRad
+	for entity.ChainProgress <= entity.ChainLength {
+		// fraction towards destination 
+		ftd := entity.ChainProgress / entity.ChainLength
+		
+		// current radius 
+		cRad := game.TailRadius + ftd * entity.DelRad
 
 		Sphere(
 			tX                                       + ftd * entity.DelX, 
@@ -114,7 +110,7 @@ func Snake() () {
 			cRad, 
 			1.0, 1.0, 1.0)
 
-		csis += cRad
+		entity.AdvanceChainProgressBy(cRad)
 	}
 }
 
