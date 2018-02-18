@@ -244,32 +244,33 @@ func SlowDownInAxis(index i32, inX bool) () {
 
 func IsTouching_WillExplode(aId i32) (out bool) {
 	touching := false
-	// moving entity pos/radius 
-	mX := []f32.read(X, aId)
-	mY := []f32.read(Y, aId)
-	mRad := []f32.read(Rad, aId)
+	
+	// A's pos/radius 
+	aX := []f32.read(X, aId)
+	aY := []f32.read(Y, aId)
+	aRad := []f32.read(Rad, aId)
 
 
 	for i := 0; i < []f32.len(X); i++ {
 		if IsAlive(i) {
-			// current entity spot/radius 
+			// B (current entity spot/radius) 
 			cX := []f32.read(X, i)
 			cY := []f32.read(Y, i)
 			cRad := []f32.read(Rad, i) // ...radius 
 
-			touchSpan := cRad + mRad
+			touchSpan := cRad + aRad
 			negaTSpan := 0.0 - touchSpan // negative touch span 
 			
 			// delta from mover 
-			delX := cX - mX
-			delY := cY - mY
+			delX := cX - aX
+			delY := cY - aY
 			
 			// 1st, do cheap bounding box detection 
 			if delX < touchSpan && delX > negaTSpan && 
 				delY < touchSpan && delY > negaTSpan {
 
 				// COLLISION, now do a more accurate spherical detection 
-				dist := game.GetDistance(cX, cY, mX, mY)			
+				dist := game.GetDistance(cX, cY, aX, aY)			
 				
 				if dist < touchSpan {
 					f32.print(dist)
