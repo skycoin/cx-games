@@ -94,36 +94,51 @@ func Update() () {
 			vy := []f32.read(VelY, i)
 
 			if /* moving */ vx != 0.0 || vy != 0.0 {
+				// old spot 
+				oX := []f32.read(X, i)
+				oY := []f32.read(Y, i)
+
 				// new spot 
-				x := []f32.read(X, i) + vx * mm
-				y := []f32.read(Y, i) + vy * mm
+				nX := oX + vx * mm
+				nY := oY + vy * mm
 
-				// teleport objects to the opposite edge when they leave the screen
-				if x < game.ScreenBoundsLeft {
-					x = game.ScreenBoundsRight
-				}
-
-				if x > game.ScreenBoundsRight {
-					x = game.ScreenBoundsLeft
-				}
-
-				if y > game.ScreenBoundsTop {
-					y = game.ScreenBoundsBottom
-				}
-
-				if y < game.ScreenBoundsBottom {
-					y = game.ScreenBoundsTop
-				}
-
-				[]f32.write(X, i, x)
-				[]f32.write(Y, i, y)
-
+				// detect collision before potential screen wrapping teleport. 
+				// because a screen spanning delta makes no sense for collision 
+				entity.SetupChainFromAToB(
+					oX, oY, []f32.read(Rad, i),
+					nX, nY, []f32.read(Rad, i), false)
 				IsTouching_WillExplode(i)
+
+
+
+				maybeTeleportEntityAcrossScreenThenUpdatePos(nX, nY, i)
 			}
 		}
 	}
 
 	prevFrame = currFrame
+}
+
+
+func maybeTeleportEntityAcrossScreenThenUpdatePos(nX f32, nY f32, index i32) () {
+	if nX < game.ScreenBoundsLeft {
+		nX = game.ScreenBoundsRight
+	}
+
+	if nX > game.ScreenBoundsRight {
+		nX = game.ScreenBoundsLeft
+	}
+
+	if nY > game.ScreenBoundsTop {
+		nY = game.ScreenBoundsBottom
+	}
+
+	if nY < game.ScreenBoundsBottom {
+		nY = game.ScreenBoundsTop
+	}
+
+	[]f32.write(X, index, nX)
+	[]f32.write(Y, index, nY)
 }
 
 
@@ -163,7 +178,7 @@ func AdvanceChainProgressBy(inc f32) () {
 
 func IsTouching_WillExplode(moverId i32) (out bool) {
 	touching := false
-	// moving entity spot/radius 
+	// moving entity pos/radius 
 	mX := []f32.read(X, moverId)
 	mY := []f32.read(Y, moverId)
 	mRad := []f32.read(Rad, moverId)
@@ -178,17 +193,29 @@ func IsTouching_WillExplode(moverId i32) (out bool) {
 			cRad := []f32.read(Rad, i) // ...radius 
 
 			touchSpan := cRad + mRad
-			dist := game.GetDistance(cX, cY, mX, mY)
+			negaTSpan := 0.0 - touchSpan // negative touch span 
 			
-			if dist < touchSpan {
-				if moverId == 0 {
-					f32.print(dist)
+			// delta from mover 
+			delX := cX - mX
+			delY := cY - mY
+			
+			// 1st, do cheap bounding box detection 
+			if delX < touchSpan && delX > negaTSpan && 
+				delY < touchSpan && delY > negaTSpan {
+
+				// COLLISION, now do a more accurate spherical detection 
+				dist := game.GetDistance(cX, cY, mX, mY)			
+				
+				if dist < touchSpan {
+					if moverId == 0 {
+						f32.print(dist)
+					}
+
+					touching = true
+
+					[]f64.write(Expiry, i, currFrame)
+					[]f64.write(Expiry, moverId, currFrame)
 				}
-
-				touching = true
-
-				[]f64.write(Expiry, i, currFrame)
-				[]f64.write(Expiry, moverId, currFrame)
 			}
 		}
 	}
