@@ -3,8 +3,10 @@ import "game"
 
 
 
-var mm f32 // movement multiplier 
+var maxVelocity f32 = 0.01
+var maxNegativeVelocity f32 = -0.01
 var velocityInc f32
+var mm f32 // movement multiplier 
 var pixelSpanX f32
 var pixelSpanY f32
 var gradientSpan f32
@@ -107,38 +109,14 @@ func Update() () {
 				entity.SetupChainFromAToB(
 					oX, oY, []f32.read(Rad, i),
 					nX, nY, []f32.read(Rad, i), false)
+
 				IsTouching_WillExplode(i)
-
-
-
-				maybeTeleportEntityAcrossScreenThenUpdatePos(nX, nY, i)
+				updatePosition_MaybeToOppositeEdgeOfScreen(nX, nY, i)
 			}
 		}
 	}
 
 	prevFrame = currFrame
-}
-
-
-func maybeTeleportEntityAcrossScreenThenUpdatePos(nX f32, nY f32, index i32) () {
-	if nX < game.ScreenBoundsLeft {
-		nX = game.ScreenBoundsRight
-	}
-
-	if nX > game.ScreenBoundsRight {
-		nX = game.ScreenBoundsLeft
-	}
-
-	if nY > game.ScreenBoundsTop {
-		nY = game.ScreenBoundsBottom
-	}
-
-	if nY < game.ScreenBoundsBottom {
-		nY = game.ScreenBoundsTop
-	}
-
-	[]f32.write(X, index, nX)
-	[]f32.write(Y, index, nY)
 }
 
 
@@ -176,65 +154,6 @@ func AdvanceChainProgressBy(inc f32) () {
 }
 
 
-func IsTouching_WillExplode(moverId i32) (out bool) {
-	touching := false
-	// moving entity pos/radius 
-	mX := []f32.read(X, moverId)
-	mY := []f32.read(Y, moverId)
-	mRad := []f32.read(Rad, moverId)
-
-
-	for i := 0; i < []f32.len(X); i++ {
-		// per relevant 
-		if IsAlive(i) && i != moverId {
-			// current entity spot/radius 
-			cX := []f32.read(X, i)
-			cY := []f32.read(Y, i)
-			cRad := []f32.read(Rad, i) // ...radius 
-
-			touchSpan := cRad + mRad
-			negaTSpan := 0.0 - touchSpan // negative touch span 
-			
-			// delta from mover 
-			delX := cX - mX
-			delY := cY - mY
-			
-			// 1st, do cheap bounding box detection 
-			if delX < touchSpan && delX > negaTSpan && 
-				delY < touchSpan && delY > negaTSpan {
-
-				// COLLISION, now do a more accurate spherical detection 
-				dist := game.GetDistance(cX, cY, mX, mY)			
-				
-				if dist < touchSpan {
-					if moverId == 0 {
-						f32.print(dist)
-					}
-
-					touching = true
-
-					[]f64.write(Expiry, i, currFrame)
-					[]f64.write(Expiry, moverId, currFrame)
-				}
-			}
-		}
-	}
-
-	return touching
-}
-
-
-func IsAlive(i i32) (out bool) {
-	e := []f64.read(Expiry, i)
-
-	if e == 0.0D || e > currFrame {
-		return true
-	}
-
-	return false
-}
-
-
 func Shoot(index i32) () {
 	fraction := 0.05D
 
@@ -246,6 +165,17 @@ func Shoot(index i32) () {
 	SpawnEntity(x, y, velX, velY,
 		0.015, // radius
 		glfw.GetTime() + 0.5D) // expiry
+}
+
+
+func IsAlive(i i32) (out bool) {
+	e := []f64.read(Expiry, i)
+
+	if e == 0.0D || e > currFrame {
+		return true
+	}
+
+	return false
 }
 
 
@@ -286,19 +216,6 @@ func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f64) () {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-var maxVelocity f32 = 0.01
-var maxNegativeVelocity f32 = -0.01
-
 func ForcePositiveVelocityAndBloomIt(index i32, inX bool) () {
 	if inX {
 		[]f32.write(VelX, index, boundedIncrease([]f32.read(VelX, index)))
@@ -322,6 +239,74 @@ func SlowDownInAxis(index i32, inX bool) () {
 	} else { // in y 
 		[]f32.write(VelY, 0, rampDownToStop([]f32.read(VelY, 0)))
 	}
+}
+
+
+func IsTouching_WillExplode(aId i32) (out bool) {
+	touching := false
+	// moving entity pos/radius 
+	mX := []f32.read(X, aId)
+	mY := []f32.read(Y, aId)
+	mRad := []f32.read(Rad, aId)
+
+
+	for i := 0; i < []f32.len(X); i++ {
+		if IsAlive(i) {
+			// current entity spot/radius 
+			cX := []f32.read(X, i)
+			cY := []f32.read(Y, i)
+			cRad := []f32.read(Rad, i) // ...radius 
+
+			touchSpan := cRad + mRad
+			negaTSpan := 0.0 - touchSpan // negative touch span 
+			
+			// delta from mover 
+			delX := cX - mX
+			delY := cY - mY
+			
+			// 1st, do cheap bounding box detection 
+			if delX < touchSpan && delX > negaTSpan && 
+				delY < touchSpan && delY > negaTSpan {
+
+				// COLLISION, now do a more accurate spherical detection 
+				dist := game.GetDistance(cX, cY, mX, mY)			
+				
+				if dist < touchSpan {
+					f32.print(dist)
+					touching = true
+					[]f64.write(Expiry, i, currFrame)
+					[]f64.write(Expiry, aId, currFrame)
+				}
+			}
+		}
+	}
+
+	return touching
+}
+
+
+
+// private 
+
+func updatePosition_MaybeToOppositeEdgeOfScreen(nX f32, nY f32, index i32) () {
+	if nX < game.ScreenBoundsLeft {
+		nX = game.ScreenBoundsRight
+	}
+
+	if nX > game.ScreenBoundsRight {
+		nX = game.ScreenBoundsLeft
+	}
+
+	if nY > game.ScreenBoundsTop {
+		nY = game.ScreenBoundsBottom
+	}
+
+	if nY < game.ScreenBoundsBottom {
+		nY = game.ScreenBoundsTop
+	}
+
+	[]f32.write(X, index, nX)
+	[]f32.write(Y, index, nY)
 }
 
 
