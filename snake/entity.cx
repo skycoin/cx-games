@@ -43,18 +43,18 @@ var Blue []f32
 var ChainLength f32 // distance between end/A/B points 
 var ChainProgress f32 // current fraction along chain's length (0.0 - 1.0) 
 
-
-// spots/points 
-var /* point */ AX f32
-var /* point */ AY f32
+// --- points 
+var /* point  */ AX   f32
+var /* point  */ AY   f32
 var /* radius */ ARad f32
-var /* point */ BX f32
-var /* point */ BY f32
+
+var /* point  */ BX   f32
+var /* point  */ BY   f32
 var /* radius */ BRad f32
 
-// ---- deltas from point A to point B 
-var DelX f32
-var DelY f32
+// --- deltas from point A to point B 
+var DelX   f32
+var DelY   f32
 var DelRad f32
 
 
@@ -197,35 +197,31 @@ func ThisIsCollidable(i i32) (out bool) {
 
 
 func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f32, collidable bool) () {
-	spawnNew := true
+	shouldAppendNewIndex := true
 
-	// reserving 0 for player's snake (all other slots up for recycling)
+	// reserving 0 for player's snake (all other indices up for recycling)
 	for i := 1; i < []f32.len(X); i++ {
-		if IsAlive(i) == false {
-			if collidable {
-				[]i32.write(IsCollidable, i, isTrue)
-			} else {
-				[]i32.write(IsCollidable, i, isFalse)
-			}
-
+		if /* found dead entity... */ IsAlive(i) == false {
+			// ...recycle it (rather than appending a new entity)
+			shouldAppendNewIndex = false
 			[]f32.write(X, i, x)
 			[]f32.write(Y, i, y)
 			[]f32.write(VelX, i, velX)
 			[]f32.write(VelY, i, velY)
 			[]f32.write(Rad, i, rad)
 			[]f32.write(Expiry, i, expiry)
-			spawnNew = false
-			// set color?
+
+			if collidable {
+				[]i32.write(IsCollidable, i, isTrue)
+			} else {
+				[]i32.write(IsCollidable, i, isFalse)
+			}
+
+			// set color?  for now, keeps the same color as the original 
 		}
 	}
 
-	if spawnNew {
-		if collidable {
-			IsCollidable = []i32.append(IsCollidable, isTrue)
-		} else {
-			IsCollidable = []i32.append(IsCollidable, isFalse)
-		}
-
+	if shouldAppendNewIndex {
 		X = []f32.append(X, x)
 		Y = []f32.append(Y, y)
 		
@@ -234,6 +230,12 @@ func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f32, collidab
 		
 		Rad = []f32.append(Rad, rad)
 		Expiry = []f32.append(Expiry, expiry)
+
+		if collidable {
+			IsCollidable = []i32.append(IsCollidable, isTrue)
+		} else {
+			IsCollidable = []i32.append(IsCollidable, isFalse)
+		}
 
 		Red =   []f32.append(Red, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 		Green = []f32.append(Green, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
@@ -276,25 +278,56 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 	aY   := []f32.read(Y,   aId)
 	aRad := []f32.read(Rad, aId) // ...radius
 
-	// start with the next (by id) entity & compare against all the higher ids. 
-	// (the lower entity ids, were already compared against this one) 
-	for bId := (aId + 1); bId < []f32.len(X); bId++ {
-		// checking status of A & B as A can die, before going thru all Bs 
+	// start with last entity & work backwards, comparing against lower value ids. 
+	// (up to & excluding entity A) 
+	for bId := []f32.len(X) - 1; bId > aId; bId-- {
+		// checking status of A, because it can die before we cycle thru all Bs 
 		// (& right now, "break" & "continue" keywords/features don't exist) 
-		if IsAlive(aId) && ThisIsCollidable(aId) &&
-			IsAlive(bId) && ThisIsCollidable(bId) {
+		//if IsAlive(aId) && /* ThisIsCollidable(aId) && */
+		//	IsAlive(bId) /* && ThisIsCollidable(bId) */{
+		if IsAlive(aId) && IsAlive(bId) {
+			if isPairTouching(aX, aY, aRad, bId) {
+				touching = true
 
-			touching = isPairTouching(aX, aY, aRad, bId) 
-
-			if touching {
 				// feedback of changing values 
-				f32.print([]f32.read(Expiry, bId))
-				[]f32.write(Expiry, aId, currFrame)
-				[]f32.write(Expiry, bId, currFrame)
-				f32.print([]f32.read(Expiry, bId))
-				str.print("---")
+				
+				str.print("<A")
+				
+				sA := "    expiry (before): "
+				sB := f32.str([]f32.read(Expiry, aId))
+				str.print(str.concat(sA, sB))
 
-				// set explosion point & size by biggest entity 
+				         []f32.write(Expiry, aId, currFrame)
+
+				sA = "    expiry (after): "
+				sB = f32.str([]f32.read(Expiry, aId))
+				str.print(str.concat(sA, sB))
+
+				str.print(str.concat("    id: ", i32.str(aId)))
+				
+				str.print(">")
+
+
+
+				str.print("<B")
+
+				sA := "    expiry (before): "
+				sB := f32.str([]f32.read(Expiry, bId))
+				str.print(str.concat(sA, sB))
+
+				         []f32.write(Expiry, bId, currFrame)
+				
+				sA = "    expiry (after): "
+				sB = f32.str([]f32.read(Expiry, bId))
+				str.print(str.concat(sA, sB))
+
+				str.print(str.concat("    id: ", i32.str(bId)))
+				
+				str.print(">")
+
+
+
+				// set explosion centerpoint & size from biggest entity 
 				// (starting values taken from entity B) 
 				x              := []f32.read(X,   bId)
 				y              := []f32.read(Y,   bId)
