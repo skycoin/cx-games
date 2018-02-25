@@ -65,8 +65,7 @@ func Init() () {
 	for i := 0; i < numEnts; i++ {
 		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.Width + 1)) * pixelSpanY
 		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.Height + 1)) * pixelSpanY
-		vx := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
-		vy := i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
+		vx,	vy := getRandomVelocities()
 
 		if i == SnakeId {
 			x = 0.0
@@ -106,7 +105,7 @@ func Update() () {
 
 				// detect collision before potential screen wrapping teleport. 
 				// because a screen spanning delta makes no sense for collision 
-				entity.SetupChainFromAToB(
+				SetupChainFromAToB(
 					oX, oY, []f32.read(Rad, i),
 					nX, nY, []f32.read(Rad, i), false)
 
@@ -253,17 +252,57 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 	// start with the next (by id) entity & compare against all the higher ids. 
 	// (the lower entity ids, were already compared against this one) 
 	for bId := (aId + 1); bId < []f32.len(X); bId++ {
-		if IsAlive(bId) {
+		// checking status of A & B as A can die, before going thru all Bs 
+		// (& right now, "break" & "continue" keywords/features don't exist) 
+		if IsAlive(aId) && IsAlive(bId) {
 			touching = isPairTouching(aX, aY, aRad, bId) 
 
 			if touching {
+				// feedback of changing values 
 				f32.print([]f32.read(Expiry, bId))
-
 				[]f32.write(Expiry, aId, currFrame)
 				[]f32.write(Expiry, bId, currFrame)
-
 				f32.print([]f32.read(Expiry, bId))
 				str.print("---")
+
+				// set explosion point & size by biggest entity 
+				// (starting values taken from entity B) 
+				x              := []f32.read(X,   bId)
+				y              := []f32.read(Y,   bId)
+				r /* radius */ := []f32.read(Rad, bId)
+
+				if r < aRad {
+					r = aRad
+					x = aX
+					y = aY
+				}
+	
+				// random direction 
+				rdi := /* ...int */ i32.rand(0, game.NumDirectionRadians)
+				rd := i32.f32(rdi) * game.DirectionRadianGrain
+				
+				// offset scalar (from centerpoint of biggest entity) 
+				// to ensure no initial overlap/collision 
+				r /= 2.0 // halve radius, for smaller fragments 
+				offS := 1.1
+				offX := f32.cos(rd) * r * offS
+				offY := f32.sin(rd) * r * offS
+
+				SpawnEntity(
+					x + offX, 
+					y + offY,
+					0.0, 
+					0.0,
+					r, 
+					0.0) //currFrame + 1.0)
+	
+				SpawnEntity(
+					x + 0.0 - offX, 
+					y + 0.0 - offY,
+					0.0, 
+					0.0,
+					r, 
+					0.0) //currFrame + 1.0)
 			}
 		}
 	}
@@ -274,6 +313,13 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 
 
 // private 
+
+func getRandomVelocities() (x f32, y f32) {
+	return
+		i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain,
+		i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
+}
+
 
 func isPairTouching(aX f32, aY f32, aRad f32, bId i32) (out bool) {
 	touching := false
@@ -301,7 +347,7 @@ func isPairTouching(aX f32, aY f32, aRad f32, bId i32) (out bool) {
 			touching = true
 			str.print("distance:")
 			f32.print(dist)
-			str.print("---")
+			str.print("---------")
 		}
 	}
 

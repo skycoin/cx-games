@@ -6,6 +6,8 @@ import "entity"
 
 
 var Name str = "  S  N  A  K  E  "
+var NumDirectionRadians i32 = 256 // gives 64 possibilities per quadrant 
+var DirectionRadianGrain f32
 var AsteroidVelocityGrain f32 = 0.00002
 
 type Rect struct {
@@ -34,6 +36,8 @@ var HeadRadius f32 = 0.07
 
 
 func Init() () {
+	DirectionRadianGrain = 2.0 * 3.141592654 / i32.f32(NumDirectionRadians)
+
 	// FIXME: making assumptions about vertical span 
 	horizontalScreenSpan := i32.f32(Width) / i32.f32(Height)
 	ScreenBoundsTop = 1.0
