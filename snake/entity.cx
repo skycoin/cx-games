@@ -287,20 +287,21 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				offS := 1.1
 				offX := f32.cos(rd) * r * offS
 				offY := f32.sin(rd) * r * offS
+				divisor := 60.0
 
 				SpawnEntity(
 					x + offX, 
 					y + offY,
-					0.0, 
-					0.0,
+					offX / divisor, 
+					offY / divisor,
 					r, 
 					0.0) //currFrame + 1.0)
 	
 				SpawnEntity(
-					x + 0.0 - offX, 
-					y + 0.0 - offY,
-					0.0, 
-					0.0,
+					x - offX, 
+					y - offY,
+					0.0 - offX / divisor, 
+					0.0 - offY / divisor,
 					r, 
 					0.0) //currFrame + 1.0)
 			}
