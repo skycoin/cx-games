@@ -246,38 +246,18 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 	touching := false
 	
 	// A's pos/radius 
-	aX := []f32.read(X, aId)
-	aY := []f32.read(Y, aId)
-	aRad := []f32.read(Rad, aId)
+	aX   := []f32.read(X,   aId)
+	aY   := []f32.read(Y,   aId)
+	aRad := []f32.read(Rad, aId) // ...radius
 
+	// start with the next (by id) entity & compare against all the higher ids. 
+	// (the lower entity ids, were already compared against this one) 
+	for bId := (aId + 1); bId < []f32.len(X); bId++ {
+		if IsAlive(bId) {
+			touching = isPairTouching(aX, aY, aRad, bId) 
 
-	for i := 0; i < []f32.len(X); i++ {
-		if IsAlive(i) {
-			// B (current entity spot/radius) 
-			cX := []f32.read(X, i)
-			cY := []f32.read(Y, i)
-			cRad := []f32.read(Rad, i) // ...radius 
-
-			touchSpan := cRad + aRad
-			negaTSpan := 0.0 - touchSpan // negative touch span 
-			
-			// delta from mover 
-			delX := cX - aX
-			delY := cY - aY
-			
-			// 1st, do cheap bounding box detection 
-			if delX < touchSpan && delX > negaTSpan && 
-				delY < touchSpan && delY > negaTSpan {
-
-				// COLLISION, now do a more accurate spherical detection 
-				dist := game.GetDistance(cX, cY, aX, aY)			
-				
-				if dist < touchSpan {
-					f32.print(dist)
-					touching = true
-					[]f64.write(Expiry, i, currFrame)
-					[]f64.write(Expiry, aId, currFrame)
-				}
+			if touching {
+				tempExplodeVar := 42
 			}
 		}
 	}
@@ -288,6 +268,42 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 
 
 // private 
+
+func isPairTouching(aX f32, aY f32, aRad f32, bId i32) (out bool) {
+	touching := false
+	
+	/*
+	// B's pos/radius 
+	bX   := []f32.read(X,   bId)
+	bY   := []f32.read(Y,   bId)
+	bRad := []f32.read(Rad, bId) // ...radius 
+
+	touchSpan := bRad + aRad
+	negaTSpan := 0.0 - touchSpan // negative touch span 
+	
+	// delta from A 
+	delX := bX - aX
+	delY := bY - aY
+	
+	// 1st, do cheap bounding box detection 
+	if delX < touchSpan && delX > negaTSpan && 
+		delY < touchSpan && delY > negaTSpan {
+
+		// COLLIDED, now do a more accurate spherical detection 
+		dist := game.GetDistance(bX, bY, aX, aY)			
+		
+		if dist < touchSpan {
+			f32.print(dist)
+			touching = true
+			[]f64.write(Expiry, bId, currFrame)
+			[]f64.write(Expiry, aId, currFrame)
+		}
+	}
+	*/
+
+	return touching
+}
+
 
 func updatePosition_MaybeToOppositeEdgeOfScreen(nX f32, nY f32, index i32) () {
 	if nX < game.ScreenBoundsLeft {
