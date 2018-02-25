@@ -10,7 +10,7 @@ var mm f32 // movement multiplier
 var pixelSpanX f32
 var pixelSpanY f32
 var gradientSpan f32
-var currFrame f64
+var currFrame f32
 
 
 
@@ -25,7 +25,7 @@ var VelX []f32 // velocity
 var VelY []f32
 
 var Rad []f32 // radius 
-var Expiry []f64
+var Expiry []f32
 var Dead []bool
 
 var Red []f32
@@ -75,15 +75,15 @@ func Init() () {
 			vy = 0.005
 		}
 
-		SpawnEntity(x, y, vx, vy, 0.1, 0.0D)
+		SpawnEntity(x, y, vx, vy, 0.1, 0.0)
 	}
 }
 
 
-var prevFrame f64
+var prevFrame f32
 func Update() () {
- 	currFrame   = glfw.GetTime()
- 	deltaFrame := f64.f32(currFrame - prevFrame) 
+ 	currFrame   = f64.f32(glfw.GetTime())
+ 	deltaFrame := currFrame - prevFrame
  	mm          = deltaFrame * 200.0
  	velocityInc = deltaFrame / 50.0
 
@@ -164,14 +164,14 @@ func Shoot(index i32) () {
 
 	SpawnEntity(x, y, velX, velY,
 		0.015, // radius
-		glfw.GetTime() + 0.5D) // expiry
+		f64.f32(glfw.GetTime()) + 0.5) // expiry
 }
 
 
 func IsAlive(i i32) (out bool) {
-	e := []f64.read(Expiry, i)
+	e := []f32.read(Expiry, i)
 
-	if e == 0.0D || e > currFrame {
+	if e == 0.0 || e > currFrame {
 		return true
 	}
 
@@ -179,7 +179,7 @@ func IsAlive(i i32) (out bool) {
 }
 
 
-func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f64) () {
+func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f32) () {
 	spawnNew := true
 
 	// reserving 0 for player's snake (all other slots up for recycling)
@@ -207,7 +207,7 @@ func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f64) () {
 		VelY = []f32.append(VelY, velY)
 		
 		Rad = []f32.append(Rad, rad)
-		Expiry = []f64.append(Expiry, expiry)
+		Expiry = []f32.append(Expiry, expiry)
 
 		Red =   []f32.append(Red, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 		Green = []f32.append(Green, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
@@ -257,7 +257,13 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 			touching = isPairTouching(aX, aY, aRad, bId) 
 
 			if touching {
-				tempExplodeVar := 42
+				f32.print([]f32.read(Expiry, bId))
+
+				[]f32.write(Expiry, aId, currFrame)
+				[]f32.write(Expiry, bId, currFrame)
+
+				f32.print([]f32.read(Expiry, bId))
+				str.print("---")
 			}
 		}
 	}
@@ -272,7 +278,6 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 func isPairTouching(aX f32, aY f32, aRad f32, bId i32) (out bool) {
 	touching := false
 	
-	/*
 	// B's pos/radius 
 	bX   := []f32.read(X,   bId)
 	bY   := []f32.read(Y,   bId)
@@ -293,13 +298,12 @@ func isPairTouching(aX f32, aY f32, aRad f32, bId i32) (out bool) {
 		dist := game.GetDistance(bX, bY, aX, aY)			
 		
 		if dist < touchSpan {
-			f32.print(dist)
 			touching = true
-			[]f64.write(Expiry, bId, currFrame)
-			[]f64.write(Expiry, aId, currFrame)
+			str.print("distance:")
+			f32.print(dist)
+			str.print("---")
 		}
 	}
-	*/
 
 	return touching
 }
