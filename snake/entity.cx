@@ -170,7 +170,7 @@ func Shoot(index i32) () {
 	SpawnEntity(
 		x, y, 
 		velX, velY,
-		0.015, // radius
+		game.BulletRadius,
 		f64.f32(glfw.GetTime()) + 0.5, // expiry
 		true)
 }
@@ -283,9 +283,9 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 	for bId := []f32.len(X) - 1; bId > aId; bId-- {
 		// checking status of A, because it can die before we cycle thru all Bs 
 		// (& right now, "break" & "continue" keywords/features don't exist) 
-		//if IsAlive(aId) && /* ThisIsCollidable(aId) && */
-		//	IsAlive(bId) /* && ThisIsCollidable(bId) */{
-		if IsAlive(aId) && IsAlive(bId) {
+		if IsAlive(aId) && ThisIsCollidable(aId) &&
+			IsAlive(bId) && ThisIsCollidable(bId) {
+
 			if isPairTouching(aX, aY, aRad, bId) {
 				touching = true
 
@@ -350,6 +350,14 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				offX := f32.cos(rd) * r * offS
 				offY := f32.sin(rd) * r * offS
 				divisor := 60.0
+				expiry := 0.0
+				collidable := true
+				
+				if r <= game.BulletRadius {
+					//r = game.BulletRadius // ATM THIS MAKES IT WORSE 
+					expiry = currFrame + 0.5
+					collidable = false
+				}
 
 				SpawnEntity(
 					x + offX, 
@@ -357,8 +365,8 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 					offX / divisor, 
 					offY / divisor,
 					r, 
-					0.0,
-					true)
+					expiry,
+					collidable)
 	
 				SpawnEntity(
 					x - offX, 
@@ -366,8 +374,8 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 					0.0 - offX / divisor, 
 					0.0 - offY / divisor,
 					r, 
-					0.0,
-					true)
+					expiry,
+					collidable)
 			}
 		}
 	}
