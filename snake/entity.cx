@@ -278,7 +278,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 	aY   := []f32.read(Y,   aId)
 	aRad := []f32.read(Rad, aId) // ...radius
 
-	// start with last entity & work backwards, comparing against lower value ids. 
+	// start with last entity & work backwards, comparing against values 
 	// (up to & excluding entity A) 
 	for bId := []f32.len(X) - 1; bId > aId; bId-- {
 		// checking status of A, because it can die before we cycle thru all Bs 
@@ -298,6 +298,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				str.print(str.concat(sA, sB))
 
 				         []f32.write(Expiry, aId, currFrame)
+				         //[]i32.write(IsCollidable, aId, isFalse)
 
 				sA = "    expiry (after): "
 				sB = f32.str([]f32.read(Expiry, aId))
@@ -316,6 +317,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				str.print(str.concat(sA, sB))
 
 				         []f32.write(Expiry, bId, currFrame)
+				         //[]i32.write(IsCollidable, bId, isFalse)
 				
 				sA = "    expiry (after): "
 				sB = f32.str([]f32.read(Expiry, bId))
@@ -349,7 +351,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				offS := 1.1
 				offX := f32.cos(rd) * r * offS
 				offY := f32.sin(rd) * r * offS
-				divisor := 60.0
+				divisor := 600.0
 				expiry := 0.0
 				collidable := true
 				
@@ -362,8 +364,8 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				SpawnEntity(
 					x + offX, 
 					y + offY,
-					offX / divisor, 
-					offY / divisor,
+					0.0, //offX / divisor, 
+					0.0, //offY / divisor,
 					r, 
 					expiry,
 					collidable)
@@ -371,8 +373,8 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				SpawnEntity(
 					x - offX, 
 					y - offY,
-					0.0 - offX / divisor, 
-					0.0 - offY / divisor,
+					0.0, //0.0 - offX / divisor, 
+					0.0, //0.0 - offY / divisor,
 					r, 
 					expiry,
 					collidable)

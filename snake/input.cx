@@ -89,25 +89,25 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 		// snake tail motion 
 
 		if key == GLFW_KEY_A {
-			moveLeft = getMoveStatus(action, key)
+			moveLeft = keyIsDown(action, key)
 		}
 
 		if key == GLFW_KEY_D {
-			moveRight = getMoveStatus(action, key)
+			moveRight = keyIsDown(action, key)
 		}
 
 		if key == GLFW_KEY_W {
-			moveUp = getMoveStatus(action, key)
+			moveUp = keyIsDown(action, key)
 		}
 
 		if key == GLFW_KEY_S {
-			moveDown = getMoveStatus(action, key)
+			moveDown = keyIsDown(action, key)
 		}
 	}
 }
 
 
-func getMoveStatus(action i32, key i32) (out bool) {
+func keyIsDown(action i32, key i32) (out bool) {
 	if /* release */ action == 0 {
 		return false
 	} else {
@@ -118,6 +118,9 @@ func getMoveStatus(action i32, key i32) (out bool) {
 
 
 
+func Update() () {
+	SetSnakeVelocity()
+}
 
 
 func SetSnakeVelocity() () {

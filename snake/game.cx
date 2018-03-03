@@ -39,7 +39,7 @@ var HeadRadius f32 = 0.07
 func Init() () {
 	DirectionRadianGrain = 2.0 * 3.141592654 / i32.f32(NumDirectionRadians)
 
-	// FIXME: making assumptions about vertical span 
+	// FIXME: ATM, making assumptions about vertical span 
 	horizontalScreenSpan := i32.f32(Width) / i32.f32(Height)
 	ScreenBoundsTop = 1.0
 	ScreenBoundsRight = horizontalScreenSpan
@@ -52,7 +52,7 @@ func Init() () {
 
 
 func Update() () {
-	ccInput.SetSnakeVelocity()
+	ccInput.Update()
 	entity.Update()
 }
 
