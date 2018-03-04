@@ -20,7 +20,7 @@ var isTrue  i32 = 1
 
 // entities
 
-var numEnts i32 = 2 //4
+var numEnts i32 = 3 //4
 var SnakeId i32
 var X []f32
 var Y []f32
@@ -366,24 +366,38 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				// and lined up (opposite each other, from 0,0) along a random angle 
 				
 				divisor := 1600.0
+				mult    := 0.00001
 
-				SpawnEntity(
-					beX + offX, 
-					beY + offY,
-					0.0, //offX / divisor, 
-					0.0, //offY / divisor,
-					beR, 
-					expiry,
-					collidable)
-	
-				SpawnEntity(
-					beX - offX, 
-					beY - offY,
-					0.0, //0.0 - offX / divisor, 
-					0.0, //0.0 - offY / divisor,
-					beR, 
-					expiry,
-					collidable)
+				if collidable {
+					SpawnEntity(
+						beX + offX, 
+						beY + offY,
+						0.0, //offX / divisor, 
+						0.0, //offY / divisor,
+						beR, 
+						expiry,
+						collidable)
+		
+					SpawnEntity(
+						beX - offX, 
+						beY - offY,
+						0.0, //0.0 - offX / divisor, 
+						0.0, //0.0 - offY / divisor,
+						beR, 
+						expiry,
+						collidable)
+				} else {
+					for ii := 0; ii < 3; ii++ {
+						SpawnEntity(
+							beX, 
+							beY,
+							i32.f32(i32.rand(-49, 50)) * mult,
+							i32.f32(i32.rand(-49, 50)) * mult,
+							game.BulletRadius, 
+							currFrame + 1.5,
+							collidable)
+						}
+				}
 			}
 		}
 	}
