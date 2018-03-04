@@ -351,15 +351,21 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				offS := 1.1
 				offX := f32.cos(rdf) * beR * offS
 				offY := f32.sin(rdf) * beR * offS
-				divisor := 600.0
 				expiry := 0.0
-				collidable := true
+				collidable := false
 				
-				if beR <= game.BulletRadius {
+				
+				if /* smaller than a bullet */ beR <= game.BulletRadius {
 					//beR = game.BulletRadius // ATM THIS MAKES IT WORSE 
 					expiry = currFrame + 0.5
 					collidable = false
 				}
+
+				// spawn 2 half-size spheres, slightly separated 
+				// (so there's no collision with each other) 
+				// and lined up (opposite each other, from 0,0) along a random angle 
+				
+				divisor := 1600.0
 
 				SpawnEntity(
 					beX + offX, 
