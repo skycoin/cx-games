@@ -187,7 +187,7 @@ func IsAlive(i i32) (out bool) {
 }
 
 
-func ThisIsCollidable(i i32) (out bool) {
+func IsCollidable(i i32) (out bool) {
 	if []i32.read(IsCollidable, i) == isTrue {
 		return true
 	}
@@ -283,8 +283,8 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 	for bId := []f32.len(X) - 1; bId > aId; bId-- {
 		// checking status of A, because it can die before we cycle thru all Bs 
 		// (& right now, "break" & "continue" keywords/features don't exist) 
-		if IsAlive(aId) && ThisIsCollidable(aId) &&
-			IsAlive(bId) && ThisIsCollidable(bId) {
+		if IsAlive(aId) && IsCollidable(aId) &&
+			IsAlive(bId) && IsCollidable(bId) {
 
 			if isPairTouching(aX, aY, aRad, bId) {
 				touching = true
@@ -297,8 +297,8 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				sB := f32.str([]f32.read(Expiry, aId))
 				str.print(str.concat(sA, sB))
 
-				         []f32.write(Expiry, aId, currFrame - 0.1)
-				         //[]i32.write(IsCollidable, aId, isFalse)
+				         []f32.write(Expiry,       aId, currFrame - 0.1)
+				         []i32.write(IsCollidable, aId, isFalse)
 
 				sA = "    expiry (after): "
 				sB = f32.str([]f32.read(Expiry, aId))
@@ -312,12 +312,12 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 
 				str.print("<B")
 
-				sA := "    expiry (before): "
-				sB := f32.str([]f32.read(Expiry, bId))
+				sA = "    expiry (before): "
+				sB = f32.str([]f32.read(Expiry, bId))
 				str.print(str.concat(sA, sB))
 
-				         []f32.write(Expiry, bId, currFrame - 0.1)
-				         //[]i32.write(IsCollidable, bId, isFalse)
+				         []f32.write(Expiry,       bId, currFrame - 0.1)
+				         []i32.write(IsCollidable, bId, isFalse)
 				
 				sA = "    expiry (after): "
 				sB = f32.str([]f32.read(Expiry, bId))
@@ -329,53 +329,53 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 
 
 
-				// set explosion centerpoint & size from biggest entity 
-				// (starting values taken from entity B) 
-				x              := []f32.read(X,   bId)
-				y              := []f32.read(Y,   bId)
-				r /* radius */ := []f32.read(Rad, bId)
+				// biggest entity (as explosion origin)
+				// 1st, set values from entity B
+				beX := []f32.read(X,   bId)
+				beY := []f32.read(Y,   bId)
+				beR := []f32.read(Rad, bId)
 
-				if r < aRad {
-					r = aRad
-					x = aX
-					y = aY
+				if beR < aRad {
+					beR = aRad
+					beX = aX
+					beY = aY
 				}
 	
 				// random direction 
-				rdi := /* ...int */ i32.rand(0, game.NumDirectionRadians)
-				rd := i32.f32(rdi) * game.DirectionRadianGrain
+				rdi := /* ...int   */ i32.rand(0,    game.NumDirectionRadians)
+				rdf := /* ...float */ i32.f32(rdi) * game.DirectionRadianGrain
 				
 				// offset scalar (from centerpoint of biggest entity) 
 				// to ensure no initial overlap/collision 
-				r /= 2.0 // halve radius, for smaller fragments 
+				beR /= 2.0 // halve radius, for smaller fragments 
 				offS := 1.1
-				offX := f32.cos(rd) * r * offS
-				offY := f32.sin(rd) * r * offS
+				offX := f32.cos(rdf) * beR * offS
+				offY := f32.sin(rdf) * beR * offS
 				divisor := 600.0
 				expiry := 0.0
 				collidable := true
 				
-				if r <= game.BulletRadius {
-					//r = game.BulletRadius // ATM THIS MAKES IT WORSE 
+				if beR <= game.BulletRadius {
+					//beR = game.BulletRadius // ATM THIS MAKES IT WORSE 
 					expiry = currFrame + 0.5
 					collidable = false
 				}
 
 				SpawnEntity(
-					x + offX, 
-					y + offY,
-					offX / divisor, 
-					offY / divisor,
-					r, 
+					beX + offX, 
+					beY + offY,
+					0.0, //offX / divisor, 
+					0.0, //offY / divisor,
+					beR, 
 					expiry,
 					collidable)
 	
 				SpawnEntity(
-					x - offX, 
-					y - offY,
-					0.0 - offX / divisor, 
-					0.0 - offY / divisor,
-					r, 
+					beX - offX, 
+					beY - offY,
+					0.0, //0.0 - offX / divisor, 
+					0.0, //0.0 - offY / divisor,
+					beR, 
 					expiry,
 					collidable)
 			}

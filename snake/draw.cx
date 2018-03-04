@@ -31,9 +31,6 @@ func Entities() () {
 	// skipping 0 (reserved for player entity), which has it's own draw func. 
 	// for now, all else are spheres 
 	for i := 1; i < []f32.len(entity.X); i++ {
-		//BELOW LINE *SHOULD* WORK but can't seem to write to bool arrays 
-		//if []bool.read(entity.Dead, i) == false {
-		
 		if entity.IsAlive(i) {
 			Sphere(
 				[]f32.read(entity.X, i), 
@@ -119,11 +116,11 @@ func Text() () {
 	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
 	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	
-	EntityText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "mouse + W A S D      5")
+	EntityPinnedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "mouse + W A S D      5")
 }
 
 
-func EntityText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
+func EntityPinnedText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
 	// text space positions 
 	midX := i32.f32(game.Width)  / 2.0
 	midY := i32.f32(game.Height) / 2.0
