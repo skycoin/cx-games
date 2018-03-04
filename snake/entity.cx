@@ -297,7 +297,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				sB := f32.str([]f32.read(Expiry, aId))
 				str.print(str.concat(sA, sB))
 
-				         []f32.write(Expiry, aId, currFrame)
+				         []f32.write(Expiry, aId, currFrame - 0.1)
 				         //[]i32.write(IsCollidable, aId, isFalse)
 
 				sA = "    expiry (after): "
@@ -316,7 +316,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				sB := f32.str([]f32.read(Expiry, bId))
 				str.print(str.concat(sA, sB))
 
-				         []f32.write(Expiry, bId, currFrame)
+				         []f32.write(Expiry, bId, currFrame - 0.1)
 				         //[]i32.write(IsCollidable, bId, isFalse)
 				
 				sA = "    expiry (after): "
@@ -364,8 +364,8 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				SpawnEntity(
 					x + offX, 
 					y + offY,
-					0.0, //offX / divisor, 
-					0.0, //offY / divisor,
+					offX / divisor, 
+					offY / divisor,
 					r, 
 					expiry,
 					collidable)
@@ -373,8 +373,8 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				SpawnEntity(
 					x - offX, 
 					y - offY,
-					0.0, //0.0 - offX / divisor, 
-					0.0, //0.0 - offY / divisor,
+					0.0 - offX / divisor, 
+					0.0 - offY / divisor,
 					r, 
 					expiry,
 					collidable)

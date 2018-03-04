@@ -83,31 +83,31 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 		if key == GLFW_KEY_SPACE && action == 1 {
 			entity.Shoot(0)
 		}
-
-
-
-		// snake tail motion 
-
-		if key == GLFW_KEY_A {
-			moveLeft = keyIsDown(action, key)
-		}
-
-		if key == GLFW_KEY_D {
-			moveRight = keyIsDown(action, key)
-		}
-
-		if key == GLFW_KEY_W {
-			moveUp = keyIsDown(action, key)
-		}
-
-		if key == GLFW_KEY_S {
-			moveDown = keyIsDown(action, key)
-		}
 	}
+
+
+	/*
+	if key == GLFW_KEY_A {
+		moveLeft  = eventBased_KeyIsDown(action, key)
+	}
+
+	if key == GLFW_KEY_D {
+		moveRight = eventBased_KeyIsDown(action, key)
+	}
+
+	if key == GLFW_KEY_W {
+		moveUp    = eventBased_KeyIsDown(action, key)
+	}
+
+	if key == GLFW_KEY_S {
+		moveDown  = eventBased_KeyIsDown(action, key)
+	}
+	*/
 }
 
 
-func keyIsDown(action i32, key i32) (out bool) {
+// old status caching from key events (not polling) 
+func eventBased_KeyIsDown(action i32, key i32) (out bool) { 
 	if /* release */ action == 0 {
 		return false
 	} else {
@@ -119,7 +119,26 @@ func keyIsDown(action i32, key i32) (out bool) {
 
 
 func Update() () {
+	// snake motion input status 
+	moveLeft  = keyIsDown(GLFW_KEY_A)
+	moveRight = keyIsDown(GLFW_KEY_D)
+	moveUp    = keyIsDown(GLFW_KEY_W)
+	moveDown  = keyIsDown(GLFW_KEY_S)
+
+
+
 	SetSnakeVelocity()
+}
+
+
+func keyIsDown(key i32) (out bool) {
+	// GetKey() never gives a "repeat" action (only gives 0 & 1)
+
+	if glfw.GetKey("window", key) == 1 {
+		return true
+	}
+
+	return false
 }
 
 
