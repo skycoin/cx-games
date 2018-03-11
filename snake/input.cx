@@ -56,9 +56,9 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 		// (value increases going up the screen)
 		deltaY = 0.0D - deltaY 
 
-		a := str.concat("cursor event delta ---- x ", f64.str(deltaX))
-		b := str.concat(", y "                      , f64.str(deltaY))
-		str.print(str.concat(a, b))
+		//a := str.concat("cursor event delta ---- x ", f64.str(deltaX))
+		//b := str.concat(", y "                      , f64.str(deltaY))
+		//str.print(str.concat(a, b))
 
 		game.SetSnakeAimAndSize(
 			f64.f32(deltaX),

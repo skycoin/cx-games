@@ -22,8 +22,8 @@ func Init() () {
 
 
 func All() () {
-	x, y := game.GetPosOfRotTest()
-	Sphere(x, y, 0.07, 1.0, 0.0, 0.0)
+	//x, y := game.GetPosOfRotTest()
+	//Sphere(x, y, 0.07, 1.0, 0.0, 0.0)
 
 	Snake()
 	Entities()
@@ -64,9 +64,12 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 
 
 func Snake() () {
+	sin := f32.sin(game.CurrSnakeAim)
+	cos := f32.cos(game.CurrSnakeAim) 
+
 	// head/tail deltas (from center of snake) 
-	xOff := game.CurrSnakeExtent * f32.sin(game.CurrSnakeAim)
-	yOff := game.CurrSnakeExtent * f32.cos(game.CurrSnakeAim) 
+	xOff := game.CurrSnakeExtent * sin
+	yOff := game.CurrSnakeExtent * cos
 	
 	// center pos 
 	cX := []f32.read(entity.X, entity.SnakeId)
@@ -98,8 +101,61 @@ func Snake() () {
 	// draw head 
 	Sphere(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
 
+
+
+
+
+
+
+
+
+
+	// draw indicators
+
+	ie /* ind extent */ := game.HeadRadius / 4.0
+	rfc /* radius from center of snake */ := ie + game.HeadRadius
+	
+	// shrink   
+	Sphere(
+		entity.BX - sin * rfc, 
+		entity.BY - cos * rfc, 
+		ie, 
+		0.0, game.GetShrinkColorIntensity(), game.GetShrinkColorIntensity())
+	
+	// grow   
+	Sphere(
+		entity.BX + sin * rfc, 
+		entity.BY + cos * rfc, 
+		ie, 
+		0.0, game.GetGrowColorIntensity(), game.GetGrowColorIntensity())
+
+	// rotate negative   
+	Sphere(
+		entity.BX, 
+		entity.BY, 
+		ie, 
+		0.0, 0.0, 1.0)
+
+	// rotate positive   
+	Sphere(
+		entity.BX, 
+		entity.BY, 
+		ie, 
+		0.0, 0.0, 1.0)
+
+
+
+
+
+
+
+
 	// draw rotation center  
-	Sphere(cX, cY, game.HeadRadius/3.0, 0.0, 0.0, 1.0)
+	Sphere(
+		cX, 
+		cY, 
+		game.HeadRadius/3.0, 
+		0.0, 0.0, 1.0)
 
 
 
@@ -113,8 +169,8 @@ func Snake() () {
 		cRad := game.TailRadius + ftd * entity.DelRad
 
 		Sphere(
-			tX                                       + ftd * entity.DelX, 
-			tY                                       + ftd * entity.DelY, 
+			tX + ftd * entity.DelX, 
+			tY + ftd * entity.DelY, 
 			cRad, 
 			1.0, 1.0, 1.0)
 

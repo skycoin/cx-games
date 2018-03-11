@@ -39,6 +39,8 @@ var CurrSnakeExtent f32 = 0.17
 var CurrSnakeAim f32 = 0.0
 var TailRadius f32 = 0.02
 var HeadRadius f32 = 0.07
+var shrinkColorIntensity f32
+var growColorIntensity f32
 
 
 func Init() () {
@@ -58,7 +60,11 @@ func Init() () {
 
 func Update() () {
 	//setRotationTestPos()
-	ccInput.Update()
+	//shrinkColorIntensity = 0.0
+	//growColorIntensity = 0.0
+
+	ccInput.Update() // will update color intensity? 
+	// (according to directions on mouse cursor position updates) 
 	entity.Update()
 }
 
@@ -79,10 +85,32 @@ func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
 		CurrSnakeExtent = MinSnakeExtent
 	}
 
-	str.print(str.concat("deltaX: ", f32.str(deltaX)))
-	str.print(str.concat("deltaY: ", f32.str(deltaY)))
+	if rotY > 0.0 {
+		growColorIntensity = 1.0
+	} else {
+		growColorIntensity = 0.0
+	}
+
+	if rotY < 0.0 {
+		shrinkColorIntensity = 1.0
+	} else {
+		shrinkColorIntensity = 0.0
+	}
+
+	//str.print(str.concat("deltaX: ", f32.str(deltaX)))
+	//str.print(str.concat("deltaY: ", f32.str(deltaY)))
 	//str.print(str.concat("CurrSnakeAim: ", f32.str(CurrSnakeAim)))
 	//str.print(str.concat("CurrSnakeExtent: ", f32.str(CurrSnakeExtent)))
+}
+
+
+func GetShrinkColorIntensity() (out f32) {
+	return shrinkColorIntensity
+}
+
+
+func GetGrowColorIntensity() (out f32) {
+	return growColorIntensity
 }
 
 
