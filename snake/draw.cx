@@ -68,13 +68,17 @@ func Snake() () {
 	xOff := game.CurrSnakeExtent * f32.sin(game.CurrSnakeAim)
 	yOff := game.CurrSnakeExtent * f32.cos(game.CurrSnakeAim) 
 	
+	// center pos 
+	cX := []f32.read(entity.X, entity.SnakeId)
+	cY := []f32.read(entity.Y, entity.SnakeId)
+
 	// tail pos 
-	tX := []f32.read(entity.X, entity.SnakeId) - xOff
-	tY := []f32.read(entity.Y, entity.SnakeId) - yOff
+	tX := cX - xOff
+	tY := cY - yOff
 
 	// head pos 
-	hX := []f32.read(entity.X, entity.SnakeId) + xOff
-	hY := []f32.read(entity.Y, entity.SnakeId) + yOff
+	hX := cX + xOff
+	hY := cY + yOff
 	
 
 
@@ -93,6 +97,9 @@ func Snake() () {
 
 	// draw head 
 	Sphere(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
+
+	// draw rotation center  
+	Sphere(cX, cY, game.HeadRadius/3.0, 0.0, 0.0, 1.0)
 
 
 
