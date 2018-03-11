@@ -65,11 +65,11 @@ func Update() () {
 
 var divisor f32 = 1000.0
 func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
-	div := 200.0
-	rotX, rotY = deltaX/div, deltaY/div
+	div := 90.0
+	rotX, rotY = rotatePositionByAngle(deltaX/div, deltaY/div, CurrSnakeAim)
 
-	CurrSnakeAim    += (deltaX / divisor * 2.0)
-	CurrSnakeExtent -= (deltaY / divisor)
+	CurrSnakeAim    += rotX
+	CurrSnakeExtent += rotY / 19.0
 
 	if CurrSnakeExtent > MaxSnakeExtent {
 		CurrSnakeExtent = MaxSnakeExtent
