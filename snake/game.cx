@@ -19,6 +19,11 @@ type Rect struct {
 	Left f32
 }
 
+// rotation test 
+var rotX f32
+var rotY f32
+var ang f32
+
 // screen 
 var Width i32 = 1280
 var Height i32 = 720
@@ -28,10 +33,10 @@ var ScreenBoundsBottom f32
 var ScreenBoundsLeft f32
 
 // snake 
-var MinSnakeExtent f64 = 0.1D
-var MaxSnakeExtent f64 = 0.35D
-var CurrSnakeExtent f64 = 0.17D
-var CurrSnakeAim f64 = 0.0D
+var MinSnakeExtent f32 = 0.1
+var MaxSnakeExtent f32 = 0.35
+var CurrSnakeExtent f32 = 0.17
+var CurrSnakeAim f32 = 0.0
 var TailRadius f32 = 0.02
 var HeadRadius f32 = 0.07
 
@@ -52,18 +57,22 @@ func Init() () {
 
 
 func Update() () {
+	setRotationTestPos()
 	ccInput.Update()
 	entity.Update()
 }
 
 
+var divisor f32 = 1000.0
+func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
+	// rotated pos 
+	x, y := //rotatePositionByAngle(
+		deltaX, 
+		0.0 - deltaY //, 
+		//CurrSnakeAim)
 
-
-
-var divisor f64 = 1000.0D
-func AdjustSnakeAimAndSize(deltaX f64, deltaY f64) () {
-	CurrSnakeAim    -= (deltaX / divisor * 2.0D)
-	CurrSnakeExtent -= (deltaY / divisor)
+	CurrSnakeAim    += (x / divisor * 2.0)
+	CurrSnakeExtent -= (y / divisor)
 
 	if CurrSnakeExtent > MaxSnakeExtent {
 		CurrSnakeExtent = MaxSnakeExtent
@@ -73,8 +82,16 @@ func AdjustSnakeAimAndSize(deltaX f64, deltaY f64) () {
 		CurrSnakeExtent = MinSnakeExtent
 	}
 
-	//str.print(str.concat("CurrSnakeAim: ", f64.str(CurrSnakeAim)))
-	//str.print(str.concat("CurrSnakeExtent: ", f64.str(CurrSnakeExtent)))
+	str.print(str.concat("deltaX: ", f32.str(deltaX)))
+	str.print(str.concat("deltaY: ", f32.str(deltaY)))
+	//str.print(str.concat("CurrSnakeAim: ", f32.str(CurrSnakeAim)))
+	//str.print(str.concat("CurrSnakeExtent: ", f32.str(CurrSnakeExtent)))
+}
+
+
+func GetPosOfRotTest() (x f32, y f32) {
+	x = rotX
+	y = rotY
 }
 
 
@@ -82,4 +99,28 @@ func GetDistance(aX f32, aY f32, bX f32, bY f32) (out f32) {
 	xOff := bX - aX
 	yOff := bY - aY
 	return f32.pow((xOff ** 2.0) + (yOff ** 2.0), 0.5)
+}
+
+
+
+// private 
+
+func rotatePositionByAngle(posX f32, posY f32, angle f32) (x f32, y f32) {
+	s := f32.sin(angle)
+	c := f32.cos(angle)
+
+	return
+		posX * c - posY * s,
+		posX * s + posY * c
+}
+
+
+func setRotationTestPos() () {
+	dist := 0.6
+
+	rotX, rotY = 
+		f32.sin(ang) * dist, 
+		f32.cos(ang) * dist
+
+	ang += 0.6
 }

@@ -1,9 +1,10 @@
 package draw
 
+// common  
 import "gl"
-//import "glfw"
 import "gltext"
 
+// game 
 import "entity"
 import "game"
 
@@ -21,6 +22,9 @@ func Init() () {
 
 
 func All() () {
+	x, y := game.GetPosOfRotTest()
+	Sphere(x, y, 0.07, 1.0, 0.0, 0.0)
+
 	Snake()
 	Entities()
 	Text()
@@ -61,8 +65,8 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 
 func Snake() () {
 	// head/tail deltas (from center of snake) 
-	xOff := f64.f32(game.CurrSnakeExtent * f64.cos(game.CurrSnakeAim))
-	yOff := f64.f32(game.CurrSnakeExtent * f64.sin(game.CurrSnakeAim)) 
+	xOff := game.CurrSnakeExtent * f32.sin(game.CurrSnakeAim)
+	yOff := game.CurrSnakeExtent * f32.cos(game.CurrSnakeAim) 
 	
 	// tail pos 
 	tX := []f32.read(entity.X, entity.SnakeId) - xOff
@@ -116,7 +120,7 @@ func Text() () {
 	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
 	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	
-	EntityPinnedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "mouse + W A S D      5")
+	EntityPinnedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "swirl mouse + W A S D      5")
 }
 
 

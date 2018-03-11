@@ -55,9 +55,10 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 	if prevMouseX != 0.0D && prevMouseY != 0.0D {
 		deltaX := x - prevMouseX
 		deltaY := y - prevMouseY
-		game.AdjustSnakeAimAndSize(
-			deltaX * 1.4D, 
-			deltaY / 6.0D)
+
+		game.SetSnakeAimAndSize(
+			f64.f32(deltaX) * 1.4, 
+			f64.f32(deltaY) / 6.0)
 	}
 	
 	prevMouseX = x

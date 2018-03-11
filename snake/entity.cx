@@ -147,7 +147,7 @@ func SetupChainFromAToB(
 	ChainProgress = 0.0 // current spot in distance spectrum (0.0 - 1.0) 
 	
 	if isSnakeEntity {
-		ChainLength = f64.f32(game.CurrSnakeExtent) * 2.0
+		ChainLength = game.CurrSnakeExtent * 2.0
 	} else {
 		ChainLength = game.GetDistance(aX, aY, bX, bY)
 	}
@@ -171,8 +171,8 @@ func Shoot(index i32) () {
 		game.BulletRadius //+ 0.01
 	
 	// offset from origin 
-	oX := d * f64.f32(f64.cos(game.CurrSnakeAim))
-	oY := d * f64.f32(f64.sin(game.CurrSnakeAim))
+	oX := d * f32.sin(game.CurrSnakeAim)
+	oY := d * f32.cos(game.CurrSnakeAim)
 	
 	fraction := 0.01 // ...of distance (for velocity) 
 
