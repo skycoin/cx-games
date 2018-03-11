@@ -49,16 +49,20 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 var prevMouseX f64
 var prevMouseY f64
 func onCursorPosEvent(window str, x f64, y f64) () {
-	//x, y := glfw.GetCursorPos("window")
-	//str.print("mouse cursor at:")
-
 	if prevMouseX != 0.0D && prevMouseY != 0.0D {
 		deltaX := x - prevMouseX
 		deltaY := y - prevMouseY
+		// invert from pixel to world aligned space 
+		// (value increases going up the screen)
+		deltaY = 0.0D - deltaY 
+
+		a := str.concat("cursor event delta ---- x ", f64.str(deltaX))
+		b := str.concat(", y "                      , f64.str(deltaY))
+		str.print(str.concat(a, b))
 
 		game.SetSnakeAimAndSize(
-			f64.f32(deltaX) * 1.4, 
-			f64.f32(deltaY) / 6.0)
+			f64.f32(deltaX),
+			f64.f32(deltaY))
 	}
 	
 	prevMouseX = x

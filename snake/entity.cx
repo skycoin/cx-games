@@ -166,7 +166,7 @@ func Shoot(index i32) () {
 
 	// distance from origin 
 	// (bump it up a bit for a little gap) 
-	d := f64.f32(game.CurrSnakeExtent) + 
+	d := game.CurrSnakeExtent + 
 		game.HeadRadius /* FIXME: should be []f32.read(Rad, index)? */ + 
 		game.BulletRadius //+ 0.01
 	

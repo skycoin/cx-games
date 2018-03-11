@@ -19,7 +19,7 @@ type Rect struct {
 	Left f32
 }
 
-// rotation test 
+// temp? rotation test 
 var rotX f32
 var rotY f32
 var ang f32
@@ -57,7 +57,7 @@ func Init() () {
 
 
 func Update() () {
-	setRotationTestPos()
+	//setRotationTestPos()
 	ccInput.Update()
 	entity.Update()
 }
@@ -65,14 +65,11 @@ func Update() () {
 
 var divisor f32 = 1000.0
 func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
-	// rotated pos 
-	x, y := //rotatePositionByAngle(
-		deltaX, 
-		0.0 - deltaY //, 
-		//CurrSnakeAim)
+	div := 200.0
+	rotX, rotY = deltaX/div, deltaY/div
 
-	CurrSnakeAim    += (x / divisor * 2.0)
-	CurrSnakeExtent -= (y / divisor)
+	CurrSnakeAim    += (deltaX / divisor * 2.0)
+	CurrSnakeExtent -= (deltaY / divisor)
 
 	if CurrSnakeExtent > MaxSnakeExtent {
 		CurrSnakeExtent = MaxSnakeExtent
