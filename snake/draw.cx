@@ -128,74 +128,7 @@ func Snake() () {
 	// draw head 
 	Sphere(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
 
-
-
-
-
-
-
-
-
-
-	// draw indicators
-
-	ie /* ind extent */ := game.HeadRadius / 4.0
-	rfc /* radius from center (of head) */ := ie + game.HeadRadius
-	hoX /* head offset */ := sin * rfc
-	hoY /* head offset */ := cos * rfc
-	
-	// shrink   
-	ci := game.GetShrinkColorIntensity()
-	Triangle(
-		entity.BX - hoX, 
-		entity.BY - hoY, 
-		ie, 
-		game.CurrSnakeAim,
-		0.0, ci, 1.0)
-	
-	// grow   
-	ci = game.GetGrowColorIntensity()
-	Triangle(
-		entity.BX + hoX, 
-		entity.BY + hoY, 
-		ie, 
-		game.CurrSnakeAim,
-		0.0, ci, 1.0)
-
-	// rotate negative   
-	qqX, qqY := game.RotatePositionByAngle(
-		hoX,
-		hoY,
-		0.0 - halfPi)
-
-	ci = game.GetRotateNegativelyColorIntensity()
-	Triangle(
-		entity.BX + qqX, 
-		entity.BY + qqY, 
-		ie, 
-		game.CurrSnakeAim,
-		0.0, ci, 1.0)
-
-	// rotate positive   
-	qqX, qqY = game.RotatePositionByAngle(
-		hoX,
-		hoY,
-		halfPi)
-	
-	ci = game.GetRotatePositivelyColorIntensity()
-	Triangle(
-		entity.BX + qqX, 
-		entity.BY + qqY, 
-		ie, 
-		game.CurrSnakeAim,
-		0.0, ci, 1.0)
-
-
-
-
-
-
-
+	drawIndicators(sin, cos)
 
 	// draw rotation center  
 	Sphere(
@@ -265,4 +198,58 @@ func setupFonts() () {
 	gl.Enable(gl.DEPTH_TEST)
 	gl.DepthFunc(gl.LESS)
 	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
+}
+
+
+func drawIndicators(sin f32, cos f32) () {
+	ie /* ind extent */ := game.HeadRadius / 4.0
+	rfc /* radius from center (of head) */ := ie + game.HeadRadius
+	hoX /* head offset */ := sin * rfc
+	hoY /* head offset */ := cos * rfc
+	
+	// shrink   
+	ci := game.GetShrinkColorIntensity()
+	Triangle(
+		entity.BX - hoX, 
+		entity.BY - hoY, 
+		ie, 
+		game.CurrSnakeAim + pi,
+		0.0, ci, 1.0)
+	
+	// grow   
+	ci = game.GetGrowColorIntensity()
+	Triangle(
+		entity.BX + hoX, 
+		entity.BY + hoY, 
+		ie, 
+		game.CurrSnakeAim,
+		0.0, ci, 1.0)
+
+	// rotate negative   
+	qqX, qqY := game.RotatePositionByAngle(
+		hoX,
+		hoY,
+		halfPi)
+
+	ci = game.GetRotateNegativelyColorIntensity()
+	Triangle(
+		entity.BX + qqX, 
+		entity.BY + qqY, 
+		ie, 
+		game.CurrSnakeAim - halfPi,
+		0.0, ci, 1.0)
+
+	// rotate positive   
+	qqX, qqY = game.RotatePositionByAngle(
+		hoX,
+		hoY,
+		0.0 - halfPi)
+	
+	ci = game.GetRotatePositivelyColorIntensity()
+	Triangle(
+		entity.BX + qqX, 
+		entity.BY + qqY, 
+		ie, 
+		game.CurrSnakeAim + halfPi,
+		0.0, ci, 1.0)
 }

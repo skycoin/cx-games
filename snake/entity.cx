@@ -160,7 +160,7 @@ func AdvanceChainProgressBy(inc f32) () {
 
 
 func Shoot(index i32) () {
-	// snake center (FIXME: ATM, snake is the only thing considered for shooting) 
+	// snake center (FIXME: ATM, snake is the only thing able-to/considered-for shoot/ing) 
 	scX := []f32.read(X, index)
 	scY := []f32.read(Y, index) 
 
