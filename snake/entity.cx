@@ -181,8 +181,8 @@ func Shoot(index i32) () {
 		scY + oY, 
 
 		// velocity 
-		0.0, //oX * fraction, 
-		0.0, //oY * fraction,
+		oX * fraction, 
+		oY * fraction,
 
 		game.BulletRadius,
 		f64.f32(glfw.GetTime()) + 0.75, // expiry

@@ -10,12 +10,20 @@ import "game"
 
 
 
+var pi f32
+var halfPi f32
 var dubPi f32
+var oneThirdPie f32 // 1/3 of a whole PIE (the food, not the number) 
+var twoThirdsPie f32
 
 
 
 func Init() () {
-	dubPi = 2.0 * 3.141592654
+	pi = 3.141592654
+	halfPi = pi / 2.0
+	dubPi = pi * 2.0
+	oneThirdPie = dubPi / 3.0
+	twoThirdsPie = oneThirdPie * 2.0
 	str.print("--- draw.Init()")
 	setupFonts()
 }
@@ -58,6 +66,25 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 
 		gl.Vertex2f(finalX, finalY)
 	}
+
+	gl.End()
+}
+
+
+func Triangle(x f32, y f32, radius f32, angle f32, red f32, green f32, blue f32) () {
+	gl.Begin(gl.POLYGON)
+	gl.Color3f(red, green, blue)
+
+	aX := radius * f32.sin(angle)
+	aY := radius * f32.cos(angle)
+	bX := radius * f32.sin(angle + oneThirdPie)
+	bY := radius * f32.cos(angle + oneThirdPie)
+	cX := radius * f32.sin(angle + twoThirdsPie)
+	cY := radius * f32.cos(angle + twoThirdsPie)
+
+	gl.Vertex2f(x + aX, y + aY)
+	gl.Vertex2f(x + bX, y + bY)
+	gl.Vertex2f(x + cX, y + cY)
 
 	gl.End()
 }
@@ -113,50 +140,54 @@ func Snake() () {
 	// draw indicators
 
 	ie /* ind extent */ := game.HeadRadius / 4.0
-	rfc /* radius from center of head */ := ie + game.HeadRadius
+	rfc /* radius from center (of head) */ := ie + game.HeadRadius
 	hoX /* head offset */ := sin * rfc
 	hoY /* head offset */ := cos * rfc
 	
 	// shrink   
 	ci := game.GetShrinkColorIntensity()
-	Sphere(
+	Triangle(
 		entity.BX - hoX, 
 		entity.BY - hoY, 
 		ie, 
+		game.CurrSnakeAim,
 		0.0, ci, 1.0)
 	
 	// grow   
 	ci = game.GetGrowColorIntensity()
-	Sphere(
+	Triangle(
 		entity.BX + hoX, 
 		entity.BY + hoY, 
 		ie, 
+		game.CurrSnakeAim,
 		0.0, ci, 1.0)
 
 	// rotate negative   
 	qqX, qqY := game.RotatePositionByAngle(
 		hoX,
 		hoY,
-		0.0 - dubPi/4.0)
+		0.0 - halfPi)
 
 	ci = game.GetRotateNegativelyColorIntensity()
-	Sphere(
+	Triangle(
 		entity.BX + qqX, 
 		entity.BY + qqY, 
 		ie, 
+		game.CurrSnakeAim,
 		0.0, ci, 1.0)
 
 	// rotate positive   
 	qqX, qqY = game.RotatePositionByAngle(
 		hoX,
 		hoY,
-		dubPi/4.0)
+		halfPi)
 	
 	ci = game.GetRotatePositivelyColorIntensity()
-	Sphere(
+	Triangle(
 		entity.BX + qqX, 
 		entity.BY + qqY, 
 		ie, 
+		game.CurrSnakeAim,
 		0.0, ci, 1.0)
 
 
