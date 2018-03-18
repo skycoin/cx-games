@@ -10,6 +10,7 @@ var NumDirectionRadians i32 = 256 // gives 64 possibilities per quadrant
 var DirectionRadianGrain f32
 var AsteroidVelocityGrain f32 = 0.00002
 var BulletRadius f32 = 0.015
+var timeDelta f32
 
 // FIXME: when classes are useable outside their package of declaration 
 type Rect struct {
@@ -61,12 +62,36 @@ func Init() () {
 
 func Update() () {
 	//setRotationTestPos()
-	//shrinkColorIntensity = 0.0
-	//growColorIntensity = 0.0
 
-	ccInput.Update() // will update color intensity? 
-	// (according to relative directions of mouse cursor position updates) 
+	updateTiming()
+	fadeDirectionalIndicatorsColorIntensity()
+	ccInput.Update() 
 	entity.Update()
+}
+
+
+var prevFrameTime f32
+func updateTiming() () {
+	ct := f64.f32(glfw.GetTime())
+	timeDelta = ct - prevFrameTime
+	prevFrameTime = ct
+}
+
+
+func fadeDirectionalIndicatorsColorIntensity() () {
+	rotatePositivelyColorIntensity = fadeColorIntensity(rotatePositivelyColorIntensity)
+	rotateNegativelyColorIntensity = fadeColorIntensity(rotateNegativelyColorIntensity)
+	growColorIntensity = fadeColorIntensity(growColorIntensity)
+	shrinkColorIntensity = fadeColorIntensity(shrinkColorIntensity)
+}
+
+
+func fadeColorIntensity(f f32) (out f32) {
+	if f > 0.0 {
+		f -= (timeDelta * 1.4)
+	}
+
+	return f
 }
 
 
