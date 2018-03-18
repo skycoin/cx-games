@@ -97,6 +97,7 @@ func fadeColorIntensity(f f32) (out f32) {
 
 var divisor f32 = 1000.0
 func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
+	rotateMul := 21.5
 	div := 90.0
 	rotX, rotY = RotatePositionByAngle(deltaX/div, deltaY/div, CurrSnakeAim)
 
@@ -115,25 +116,37 @@ func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
 
 	// set directional indicator colors 
 	if rotX > 0.0 {
-		rotatePositivelyColorIntensity = 1.0
+		rotatePositivelyColorIntensity += rotX * timeDelta * rotateMul
+		if rotatePositivelyColorIntensity > 1.0 {
+			rotatePositivelyColorIntensity = 1.0
+		}
 	} else {
 		rotatePositivelyColorIntensity = 0.0
 	}
 
 	if rotX < 0.0 {
-		rotateNegativelyColorIntensity = 1.0
+		rotateNegativelyColorIntensity += 0.0 - rotX * timeDelta * rotateMul
+		if rotateNegativelyColorIntensity > 1.0 {
+			rotateNegativelyColorIntensity = 1.0
+		}
 	} else {
 		rotateNegativelyColorIntensity = 0.0
 	}
 
 	if rotY > 0.0 {
-		growColorIntensity = 1.0
+		growColorIntensity += rotY * timeDelta * rotateMul
+		if growColorIntensity > 1.0 {
+			growColorIntensity = 1.0
+		}
 	} else {
 		growColorIntensity = 0.0
 	}
 
 	if rotY < 0.0 {
-		shrinkColorIntensity = 1.0
+		shrinkColorIntensity += 0.0 - rotY * timeDelta * rotateMul
+		if shrinkColorIntensity > 1.0 {
+			shrinkColorIntensity = 1.0
+		}
 	} else {
 		shrinkColorIntensity = 0.0
 	}
