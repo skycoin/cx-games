@@ -213,10 +213,12 @@ func IsCollidable(i i32) (out bool) {
 func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f32, collidable bool) () {
 	shouldAppendNewIndex := true
 
-	// reserving 0 for player's snake (all other indices up for recycling)
-	for i := 1; i < []f32.len(X); i++ {
-		if /* found dead entity... */ IsAlive(i) == false {
-			// ...recycle it (rather than appending a new entity)
+	// look for & resurrect 1 of the dead 
+	// (if possible, otherwise append new entity) 
+	num := []f32.len(X)
+	for i := 1; i < num; i++ { // skip 0 (snake)
+		if IsAlive(i) == false {
+			// ...resurrect it with all new values 
 			shouldAppendNewIndex = false
 			[]f32.write(X, i, x)
 			[]f32.write(Y, i, y)
@@ -232,6 +234,7 @@ func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f32, collidab
 			}
 
 			// set color?  for now, keeps the same color as the original 
+			i = num // breaks out of loop 
 		}
 	}
 

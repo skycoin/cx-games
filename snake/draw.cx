@@ -126,11 +126,12 @@ func Snake() () {
 		true)
 
 	// draw head 
-	Sphere(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
+	//Sphere(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
+	Triangle(entity.BX, entity.BY, game.HeadRadius, game.CurrSnakeAim, 0.0, 0.0, 1.0)
 
 	drawIndicators(sin, cos)
 
-	// draw rotation center  
+	// draw rotation (center hinge) point 
 	Sphere(
 		cX, 
 		cY, 
@@ -214,7 +215,7 @@ func drawIndicators(sin f32, cos f32) () {
 		entity.BY - hoY, 
 		ie, 
 		game.CurrSnakeAim + pi,
-		0.0, ci, 1.0)
+		ci, 0.0, 1.0)
 	
 	// grow   
 	ci = game.GetGrowColorIntensity()
@@ -223,7 +224,7 @@ func drawIndicators(sin f32, cos f32) () {
 		entity.BY + hoY, 
 		ie, 
 		game.CurrSnakeAim,
-		0.0, ci, 1.0)
+		ci, 0.0, 1.0)
 
 	// rotate negative   
 	qqX, qqY := game.RotatePositionByAngle(
@@ -237,7 +238,7 @@ func drawIndicators(sin f32, cos f32) () {
 		entity.BY + qqY, 
 		ie, 
 		game.CurrSnakeAim - halfPi,
-		0.0, ci, 1.0)
+		ci, 0.0, 1.0)
 
 	// rotate positive   
 	qqX, qqY = game.RotatePositionByAngle(
@@ -251,5 +252,5 @@ func drawIndicators(sin f32, cos f32) () {
 		entity.BY + qqY, 
 		ie, 
 		game.CurrSnakeAim + halfPi,
-		0.0, ci, 1.0)
+		ci, 0.0, 1.0)
 }
