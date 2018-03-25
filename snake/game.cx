@@ -27,7 +27,7 @@ var xOfPerfectRadius      f32 // current pos
 var yOfPerfectRadius      f32 // current pos 
 var visualizerAngle        f32
 var visualizerRadius       f32 = 0.6
-var visualizerFrameAdvance f32 = 0.6
+var visualizerFrameAdvance f32 = 0.3
 
 // screen 
 var Width i32 = 1280
@@ -222,8 +222,8 @@ func setPosOfVisualizers() () {
 		f32.cos(visualizerAngle) * visualizerRadius
 
 	bd := 
-		xOfPerfectRadius + 
-		yOfPerfectRadius
+		f32.abs(xOfPerfectRadius) + 
+		f32.abs(yOfPerfectRadius)
 
 	xOfBoxyDistance, 
 	yOfBoxyDistance = 

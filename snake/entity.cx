@@ -113,7 +113,7 @@ func Update() () {
 				nX := oX + vx * mm
 				nY := oY + vy * mm
 				bd := []f32.read(BoxyDistance, i)
-				[]f32.write(BoxyDistance, i, bd += ((vx * mm) + (vy * mm))
+				[]f32.write(BoxyDistance, i, bd + f32.abs(vx * mm) + f32.abs(vy * mm))
 
 				// detect collision before potential screen wrapping teleport. 
 				// because a screen spanning delta makes no sense for collision 
@@ -198,19 +198,20 @@ func IsAlive(i i32) (out bool) {
 	te := []f32.read(Expiry, i)
 	de := []f32.read(DistanceExpiry, i)
 
-	if te != 0.0 /* (dies to time) */ &&
-		te <= currFrame { // (lived too long) 
+	
+	if /* entity has a lifespan */ te != 0.0 
+		&&
+		/* it died */              te <= currFrame {
 
 		return false
 	}
 
-	/*
-	if de != 0.0 /* (dies to distance) */ &&
-		de <= []f32.read(BoxyDistance, i) { // (moved too far) 
-
+	if /* entity is distance leashed */ de != 0.0 
+		&&
+		/* it moved too far */          de <= []f32.read(BoxyDistance, i) {
+	
 		return false
 	}
-	*/
 
 	return true
 }
@@ -273,6 +274,7 @@ func SpawnEntity(
 		
 		Rad = []f32.append(Rad, rad)
 		Expiry = []f32.append(Expiry, expiry)
+		
 		DistanceExpiry = []f32.append(DistanceExpiry, distExpiry)
 		BoxyDistance = []f32.append(BoxyDistance, 0.0)
 
