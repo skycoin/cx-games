@@ -20,6 +20,15 @@ type Rect struct {
 	Left f32
 }
 
+// full spectrum cos/sin angle/radius test visualizers 
+var xOfBoxyDistance        f32
+var yOfBoxyDistance        f32
+var xOfPerfectRadius      f32 // current pos 
+var yOfPerfectRadius      f32 // current pos 
+var visualizerAngle        f32
+var visualizerRadius       f32 = 0.6
+var visualizerFrameAdvance f32 = 0.6
+
 // screen 
 var Width i32 = 1280
 var Height i32 = 720
@@ -56,6 +65,8 @@ func Init() () {
 
 
 func Update() () {
+	setPosOfVisualizers()
+
 	updateTiming()
 	fadeDirectionalIndicatorsColorIntensity()
 	ccInput.Update() 
@@ -180,9 +191,6 @@ func GetDistance(aX f32, aY f32, bX f32, bY f32) (out f32) {
 }
 
 
-
-// private 
-
 func RotatePositionByAngle(posX f32, posY f32, angle f32) (x f32, y f32) {
 	s := f32.sin(angle)
 	c := f32.cos(angle)
@@ -190,4 +198,38 @@ func RotatePositionByAngle(posX f32, posY f32, angle f32) (x f32, y f32) {
 	return
 		posX * c - posY * s,
 		posX * s + posY * c
+}
+
+
+func GetPosOfPerfectRadiusVisualizer() (x f32, y f32) {
+	x = xOfPerfectRadius
+	y = yOfPerfectRadius
+}
+
+
+func GetPosOfBoxyDistanceVisualizer() (x f32, y f32) {
+	x = xOfBoxyDistance
+	y = yOfBoxyDistance
+}
+
+
+// private 
+
+func setPosOfVisualizers() () {
+	xOfPerfectRadius, 
+	yOfPerfectRadius = 
+		f32.sin(visualizerAngle) * visualizerRadius, 
+		f32.cos(visualizerAngle) * visualizerRadius
+
+	bd := 
+		xOfPerfectRadius + 
+		yOfPerfectRadius
+
+	xOfBoxyDistance, 
+	yOfBoxyDistance = 
+		f32.sin(visualizerAngle) * bd, 
+		f32.cos(visualizerAngle) * bd
+
+	visualizerAngle += 
+	visualizerFrameAdvance
 }

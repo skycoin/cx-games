@@ -30,6 +30,12 @@ func Init() () {
 
 
 func All() () {
+	x, y := game.GetPosOfPerfectRadiusVisualizer()
+	Sphere(x, y, 0.07, 1.0, 0.0, 0.0)	
+
+	x, y := game.GetPosOfBoxyDistanceVisualizer()
+	Sphere(x, y, 0.07, 0.0, 1.0, 0.0)	
+
 	Snake()
 	Entities()
 	Text()
