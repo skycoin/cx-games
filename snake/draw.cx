@@ -30,9 +30,6 @@ func Init() () {
 
 
 func All() () {
-	//x, y := game.GetPosOfRotTest()
-	//Sphere(x, y, 0.07, 1.0, 0.0, 0.0)
-
 	Snake()
 	Entities()
 	Text()
@@ -208,7 +205,7 @@ func drawIndicators(sin f32, cos f32) () {
 	hoX /* head offset */ := sin * rfc
 	hoY /* head offset */ := cos * rfc
 	
-	// shrink   
+	// shrink 
 	ci := game.GetShrinkColorIntensity()
 	Triangle(
 		entity.BX - hoX, 
@@ -217,7 +214,7 @@ func drawIndicators(sin f32, cos f32) () {
 		game.CurrSnakeAim + pi,
 		ci, 0.0, 1.0)
 	
-	// grow   
+	// grow 
 	ci = game.GetGrowColorIntensity()
 	Triangle(
 		entity.BX + hoX, 
@@ -226,7 +223,7 @@ func drawIndicators(sin f32, cos f32) () {
 		game.CurrSnakeAim,
 		ci, 0.0, 1.0)
 
-	// rotate negative   
+	// rotate negative 
 	qqX, qqY := game.RotatePositionByAngle(
 		hoX,
 		hoY,
@@ -240,7 +237,7 @@ func drawIndicators(sin f32, cos f32) () {
 		game.CurrSnakeAim - halfPi,
 		ci, 0.0, 1.0)
 
-	// rotate positive   
+	// rotate positive 
 	qqX, qqY = game.RotatePositionByAngle(
 		hoX,
 		hoY,

@@ -7,7 +7,7 @@ import "entity"
 
 var Name str = "  S  N  A  K  E  "
 var NumDirectionRadians i32 = 256 // gives 64 possibilities per quadrant 
-var DirectionRadianGrain f32
+var RandomAngleRadianGrain f32
 var AsteroidVelocityGrain f32 = 0.00002
 var BulletRadius f32 = 0.015
 var timeDelta f32
@@ -19,11 +19,6 @@ type Rect struct {
 	Bottom f32
 	Left f32
 }
-
-// temp? rotation test 
-var rotX f32
-var rotY f32
-var ang f32
 
 // screen 
 var Width i32 = 1280
@@ -46,7 +41,7 @@ var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
 
 func Init() () {
-	DirectionRadianGrain = 2.0 * 3.141592654 / i32.f32(NumDirectionRadians)
+	RandomAngleRadianGrain = 2.0 * 3.141592654 / i32.f32(NumDirectionRadians)
 
 	// FIXME: ATM, making assumptions about vertical span 
 	horizontalScreenSpan := i32.f32(Width) / i32.f32(Height)
@@ -61,8 +56,6 @@ func Init() () {
 
 
 func Update() () {
-	//setRotationTestPos()
-
 	updateTiming()
 	fadeDirectionalIndicatorsColorIntensity()
 	ccInput.Update() 
@@ -99,7 +92,7 @@ var divisor f32 = 1000.0
 func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
 	rotateMul := 21.5
 	div := 90.0
-	rotX, rotY = RotatePositionByAngle(deltaX/div, deltaY/div, CurrSnakeAim)
+	rotX, rotY := RotatePositionByAngle(deltaX/div, deltaY/div, CurrSnakeAim)
 
 	CurrSnakeAim    += rotX
 	CurrSnakeExtent += rotY / 19.0
@@ -180,12 +173,6 @@ func GetRotatePositivelyColorIntensity() (out f32) {
 }
 
 
-func GetPosOfRotTest() (x f32, y f32) {
-	x = rotX
-	y = rotY
-}
-
-
 func GetDistance(aX f32, aY f32, bX f32, bY f32) (out f32) {
 	xOff := bX - aX
 	yOff := bY - aY
@@ -203,15 +190,4 @@ func RotatePositionByAngle(posX f32, posY f32, angle f32) (x f32, y f32) {
 	return
 		posX * c - posY * s,
 		posX * s + posY * c
-}
-
-
-func setRotationTestPos() () {
-	dist := 0.6
-
-	rotX, rotY = 
-		f32.sin(ang) * dist, 
-		f32.cos(ang) * dist
-
-	ang += 0.6
 }
