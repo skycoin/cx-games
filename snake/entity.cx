@@ -31,9 +31,9 @@ var VelY []f32
 var Rad []f32 // radius 
 var Expiry []f32
 var IsCollidable []i32 // FIXME when bool arrays are fixed 
-var BoxyDistance []f32 // a cheap and innaccurate sum of the axis-aligned distance in 2D. 
-	// BUT, it actually works out kind of nicely.  as bullets could reach exactly to the 
-	// farther (or nearer) edges of the screen (assuming shooter is in the exact center). 
+var BoxyDistance []f32 // a cheap and inaccurate sum of the 2 axis-aligned distances in 2D. 
+	// when plotting the full spectrum of radian/angle possibilities, 
+	// it forms a fairly box-like shape (but the 4 "sides" are wavy lines rather than straight) 
 var DistanceExpiry []f32
 
 var Red []f32
