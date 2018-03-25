@@ -31,6 +31,10 @@ var VelY []f32
 var Rad []f32 // radius 
 var Expiry []f32
 var IsCollidable []i32 // FIXME when bool arrays are fixed 
+var BoxyDistance []f32 // a cheap and innaccurate sum of the axis-aligned distance in 2D. 
+	// BUT, it actually works out kind of nicely.  as bullets could reach exactly to the 
+	// farther (or nearer) edges of the screen (assuming shooter is in the exact center). 
+var DistanceExpiry []f32
 
 var Red []f32
 var Green []f32
@@ -80,7 +84,7 @@ func Init() () {
 			vy = 0.005
 		}
 
-		SpawnEntity(x, y, vx, vy, 0.1, 0.0, collidable)
+		SpawnEntity(x, y, vx, vy, 0.1, 0.0, 0.0, collidable)
 	}
 }
 
@@ -108,6 +112,8 @@ func Update() () {
 				// new spot 
 				nX := oX + vx * mm
 				nY := oY + vy * mm
+				bd := []f32.read(BoxyDistance, i)
+				[]f32.write(BoxyDistance, i, bd += ((vx * mm) + (vy * mm))
 
 				// detect collision before potential screen wrapping teleport. 
 				// because a screen spanning delta makes no sense for collision 
@@ -177,27 +183,36 @@ func Shoot(index i32) () {
 	fraction := 0.01 // ...of distance (for velocity) 
 
 	SpawnEntity(
-		scX + oX, 
-		scY + oY, 
-
-		// velocity 
-		oX * fraction, 
-		oY * fraction,
-
+		scX + oX, // pos 
+		scY + oY, // pos 
+		oX * fraction, // velocity 
+		oY * fraction, // velocity 
 		game.BulletRadius,
-		f64.f32(glfw.GetTime()) + 0.75, // expiry
+		0.0, //f64.f32(glfw.GetTime()) + 0.75, // time expiry
+		game.ScreenBoundsRight,                // distance expiry 
 		true)
 }
 
 
 func IsAlive(i i32) (out bool) {
-	e := []f32.read(Expiry, i)
+	te := []f32.read(Expiry, i)
+	de := []f32.read(DistanceExpiry, i)
 
-	if e == 0.0 || e > currFrame {
-		return true
+	if te != 0.0 /* (dies to time) */ &&
+		te <= currFrame { // (lived too long) 
+
+		return false
 	}
 
-	return false
+	/*
+	if de != 0.0 /* (dies to distance) */ &&
+		de <= []f32.read(BoxyDistance, i) { // (moved too far) 
+
+		return false
+	}
+	*/
+
+	return true
 }
 
 
@@ -210,7 +225,16 @@ func IsCollidable(i i32) (out bool) {
 }
 
 
-func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f32, collidable bool) () {
+func SpawnEntity(
+	x f32, 
+	y f32, 
+	velX f32, 
+	velY f32, 
+	rad f32, 
+	expiry f32, 
+	distExpiry f32, 
+	collidable bool) () {
+
 	shouldAppendNewIndex := true
 
 	// look for & resurrect 1 of the dead 
@@ -226,6 +250,8 @@ func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f32, collidab
 			[]f32.write(VelY, i, velY)
 			[]f32.write(Rad, i, rad)
 			[]f32.write(Expiry, i, expiry)
+			[]f32.write(DistanceExpiry, i, distExpiry)
+			[]f32.write(BoxyDistance, i, 0.0)
 
 			if collidable {
 				[]i32.write(IsCollidable, i, isTrue)
@@ -247,6 +273,8 @@ func SpawnEntity(x f32, y f32, velX f32, velY f32, rad f32, expiry f32, collidab
 		
 		Rad = []f32.append(Rad, rad)
 		Expiry = []f32.append(Expiry, expiry)
+		DistanceExpiry = []f32.append(DistanceExpiry, distExpiry)
+		BoxyDistance = []f32.append(BoxyDistance, 0.0)
 
 		if collidable {
 			IsCollidable = []i32.append(IsCollidable, isTrue)
@@ -359,8 +387,8 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				}
 	
 				// random direction 
-				rdi := /* ...int   */ i32.rand(0,    game.NumDirectionRadians)
-				rdf := /* ...float */ i32.f32(rdi) * game.DirectionRadianGrain
+				rdi := /* ...int   */ i32.rand(0,    game.NumRadianGrains)
+				rdf := /* ...float */ i32.f32(rdi) * game.RadianGrainForRNG
 				
 				// offset scalar (from centerpoint of biggest entity) 
 				// to ensure no initial overlap/collision 
@@ -378,7 +406,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 					collidable = false
 				}
 
-				// spawn 2 half-size spheres, slightly separated 
+				// spawn 2 half-radius spheres, slightly separated 
 				// (so there's no collision with each other) 
 				// and lined up (opposite each other, from 0,0) along a random angle 
 				
@@ -393,6 +421,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 						0.0, //offY / divisor,
 						beR, 
 						expiry,
+						0.0, // distance based expiry 
 						collidable)
 		
 					SpawnEntity(
@@ -402,6 +431,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 						0.0, //0.0 - offY / divisor,
 						beR, 
 						expiry,
+						0.0, // distance based expiry 
 						collidable)
 				} else {
 					for ii := 0; ii < 2; ii++ {
@@ -412,6 +442,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 							i32.f32(i32.rand(-49, 50)) * mult,
 							game.BulletRadius, 
 							currFrame + 1.5,
+							0.0, // distance based expiry 
 							collidable)
 						}
 				}
