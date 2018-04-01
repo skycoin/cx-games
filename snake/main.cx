@@ -31,7 +31,7 @@ func main () () {
 
 func setupGL() () {
 	glfw.Init()
-	glfw.CreateWindow("window", game.Width, game.Height, game.Name)
+	glfw.CreateWindow("window", game.ScreenNumPixelsWide, game.ScreenNumPixelsHigh, game.Name)
 	glfw.MakeContextCurrent("window")
 	ccInput.Init()
 	gl.Init()

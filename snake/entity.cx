@@ -7,8 +7,7 @@ var maxVelocity f32 = 0.01
 var maxNegativeVelocity f32 = -0.01
 var velocityInc f32
 var mm f32 // movement multiplier 
-var pixelSpanX f32
-var pixelSpanY f32
+var pixelSpan f32
 var gradientSpan f32
 var currFrame f32
 
@@ -66,13 +65,13 @@ var DelRad f32
 func Init() () {
 	str.print("--- entity.Init()")
 
-	pixelSpanX = 2.0 / i32.f32(game.Width)
-	pixelSpanY = 2.0 / i32.f32(game.Height)
+	pixelSpan = 2.0 / i32.f32(game.ScreenNumPixelsHigh) // range of   -1.0 --- 1.0 
+	//		...and vertical portion of aspect ratio is always 1.0 
 	gradientSpan = 1.0 / 300.0
 
 	for i := 0; i < numEnts; i++ {
-		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.Width + 1)) * pixelSpanY
-		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.Height + 1)) * pixelSpanY
+		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.ScreenNumPixelsWide + 1)) * pixelSpan
+		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.ScreenNumPixelsHigh + 1)) * pixelSpan
 		vx,	vy := getRandomVelocities()
 		collidable := true
 
@@ -91,16 +90,19 @@ func Init() () {
 
 var prevFrame f32
 func Update() () {
+	numAlive := 0;
  	currFrame   = f64.f32(glfw.GetTime())
  	deltaFrame := currFrame - prevFrame
  	mm          = deltaFrame * 200.0
  	velocityInc = deltaFrame / 50.0
 
-	// per frame  
+	// per frame...
 	for i := 0; i < []f32.len(X); i++ {
-		// per relevant entity 			
+		// ...per relevant entity 
 		if IsAlive(i) {
-			// movement
+			numAlive++;
+
+			// movement 
 			vx := []f32.read(VelX, i) 
 			vy := []f32.read(VelY, i)
 
@@ -125,6 +127,13 @@ func Update() () {
 				updatePosition_MaybeToOppositeEdgeOfScreen(nX, nY, i)
 			}
 		}
+	}
+
+	// player/snake would generally be alive here.
+	// just detecting when a stage is clear.
+	// (moment of expiry (state change) prob will be handled elsewhere) 
+	if numAlive <= 1 {
+		game.Stage++;
 	}
 
 	prevFrame = currFrame

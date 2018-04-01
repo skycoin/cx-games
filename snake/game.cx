@@ -12,26 +12,18 @@ var AsteroidVelocityGrain f32 = 0.00002
 var BulletRadius f32 = 0.015
 var timeDelta f32
 
-// FIXME: when classes are useable outside their package of declaration 
-type Rect struct {
-	Top f32
-	Right f32
-	Bottom f32
-	Left f32
-}
-
 // full spectrum cos/sin angle/radius test visualizers 
 var xOfBoxyDistance        f32
 var yOfBoxyDistance        f32
-var xOfPerfectRadius      f32 // current pos 
-var yOfPerfectRadius      f32 // current pos 
+var xOfPerfectRadius       f32 // current pos 
+var yOfPerfectRadius       f32 // current pos 
 var visualizerAngle        f32
 var visualizerRadius       f32 = 0.6
 var visualizerFrameAdvance f32 = 0.3
 
 // screen 
-var Width i32 = 1280
-var Height i32 = 720
+var ScreenNumPixelsWide i32 = 1280
+var ScreenNumPixelsHigh i32 = 720
 var ScreenBoundsTop f32
 var ScreenBoundsRight f32
 var ScreenBoundsBottom f32
@@ -49,15 +41,24 @@ var growColorIntensity f32
 var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
 
+// game state 
+const GAMESTATE_Playing  i32 = 0
+const GAMESTATE_GameOver i32 = 1
+const GAMESTATE_Menu     i32 = 2
+var Mode  i32
+var Stage i32 // waves that get progressively harder, like 80s arcade games 
+
+
+
 func Init() () {
 	RadianGrainForRNG = 2.0 * 3.141592654 / i32.f32(NumRadianGrains)
 
-	// FIXME: ATM, making assumptions about vertical span 
-	horizontalScreenSpan := i32.f32(Width) / i32.f32(Height)
+	//vertical portion of aspect ratio is always 1.0 (in movie industry) 
+	extentXFromOrigin := i32.f32(ScreenNumPixelsWide) / i32.f32(ScreenNumPixelsHigh)
 	ScreenBoundsTop = 1.0
-	ScreenBoundsRight = horizontalScreenSpan
+	ScreenBoundsRight = extentXFromOrigin
 	ScreenBoundsBottom = -1.0
-	ScreenBoundsLeft = 0.0 - horizontalScreenSpan
+	ScreenBoundsLeft = 0.0 - extentXFromOrigin
 
 	entity.Init()
 	str.print("--- game.Init()")
@@ -65,7 +66,7 @@ func Init() () {
 
 
 func Update() () {
-	setPosOfVisualizers()
+	//setPosOfVisualizers()
 
 	updateTiming()
 	fadeDirectionalIndicatorsColorIntensity()

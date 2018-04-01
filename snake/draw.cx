@@ -30,11 +30,15 @@ func Init() () {
 
 
 func All() () {
+	/*
+	
 	x, y := game.GetPosOfPerfectRadiusVisualizer()
 	Sphere(x, y, 0.07, 1.0, 0.0, 0.0)	
 
 	x, y := game.GetPosOfBoxyDistanceVisualizer()
 	Sphere(x, y, 0.07, 0.0, 1.0, 0.0)	
+	
+	*/
 
 	Snake()
 	Entities()
@@ -167,17 +171,17 @@ func Text() () {
 	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
 	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	
-	EntityPinnedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "swirl mouse + W A S D      5")
+	EntityPinnedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "mouse + W A S D      5")
 }
 
 
 func EntityPinnedText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
 	// text space positions 
-	midX := i32.f32(game.Width)  / 2.0
-	midY := i32.f32(game.Height) / 2.0
+	midX := i32.f32(game.ScreenNumPixelsWide)  / 2.0
+	midY := i32.f32(game.ScreenNumPixelsHigh) / 2.0
 	dfc /* distance from center */ := x / game.ScreenBoundsRight
 	x := offsetX + midX + midX * dfc
-	y := offsetY + i32.f32(game.Height) - (y - game.ScreenBounds.Bottom) * midY
+	y := offsetY + i32.f32(game.ScreenNumPixelsHigh) - (y - game.ScreenBounds.Bottom) * midY
 
 	gl.Color4f(0.8, 0.0, 0.8, 1.0)
 	gltext.Printf("Roboto50", x, y, s)
