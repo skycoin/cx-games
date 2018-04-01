@@ -42,9 +42,9 @@ var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
 
 // game state 
-const GAMESTATE_Playing  i32 = 0
-const GAMESTATE_GameOver i32 = 1
-const GAMESTATE_Menu     i32 = 2
+var GAMESTATE_Playing  i32 = 0
+var GAMESTATE_GameOver i32 = 1
+var GAMESTATE_Menu     i32 = 2
 var Mode  i32
 var Stage i32 // waves that get progressively harder, like 80s arcade games 
 
