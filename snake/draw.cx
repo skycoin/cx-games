@@ -10,6 +10,7 @@ import "game"
 
 
 
+// special angle nums 
 var pi f32
 var halfPi f32
 var dubPi f32
@@ -19,12 +20,15 @@ var twoThirdsPie f32
 
 
 func Init() () {
+	str.print("--- draw.Init()")
+
+	// special angle nums 
 	pi = 3.141592654
 	halfPi = pi / 2.0
 	dubPi = pi * 2.0
 	oneThirdPie = dubPi / 3.0
 	twoThirdsPie = oneThirdPie * 2.0
-	str.print("--- draw.Init()")
+
 	setupFonts()
 }
 
@@ -167,17 +171,30 @@ func Snake() () {
 }
 
 
+var middlePixel f32
 func Text() () {
-	//gl.Color4f(0.5, 0.3, 0.8, 1.0)
-	//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
-	
-	EntityPinnedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "mouse + W A S D      5")
+	// determine middle of screen ONLY 1 TIME 
+	if middlePixel == 0.0 {
+		middlePixel = i32.f32(game.ScreenNumPixelsWide) / 2.0
+	}
+
+	// maybe draw top-of-screen text 
+	if game.TempTextTimeToFade != 0.0 &&                    // (text has expiry set &...) 
+		game.TempTextTimeToFade > f64.f32(glfw.GetTime()) { // (...not fading yet) 
+
+		gl.Color4f(0.5, 0.3, 0.8, 1.0)
+		gltext.Printf("Roboto50", middlePixel, 0.0, game.TempText)
+		//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
+	}
+
+	// everlasting text that moves with player 
+	EntityChainedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "mouse + W A S D      5")
 }
 
 
-func EntityPinnedText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
-	// text space positions 
-	midX := i32.f32(game.ScreenNumPixelsWide)  / 2.0
+func EntityChainedText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
+	// dynamic text space positions 
+	midX := i32.f32(game.ScreenNumPixelsWide) / 2.0
 	midY := i32.f32(game.ScreenNumPixelsHigh) / 2.0
 	dfc /* distance from center */ := x / game.ScreenBoundsRight
 	x := offsetX + midX + midX * dfc

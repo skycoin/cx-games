@@ -3,22 +3,26 @@ import "game"
 
 
 
+// FIXME: remove when bool arrays are fixed (for now use integers of 0 or 1) 
+var isFalse i32 = 0
+var isTrue  i32 = 1
+
+// movement 
 var maxVelocity f32 = 0.01
 var maxNegativeVelocity f32 = -0.01
 var velocityInc f32
 var mm f32 // movement multiplier 
-var pixelSpan f32
-var gradientSpan f32
+
+// time  
 var currFrame f32
 
-// FIXME: remove when bool arrays are fixed 
-var isFalse i32 = 0
-var isTrue  i32 = 1
+// space 
+var pixelSpan f32
 
-
+// grains 
+var gradientSpan f32
 
 // entities
-
 var numEnts i32 = 3 //4
 var SnakeId i32
 var X []f32
@@ -65,13 +69,13 @@ var DelRad f32
 func Init() () {
 	str.print("--- entity.Init()")
 
-	pixelSpan = 2.0 / i32.f32(game.ScreenNumPixelsHigh) // range of   -1.0 --- 1.0 
-	//		...and vertical portion of aspect ratio is always 1.0 
+	// screen space ranges from -1.0 to 1.0 
+	pixelSpan = 2.0 / i32.f32(game.ScreenNumPixelsHigh)
 	gradientSpan = 1.0 / 300.0
 
 	for i := 0; i < numEnts; i++ {
-		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.ScreenNumPixelsWide + 1)) * pixelSpan
-		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.ScreenNumPixelsHigh + 1)) * pixelSpan
+		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.ScreenNumPixelsWide)) * pixelSpan
+		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.ScreenNumPixelsHigh)) * pixelSpan
 		vx,	vy := getRandomVelocities()
 		collidable := true
 
@@ -88,9 +92,10 @@ func Init() () {
 }
 
 
-var prevFrame f32
+var prevNumLastingEnts i32 = 0
+var prevFrame f32 = 0.0
 func Update() () {
-	numAlive := 0;
+	currNumLastingEnts := 0;
  	currFrame   = f64.f32(glfw.GetTime())
  	deltaFrame := currFrame - prevFrame
  	mm          = deltaFrame * 200.0
@@ -100,7 +105,9 @@ func Update() () {
 	for i := 0; i < []f32.len(X); i++ {
 		// ...per relevant entity 
 		if IsAlive(i) {
-			numAlive++;
+			if isLasting(i) {
+				currNumLastingEnts++;
+			}
 
 			// movement 
 			vx := []f32.read(VelX, i) 
@@ -129,13 +136,22 @@ func Update() () {
 		}
 	}
 
-	// player/snake would generally be alive here.
-	// just detecting when a stage is clear.
+	// just detecting when a stage is finished 
+	// (player/snake would generally be alive here) 
 	// (moment of expiry (state change) prob will be handled elsewhere) 
-	if numAlive <= 1 {
-		game.Stage++;
+	
+	if currNumLastingEnts <= 1 && // (1 or 0/negative num of  entities &...) 
+		currNumLastingEnts != prevNumLastingEnts { // (...num entities changed) 
+
+		game.SetStage(game.Stage + 1);
+		s := i32.str(game.Stage)
+		//str.print(str.concat("game.Stage: ", s))
+		game.SetTempText(str.concat("Stage ", s))
+		//str.print(str.concat("just set game.TempText, now: ", game.TempText))
+		game.SetTempTextTimeToFade(currFrame + 4.0)
 	}
 
+	prevNumLastingEnts = currNumLastingEnts
 	prevFrame = currFrame
 }
 
@@ -175,7 +191,7 @@ func AdvanceChainProgressBy(inc f32) () {
 
 
 func Shoot(index i32) () {
-	// snake center (FIXME: ATM, snake is the only thing able-to/considered-for shoot/ing) 
+	// snake center (FIXME: ATM, snake is the only thing able-to-shoot/considered-for-shooting) 
 	scX := []f32.read(X, index)
 	scY := []f32.read(Y, index) 
 
@@ -208,14 +224,14 @@ func IsAlive(i i32) (out bool) {
 	de := []f32.read(DistanceExpiry, i)
 
 	
-	if /* entity has a lifespan */ te != 0.0 
+	if /* entity has a predetermined lifespan */ te != 0.0 
 		&&
 		/* it died */              te <= currFrame {
 
 		return false
 	}
 
-	if /* entity is distance leashed */ de != 0.0 
+	if /* entity is distance limited */ de != 0.0 
 		&&
 		/* it moved too far */          de <= []f32.read(BoxyDistance, i) {
 	
@@ -223,6 +239,19 @@ func IsAlive(i i32) (out bool) {
 	}
 
 	return true
+}
+
+
+func isLasting(i i32) (out bool) {
+	te := []f32.read(Expiry, i)
+	de := []f32.read(DistanceExpiry, i)
+	
+	if /* entity HAS NO predetermined lifespan */ te == 0.0 && 
+		/* entity NOT distance limited */ de == 0.0 {
+		return true
+	}
+
+	return false
 }
 
 
@@ -412,7 +441,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				
 				
 				if /* smaller than a bullet */ beR <= game.BulletRadius {
-					//beR = game.BulletRadius // ATM THIS MAKES IT WORSE 
+					//FIXME?:   beR = game.BulletRadius // ATM THIS MAKES IT WORSE 
 					expiry = currFrame + 0.5
 					collidable = false
 				}

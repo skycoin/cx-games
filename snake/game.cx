@@ -42,15 +42,23 @@ var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
 
 // game state 
+var currTime           f32 = 0.0
 var GAMESTATE_Playing  i32 = 0
 var GAMESTATE_GameOver i32 = 1
 var GAMESTATE_Menu     i32 = 2
-var Mode  i32
-var Stage i32 // waves that get progressively harder, like 80s arcade games 
+var Mode               i32
+// waves that get progressively harder, like 80s arcade games 
+var Stage              i32 = 1
+
+// text 
+var TempText           str
+var TempTextTimeToFade f32
 
 
 
 func Init() () {
+	TempText = Name
+	TempTextTimeToFade = f64.f32(glfw.GetTime()) + 4.0
 	RadianGrainForRNG = 2.0 * 3.141592654 / i32.f32(NumRadianGrains)
 
 	//vertical portion of aspect ratio is always 1.0 (in movie industry) 
@@ -67,6 +75,9 @@ func Init() () {
 
 func Update() () {
 	//setPosOfVisualizers()
+	if currTime > TempTextTimeToFade {
+		avoidError := true // TODO: start decrementing color channels & spatial dimensions of position 
+	}
 
 	updateTiming()
 	fadeDirectionalIndicatorsColorIntensity()
@@ -77,9 +88,9 @@ func Update() () {
 
 var prevFrameTime f32
 func updateTiming() () {
-	ct := f64.f32(glfw.GetTime())
-	timeDelta = ct - prevFrameTime
-	prevFrameTime = ct
+	currTime = f64.f32(glfw.GetTime())
+	timeDelta = currTime - prevFrameTime
+	prevFrameTime = currTime
 }
 
 
@@ -212,6 +223,22 @@ func GetPosOfBoxyDistanceVisualizer() (x f32, y f32) {
 	x = xOfBoxyDistance
 	y = yOfBoxyDistance
 }
+
+
+func SetTempText(s str) () {
+	TempText = s
+}
+
+
+func SetTempTextTimeToFade(time f32) () {
+	TempTextTimeToFade = time
+}
+
+
+func SetStage(stage i32) () {
+	Stage = stage
+}
+
 
 
 // private 
