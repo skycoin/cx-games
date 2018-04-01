@@ -171,19 +171,23 @@ func Snake() () {
 }
 
 
-var middlePixel f32
 func Text() () {
-	// determine middle of screen ONLY 1 TIME 
-	if middlePixel == 0.0 {
-		middlePixel = i32.f32(game.ScreenNumPixelsWide) / 2.0
-	}
-
 	// maybe draw top-of-screen text 
-	if game.TempTextTimeToFade != 0.0 &&                    // (text has expiry set &...) 
-		game.TempTextTimeToFade > f64.f32(glfw.GetTime()) { // (...not fading yet) 
+	if game.TempTextTimeFadeStarts != 0.0 && // (text has expiry set &...) 
+		game.TempTextColorIntensity > 0.0 {  // (...still has color) 
 
-		gl.Color4f(0.5, 0.3, 0.8, 1.0)
-		gltext.Printf("Roboto50", middlePixel, 0.0, game.TempText)
+		gl.Color4f(
+			game.TempTextColorIntensity, 
+			0.0, //game.TempTextColorIntensity, // made it white at the time 
+			game.TempTextColorIntensity, 
+			1.0)
+
+		gltext.Printf(
+			"Roboto50", 
+			game.TempTextX, 
+			game.TempTextY, 
+			game.TempText)
+
 		//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	}
 

@@ -47,18 +47,24 @@ var GAMESTATE_Playing  i32 = 0
 var GAMESTATE_GameOver i32 = 1
 var GAMESTATE_Menu     i32 = 2
 var Mode               i32
-// waves that get progressively harder, like 80s arcade games 
-var Stage              i32 = 1
+var Stage              i32 = 1 // waves that get progressively harder, like 80s arcade games 
 
-// text 
-var TempText           str
-var TempTextTimeToFade f32
+// temp/event/announcement text 
+var TempText               str
+var TempTextDuration       f32 = 2.5
+var TempTextTimeFadeStarts f32
+var TempTextColorIntensity f32 = 1.0
+var TempTextX              f32
+var TempTextY              f32
+var tempTextMiddleX        f32
 
 
 
 func Init() () {
 	TempText = Name
-	TempTextTimeToFade = f64.f32(glfw.GetTime()) + 4.0
+	TempTextTimeFadeStarts = f64.f32(glfw.GetTime()) + TempTextDuration
+	tempTextMiddleX = i32.f32(ScreenNumPixelsWide) / 2.0
+	tempTextX = tempTextMiddleX
 	RadianGrainForRNG = 2.0 * 3.141592654 / i32.f32(NumRadianGrains)
 
 	//vertical portion of aspect ratio is always 1.0 (in movie industry) 
@@ -73,10 +79,20 @@ func Init() () {
 }
 
 
+var numPixelSteps f32
 func Update() () {
 	//setPosOfVisualizers()
-	if currTime > TempTextTimeToFade {
-		avoidError := true // TODO: start decrementing color channels & spatial dimensions of position 
+
+	// text events/announcements 
+	if currTime > TempTextTimeFadeStarts {
+		TempTextColorIntensity -= timeDelta
+		numPixelSteps          += timeDelta
+		
+		for numPixelSteps > 0.05 {
+			numPixelSteps -= 0.05
+			TempTextX   -= 1.0
+			TempTextY   += 1.0
+		}
 	}
 
 	updateTiming()
@@ -230,13 +246,20 @@ func SetTempText(s str) () {
 }
 
 
-func SetTempTextTimeToFade(time f32) () {
-	TempTextTimeToFade = time
+func SetTempTextTimeFadeStarts(time f32) () {
+	TempTextTimeFadeStarts = time
 }
 
 
 func SetStage(stage i32) () {
 	Stage = stage
+}
+
+
+func ResetTempText() () {
+	TempTextColorIntensity = 1.0
+	TempTextX = tempTextMiddleX
+	TempTextY = 0.0
 }
 
 

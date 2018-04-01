@@ -144,11 +144,9 @@ func Update() () {
 		currNumLastingEnts != prevNumLastingEnts { // (...num entities changed) 
 
 		game.SetStage(game.Stage + 1);
-		s := i32.str(game.Stage)
-		//str.print(str.concat("game.Stage: ", s))
-		game.SetTempText(str.concat("Stage ", s))
-		//str.print(str.concat("just set game.TempText, now: ", game.TempText))
-		game.SetTempTextTimeToFade(currFrame + 4.0)
+		game.SetTempText(str.concat("Stage ", i32.str(game.Stage)))
+		game.SetTempTextTimeFadeStarts(currFrame + game.TempTextDuration)
+		game.ResetTempText()
 	}
 
 	prevNumLastingEnts = currNumLastingEnts
