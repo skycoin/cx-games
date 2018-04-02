@@ -5,6 +5,15 @@ import "entity"
 
 
 
+// TODO: 
+// 
+// * optimize snake segment drawing (either 
+//			4 oriented quads or 
+//			unoriented lookup table of sphere rim points) 
+// * juice up ResetEventText with blip of white (or light-violet), & shaking? 
+
+
+
 var Name str = "  S  N  A  K  E  "
 var NumRadianGrains i32 = 256 // gives 64 aim/angle/direction possibilities per quadrant 
 var RadianGrainForRNG f32
@@ -53,7 +62,7 @@ var Stage              i32 = 1 // waves that get progressively harder, like 80s 
 var TempText               str
 var TempTextDuration       f32 = 2.5
 var TempTextTimeFadeStarts f32
-var TempTextColorIntensity f32 = 1.0
+var TempTextColorIntensity f32
 var TempTextX              f32
 var TempTextY              f32
 var tempTextMiddleX        f32
@@ -61,13 +70,17 @@ var tempTextMiddleX        f32
 
 
 func Init() () {
-	TempText = Name
-	TempTextTimeFadeStarts = f64.f32(glfw.GetTime()) + TempTextDuration
-	tempTextMiddleX = i32.f32(ScreenNumPixelsWide) / 2.0
-	tempTextX = tempTextMiddleX
+	updateTiming()
 	RadianGrainForRNG = 2.0 * 3.141592654 / i32.f32(NumRadianGrains)
 
-	//vertical portion of aspect ratio is always 1.0 (in movie industry) 
+	// event/announcement text 
+	TempText = Name
+	tempTextMiddleX = i32.f32(ScreenNumPixelsWide) / 2.0
+	ResetTempText()
+
+
+	// screen 
+	// (vertical portion of aspect ratio is always 1.0 (in the movie industry) ) 
 	extentXFromOrigin := i32.f32(ScreenNumPixelsWide) / i32.f32(ScreenNumPixelsHigh)
 	ScreenBoundsTop = 1.0
 	ScreenBoundsRight = extentXFromOrigin
@@ -79,26 +92,26 @@ func Init() () {
 }
 
 
-var numPixelSteps f32
+var pixelRT f32 // running total for pixel movement 
 func Update() () {
 	//setPosOfVisualizers()
-
-	// text events/announcements 
-	if currTime > TempTextTimeFadeStarts {
-		TempTextColorIntensity -= timeDelta
-		numPixelSteps          += timeDelta
-		
-		for numPixelSteps > 0.05 {
-			numPixelSteps -= 0.05
-			TempTextX   -= 1.0
-			TempTextY   += 1.0
-		}
-	}
-
 	updateTiming()
 	fadeDirectionalIndicatorsColorIntensity()
 	ccInput.Update() 
 	entity.Update()
+
+	// text events/announcements 
+	if currTime > TempTextTimeFadeStarts {
+		TempTextColorIntensity -= timeDelta * 0.5
+		pixelRT                += timeDelta * 50.0
+		
+		for pixelRT > 1.0 {
+			pixelRT -= 1.0
+
+			TempTextX   -= 1.0
+			TempTextY   += 1.0
+		}
+	}
 }
 
 
@@ -246,17 +259,13 @@ func SetTempText(s str) () {
 }
 
 
-func SetTempTextTimeFadeStarts(time f32) () {
-	TempTextTimeFadeStarts = time
-}
-
-
 func SetStage(stage i32) () {
 	Stage = stage
 }
 
 
 func ResetTempText() () {
+	TempTextTimeFadeStarts = currTime + TempTextDuration
 	TempTextColorIntensity = 1.0
 	TempTextX = tempTextMiddleX
 	TempTextY = 0.0

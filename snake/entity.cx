@@ -145,7 +145,6 @@ func Update() () {
 
 		game.SetStage(game.Stage + 1);
 		game.SetTempText(str.concat("Stage ", i32.str(game.Stage)))
-		game.SetTempTextTimeFadeStarts(currFrame + game.TempTextDuration)
 		game.ResetTempText()
 	}
 
