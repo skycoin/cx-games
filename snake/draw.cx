@@ -241,7 +241,7 @@ func setupFonts() () {
 	os.Close(fontFile)
 	
 	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
+	gltext.LoadTrueType("Roboto50", fontFile, 25, 32, 127, gltext.LeftToRight)
 	os.Close(fontFile)
 
 	gl.Enable(gl.DEPTH_TEST)

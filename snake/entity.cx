@@ -7,20 +7,25 @@ import "game"
 var isFalse i32 = 0
 var isTrue  i32 = 1
 
+
 // movement 
 var maxVelocity f32 = 0.01
 var maxNegativeVelocity f32 = -0.01
 var velocityInc f32
 var mm f32 // movement multiplier 
 
+
 // time  
 var currFrame f32
+
 
 // space 
 var pixelSpan f32
 
+
 // grains 
 var gradientSpan f32
+
 
 // entities
 var numEnts i32 = 3 //4
@@ -319,9 +324,9 @@ func SpawnEntity(
 			IsCollidable = []i32.append(IsCollidable, isFalse)
 		}
 
-		Red =   []f32.append(Red, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
+		Red   = []f32.append(Red,   i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
 		Green = []f32.append(Green, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
-		Blue =  []f32.append(Blue, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)	
+		Blue  = []f32.append(Blue,  i32.f32(i32.rand(0, 200) + 100) * gradientSpan)	
 	}
 }
 
@@ -388,10 +393,9 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				rdi := /* ...int   */ i32.rand(0,    game.NumRadianGrains)
 				rdf := /* ...float */ i32.f32(rdi) * game.RadianGrainForRNG
 				
-				// offset scalar (from centerpoint of biggest entity) 
-				// to ensure no initial overlap/collision 
 				beR /= 2.0 // halve radius, for smaller fragments 
-				offS := 1.1
+				offS := 1.1 // offset scalar (from centerpoint of biggest entity) 
+				// 					(to ensure no initial overlap/collision) 
 				offX := f32.cos(rdf) * beR * offS
 				offY := f32.sin(rdf) * beR * offS
 				expiry := 0.0
@@ -412,26 +416,9 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				mult    := 0.00001
 
 				if collidable {
-					SpawnEntity(
-						beX + offX, 
-						beY + offY,
-						0.0, //offX / divisor, 
-						0.0, //offY / divisor,
-						beR, 
-						expiry,
-						0.0, // distance based expiry 
-						collidable)
-		
-					SpawnEntity(
-						beX - offX, 
-						beY - offY,
-						0.0, //0.0 - offX / divisor, 
-						0.0, //0.0 - offY / divisor,
-						beR, 
-						expiry,
-						0.0, // distance based expiry 
-						collidable)
+					breakInTwo(offX, offY, beX, beY, beR) // actually 2 "new" spawns, & deletes old 1 or 2? that it's replacing 
 				} else {
+					// purely visual particle puff 
 					for ii := 0; ii < 2; ii++ {
 						SpawnEntity(
 							beX, 
@@ -459,6 +446,31 @@ func getRandomVelocities() (x f32, y f32) {
 	return
 		i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain,
 		i32.f32(i32.rand(-50, 51)) * game.AsteroidVelocityGrain
+}
+
+
+func breakInTwo(offX f32, offY f32, beX f32, beY f32, beR f32) () {
+	str.print("breakInTwo()")
+
+	SpawnEntity(
+		beX + offX, 
+		beY + offY,
+		0.0, //offX / divisor, 
+		0.0, //offY / divisor,
+		beR, 
+		expiry,
+		0.0, // distance based expiry 
+		collidable)
+
+	SpawnEntity(
+		beX - offX, 
+		beY - offY,
+		0.0, //0.0 - offX / divisor, 
+		0.0, //0.0 - offY / divisor,
+		beR, 
+		expiry,
+		0.0, // distance based expiry 
+		collidable)
 }
 
 
