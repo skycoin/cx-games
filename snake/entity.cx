@@ -370,46 +370,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 
 			if isPairTouching(aX, aY, aRad, bId) {
 				touching = true
-
-				// feedback of changing values 
-				
-				str.print("<A")
-				
-				sA := "    expiry (before): "
-				sB := f32.str([]f32.read(Expiry, aId))
-				str.print(str.concat(sA, sB))
-
-				         []f32.write(Expiry,       aId, currFrame - 0.1)
-				         []i32.write(IsCollidable, aId, isFalse)
-
-				sA = "    expiry (after): "
-				sB = f32.str([]f32.read(Expiry, aId))
-				str.print(str.concat(sA, sB))
-
-				str.print(str.concat("    id: ", i32.str(aId)))
-				
-				str.print(">")
-
-
-
-				str.print("<B")
-
-				sA = "    expiry (before): "
-				sB = f32.str([]f32.read(Expiry, bId))
-				str.print(str.concat(sA, sB))
-
-				         []f32.write(Expiry,       bId, currFrame - 0.1)
-				         []i32.write(IsCollidable, bId, isFalse)
-				
-				sA = "    expiry (after): "
-				sB = f32.str([]f32.read(Expiry, bId))
-				str.print(str.concat(sA, sB))
-
-				str.print(str.concat("    id: ", i32.str(bId)))
-				
-				str.print(">")
-
-
+				changePairsExpiryAndCollidability(aId, bId)
 
 				// biggest entity (as explosion origin)
 				// 1st, set values from entity B
@@ -532,6 +493,59 @@ func isPairTouching(aX f32, aY f32, aRad f32, bId i32) (out bool) {
 	}
 
 	return touching
+}
+
+
+func changePairsExpiryAndCollidability(aId i32, bId i32) () {
+	logging := false
+
+	if logging {
+		str.print("<A")
+
+		sA := "    expiry (before): "
+		sB := f32.str([]f32.read(Expiry, aId))
+		str.print(str.concat(sA, sB))
+	}
+
+
+	[]f32.write(Expiry,       aId, currFrame - 0.1)
+	[]i32.write(IsCollidable, aId, isFalse)
+
+
+	if logging {
+		sA := "    expiry (after): "
+		sB := f32.str([]f32.read(Expiry, aId))
+		str.print(str.concat(sA, sB))
+
+		str.print(str.concat("    id: ", i32.str(aId)))
+		str.print(">")
+	}
+
+
+
+
+
+	if logging {
+		str.print("<B")
+
+		sA := "    expiry (before): "
+		sB := f32.str([]f32.read(Expiry, bId))
+		str.print(str.concat(sA, sB))
+	}
+
+
+	[]f32.write(Expiry,       bId, currFrame - 0.1)
+	[]i32.write(IsCollidable, bId, isFalse)
+
+
+	if logging {
+		sA := "    expiry (after): "
+		sB := f32.str([]f32.read(Expiry, bId))
+		str.print(str.concat(sA, sB))
+
+		str.print(str.concat("    id: ", i32.str(bId)))
+		str.print(">")
+	}
 }
 
 

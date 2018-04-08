@@ -7,9 +7,13 @@ import "entity"
 
 // TODO: 
 // 
-// * optimize snake segment drawing (either 
-//			4 oriented quads or 
-//			unoriented lookup table of sphere rim points) 
+// * optimize snake segment drawing? (could be... 
+//			* oriented, split endcap/half-circles with a connecting ladder, 
+//			* 1 triangle, if pointed tip is fine, 
+//			* 1 quad, if boxy tipe is fine,
+//			* the above 2 plus circle caps, 
+//			* 2 oriented quads (forming hexagonal diamond'ish shape), or 
+//			* unoriented lookup table of sphere rim points) 
 // * juice up ResetEventText with blip of white (or light-violet), & shaking? 
 
 
@@ -77,7 +81,6 @@ func Init() () {
 	TempText = Name
 	tempTextMiddleX = i32.f32(ScreenNumPixelsWide) / 2.0
 	ResetTempText()
-
 
 	// screen 
 	// (vertical portion of aspect ratio is always 1.0 (in the movie industry) ) 
