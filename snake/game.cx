@@ -69,7 +69,7 @@ var TempTextTimeFadeStarts f32
 var TempTextColorIntensity f32
 var TempTextX              f32
 var TempTextY              f32
-var tempTextMiddleX        f32
+var CenterXInTextCoords    f32
 
 
 
@@ -79,7 +79,7 @@ func Init() () {
 
 	// event/announcement text 
 	TempText = Name
-	tempTextMiddleX = i32.f32(ScreenNumPixelsWide) / 2.0
+	CenterXInTextCoords = i32.f32(ScreenNumPixelsWide) / 2.0
 	ResetTempText()
 
 	// screen 
@@ -270,7 +270,7 @@ func SetStage(stage i32) () {
 func ResetTempText() () {
 	TempTextTimeFadeStarts = currTime + TempTextDuration
 	TempTextColorIntensity = 1.0
-	TempTextX = tempTextMiddleX
+	TempTextX = CenterXInTextCoords
 	TempTextY = 0.0
 }
 

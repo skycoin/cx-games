@@ -211,8 +211,16 @@ func Text() () {
 		//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	}
 
-	// everlasting text that moves with player 
-	EntityChainedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, "mouse + W A S D      5")
+	// everlasting text //////////////that moves with player 
+	s := "mouse + W A S D      5"
+	//EntityChainedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s)
+	f := 0.4
+	gl.Color4f(f, f, f, 1.0)
+	gltext.Printf(
+		"Roboto50", 
+		game.CenterXInTextCoords, 
+		i32.f32(game.ScreenNumPixelsHigh - 25), 
+		s)
 }
 
 
