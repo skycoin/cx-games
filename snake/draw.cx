@@ -23,6 +23,8 @@ var spherePointsAngleIncrement f32
 var spherePointsX []f32
 var spherePointsY []f32
 
+// 4-point, per-frame bake of local-space coords (unit-radius angles) 
+
 
 
 func Init() () {
@@ -42,6 +44,7 @@ func Init() () {
 
 
 func setupSpherePointTable() () {
+	game.RadianGrainForLUT = dubPi / i32.f32(numSpherePoints)
 	f := 0.0
 
 	for i := 0; i < numSpherePoints; i++ {
@@ -93,6 +96,27 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 
 	
 	for i := 0; i < numSpherePoints; i++ {
+		gl.Vertex2f(
+			x + radius * []f32.read(spherePointsX, i),
+			y + radius * []f32.read(spherePointsY, i))
+	}
+
+	gl.End()
+}
+
+
+func orientedSphere(
+	step i32, // the decimated stride thru indices 
+	x f32, 
+	y f32, 
+	radius f32, 
+	angle f32, 
+	red f32, green f32, blue f32) () {
+
+	gl.Begin(gl.POLYGON)
+	gl.Color3f(red, green, blue)
+
+	for i := 0; i < numSpherePoints; i += step {
 		gl.Vertex2f(
 			x + radius * []f32.read(spherePointsX, i),
 			y + radius * []f32.read(spherePointsY, i))
@@ -163,11 +187,7 @@ func Snake() () {
 	drawIndicators(sin, cos)
 
 	// draw rotation (center hinge) point 
-	Sphere(
-		cX, 
-		cY, 
-		game.HeadRadius/3.0, 
-		0.0, 0.0, 1.0)
+	Sphere(cX, cY, game.HeadRadius / 3.0, 0.0, 0.0, 1.0)
 
 
 
@@ -180,10 +200,12 @@ func Snake() () {
 		// current radius 
 		cRad := game.TailRadius + ftd * entity.DelRad
 
-		Sphere(
+		orientedSphere(
+			5,
 			tX + ftd * entity.DelX, 
 			tY + ftd * entity.DelY, 
 			cRad, 
+			game.CurrSnakeAim,
 			1.0, 1.0, 1.0)
 
 		entity.AdvanceChainProgressBy(cRad)
@@ -220,8 +242,8 @@ func Text() () {
 	gl.Color4f(f, f, f, 1.0)
 	gltext.Printf(
 		"Roboto50", 
-		game.CenterXInTextCoords, 
-		i32.f32(game.ScreenNumPixelsHigh - 25), 
+		game.ScreenCenterXInGltextSpace, 
+		i32.f32(game.ScreenNumPixelsHigh - 30), 
 		s)
 }
 
@@ -261,7 +283,7 @@ func setupFonts() () {
 
 
 func drawIndicators(sin f32, cos f32) () {
-	ie /* ind extent */ := game.HeadRadius / 4.0
+	ie /* indicator extent */ := game.HeadRadius / 4.0
 	rfc /* radius from center (of head) */ := ie + game.HeadRadius
 	hoX /* head offset */ := sin * rfc
 	hoY /* head offset */ := cos * rfc

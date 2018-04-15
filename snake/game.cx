@@ -20,10 +20,11 @@ import "entity"
 
 var Name str = "  S  N  A  K  E  "
 var NumRadianGrains i32 = 256 // gives 64 aim/angle/direction possibilities per quadrant 
-var RadianGrainForRNG f32
+var RadianGrainForRNG     f32
+var RadianGrainForLUT     f32 
 var AsteroidVelocityGrain f32 = 0.00002
-var BulletRadius f32 = 0.015
-var timeDelta f32
+var BulletRadius          f32 = 0.015
+var timeDelta             f32
 
 // full spectrum cos/sin angle/radius test visualizers 
 var xOfBoxyDistance        f32
@@ -63,13 +64,13 @@ var Mode               i32
 var Stage              i32 = 1 // waves that get progressively harder, like 80s arcade games 
 
 // temp/event/announcement text 
-var TempText               str
-var TempTextDuration       f32 = 2.5
-var TempTextTimeFadeStarts f32
-var TempTextColorIntensity f32
-var TempTextX              f32
-var TempTextY              f32
-var ScreenCenterXInGltextSpace    f32
+var TempText                   str
+var TempTextDuration           f32 = 2.5
+var TempTextTimeFadeStarts     f32
+var TempTextColorIntensity     f32
+var TempTextX                  f32
+var TempTextY                  f32
+var ScreenCenterXInGltextSpace f32
 
 
 
