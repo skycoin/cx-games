@@ -53,7 +53,7 @@ func setupSpherePointTable() () {
 }
 
 
-func All() () {
+func All() () { // draw all 
 	/*
 	
 	x, y := game.GetPosOfPerfectRadiusVisualizer()
@@ -64,9 +64,9 @@ func All() () {
 	
 	*/
 
-	Snake()
-	Entities()
-	Text()
+	/* draw */ Snake()
+	/* draw */ Entities()
+	/* draw */ Text()
 }
 
 
@@ -211,9 +211,11 @@ func Text() () {
 		//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	}
 
-	// everlasting text //////////////that moves with player 
 	s := "mouse + W A S D      5"
-	//EntityChainedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s)
+	// everlasting text 
+	//EntityChainedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...that moves with player 
+
+	// stationary 
 	f := 0.4
 	gl.Color4f(f, f, f, 1.0)
 	gltext.Printf(
