@@ -13,7 +13,6 @@ import "game"
 // special angle nums 
 var pi f32
 var halfPi f32
-var dubPi f32
 var oneThirdPie f32 // 1/3 of a whole PIE (the food, not the number) 
 var twoThirdsPie f32
 
@@ -33,10 +32,10 @@ func Init() () {
 	// special angle nums 
 	pi = 3.141592654
 	halfPi = pi / 2.0
-	dubPi = pi * 2.0
-	oneThirdPie = dubPi / 3.0
+	game.SetDubPi(pi * 2.0)
+	oneThirdPie = game.DubPi / 3.0
 	twoThirdsPie = oneThirdPie * 2.0
-	spherePointsAngleIncrement = dubPi / i32.f32(numSpherePoints)
+	spherePointsAngleIncrement = game.DubPi / i32.f32(numSpherePoints)
 
 	setupFonts()
 	setupSpherePointTable()
@@ -44,7 +43,6 @@ func Init() () {
 
 
 func setupSpherePointTable() () {
-	game.RadianGrainForLUT = dubPi / i32.f32(numSpherePoints)
 	f := 0.0
 
 	for i := 0; i < numSpherePoints; i++ {
@@ -113,13 +111,35 @@ func orientedSphere(
 	angle f32, 
 	red f32, green f32, blue f32) () {
 
+	/*
+	*/
+	// might return 
+
+
+
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 
-	for i := 0; i < numSpherePoints; i += step {
+	// insane number (goes outside of valid index range, requires sanitizing)
+	startIdx := 0
+	if spherePointsAngleIncrement > 0.0 {
+		startIdx = f32.i32(angle / spherePointsAngleIncrement)
+	}
+
+	// (FIXME if perfection is needed later... should "round" instead of
+	// effectively "floor"ing, which means subtracting half a radian grain?) 
+	max := numSpherePoints + startIdx
+
+	for i := startIdx; i < max; i += step {
+		si := i // sane index 
+
+		for si >= numSpherePoints {
+			si -= numSpherePoints
+		}
+
 		gl.Vertex2f(
-			x + radius * []f32.read(spherePointsX, i),
-			y + radius * []f32.read(spherePointsY, i))
+			x + radius * []f32.read(spherePointsX, si),
+			y + radius * []f32.read(spherePointsY, si))
 	}
 
 	gl.End()

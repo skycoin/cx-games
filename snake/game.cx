@@ -26,6 +26,9 @@ var AsteroidVelocityGrain f32 = 0.00002
 var BulletRadius          f32 = 0.015
 var timeDelta             f32
 
+// special angle constants 
+var DubPi f32
+
 // full spectrum cos/sin angle/radius test visualizers 
 var xOfBoxyDistance        f32
 var yOfBoxyDistance        f32
@@ -151,7 +154,15 @@ func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
 	rotX, rotY := RotatePositionByAngle(deltaX/div, deltaY/div, CurrSnakeAim)
 
 	CurrSnakeAim    += rotX
-	CurrSnakeExtent += rotY / 19.0
+	CurrSnakeExtent += rotY / 14.0
+
+	for CurrSnakeAim >= DubPi {
+		CurrSnakeAim -= DubPi
+	}
+
+	for CurrSnakeAim < 0.0 {
+		CurrSnakeAim += DubPi
+	}
 
 	if CurrSnakeExtent > MaxSnakeExtent {
 		CurrSnakeExtent = MaxSnakeExtent
@@ -265,6 +276,11 @@ func SetTempText(s str) () {
 
 func SetStage(stage i32) () {
 	Stage = stage
+}
+
+
+func SetDubPi(f f32) () {
+	DubPi = f
 }
 
 
