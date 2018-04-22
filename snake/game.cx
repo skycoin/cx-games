@@ -58,21 +58,24 @@ var growColorIntensity f32
 var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
 
-// game state 
+// game state  
 var currTime           f32 = 0.0
-var GAMESTATE_Playing  i32 = 0
-var GAMESTATE_GameOver i32 = 1
-var GAMESTATE_Menu     i32 = 2
-var Mode               i32
-var Stage              i32 = 1 // waves that get progressively harder, like 80s arcade games 
+var Mode                  i32
+var Stage                 i32 = 1 // waves that get progressively harder, like 80s arcade games 
 
-// temp/event/announcement text 
-var TempText                   str
-var TempTextDuration           f32 = 2.5
-var TempTextTimeFadeStarts     f32
-var TempTextColorIntensity     f32
-var TempTextX                  f32
-var TempTextY                  f32
+// 		enums 
+var GAMESTATE_MainMenu    i32 = 0 // FIXME when constants are in CX 
+var GAMESTATE_OptionsMenu i32 = 1
+var GAMESTATE_Playing     i32 = 2
+var GAMESTATE_GameOver    i32 = 3
+
+// event/announcement text 
+var EventText                   str
+var EventTextDuration           f32 = 2.5
+var EventTextTimeFadeStarts     f32
+var EventTextColorIntensity     f32
+var EventTextX                  f32
+var EventTextY                  f32
 var ScreenCenterXInGltextSpace f32
 
 
@@ -82,9 +85,9 @@ func Init() () {
 	RadianGrainForRNG = 2.0 * 3.141592654 / i32.f32(NumRadianGrains)
 
 	// event/announcement text 
-	TempText = Name
+	EventText = Name
 	ScreenCenterXInGltextSpace = i32.f32(ScreenNumPixelsWide) / 2.0
-	ResetTempText()
+	ResetEventText()
 
 	// screen 
 	// (vertical portion of aspect ratio is always 1.0 (in the movie industry) ) 
@@ -108,15 +111,15 @@ func Update() () {
 	entity.Update()
 
 	// text events/announcements 
-	if currTime > TempTextTimeFadeStarts {
-		TempTextColorIntensity -= timeDelta * 0.5
+	if currTime > EventTextTimeFadeStarts {
+		EventTextColorIntensity -= timeDelta * 0.5
 		pixelRT                += timeDelta * 50.0
 		
 		for pixelRT > 1.0 {
 			pixelRT -= 1.0
 
-			TempTextX   -= 1.0
-			TempTextY   += 1.0
+			EventTextX   -= 1.0
+			EventTextY   += 1.0
 		}
 	}
 }
@@ -269,8 +272,8 @@ func GetPosOfBoxyDistanceVisualizer() (x f32, y f32) {
 }
 
 
-func SetTempText(s str) () {
-	TempText = s
+func SetEventText(s str) () {
+	EventText = s
 }
 
 
@@ -284,11 +287,11 @@ func SetDubPi(f f32) () {
 }
 
 
-func ResetTempText() () {
-	TempTextTimeFadeStarts = currTime + TempTextDuration
-	TempTextColorIntensity = 1.0
-	TempTextX = ScreenCenterXInGltextSpace
-	TempTextY = 0.0
+func ResetEventText() () {
+	EventTextTimeFadeStarts = currTime + EventTextDuration
+	EventTextColorIntensity = 1.0
+	EventTextX = ScreenCenterXInGltextSpace
+	EventTextY = 0.0
 }
 
 

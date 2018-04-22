@@ -11,18 +11,21 @@ import "game"
 
 
 // special angle nums 
-var pi f32
-var halfPi f32
-var oneThirdPie f32 // 1/3 of a whole PIE (the food, not the number) 
+var pi           f32
+var halfPi       f32
+var oneThirdPie  f32 // 1/3 of a whole PIE (the food, not the number) 
 var twoThirdsPie f32
 
 // precalculated lookup table for unit radius sphere points/vertices 
-var numSpherePoints i32 = 20
+var numSpherePoints            i32 = 20
 var spherePointsAngleIncrement f32
-var spherePointsX []f32
-var spherePointsY []f32
+var spherePointsX              []f32
+var spherePointsY              []f32
 
-// 4-point, per-frame bake of local-space coords (unit-radius angles) 
+// menu 
+var buttonNames  []str
+var textHeight   f32 = 12.0
+var deltaFromTop f32 // in Gltext space 
 
 
 
@@ -39,6 +42,10 @@ func Init() () {
 
 	setupFonts()
 	setupSpherePointTable()
+
+	// setup menu 
+	buttonNames = []str.append(buttonNames, "Play")
+	buttonNames = []str.append(buttonNames, "Options")
 }
 
 
@@ -68,6 +75,8 @@ func All() () { // draw all
 	/* draw */ Snake()
 	/* draw */ Entities()
 	/* draw */ Text()
+	/* draw */ menuMaybe()
+
 }
 
 
@@ -235,20 +244,20 @@ func Snake() () {
 
 func Text() () {
 	// maybe draw top-of-screen text 
-	if game.TempTextTimeFadeStarts != 0.0 && // (text has expiry set &...) 
-		game.TempTextColorIntensity > 0.0 {  // (...still has color) 
+	if game.EventTextTimeFadeStarts != 0.0 && // (text has expiry set &...) 
+		game.EventTextColorIntensity > 0.0 {  // (...still has color) 
 
 		gl.Color4f(
-			game.TempTextColorIntensity, 
-			0.0, //game.TempTextColorIntensity, // made it white at the time 
-			game.TempTextColorIntensity, 
+			game.EventTextColorIntensity, 
+			0.0, //game.EventTextColorIntensity, // made it white at the time 
+			game.EventTextColorIntensity, 
 			1.0)
 
 		gltext.Printf(
 			"Roboto50", 
-			game.TempTextX, 
-			game.TempTextY, 
-			game.TempText)
+			game.EventTextX,
+			game.EventTextY, 
+			game.EventText)
 
 		//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	}
@@ -293,7 +302,7 @@ func setupFonts() () {
 	os.Close(fontFile)
 	
 	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto50", fontFile, 25, 32, 127, gltext.LeftToRight)
+	gltext.LoadTrueType("Roboto50", fontFile, f32.i32(textHeight), 32, 127, gltext.LeftToRight)
 	os.Close(fontFile)
 
 	gl.Enable(gl.DEPTH_TEST)
@@ -353,4 +362,22 @@ func drawIndicators(sin f32, cos f32) () {
 		ie, 
 		game.CurrSnakeAim + halfPi,
 		ci, 0.0, 1.0)
+}
+
+
+func menuMaybe() () {
+	f := 0.4
+	gl.Color4f(f, f, f, 1.0)
+
+	y := 0.0
+
+	for i := 0; i < []str.len(buttonNames); i++ {
+		gltext.Printf(
+			"Roboto50", 
+			game.ScreenCenterXInGltextSpace, 
+			y, 
+			[]str.read(buttonNames, i))	
+
+		y += textHeight
+	}
 }

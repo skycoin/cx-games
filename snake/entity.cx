@@ -149,8 +149,8 @@ func Update() () {
 		currNumLastingEnts != prevNumLastingEnts { // (...num entities changed) 
 
 		game.SetStage(game.Stage + 1);
-		game.SetTempText(str.concat("Stage ", i32.str(game.Stage)))
-		game.ResetTempText()
+		game.SetEventText(str.concat("Stage ", i32.str(game.Stage)))
+		game.ResetEventText()
 	}
 
 	prevNumLastingEnts = currNumLastingEnts
