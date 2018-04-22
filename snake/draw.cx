@@ -46,8 +46,8 @@ func setupSpherePointTable() () {
 	f := 0.0
 
 	for i := 0; i < numSpherePoints; i++ {
-		spherePointsX = []f32.append(spherePointsX, f32.cos(f))
-		spherePointsY = []f32.append(spherePointsY, f32.sin(f))
+		spherePointsX = []f32.append(spherePointsX, f32.sin(f))
+		spherePointsY = []f32.append(spherePointsY, f32.cos(f))
 
 		f += spherePointsAngleIncrement
 	}
