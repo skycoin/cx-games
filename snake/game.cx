@@ -316,8 +316,8 @@ func SetMode(mode i32) () {
 	Mode = mode
 }
 
-func GetButtonPointerIsTouching(x f64, y f64) (out str) {
-	id := -1 getButtonThatPointerIsTouching(x, y)
+func GetButtonThatPointerIsTouching(x f64, y f64) (out str) {
+	id := getButtonThatPointerIsTouching(x, y)
 
 	if id == -1 {
 		return "Nothing"
@@ -331,7 +331,9 @@ func getButtonThatPointerIsTouching(x f64, y f64) (out i32) {
 	currY := DeltaFromTop // in Gltext space 
 	
 	for i := 0; i < []str.len(ButtonNames); i++ {
-		if  y > currY && y < currY + TextHeight {
+		if  f64.f32(y) > currY && 
+			f64.f32(y) < currY + TextHeight {
+
 			return i;
 		}
 

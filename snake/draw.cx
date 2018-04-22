@@ -264,7 +264,7 @@ func Text() () {
 		gltext.Printf(
 			"Roboto50", 
 			game.ScreenCenterXInGltextSpace, 
-			i32.f32(game.ScreenNumPixelsHigh - 1) - textHeight, 
+			i32.f32(game.ScreenNumPixelsHigh - 1) - game.TextHeight, 
 			s)
 	}
 }

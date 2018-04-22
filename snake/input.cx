@@ -52,7 +52,21 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 		if game.Mode >= game.MODE_Playing {
 			entity.Shoot(0)
 		} else { // must be in menu 
-			garbo := "grr"
+			btn := game.GetButtonThatPointerIsTouching(currMouseX, currMouseY)
+			str.print(btn)
+
+			if btn == "Play" {
+				game.SetMode(game.MODE_Playing)
+				glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
+			} /*else { // FIXME when CX gets switches 
+				if btn == "Options" {
+					game.SetMode(game.MODE_OptionsMenu)
+					glfw.SetInputMode("window", glfw.Cursor, glfw.CursorEnabled)
+					game.ButtonNames = []str.append(game.ButtonNames, "Mouse Sensitivity (Horizontal)")
+					game.ButtonNames = []str.append(game.ButtonNames, "Mouse Sensitivity (Vertical)")
+				}
+			} */
+
 		}
 	}
 }
