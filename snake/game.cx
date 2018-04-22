@@ -71,17 +71,17 @@ var MODE_Playing     i32 = 2 // this is used in "<" and ">=" conditions
 var MODE_Dead        i32 = 3
 
 // event/announcement text 
-var EventText                   str
-var EventTextDuration           f32 = 2.5
-var EventTextTimeFadeStarts     f32
-var EventTextColorIntensity     f32
-var EventTextX                  f32
-var EventTextY                  f32
-var ScreenCenterXInGltextSpace  f32
+var EventText                  str
+var EventTextDuration          f32 = 2.5
+var EventTextTimeFadeStarts    f32
+var EventTextColorIntensity    f32
+var EventTextX                 f32
+var EventTextY                 f32
+var ScreenCenterXInGltextSpace f32
 
 // menu / text 
 var ButtonNames  []str
-var TextHeight   f32 = 128.0 // by the pixels of text Space
+var TextHeight   f32 = 64.0 // by the pixels of text Space
 var TextOffset   f32        // calculated (on init) to be a fraction of TextHeight above 
 var TextFraction f32 = 0.16
 var DeltaFromTop f32        // in Gltext space 
@@ -109,11 +109,10 @@ func Init() () {
 	ScreenPixelHeight = 2.0 / i32.f32(ScreenNumPixelsHigh)
 
 	// setup menu 
-	ButtonNames = []str.append(ButtonNames, "lPQpqjy")
+	//ButtonNames = []str.append(ButtonNames, "lPQpqjy")    // good test str for visible min/max extents? 
 	ButtonNames = []str.append(ButtonNames, "Play")
-	//ButtonNames = []str.append(ButtonNames, "Options")
-	//ButtonNames = []str.append(ButtonNames, "Quit")
-	ButtonNames = []str.append(ButtonNames, "lPQpqjy")
+	ButtonNames = []str.append(ButtonNames, "Options")
+	ButtonNames = []str.append(ButtonNames, "Quit")
 
 	DeltaFromTop = // at this point its' the total space above & below menu items 
 		i32.f32(ScreenNumPixelsHigh) - 

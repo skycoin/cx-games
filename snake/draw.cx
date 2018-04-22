@@ -266,7 +266,7 @@ func AllText() () {
 	}
 
 	if game.Mode >= game.MODE_Playing {
-		s := "lPQpqjy     mouse + W A S D      5"
+		s := "mouse + W A S D"
 		
 		// everlasting text 
 		//EntityAttachedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...that moves with player 
@@ -276,12 +276,7 @@ func AllText() () {
 		gl.Color4f(f, f, f, 1.0)
 		
 		CcText(
-			game.ScreenCenterXInGltextSpace, 
-			0.0,
-			s)
-		
-		CcText(
-			game.ScreenCenterXInGltextSpace, 
+			game.ScreenCenterXInGltextSpace * 0.75, 
 			i32.f32(game.ScreenNumPixelsHigh) - game.TextHeight, 
 			s)
 	}
