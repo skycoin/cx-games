@@ -8,6 +8,9 @@ import "game"
 
 
 
+var currMouseX f64
+var currMouseY f64
+
 var GLFW_KEY_5     i32 = 53
 var GLFW_KEY_SPACE i32 = 32
 
@@ -26,7 +29,6 @@ var moveDown bool
 
 
 func Init() () {
-	glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
 	glfw.SetKeyCallback("window", "onKeyEvent")
 	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
 	glfw.SetCursorPosCallback("window", "onCursorPosEvent")
@@ -47,7 +49,12 @@ func Update() () {
 
 func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 	if action == /* Press */ 1 {
-		entity.Shoot(0)
+		if game.Mode == game.GAMESTATE_Playing {
+			entity.Shoot(0)
+		} else {
+			game.SetMode(game.GAMESTATE_Playing)
+			glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
+		}
 	}
 }
 
@@ -58,20 +65,25 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 var prevMouseX f64
 var prevMouseY f64
 func onCursorPosEvent(window str, x f64, y f64) () {
-	if prevMouseX != 0.0D && prevMouseY != 0.0D {
-		deltaX := x - prevMouseX
-		deltaY := y - prevMouseY
-		// invert from pixel to world aligned space 
-		// (value increases going up the screen)
-		deltaY = 0.0D - deltaY 
+	currMouseX = x
+	currMouseY = y
 
-		//a := str.concat("cursor event delta ---- x ", f64.str(deltaX))
-		//b := str.concat(", y "                      , f64.str(deltaY))
-		//str.print(str.concat(a, b))
+	if prevMouseX != 0.0D && prevMouseY != 0.0D { // not the 1st time (delta unknown)
+		if game.Mode >= game.GAMESTATE_Playing {
+			deltaX := x - prevMouseX
+			deltaY := y - prevMouseY
+			// invert from pixel to world aligned space 
+			// (value increases going up the screen)
+			deltaY = 0.0D - deltaY 
 
-		game.SetSnakeAimAndSize(
-			f64.f32(deltaX),
-			f64.f32(deltaY))
+			//a := str.concat("cursor event delta ---- x ", f64.str(deltaX))
+			//b := str.concat(", y "                      , f64.str(deltaY))
+			//str.print(str.concat(a, b))
+
+			game.SetSnakeAimAndSize(
+				f64.f32(deltaX),
+				f64.f32(deltaY))
+		}
 	}
 	
 	prevMouseX = x

@@ -295,6 +295,11 @@ func ResetEventText() () {
 }
 
 
+func SetMode(mode i32) () {
+	Mode = mode
+}
+
+
 
 // private 
 

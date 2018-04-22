@@ -24,7 +24,7 @@ var spherePointsY              []f32
 
 // menu 
 var buttonNames  []str
-var textHeight   f32 = 12.0
+var textHeight   f32 = 32.0
 var deltaFromTop f32 // in Gltext space 
 
 
@@ -46,6 +46,14 @@ func Init() () {
 	// setup menu 
 	buttonNames = []str.append(buttonNames, "Play")
 	buttonNames = []str.append(buttonNames, "Options")
+	buttonNames = []str.append(buttonNames, "QpjyZ")
+
+	deltaFromTop = // at this point its' the total space above & below menu items 
+		i32.f32(game.ScreenNumPixelsHigh) - 
+		i32.f32([]str.len(buttonNames)) * 
+		textHeight
+
+	deltaFromTop /= 2.0 // finale position 
 }
 
 
@@ -262,18 +270,20 @@ func Text() () {
 		//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	}
 
-	s := "mouse + W A S D      5"
-	// everlasting text 
-	//EntityChainedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...that moves with player 
+	if game.Mode >= game.GAMESTATE_Playing {
+		s := "mouse + W A S D      5"
+		// everlasting text 
+		//EntityChainedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...that moves with player 
 
-	// stationary 
-	f := 0.4
-	gl.Color4f(f, f, f, 1.0)
-	gltext.Printf(
-		"Roboto50", 
-		game.ScreenCenterXInGltextSpace, 
-		i32.f32(game.ScreenNumPixelsHigh - 30), 
-		s)
+		// stationary 
+		f := 0.4
+		gl.Color4f(f, f, f, 1.0)
+		gltext.Printf(
+			"Roboto50", 
+			game.ScreenCenterXInGltextSpace, 
+			i32.f32(game.ScreenNumPixelsHigh - 1) - textHeight, 
+			s)
+	}
 }
 
 
@@ -366,18 +376,20 @@ func drawIndicators(sin f32, cos f32) () {
 
 
 func menuMaybe() () {
-	f := 0.4
-	gl.Color4f(f, f, f, 1.0)
+	if game.Mode < game.GAMESTATE_Playing {
+		f := 1.0
+		gl.Color4f(f, f, f, 1.0)
 
-	y := 0.0
+		y := deltaFromTop
 
-	for i := 0; i < []str.len(buttonNames); i++ {
-		gltext.Printf(
-			"Roboto50", 
-			game.ScreenCenterXInGltextSpace, 
-			y, 
-			[]str.read(buttonNames, i))	
+		for i := 0; i < []str.len(buttonNames); i++ {
+			gltext.Printf(
+				"Roboto50", 
+				game.ScreenCenterXInGltextSpace, 
+				y, 
+				[]str.read(buttonNames, i))	
 
-		y += textHeight
+			y += textHeight
+		}
 	}
 }
