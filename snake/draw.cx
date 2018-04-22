@@ -22,11 +22,6 @@ var spherePointsAngleIncrement f32
 var spherePointsX              []f32
 var spherePointsY              []f32
 
-// menu 
-var buttonNames  []str
-var textHeight   f32 = 32.0
-var deltaFromTop f32 // in Gltext space 
-
 
 
 func Init() () {
@@ -42,18 +37,6 @@ func Init() () {
 
 	setupFonts()
 	setupSpherePointTable()
-
-	// setup menu 
-	buttonNames = []str.append(buttonNames, "Play")
-	buttonNames = []str.append(buttonNames, "Options")
-	buttonNames = []str.append(buttonNames, "QpjyZ")
-
-	deltaFromTop = // at this point its' the total space above & below menu items 
-		i32.f32(game.ScreenNumPixelsHigh) - 
-		i32.f32([]str.len(buttonNames)) * 
-		textHeight
-
-	deltaFromTop /= 2.0 // finale position 
 }
 
 
@@ -270,7 +253,7 @@ func Text() () {
 		//gltext.Printf("Roboto100", 0.0, 0.0, "Hello World")
 	}
 
-	if game.Mode >= game.GAMESTATE_Playing {
+	if game.Mode >= game.MODE_Playing {
 		s := "mouse + W A S D      5"
 		// everlasting text 
 		//EntityChainedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...that moves with player 
@@ -312,7 +295,7 @@ func setupFonts() () {
 	os.Close(fontFile)
 	
 	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto50", fontFile, f32.i32(textHeight), 32, 127, gltext.LeftToRight)
+	gltext.LoadTrueType("Roboto50", fontFile, f32.i32(game.TextHeight), 32, 127, gltext.LeftToRight)
 	os.Close(fontFile)
 
 	gl.Enable(gl.DEPTH_TEST)
@@ -376,20 +359,20 @@ func drawIndicators(sin f32, cos f32) () {
 
 
 func menuMaybe() () {
-	if game.Mode < game.GAMESTATE_Playing {
+	if game.Mode < game.MODE_Playing {
 		f := 1.0
 		gl.Color4f(f, f, f, 1.0)
 
-		y := deltaFromTop
+		y := game.DeltaFromTop
 
-		for i := 0; i < []str.len(buttonNames); i++ {
+		for i := 0; i < []str.len(game.ButtonNames); i++ {
 			gltext.Printf(
 				"Roboto50", 
 				game.ScreenCenterXInGltextSpace, 
 				y, 
-				[]str.read(buttonNames, i))	
+				[]str.read(game.ButtonNames, i))	
 
-			y += textHeight
+			y += game.TextHeight
 		}
 	}
 }

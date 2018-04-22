@@ -19,7 +19,7 @@ import "entity"
 
 
 var Name str = "  S  N  A  K  E  "
-var NumRadianGrains i32 = 256 // gives 64 aim/angle/direction possibilities per quadrant 
+var NumRadianGrains       i32 = 256 // gives 64 aim/angle/direction possibilities per quadrant 
 var RadianGrainForRNG     f32
 var RadianGrainForLUT     f32 
 var AsteroidVelocityGrain f32 = 0.00002
@@ -41,10 +41,10 @@ var visualizerFrameAdvance f32 = 0.3
 // screen 
 var ScreenNumPixelsWide i32 = 1280
 var ScreenNumPixelsHigh i32 = 720
-var ScreenBoundsTop f32
-var ScreenBoundsRight f32
-var ScreenBoundsBottom f32
-var ScreenBoundsLeft f32
+var ScreenBoundsTop     f32
+var ScreenBoundsRight   f32
+var ScreenBoundsBottom  f32
+var ScreenBoundsLeft    f32
 
 // snake 
 var MinSnakeExtent f32 = 0.1
@@ -59,15 +59,15 @@ var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
 
 // game state  
-var currTime           f32 = 0.0
-var Mode                  i32
-var Stage                 i32 = 1 // waves that get progressively harder, like 80s arcade games 
+var currTime f32 = 0.0
+var Mode     i32
+var Stage    i32 = 1 // waves that get progressively harder, like 80s arcade games 
 
 // 		enums 
-var GAMESTATE_MainMenu    i32 = 0 // FIXME when constants are in CX 
-var GAMESTATE_OptionsMenu i32 = 1
-var GAMESTATE_Playing     i32 = 2
-var GAMESTATE_GameOver    i32 = 3
+var MODE_MainMenu    i32 = 0 // FIXME when constants are in CX 
+var MODE_OptionsMenu i32 = 1
+var MODE_Playing     i32 = 2 // this is used in "<" and ">=" conditions 
+var MODE_Dead        i32 = 3
 
 // event/announcement text 
 var EventText                   str
@@ -77,6 +77,11 @@ var EventTextColorIntensity     f32
 var EventTextX                  f32
 var EventTextY                  f32
 var ScreenCenterXInGltextSpace f32
+
+// menu 
+var ButtonNames  []str
+var TextHeight   f32 = 32.0
+var DeltaFromTop f32 // in Gltext space 
 
 
 
@@ -96,6 +101,18 @@ func Init() () {
 	ScreenBoundsRight = extentXFromOrigin
 	ScreenBoundsBottom = -1.0
 	ScreenBoundsLeft = 0.0 - extentXFromOrigin
+
+	// setup menu 
+	ButtonNames = []str.append(ButtonNames, "Play")
+	ButtonNames = []str.append(ButtonNames, "Options")
+	ButtonNames = []str.append(ButtonNames, "QpjyZ")
+
+	DeltaFromTop = // at this point its' the total space above & below menu items 
+		i32.f32(ScreenNumPixelsHigh) - 
+		i32.f32([]str.len(ButtonNames)) * 
+		TextHeight
+
+	DeltaFromTop /= 2.0 // finale position 
 
 	entity.Init()
 	str.print("--- game.Init()")
@@ -299,9 +316,31 @@ func SetMode(mode i32) () {
 	Mode = mode
 }
 
+func GetButtonPointerIsTouching(x f64, y f64) (out str) {
+	id := -1 getButtonThatPointerIsTouching(x, y)
+
+	if id == -1 {
+		return "Nothing"
+	}
+
+	return []str.read(ButtonNames, id)
+}
 
 
-// private 
+func getButtonThatPointerIsTouching(x f64, y f64) (out i32) {
+	currY := DeltaFromTop // in Gltext space 
+	
+	for i := 0; i < []str.len(ButtonNames); i++ {
+		if  y > currY && y < currY + TextHeight {
+			return i;
+		}
+
+		currY += TextHeight
+	}
+
+	return -1 // NOTHING touched
+}
+
 
 func setPosOfVisualizers() () {
 	xOfPerfectRadius, 
@@ -321,3 +360,5 @@ func setPosOfVisualizers() () {
 	visualizerAngle += 
 	visualizerFrameAdvance
 }
+
+

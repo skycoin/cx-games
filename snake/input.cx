@@ -49,11 +49,10 @@ func Update() () {
 
 func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 	if action == /* Press */ 1 {
-		if game.Mode == game.GAMESTATE_Playing {
+		if game.Mode >= game.MODE_Playing {
 			entity.Shoot(0)
-		} else {
-			game.SetMode(game.GAMESTATE_Playing)
-			glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
+		} else { // must be in menu 
+			garbo := "grr"
 		}
 	}
 }
@@ -69,7 +68,7 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 	currMouseY = y
 
 	if prevMouseX != 0.0D && prevMouseY != 0.0D { // not the 1st time (delta unknown)
-		if game.Mode >= game.GAMESTATE_Playing {
+		if game.Mode >= game.MODE_Playing {
 			deltaX := x - prevMouseX
 			deltaY := y - prevMouseY
 			// invert from pixel to world aligned space 
@@ -151,3 +150,4 @@ func SetSnakeVelocity() () {
 		}
 	}
 }
+
