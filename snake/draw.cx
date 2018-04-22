@@ -65,7 +65,7 @@ func All() () { // draw all
 
 	/* draw */ Snake()
 	/* draw */ Entities()
-	/* draw */ Text()
+	/* draw */ AllText()
 	/* draw */ menuMaybe()
 
 }
@@ -85,6 +85,19 @@ func Entities() () {
 				[]f32.read(entity.Blue, i))
 		}
 	}
+}
+
+
+func Rect(top f32, right f32, bottom f32, left f32, red f32, green f32, blue f32) () {
+	gl.Begin(gl.POLYGON)
+	gl.Color3f(red, green, blue)
+	
+	gl.Vertex2f(left,  top)
+	gl.Vertex2f(right, top)
+	gl.Vertex2f(right, bottom)
+	gl.Vertex2f(left,  bottom)
+
+	gl.End()
 }
 
 
@@ -233,7 +246,7 @@ func Snake() () {
 }
 
 
-func Text() () {
+func AllText() () {
 	// maybe draw top-of-screen text 
 	if game.EventTextTimeFadeStarts != 0.0 && // (text has expiry set &...) 
 		game.EventTextColorIntensity > 0.0 {  // (...still has color) 
@@ -244,8 +257,7 @@ func Text() () {
 			game.EventTextColorIntensity, 
 			1.0)
 
-		gltext.Printf(
-			"Roboto50", 
+		CcText(
 			game.EventTextX,
 			game.EventTextY, 
 			game.EventText)
@@ -254,23 +266,34 @@ func Text() () {
 	}
 
 	if game.Mode >= game.MODE_Playing {
-		s := "mouse + W A S D      5"
+		s := "lPQpqjy     mouse + W A S D      5"
+		
 		// everlasting text 
-		//EntityChainedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...that moves with player 
+		//EntityAttachedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...that moves with player 
 
 		// stationary 
 		f := 0.4
 		gl.Color4f(f, f, f, 1.0)
-		gltext.Printf(
-			"Roboto50", 
+		
+		CcText(
 			game.ScreenCenterXInGltextSpace, 
-			i32.f32(game.ScreenNumPixelsHigh - 1) - game.TextHeight, 
+			0.0,
+			s)
+		
+		CcText(
+			game.ScreenCenterXInGltextSpace, 
+			i32.f32(game.ScreenNumPixelsHigh) - game.TextHeight, 
 			s)
 	}
 }
 
 
-func EntityChainedText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
+func CcText(x f32, y f32, text str) () {
+	gltext.Printf("Roboto50", x, y - game.TextOffset, text)
+}
+
+
+func EntityAttachedText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
 	// dynamic text space positions 
 	midX := i32.f32(game.ScreenNumPixelsWide) / 2.0
 	midY := i32.f32(game.ScreenNumPixelsHigh) / 2.0
@@ -279,7 +302,7 @@ func EntityChainedText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
 	y := offsetY + i32.f32(game.ScreenNumPixelsHigh) - (y - game.ScreenBounds.Bottom) * midY
 
 	gl.Color4f(0.8, 0.0, 0.8, 1.0)
-	gltext.Printf("Roboto50", x, y, s)
+	CcText(x, y, s)
 }
 
 
@@ -360,14 +383,36 @@ func drawIndicators(sin f32, cos f32) () {
 
 func menuMaybe() () {
 	if game.Mode < game.MODE_Playing {
+		//y   := game.ScreenBoundsTop - game.ScreenPixelHeight * game.DeltaFromTop
+		y := i32.f32([]str.len(game.ButtonNames)) * game.TextHeight * game.ScreenPixelHeight / 2.0
+		hei := game.TextHeight * game.ScreenPixelHeight
+
+		// button background rects 
+		for i := 0; i < []str.len(game.ButtonNames); i++ {
+			cci = 0.5 // color channel intensity 
+
+			/* draw */ Rect(
+				y, 
+				game.ScreenBoundsRight - 0.2,
+				y - hei,
+				game.ScreenBoundsLeft + 0.2,
+				cci, cci, cci)
+
+			//Rect(cci, cci, 0.0-cci, 0.0-cci, cci, cci, cci)
+
+			y -= hei
+		}
+
+
+
+		// text 
 		f := 1.0
 		gl.Color4f(f, f, f, 1.0)
 
-		y := game.DeltaFromTop
+		y = game.DeltaFromTop
 
 		for i := 0; i < []str.len(game.ButtonNames); i++ {
-			gltext.Printf(
-				"Roboto50", 
+			CcText(
 				game.ScreenCenterXInGltextSpace, 
 				y, 
 				[]str.read(game.ButtonNames, i))	

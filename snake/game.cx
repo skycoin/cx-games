@@ -41,20 +41,21 @@ var visualizerFrameAdvance f32 = 0.3
 // screen 
 var ScreenNumPixelsWide i32 = 1280
 var ScreenNumPixelsHigh i32 = 720
+var ScreenPixelHeight   f32 // in GL graphics space 
 var ScreenBoundsTop     f32
 var ScreenBoundsRight   f32
 var ScreenBoundsBottom  f32
 var ScreenBoundsLeft    f32
 
 // snake 
-var MinSnakeExtent f32 = 0.1
-var MaxSnakeExtent f32 = 0.35
-var CurrSnakeExtent f32 = 0.17
-var CurrSnakeAim f32 = 0.0
-var TailRadius f32 = 0.02
-var HeadRadius f32 = 0.07
-var shrinkColorIntensity f32
-var growColorIntensity f32
+var MinSnakeExtent                 f32 = 0.1
+var MaxSnakeExtent                 f32 = 0.35
+var CurrSnakeExtent                f32 = 0.17
+var CurrSnakeAim                   f32 = 0.0
+var TailRadius                     f32 = 0.02
+var HeadRadius                     f32 = 0.07
+var shrinkColorIntensity           f32
+var growColorIntensity             f32
 var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
 
@@ -76,18 +77,21 @@ var EventTextTimeFadeStarts     f32
 var EventTextColorIntensity     f32
 var EventTextX                  f32
 var EventTextY                  f32
-var ScreenCenterXInGltextSpace f32
+var ScreenCenterXInGltextSpace  f32
 
-// menu 
+// menu / text 
 var ButtonNames  []str
-var TextHeight   f32 = 32.0
-var DeltaFromTop f32 // in Gltext space 
+var TextHeight   f32 = 128.0 // by the pixels of text Space
+var TextOffset   f32        // calculated (on init) to be a fraction of TextHeight above 
+var TextFraction f32 = 0.16
+var DeltaFromTop f32        // in Gltext space 
 
 
 
 func Init() () {
 	updateTiming()
 	RadianGrainForRNG = 2.0 * 3.141592654 / i32.f32(NumRadianGrains)
+	TextOffset = TextFraction * TextHeight
 
 	// event/announcement text 
 	EventText = Name
@@ -96,16 +100,20 @@ func Init() () {
 
 	// screen 
 	// (vertical portion of aspect ratio is always 1.0 (in the movie industry) ) 
+	// but we're gonna range our gl space from -1.0 to 1.0 (height of 2.0) 
 	extentXFromOrigin := i32.f32(ScreenNumPixelsWide) / i32.f32(ScreenNumPixelsHigh)
 	ScreenBoundsTop = 1.0
 	ScreenBoundsRight = extentXFromOrigin
 	ScreenBoundsBottom = -1.0
 	ScreenBoundsLeft = 0.0 - extentXFromOrigin
+	ScreenPixelHeight = 2.0 / i32.f32(ScreenNumPixelsHigh)
 
 	// setup menu 
+	ButtonNames = []str.append(ButtonNames, "lPQpqjy")
 	ButtonNames = []str.append(ButtonNames, "Play")
-	ButtonNames = []str.append(ButtonNames, "Options")
-	ButtonNames = []str.append(ButtonNames, "QpjyZ")
+	//ButtonNames = []str.append(ButtonNames, "Options")
+	//ButtonNames = []str.append(ButtonNames, "Quit")
+	ButtonNames = []str.append(ButtonNames, "lPQpqjy")
 
 	DeltaFromTop = // at this point its' the total space above & below menu items 
 		i32.f32(ScreenNumPixelsHigh) - 
