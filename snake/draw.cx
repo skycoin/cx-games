@@ -63,10 +63,10 @@ func All() () { // draw all
 	
 	*/
 
+	/* draw */ menuMaybe()
 	/* draw */ Snake()
 	/* draw */ Entities()
 	/* draw */ AllText()
-	/* draw */ menuMaybe()
 
 }
 

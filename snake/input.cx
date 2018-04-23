@@ -12,14 +12,20 @@ var currMouseX f64
 var currMouseY f64
 
 // key codes 
-var GLFW_KEY_5      i32 = 53
-var GLFW_KEY_SPACE  i32 = 32
-var GLFW_KEY_ESCAPE i32 = 256
+// 		developer quick exit 
+var GLFW_KEY_5         i32 = 53
+//		shooting
+var GLFW_KEY_SPACE     i32 = 32
+//		escape to menu
+var GLFW_KEY_ESCAPE    i32 = 256
+var GLFW_KEY_ENTER     i32 = 257
+var GLFW_KEY_TAB       i32 = 258
+var GLFW_KEY_BACKSPACE i32 = 259
 // 		directional keys 
-var	GLFW_KEY_A i32 = 65
-var	GLFW_KEY_D i32 = 68
-var	GLFW_KEY_W i32 = 87
-var	GLFW_KEY_S i32 = 83
+var	GLFW_KEY_A         i32 = 65
+var	GLFW_KEY_D         i32 = 68
+var	GLFW_KEY_W         i32 = 87
+var	GLFW_KEY_S         i32 = 83
 
 // move direction 
 var moveLeft bool
@@ -62,7 +68,6 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 			} else { // FIXME when CX gets switches 
 				if btn == "Options" {
 					game.SetMode(game.MODE_OptionsMenu)
-					glfw.SetInputMode("window", glfw.Cursor, glfw.CursorEnabled)
 					game.ButtonNames = []str.append(game.ButtonNames, "Mouse Sensitivity (Horizontal)")
 					game.ButtonNames = []str.append(game.ButtonNames, "Mouse Sensitivity (Vertical)")
 				} else {
@@ -123,9 +128,17 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 				entity.Shoot(0)
 			}	
 
-			if key == GLFW_KEY_5 ||
-				key == GLFW_KEY_ESCAPE {
+			if key == GLFW_KEY_5 {
 				glfw.SetShouldClose("window", true)
+			}
+
+			if key == GLFW_KEY_ESCAPE || 
+				key == GLFW_KEY_ENTER ||
+				key == GLFW_KEY_TAB || 
+				key == GLFW_KEY_BACKSPACE {
+
+				game.SetMode(game.MODE_OptionsMenu)
+				glfw.SetInputMode("window", glfw.Cursor, glfw.CursorNormal)
 			}
 		}
 	}
