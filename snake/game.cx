@@ -80,11 +80,12 @@ var EventTextY                 f32
 var ScreenCenterXInGltextSpace f32
 
 // menu / text 
-var ButtonNames  []str
-var TextHeight   f32 = 64.0 // by the pixels of text Space
-var TextOffset   f32        // calculated (on init) to be a fraction of TextHeight above 
-var TextFraction f32 = 0.16
-var DeltaFromTop f32        // in Gltext space 
+var ButtonNames     []str
+var TextHeight      f32 = 64.0 // by the pixels of text Space
+var TextOffset      f32        // calculated (on init) to be a fraction of TextHeight above 
+var TextFraction    f32 = 0.16
+var DeltaFromTop    f32        // in Gltext space 
+var MenuHighlightId i32 = -1
 
 
 
@@ -323,31 +324,28 @@ func SetMode(mode i32) () {
 	Mode = mode
 }
 
-func GetButtonThatPointerIsTouching(x f64, y f64) (out str) {
-	id := getButtonThatPointerIsTouching(x, y)
-
-	if id == -1 {
+func GetButtonThatPointerIsTouching() (out str) {
+	if MenuHighlightId == -1 {
 		return "Nothing"
 	}
 
-	return []str.read(ButtonNames, id)
+	return []str.read(ButtonNames, MenuHighlightId)
 }
 
 
-func getButtonThatPointerIsTouching(x f64, y f64) (out i32) {
+func GetIdOfButtonThatPointerIsTouching(x f64, y f64) () {
 	currY := DeltaFromTop // in Gltext space 
+	MenuHighlightId = 0 - 1 // signals NOTHING touched, if this value remains on func exit 
 	
 	for i := 0; i < []str.len(ButtonNames); i++ {
 		if  f64.f32(y) > currY && 
 			f64.f32(y) < currY + TextHeight {
 
-			return i;
+			MenuHighlightId = i
 		}
 
 		currY += TextHeight
 	}
-
-	return -1 // NOTHING touched
 }
 
 

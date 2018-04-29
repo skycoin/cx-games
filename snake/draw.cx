@@ -384,7 +384,11 @@ func menuMaybe() () {
 
 		// button background rects 
 		for i := 0; i < []str.len(game.ButtonNames); i++ {
-			cci = 0.5 // color channel intensity 
+			cci := 0.5 // color channel intensity 
+
+			if game.MenuHighlightId == i {
+				cci = 0.85
+			}
 
 			/* draw */ Rect(
 				y, 

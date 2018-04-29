@@ -59,7 +59,7 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 		if game.Mode >= game.MODE_Playing {
 			entity.Shoot(0)
 		} else { // must be in menu 
-			btn := game.GetButtonThatPointerIsTouching(currMouseX, currMouseY)
+			btn := game.GetButtonThatPointerIsTouching()
 			str.print(btn)
 
 			if btn == "Play" {
@@ -76,7 +76,6 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 					}
 				}
 			}
-
 		}
 	}
 }
@@ -85,13 +84,15 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 
 // mouse position
 
-var prevMouseX f64
-var prevMouseY f64
+var prevMouseX f64 = -999.0D
+var prevMouseY f64 = -999.0D
 func onCursorPosEvent(window str, x f64, y f64) () {
 	currMouseX = x
 	currMouseY = y
 
-	if prevMouseX != 0.0D && prevMouseY != 0.0D { // not the 1st time (delta unknown)
+	if prevMouseX != 0.0D - 999.0D && 
+		prevMouseY != 0.0D - 999.0D { // not the 1st time (delta unknown) 
+
 		if game.Mode >= game.MODE_Playing {
 			deltaX := x - prevMouseX
 			deltaY := y - prevMouseY
@@ -106,6 +107,8 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 			game.SetSnakeAimAndSize(
 				f64.f32(deltaX),
 				f64.f32(deltaY))
+		} else {
+			game.GetIdOfButtonThatPointerIsTouching(x, y)
 		}
 	}
 	
