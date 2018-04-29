@@ -67,13 +67,15 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 				glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
 			} else { // FIXME when CX gets switches 
 				if btn == "Options" {
-					game.SetMode(game.MODE_OptionsMenu)
-					game.ButtonNames = []str.append(game.ButtonNames, "Mouse Sensitivity (Horizontal)")
-					game.ButtonNames = []str.append(game.ButtonNames, "Mouse Sensitivity (Vertical)")
-				} else {
-					if btn == "Quit" {
-						glfw.SetShouldClose("window", true)
-					}
+					game.SetOptionsMenu()
+				} 
+				
+				if btn == "Quit" {
+					glfw.SetShouldClose("window", glfw.True)
+				}
+				
+				if btn == game.MenuItemBack {
+					game.SetMainMenu()
 				}
 			}
 		}
@@ -132,7 +134,7 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 			}	
 
 			if key == GLFW_KEY_5 {
-				glfw.SetShouldClose("window", true)
+				glfw.SetShouldClose("window", glfw.True)
 			}
 
 			if key == GLFW_KEY_ESCAPE || 

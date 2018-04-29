@@ -90,6 +90,7 @@ var DeltaFromCenter    f32        // in Gltext space
 var MenuHighlightId    i32 = -1
 var LongestItemsExtent f32 = 0.30 // ...on the main menu.  FIXME: hardwired value for "Options" (gl text measuring not exposed) 
 var LongestOptioExtent f32 = 0.80 // ...in options menu (mouse horizontal sensitivity).  FIXME: hardwired 
+var MenuItemBack       str = "<-"
 
 
 
@@ -113,18 +114,7 @@ func Init() () {
 	ScreenBoundsLeft = 0.0 - extentXFromOrigin
 	ScreenPixelSpan = 2.0 / i32.f32(ScreenNumPixelsHigh)
 
-	// setup menu 
-	//ButtonNames = []str.append(ButtonNames, "lPQpqjy")    // good test str for visible min/max extents? 
-	ButtonNames = []str.append(ButtonNames, "Play")
-	ButtonNames = []str.append(ButtonNames, "Options")
-	ButtonNames = []str.append(ButtonNames, "Quit")
-
-	DeltaFromTop = // at this point it's the total space above & below menu items 
-		i32.f32(ScreenNumPixelsHigh) - 
-		i32.f32([]str.len(ButtonNames)) * 
-		TextHeight
-
-	DeltaFromTop /= 2.0 // finale position 
+	SetMainMenu()
 	DeltaFromCenter = LongestItemsExtent / ScreenPixelSpan
 	DeltaFromLeftEdge =	ScreenCenterXInGltextSpace - DeltaFromCenter, 
 
@@ -161,6 +151,38 @@ func updateTiming() () {
 	currTime = f64.f32(glfw.GetTime())
 	timeDelta = currTime - prevFrameTime
 	prevFrameTime = currTime
+}
+
+
+func SetMainMenu() () {
+	a := "Play"
+	b := "Options"
+	c := "Quit"
+
+	ButtonNames = []str{a, b, c}	
+	setupDeltaFromTop()
+	SetMode(MODE_MainMenu)
+}
+
+
+func SetOptionsMenu() () {
+	a := "Mouse Sensitivity (Horizontal)"
+	b := "Mouse Sensitivity (Vertical)"
+	c := MenuItemBack
+
+	ButtonNames = []str{a, b, c}	
+	setupDeltaFromTop()
+	SetMode(MODE_OptionsMenu)
+}
+
+
+func setupDeltaFromTop() () {
+	DeltaFromTop = // at this point it's the total space above & below menu items 
+		i32.f32(ScreenNumPixelsHigh) - 
+		i32.f32([]str.len(ButtonNames)) * 
+		TextHeight
+
+	DeltaFromTop /= 2.0 // finale position 
 }
 
 
