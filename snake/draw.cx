@@ -90,12 +90,17 @@ func Entities() () {
 
 func Rect(top f32, right f32, bottom f32, left f32, red f32, green f32, blue f32) () {
 	gl.Begin(gl.POLYGON)
+
 	gl.Color3f(red, green, blue)
 	
-	gl.Vertex2f(left,  top)
-	gl.Vertex2f(right, top)
+	gl.Vertex2f(right, top)	
 	gl.Vertex2f(right, bottom)
+
+	div := 3.0 // horizontal gradient divisor 
+	gl.Color3f(red/div, green/div, blue/div)
+
 	gl.Vertex2f(left,  bottom)
+	gl.Vertex2f(left,  top)
 
 	gl.End()
 }
@@ -381,23 +386,20 @@ func menuMaybe() () {
 		//y   := game.ScreenBoundsTop - game.ScreenPixelHeight * game.DeltaFromTop
 		y := i32.f32([]str.len(game.ButtonNames)) * game.TextHeight * game.ScreenPixelHeight / 2.0
 		hei := game.TextHeight * game.ScreenPixelHeight
+		f := 0.5
 
 		// button background rects 
 		for i := 0; i < []str.len(game.ButtonNames); i++ {
-			cci := 0.5 // color channel intensity 
+			t := y 
+			r := game.ScreenBoundsRight - 0.2
+			b := y - hei
+			l := game.ScreenBoundsLeft + 0.2
 
-			if game.MenuHighlightId == i {
-				cci = 0.85
+			if i == game.MenuHighlightId {
+				/* draw */ Rect(t, r, b, l, 0.6, 0.6, 1.0)
+			} else { 
+				/* draw */ Rect(t, r, b, l, f, f, f)
 			}
-
-			/* draw */ Rect(
-				y, 
-				game.ScreenBoundsRight - 0.2,
-				y - hei,
-				game.ScreenBoundsLeft + 0.2,
-				cci, cci, cci)
-
-			//Rect(cci, cci, 0.0-cci, 0.0-cci, cci, cci, cci)
 
 			y -= hei
 		}
@@ -405,12 +407,15 @@ func menuMaybe() () {
 
 
 		// text 
-		f := 1.0
-		gl.Color4f(f, f, f, 1.0)
-
 		y = game.DeltaFromTop
 
 		for i := 0; i < []str.len(game.ButtonNames); i++ {
+			if i == game.MenuHighlightId {
+				gl.Color4f(0.0, 0.0, 1.0, 1.0)
+			} else { 
+				gl.Color4f(1.0, 1.0, 1.0, 1.0)
+			}
+
 			CcText(
 				game.ScreenCenterXInGltextSpace, 
 				y, 
@@ -419,4 +424,23 @@ func menuMaybe() () {
 			y += game.TextHeight
 		}
 	}
+}
+
+
+// DELETE THIS DEPRECATED FUNC AFTER EXAMINING HOW WEIRD IT BEHAVES 
+// d = default, h = highlighted 
+func setMenuItemColor(i i32, 
+	dR f32, dG f32, dB f32, 
+	hR f32, hG f32, hB f32) () {
+
+	if i == game.MenuHighlightId {
+		dR = hR
+		dG = hG
+		dB = hB
+	}
+
+	str.print(str.concat("i: ", i32.str(i)))
+	str.print(i32.str(game.MenuHighlightId))
+
+	gl.Color4f(dR, dG, dB, 1.0)
 }
