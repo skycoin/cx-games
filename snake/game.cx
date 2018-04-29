@@ -38,15 +38,6 @@ var visualizerAngle        f32
 var visualizerRadius       f32 = 0.6
 var visualizerFrameAdvance f32 = 0.3
 
-// screen 
-var ScreenNumPixelsWide i32 = 1280
-var ScreenNumPixelsHigh i32 = 720
-var ScreenPixelHeight   f32 // in GL graphics space 
-var ScreenBoundsTop     f32
-var ScreenBoundsRight   f32
-var ScreenBoundsBottom  f32
-var ScreenBoundsLeft    f32
-
 // snake 
 var MinSnakeExtent                 f32 = 0.1
 var MaxSnakeExtent                 f32 = 0.35
@@ -79,13 +70,26 @@ var EventTextX                 f32
 var EventTextY                 f32
 var ScreenCenterXInGltextSpace f32
 
+// screen 
+var ScreenNumPixelsWide i32 = 1280
+var ScreenNumPixelsHigh i32 = 720
+var ScreenPixelSpan     f32 // in GL graphics coords 
+var ScreenBoundsTop     f32
+var ScreenBoundsRight   f32
+var ScreenBoundsBottom  f32
+var ScreenBoundsLeft    f32
+
 // menu / text 
-var ButtonNames     []str
-var TextHeight      f32 = 64.0 // by the pixels of text Space
-var TextOffset      f32        // calculated (on init) to be a fraction of TextHeight above 
-var TextFraction    f32 = 0.16
-var DeltaFromTop    f32        // in Gltext space 
-var MenuHighlightId i32 = -1
+var ButtonNames        []str
+var TextHeight         f32 = 64.0 // by the pixels of text Space
+var TextOffset         f32        // calculated (on init) to be a fraction of TextHeight above 
+var TextFraction       f32 = 0.16
+var DeltaFromTop       f32        // in Gltext space 
+var DeltaFromLeftEdge  f32        // in Gltext space 
+var DeltaFromCenter    f32        // in Gltext space 
+var MenuHighlightId    i32 = -1
+var LongestItemsExtent f32 = 0.30 // ...on the main menu.  FIXME: hardwired value for "Options" (gl text measuring not exposed) 
+var LongestOptioExtent f32 = 0.80 // ...in options menu (mouse horizontal sensitivity).  FIXME: hardwired 
 
 
 
@@ -107,7 +111,7 @@ func Init() () {
 	ScreenBoundsRight = extentXFromOrigin
 	ScreenBoundsBottom = -1.0
 	ScreenBoundsLeft = 0.0 - extentXFromOrigin
-	ScreenPixelHeight = 2.0 / i32.f32(ScreenNumPixelsHigh)
+	ScreenPixelSpan = 2.0 / i32.f32(ScreenNumPixelsHigh)
 
 	// setup menu 
 	//ButtonNames = []str.append(ButtonNames, "lPQpqjy")    // good test str for visible min/max extents? 
@@ -115,12 +119,14 @@ func Init() () {
 	ButtonNames = []str.append(ButtonNames, "Options")
 	ButtonNames = []str.append(ButtonNames, "Quit")
 
-	DeltaFromTop = // at this point its' the total space above & below menu items 
+	DeltaFromTop = // at this point it's the total space above & below menu items 
 		i32.f32(ScreenNumPixelsHigh) - 
 		i32.f32([]str.len(ButtonNames)) * 
 		TextHeight
 
 	DeltaFromTop /= 2.0 // finale position 
+	DeltaFromCenter = LongestItemsExtent / ScreenPixelSpan
+	DeltaFromLeftEdge =	ScreenCenterXInGltextSpace - DeltaFromCenter, 
 
 	entity.Init()
 	str.print("--- game.Init()")

@@ -383,17 +383,16 @@ func drawIndicators(sin f32, cos f32) () {
 
 func menuMaybe() () {
 	if game.Mode < game.MODE_Playing {
-		//y   := game.ScreenBoundsTop - game.ScreenPixelHeight * game.DeltaFromTop
-		y := i32.f32([]str.len(game.ButtonNames)) * game.TextHeight * game.ScreenPixelHeight / 2.0
-		hei := game.TextHeight * game.ScreenPixelHeight
+		y := i32.f32([]str.len(game.ButtonNames)) * game.TextHeight * game.ScreenPixelSpan / 2.0
+		hei := game.TextHeight * game.ScreenPixelSpan
 		f := 0.5
 
 		// button background rects 
 		for i := 0; i < []str.len(game.ButtonNames); i++ {
 			t := y 
-			r := game.ScreenBoundsRight - 0.2
+			r :=       game.LongestItemsExtent
 			b := y - hei
-			l := game.ScreenBoundsLeft + 0.2
+			l := 0.0 - game.LongestItemsExtent
 
 			if i == game.MenuHighlightId {
 				/* draw */ Rect(t, r, b, l, 0.6, 0.6, 1.0)
@@ -417,7 +416,7 @@ func menuMaybe() () {
 			}
 
 			CcText(
-				game.ScreenCenterXInGltextSpace, 
+				game.DeltaFromLeftEdge,
 				y, 
 				[]str.read(game.ButtonNames, i))	
 
@@ -428,7 +427,7 @@ func menuMaybe() () {
 
 
 // DELETE THIS DEPRECATED FUNC AFTER EXAMINING HOW WEIRD IT BEHAVES 
-// d = default, h = highlighted 
+// d = default color, h = highlighted 
 func setMenuItemColor(i i32, 
 	dR f32, dG f32, dB f32, 
 	hR f32, hG f32, hB f32) () {
