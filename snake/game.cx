@@ -88,8 +88,9 @@ var DeltaFromTop       f32        // in Gltext space
 var DeltaFromLeftEdge  f32        // in Gltext space 
 var DeltaFromCenter    f32        // in Gltext space 
 var MenuHighlightId    i32 = -1
-var LongestItemsExtent f32 = 0.30 // ...on the main menu.  FIXME: hardwired value for "Options" (gl text measuring not exposed) 
-var LongestOptioExtent f32 = 0.80 // ...in options menu (mouse horizontal sensitivity).  FIXME: hardwired 
+var LongestCurrMExtent f32 = 0.0  // ....in the current menu.  FIXME: hardwired
+var LongestMainMExtent f32 = 0.30 // ....in the main    menu.  FIXME: hardwired
+var LongestOptiMExtent f32 = 1.155 // ...in the options menu.  FIXME: hardwired 
 var MenuItemBack       str = "<-"
 
 
@@ -115,9 +116,6 @@ func Init() () {
 	ScreenPixelSpan = 2.0 / i32.f32(ScreenNumPixelsHigh)
 
 	SetMainMenu()
-	DeltaFromCenter = LongestItemsExtent / ScreenPixelSpan
-	DeltaFromLeftEdge =	ScreenCenterXInGltextSpace - DeltaFromCenter, 
-
 	entity.Init()
 	str.print("--- game.Init()")
 }
@@ -160,8 +158,9 @@ func SetMainMenu() () {
 	c := "Quit"
 
 	ButtonNames = []str{a, b, c}	
-	setupDeltaFromTop()
 	SetMode(MODE_MainMenu)
+	setupDeltaFromTop()
+	setupDeltaFromLeft(LongestMainMExtent)
 }
 
 
@@ -171,8 +170,9 @@ func SetOptionsMenu() () {
 	c := MenuItemBack
 
 	ButtonNames = []str{a, b, c}	
-	setupDeltaFromTop()
 	SetMode(MODE_OptionsMenu)
+	setupDeltaFromTop()
+	setupDeltaFromLeft(LongestOptiMExtent)
 }
 
 
@@ -183,6 +183,13 @@ func setupDeltaFromTop() () {
 		TextHeight
 
 	DeltaFromTop /= 2.0 // finale position 
+}
+
+
+func setupDeltaFromLeft(longExtent f32) () {
+	LongestCurrMExtent = longExtent
+	DeltaFromCenter = LongestCurrMExtent / ScreenPixelSpan
+	DeltaFromLeftEdge =	ScreenCenterXInGltextSpace - DeltaFromCenter
 }
 
 

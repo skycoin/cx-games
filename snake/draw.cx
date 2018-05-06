@@ -281,7 +281,7 @@ func AllText() () {
 		gl.Color4f(f, f, f, 1.0)
 		
 		CcText(
-			game.ScreenCenterXInGltextSpace * 0.75, 
+			game.ScreenCenterXInGltextSpace * 0.75, // FIXME when text measure exposed  
 			i32.f32(game.ScreenNumPixelsHigh) - game.TextHeight, 
 			s)
 	}
@@ -390,9 +390,9 @@ func menuMaybe() () {
 		// button background rects 
 		for i := 0; i < []str.len(game.ButtonNames); i++ {
 			t := y 
-			r :=       game.LongestItemsExtent
+			r :=       game.LongestCurrMExtent
 			b := y - hei
-			l := 0.0 - game.LongestItemsExtent
+			l := 0.0 - game.LongestCurrMExtent
 
 			if i == game.MenuHighlightId {
 				/* draw */ Rect(t, r, b, l, 0.6, 0.6, 1.0)
