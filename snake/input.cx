@@ -27,15 +27,22 @@ var	GLFW_KEY_D         i32 = 68
 var	GLFW_KEY_W         i32 = 87
 var	GLFW_KEY_S         i32 = 83
 
-// move direction 
-var moveLeft bool
+// cached values 
+// 		move direction 
+var moveLeft  bool
 var moveRight bool
-var moveUp bool
-var moveDown bool
+var moveUp    bool
+var moveDown  bool
+//		buttons 
+var prevMouseX f64
+var prevMouseY f64
 
 
 
 func Init() () {
+	prevMouseX = 0.0D - 7.0D
+	prevMouseY = 0.0D - 7.0D
+
 	glfw.SetKeyCallback("window", "onKeyEvent")
 	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
 	glfw.SetCursorPosCallback("window", "onCursorPosEvent")
@@ -53,29 +60,39 @@ func Update() () {
 
 
 // mouse buttons 
+var LeftMouseButtonDown bool // cache status 
+func onMouseButtonEvent(window str, button i32, action i32, mods i32) () {
+	if action == /* Release */ 0 {
+		if  button == glfw.MouseButtonLeft {
+			LeftMouseButtonDown = false
+		}
+	} else {
+		// do nothing if action == Repeat 
 
-func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
-	if action == /* Press */ 1 {
-		if game.Mode >= game.MODE_Playing {
-			entity.Shoot(0)
-		} else { // must be in menu 
-			btn := game.GetTextOnButtonThatPointerIsOn()
-			str.print(btn)
+		if action == /* Press */ 1 {
+			LeftMouseButtonDown = true
 
-			if btn == "Play" {
-				game.SetMode(game.MODE_Playing)
-				glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
-			} else { // FIXME when CX gets switches 
-				if btn == "Options" {
-					game.SetOptionsMenu()
-				} 
-				
-				if btn == "Quit" {
-					glfw.SetShouldClose("window", glfw.True)
-				}
-				
-				if btn == game.MenuItemBack {
-					game.SetMainMenu()
+			if game.Mode >= game.MODE_Playing {
+				entity.Shoot(0)
+			} else { // must be in menu 
+				btn := game.GetTextOnButtonThatPointerIsOn()
+				str.print(btn)
+
+				if btn == "Play" {
+					game.SetMode(game.MODE_Playing)
+					glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
+				} else { // FIXME when CX gets switches 
+					if btn == "Options" {
+						game.SetOptionsMenu()
+					} 
+					
+					if btn == "Quit" {
+						glfw.SetShouldClose("window", glfw.True)
+					}
+					
+					if btn == game.MenuItemBack {
+						game.SetMainMenu()
+					}
 				}
 			}
 		}
@@ -86,14 +103,13 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 
 // mouse position
 
-var prevMouseX f64 = -999.0D
-var prevMouseY f64 = -999.0D
 func onCursorPosEvent(window str, x f64, y f64) () {
 	currMouseX = x
 	currMouseY = y
 
-	if prevMouseX != 0.0D - 999.0D && 
-		prevMouseY != 0.0D - 999.0D { // not the 1st time (delta unknown) 
+	// if not the 1st time (when delta would have no meaning) 
+	if prevMouseX >= 0.0D && // event values never negative 
+		prevMouseY >= 0.0D { //	
 
 		if game.Mode >= game.MODE_Playing {
 			deltaX := x - prevMouseX
@@ -110,7 +126,23 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 				f64.f32(deltaX),
 				f64.f32(deltaY))
 		} else {
-			game.GetIdOfButtonThatPointerIsTouching(x, y)
+			game.SetIdOfButtonThatPointerIsOn(x, y)
+
+			// respond to mouse buttons 
+			if game.Mode == game.MODE_OptionsMenu && LeftMouseButtonDown {
+				t := game.GetTextOnButtonThatPointerIsOn()
+
+				if t == game.AnalogControlsSensitivityXText {
+					str.print("hovering over sens x")
+					f64.print(x)
+				}
+
+				if t == game.AnalogControlsSensitivityYText {
+					str.print("hovering over sens y")
+					f64.print(x)
+				}
+			}
+
 		}
 	}
 	

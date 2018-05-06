@@ -51,6 +51,8 @@ var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
 var AnalogControlsSensitivityX     f32
 var AnalogControlsSensitivityY     f32
+var AnalogControlsSensitivityXText str = "Mouse Sensitivity (Horizontal)"
+var AnalogControlsSensitivityYText str = "Mouse Sensitivity (Vertical)"
 
 // game state  
 var currTime f32 = 0.0
@@ -167,8 +169,8 @@ func SetMainMenu() () {
 
 
 func SetOptionsMenu() () {
-	a := "Mouse Sensitivity (Horizontal)"
-	b := "Mouse Sensitivity (Vertical)"
+	a := AnalogControlsSensitivityXText
+	b := AnalogControlsSensitivityYText
 	c := MenuItemBack
 
 	ButtonNames = []str{a, b, c}	
@@ -370,7 +372,7 @@ func GetTextOnButtonThatPointerIsOn() (out str) {
 }
 
 
-func GetIdOfButtonThatPointerIsTouching(x f64, y f64) () {
+func SetIdOfButtonThatPointerIsOn(x f64, y f64) () {
 	currY := DeltaFromTop // in Gltext space 
 	MenuHighlightId = 0 - 1 // signals NOTHING touched, if this value remains on func exit 
 	
