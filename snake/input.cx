@@ -59,7 +59,7 @@ func onMouseButtonEvent(window str, key i32, action i32, mods i32) () {
 		if game.Mode >= game.MODE_Playing {
 			entity.Shoot(0)
 		} else { // must be in menu 
-			btn := game.GetButtonThatPointerIsTouching()
+			btn := game.GetTextOnButtonThatPointerIsOn()
 			str.print(btn)
 
 			if btn == "Play" {

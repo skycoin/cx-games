@@ -49,6 +49,8 @@ var shrinkColorIntensity           f32
 var growColorIntensity             f32
 var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
+var AnalogControlsSensitivityX     f32
+var AnalogControlsSensitivityY     f32
 
 // game state  
 var currTime f32 = 0.0
@@ -359,7 +361,7 @@ func SetMode(mode i32) () {
 	Mode = mode
 }
 
-func GetButtonThatPointerIsTouching() (out str) {
+func GetTextOnButtonThatPointerIsOn() (out str) {
 	if MenuHighlightId == -1 {
 		return "Nothing"
 	}

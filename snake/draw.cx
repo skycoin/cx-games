@@ -410,13 +410,13 @@ func menuMaybe() () {
 }
 
 
-func menuRects(slidersNeeded bool) () {
+func menuRects(sliders bool) () {
 	y := i32.f32([]str.len(game.ButtonNames)) * game.TextHeight * game.ScreenPixelSpan / 2.0
 	hei := game.TextHeight * game.ScreenPixelSpan
 	f := 0.5
 	extent := game.LongestCurrMExtent
 
-	if slidersNeeded {
+	if sliders {
 		extent = 0.03
 	}
 
@@ -427,10 +427,16 @@ func menuRects(slidersNeeded bool) () {
 		l := 0.0 - extent
 		r := extent
 
-		if i == game.MenuHighlightId {
-			/* draw */ Rect(t, r, b, l, 0.6, 0.6, 1.0)
-		} else { 
-			/* draw */ Rect(t, r, b, l, f, f, f)
+		if sliders {
+			if i < 2 {
+				/* draw */ Rect(t, r, b, l, 1.0, 1.0, 1.0)
+			}
+		} else {
+			if i == game.MenuHighlightId {
+				/* draw */ Rect(t, r, b, l, 0.6, 0.6, 1.0)
+			} else { 
+				/* draw */ Rect(t, r, b, l, f, f, f)
+			}
 		}
 
 		y -= hei
