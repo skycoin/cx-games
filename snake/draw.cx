@@ -383,30 +383,14 @@ func drawIndicators(sin f32, cos f32) () {
 
 func menuMaybe() () {
 	if game.Mode < game.MODE_Playing {
-		y := i32.f32([]str.len(game.ButtonNames)) * game.TextHeight * game.ScreenPixelSpan / 2.0
-		hei := game.TextHeight * game.ScreenPixelSpan
-		f := 0.5
-
-		// button background rects 
-		for i := 0; i < []str.len(game.ButtonNames); i++ {
-			t := y 
-			r :=       game.LongestCurrMExtent
-			b := y - hei
-			l := 0.0 - game.LongestCurrMExtent
-
-			if i == game.MenuHighlightId {
-				/* draw */ Rect(t, r, b, l, 0.6, 0.6, 1.0)
-			} else { 
-				/* draw */ Rect(t, r, b, l, f, f, f)
-			}
-
-			y -= hei
+		if game.Mode == game.MODE_OptionsMenu {
+			menuRects(true)
 		}
 
-
+		menuRects(false)
 
 		// text 
-		y = game.DeltaFromTop
+		y := game.DeltaFromTop
 
 		for i := 0; i < []str.len(game.ButtonNames); i++ {
 			if i == game.MenuHighlightId {
@@ -424,6 +408,35 @@ func menuMaybe() () {
 		}
 	}
 }
+
+
+func menuRects(slidersNeeded bool) () {
+	y := i32.f32([]str.len(game.ButtonNames)) * game.TextHeight * game.ScreenPixelSpan / 2.0
+	hei := game.TextHeight * game.ScreenPixelSpan
+	f := 0.5
+	extent := game.LongestCurrMExtent
+
+	if slidersNeeded {
+		extent = 0.03
+	}
+
+	// button background rects 
+	for i := 0; i < []str.len(game.ButtonNames); i++ {
+		t := y       // top
+		b := y - hei // bottom 
+		l := 0.0 - extent
+		r := extent
+
+		if i == game.MenuHighlightId {
+			/* draw */ Rect(t, r, b, l, 0.6, 0.6, 1.0)
+		} else { 
+			/* draw */ Rect(t, r, b, l, f, f, f)
+		}
+
+		y -= hei
+	}
+}
+
 
 
 // DELETE THIS DEPRECATED FUNC AFTER EXAMINING HOW WEIRD IT BEHAVES 
