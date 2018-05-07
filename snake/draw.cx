@@ -52,7 +52,7 @@ func setupSpherePointTable() () {
 }
 
 
-func All() () { // draw all 
+func All() () {
 	/* test spheres 
 	
 	x, y := game.GetPosOfPerfectRadiusVisualizer()
@@ -416,8 +416,9 @@ func menuRects(sliders bool) () {
 	f := 0.5
 	extent := game.LongestCurrMExtent
 
+	// modify to a thin bar width 
 	if sliders {
-		extent = 0.03
+		extent /= 40.0
 	}
 
 	// button background rects 
@@ -430,6 +431,13 @@ func menuRects(sliders bool) () {
 		if sliders {
 			if i < 2 {
 				/* draw */ Rect(t, r, b, l, 1.0, 1.0, 1.0)
+								
+				t -= extent * 2.0
+				b += extent * 2.0
+				l = 0.0 - game.LongestCurrMExtent
+				r = 0.0
+
+				/* draw */ Rect(t, r, b, l, 0.0, 0.0, 0.0)
 			}
 		} else { // normal menu item background 
 			if i == game.MenuHighlightId {
