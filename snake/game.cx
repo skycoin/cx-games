@@ -49,8 +49,8 @@ var shrinkColorIntensity           f32
 var growColorIntensity             f32
 var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
-var AnalogControlsSensitivityX     f32 = 0.5
-var AnalogControlsSensitivityY     f32 = 0.5
+var AnalogControlsSensitivityX     f32 = 0.33
+var AnalogControlsSensitivityY     f32 = 0.33
 var AnalogControlsSensitivityXText str = "Mouse Sensitivity (Horizontal)"
 var AnalogControlsSensitivityYText str = "Mouse Sensitivity (Vertical)"
 
@@ -218,14 +218,13 @@ func fadeColorIntensity(f f32) (out f32) {
 }
 
 
-var divisor f32 = 1000.0
 func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
-	rotateMul := 21.5
+	rotateMul := 21.5 // only for colors
 	div := 90.0
 	rotX, rotY := RotatePositionByAngle(deltaX/div, deltaY/div, CurrSnakeAim)
 
-	CurrSnakeAim    += rotX
-	CurrSnakeExtent += rotY / 14.0
+	CurrSnakeAim    += rotX * AnalogControlsSensitivityX * 1.3
+	CurrSnakeExtent += rotY * AnalogControlsSensitivityY * 0.2
 
 	for CurrSnakeAim >= DubPi {
 		CurrSnakeAim -= DubPi

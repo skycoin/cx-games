@@ -9,10 +9,10 @@ var isTrue  i32 = 1
 
 
 // movement 
-var maxVelocity f32 = 0.01
+var maxVelocity         f32 =  0.01
 var maxNegativeVelocity f32 = -0.01
-var velocityInc f32
-var mm f32 // movement multiplier 
+var velocityInc         f32
+var mm                  f32 // movement multiplier 
 
 
 // time  
@@ -30,23 +30,23 @@ var gradientSpan f32
 // entities
 var numEnts i32 = 3 //4
 var SnakeId i32
-var X []f32
-var Y []f32
+var X       []f32
+var Y       []f32
 
 var VelX []f32 // velocity
 var VelY []f32
 
-var Rad []f32 // radius 
-var Expiry []f32
-var IsCollidable []i32 // FIXME when bool arrays are fixed 
-var BoxyDistance []f32 // a cheap and inaccurate sum of the 2 axis-aligned distances in 2D. 
+var Rad            []f32 // radius 
+var Expiry         []f32
+var IsCollidable   []i32 // FIXME when bool arrays are fixed 
+var BoxyDistance   []f32 // a cheap and inaccurate sum of the 2 axis-aligned distances in 2D. 
 	// when plotting the full spectrum of radian/angle possibilities, 
 	// it forms a fairly box-like shape (but the 4 "sides" are wavy lines rather than straight) 
 var DistanceExpiry []f32
 
-var Red []f32
+var Red   []f32
 var Green []f32
-var Blue []f32
+var Blue  []f32
 
 
 

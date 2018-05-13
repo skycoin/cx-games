@@ -108,8 +108,8 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 	currMouseY = y
 
 	// if not the 1st time (when delta would have no meaning) 
-	if prevMouseX >= 0.0D && // event values never negative 
-		prevMouseY >= 0.0D { //	
+	if prevMouseX != 0.0D && // event values never negative 
+		prevMouseY != 0.0D { //	
 
 		if game.Mode >= game.MODE_Playing {
 			deltaX := x - prevMouseX
