@@ -137,9 +137,11 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 					fx *= (game.WindowExtentX * 2.0)
 					str.print("fraction")
 					/* from left edge */ 
-					offset := game.WindowExtentX - game.LongestCurrMExtent 
+					offset := game.WindowExtentX - game.LongestCurrMExtent
+					offset += game.SliderHandleExtentX
 					fx -= offset
-					fx /= (game.LongestCurrMExtent * 2.0)
+					fx /= (game.LongestCurrMExtent * 2.0 - 
+							game.SliderHandleExtentX * 2.0)
 
 					if fx > 1.0 {
 						fx = 1.0

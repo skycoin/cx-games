@@ -418,7 +418,7 @@ func menuRects(sliders bool) () {
 
 	// modify to a thin bar width 
 	if sliders {
-		extent /= 40.0
+		extent = game.SliderHandleExtentX
 	}
 
 	// button background rects 
@@ -430,9 +430,9 @@ func menuRects(sliders bool) () {
 
 		if sliders {
 			if i < 2 {
-				valueWid := game.AnalogControlsSensitivityX * game.LongestCurrMExtent * 2.0
+				valueWid := game.AnalogControlsSensitivityX * (game.LongestCurrMExtent * 2.0 - extent * 2.0)
 
-				l = 0.0 - game.LongestCurrMExtent 
+				l = 0.0 - game.LongestCurrMExtent + extent
 				l += valueWid
 				r = l + extent
 				l -= extent
