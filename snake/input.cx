@@ -125,7 +125,7 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 			game.SetSnakeAimAndSize(
 				f64.f32(deltaX),
 				f64.f32(deltaY))
-		} else {
+		} else { // must be in menu 
 			game.SetIdOfButtonThatPointerIsOn(x, y)
 
 			// respond to mouse buttons 
@@ -133,13 +133,31 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 				t := game.GetTextOnButtonThatPointerIsOn()
 
 				if t == game.AnalogControlsSensitivityXText {
-					str.print("hovering over sens x")
-					f64.print(x)
+					fx := f64.f32(x) / i32.f32(game.ScreenNumPixelsWide)
+					fx *= (game.WindowExtentX * 2.0)
+					str.print("fraction")
+					/* from left edge */ 
+					offset := game.WindowExtentX - game.LongestCurrMExtent 
+					fx -= offset
+					fx /= (game.LongestCurrMExtent * 2.0)
+
+					if fx > 1.0 {
+						fx = 1.0
+					}
+
+					if fx < 0.0 {
+						fx = 0.0
+					}
+
+					f32.print(fx)
+
+					game.SetAnalogControlsSensitivityX(fx)
+					//f32.print(game.WindowExtentX)
 				}
 
 				if t == game.AnalogControlsSensitivityYText {
 					str.print("hovering over sens y")
-					f64.print(x)
+					f64.print(y)
 				}
 			}
 

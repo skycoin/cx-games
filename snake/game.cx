@@ -78,6 +78,7 @@ var ScreenCenterXInGltextSpace f32
 var ScreenNumPixelsWide i32 = 1280
 var ScreenNumPixelsHigh i32 = 720
 var ScreenPixelSpan     f32 // in GL graphics coords 
+var WindowExtentX       f32
 var ScreenBoundsTop     f32
 var ScreenBoundsRight   f32
 var ScreenBoundsBottom  f32
@@ -112,11 +113,11 @@ func Init() () {
 	// screen 
 	// (vertical portion of aspect ratio is always 1.0 (in the movie industry) ) 
 	// but we're gonna range our gl space from -1.0 to 1.0 (height of 2.0) 
-	extentXFromOrigin := i32.f32(ScreenNumPixelsWide) / i32.f32(ScreenNumPixelsHigh)
+	WindowExtentX = i32.f32(ScreenNumPixelsWide) / i32.f32(ScreenNumPixelsHigh)
 	ScreenBoundsTop = 1.0
-	ScreenBoundsRight = extentXFromOrigin
+	ScreenBoundsRight = WindowExtentX
 	ScreenBoundsBottom = -1.0
-	ScreenBoundsLeft = 0.0 - extentXFromOrigin
+	ScreenBoundsLeft = 0.0 - WindowExtentX
 	ScreenPixelSpan = 2.0 / i32.f32(ScreenNumPixelsHigh)
 
 	SetMainMenu()
@@ -385,6 +386,11 @@ func SetIdOfButtonThatPointerIsOn(x f64, y f64) () {
 
 		currY += TextHeight
 	}
+}
+
+
+func SetAnalogControlsSensitivityX(fraction f32) {
+	AnalogControlsSensitivityX = fraction
 }
 
 
