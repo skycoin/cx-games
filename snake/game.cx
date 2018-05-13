@@ -122,7 +122,7 @@ func Init() () {
 	ScreenBoundsLeft = 0.0 - WindowExtentX
 	ScreenPixelSpan = 2.0 / i32.f32(ScreenNumPixelsHigh)
 
-	SetMainMenu()
+	SetMode(MODE_MainMenu)
 	entity.Init()
 	str.print("--- game.Init()")
 }
@@ -164,8 +164,7 @@ func SetMainMenu() () {
 	b := "Options"
 	c := "Quit"
 
-	ButtonNames = []str{a, b, c}	
-	SetMode(MODE_MainMenu)
+	ButtonNames = []str{a, b, c}
 	setupDeltaFromTop()
 	setupDeltaFromLeft(LongestMainMExtent)
 }
@@ -177,7 +176,6 @@ func SetOptionsMenu() () {
 	c := MenuItemBack
 
 	ButtonNames = []str{a, b, c}	
-	SetMode(MODE_OptionsMenu)
 	setupDeltaFromTop()
 	setupDeltaFromLeft(LongestOptiMExtent)
 }
@@ -364,6 +362,14 @@ func ResetEventText() () {
 
 func SetMode(mode i32) () {
 	Mode = mode
+
+	if mode == MODE_MainMenu {
+		SetMainMenu()
+	}
+
+	if mode == MODE_OptionsMenu {
+		SetOptionsMenu()
+	}
 }
 
 func GetTextOnButtonThatPointerIsOn() (out str) {

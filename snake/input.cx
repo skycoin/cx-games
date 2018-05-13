@@ -83,7 +83,7 @@ func onMouseButtonEvent(window str, button i32, action i32, mods i32) () {
 					glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
 				} else { // FIXME when CX gets switches 
 					if btn == "Options" {
-						game.SetOptionsMenu()
+						game.SetMode(game.MODE_OptionsMenu)
 					} 
 					
 					if btn == "Quit" {
@@ -91,7 +91,7 @@ func onMouseButtonEvent(window str, button i32, action i32, mods i32) () {
 					}
 					
 					if btn == game.MenuItemBack {
-						game.SetMainMenu()
+						game.SetMode(game.MODE_MainMenu)
 					}
 				}
 			}
@@ -177,7 +177,7 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 				key == GLFW_KEY_TAB || 
 				key == GLFW_KEY_BACKSPACE {
 
-				game.SetMode(game.MODE_OptionsMenu)
+				game.SetMode(game.MODE_MainMenu)
 				glfw.SetInputMode("window", glfw.Cursor, glfw.CursorNormal)
 			}
 		}
