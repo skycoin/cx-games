@@ -131,35 +131,18 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 			// respond to mouse buttons 
 			if game.Mode == game.MODE_OptionsMenu && LeftMouseButtonDown {
 				t := game.GetTextOnButtonThatPointerIsOn()
+				fx := getFractionOfSliderMaxValue(x)
 
 				if t == game.AnalogControlsSensitivityXText {
-					fx := f64.f32(x) / i32.f32(game.ScreenNumPixelsWide)
-					fx *= (game.WindowExtentX * 2.0)
-					str.print("fraction")
-					/* from left edge */ 
-					offset := game.WindowExtentX - game.LongestCurrMExtent
-					offset += game.SliderHandleExtentX
-					fx -= offset
-					fx /= (game.LongestCurrMExtent * 2.0 - 
-							game.SliderHandleExtentX * 2.0)
-
-					if fx > 1.0 {
-						fx = 1.0
-					}
-
-					if fx < 0.0 {
-						fx = 0.0
-					}
-
-					f32.print(fx)
-
+					str.print("sens x:")
 					game.SetAnalogControlsSensitivityX(fx)
-					//f32.print(game.WindowExtentX)
+					f32.print(fx)
 				}
 
 				if t == game.AnalogControlsSensitivityYText {
-					str.print("hovering over sens y")
-					f64.print(y)
+					str.print("sens y:")
+					game.SetAnalogControlsSensitivityY(fx)
+					f32.print(fx)
 				}
 			}
 
@@ -241,3 +224,27 @@ func SetSnakeVelocity() () {
 	}
 }
 
+
+func getFractionOfSliderMaxValue(x f64) (out f32) {
+	fx := f64.f32(x) / i32.f32(game.ScreenNumPixelsWide)
+	fx *= (game.WindowExtentX * 2.0)
+	str.print("fraction")
+	/* from left edge */ 
+	offset := game.WindowExtentX - game.LongestCurrMExtent
+	offset += game.SliderHandleExtentX
+	fx -= offset
+	fx /= (game.LongestCurrMExtent * 2.0 - 
+			game.SliderHandleExtentX * 2.0)
+
+	if fx > 1.0 {
+		fx = 1.0
+	}
+
+	if fx < 0.0 {
+		fx = 0.0
+	}
+
+	f32.print(fx)
+
+	return fx
+}

@@ -430,7 +430,13 @@ func menuRects(sliders bool) () {
 
 		if sliders {
 			if i < 2 {
-				valueWid := game.AnalogControlsSensitivityX * (game.LongestCurrMExtent * 2.0 - extent * 2.0)
+				valueWid := game.LongestCurrMExtent * 2.0 - extent * 2.0
+
+				if i == 0 {
+					valueWid *= game.AnalogControlsSensitivityX
+				} else {
+					valueWid *= game.AnalogControlsSensitivityY
+				}
 
 				l = 0.0 - game.LongestCurrMExtent + extent
 				l += valueWid

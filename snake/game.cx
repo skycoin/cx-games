@@ -49,8 +49,8 @@ var shrinkColorIntensity           f32
 var growColorIntensity             f32
 var rotateNegativelyColorIntensity f32
 var rotatePositivelyColorIntensity f32
-var AnalogControlsSensitivityX     f32
-var AnalogControlsSensitivityY     f32
+var AnalogControlsSensitivityX     f32 = 0.5
+var AnalogControlsSensitivityY     f32 = 0.5
 var AnalogControlsSensitivityXText str = "Mouse Sensitivity (Horizontal)"
 var AnalogControlsSensitivityYText str = "Mouse Sensitivity (Vertical)"
 
@@ -394,6 +394,11 @@ func SetIdOfButtonThatPointerIsOn(x f64, y f64) () {
 
 func SetAnalogControlsSensitivityX(fraction f32) {
 	AnalogControlsSensitivityX = fraction
+}
+
+
+func SetAnalogControlsSensitivityY(fraction f32) {
+	AnalogControlsSensitivityY = fraction
 }
 
 
