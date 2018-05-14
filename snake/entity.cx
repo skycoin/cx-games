@@ -207,7 +207,7 @@ func Shoot(index i32) () {
 	oX := d * f32.sin(game.CurrSnakeAim)
 	oY := d * f32.cos(game.CurrSnakeAim)
 	
-	fraction := 0.01 // ...of distance (for velocity) 
+	fraction := 0.03 // ...of distance (for velocity) 
 
 	SpawnEntity(
 		scX + oX, // pos 
