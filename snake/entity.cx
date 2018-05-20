@@ -28,7 +28,7 @@ var gradientSpan f32
 
 
 // entities
-var numEnts i32 = 3 //4
+var numEnts i32 = 3 // includes the everpresent player snake entity 
 var SnakeId i32
 var X       []f32
 var Y       []f32
@@ -55,7 +55,7 @@ var Blue  []f32
 var ChainLength f32 // distance between end/A/B points 
 var ChainProgress f32 // current fraction along chain's length (0.0 - 1.0) 
 
-// --- points 
+//			points 
 var /* point  */ AX   f32
 var /* point  */ AY   f32
 var /* radius */ ARad f32
@@ -64,7 +64,7 @@ var /* point  */ BX   f32
 var /* point  */ BY   f32
 var /* radius */ BRad f32
 
-// --- deltas from point A to point B 
+//			deltas from point A to point B 
 var DelX   f32
 var DelY   f32
 var DelRad f32
@@ -142,21 +142,27 @@ func Update() () {
 
 
 func SpawnMap() () {
-	for i := 0; i < numEnts; i++ {
+	rad := 0.1
+
+	if /* 1st map/stage/wave */ []f32.len(X) == 0 {
+		// make everpresent snake entity 
+		initVel := 0.009
+		SpawnEntity(
+			0.0, 0.0, 
+			initVel, initVel, 
+			rad, 
+			/* expiries */ 0.0, 0.0, 
+			/* collidable */ false)
+	}
+
+	for i := 1; i < numEnts; i++ {
 		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.ScreenNumPixelsWide)) * pixelSpan
 		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.ScreenNumPixelsHigh)) * pixelSpan
 		vx,	vy := getRandomVelocities()
-		collidable := true
 
-		if i == SnakeId {
-			collidable = false
-			x = 0.0
-			y = 0.0
-			vx = 0.009
-			vy = 0.009
-		}
-
-		SpawnEntity(x, y, vx, vy, 0.1, 0.0, 0.0, collidable)
+		SpawnEntity(x, y, vx, vy, rad, 
+			/* expiries */ 0.0, 0.0, 
+			/* collidable */ true)
 	}
 }
 
@@ -421,7 +427,7 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 					replaceExplodingEntityWith2FragmentSpawns(offX, offY, beX, beY, beR) // actually 2 "new" spawns, & deletes old 1 or 2? that it's replacing 
 				} else {
 					// purely visual particle puff 
-					for ii := 0; ii < 3; ii++ {
+					for j := 0; j < 2; j++ {
 						SpawnEntity(
 							beX, 
 							beY,

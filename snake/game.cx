@@ -370,6 +370,7 @@ func SetMode(mode i32) () {
 	}
 }
 
+
 func GetTextOnButtonThatPointerIsOn() (out str) {
 	if MenuHighlightId == -1 {
 		return "Nothing"
