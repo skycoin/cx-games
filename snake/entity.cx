@@ -78,22 +78,7 @@ func Init() () {
 	pixelSpan = 2.0 / i32.f32(game.ScreenNumPixelsHigh)
 	gradientSpan = 1.0 / 300.0
 
-	for i := 0; i < numEnts; i++ {
-		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.ScreenNumPixelsWide)) * pixelSpan
-		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.ScreenNumPixelsHigh)) * pixelSpan
-		vx,	vy := getRandomVelocities()
-		collidable := true
-
-		if i == SnakeId {
-			collidable = false
-			x = 0.0
-			y = 0.0
-			vx = 0.005
-			vy = 0.005
-		}
-
-		SpawnEntity(x, y, vx, vy, 0.1, 0.0, 0.0, collidable)
-	}
+	SpawnMap()
 }
 
 
@@ -153,6 +138,26 @@ func Update() () {
 
 	prevNumLastingEnts = currNumLastingEnts
 	prevFrame = currFrame
+}
+
+
+func SpawnMap() () {
+	for i := 0; i < numEnts; i++ {
+		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.ScreenNumPixelsWide)) * pixelSpan
+		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.ScreenNumPixelsHigh)) * pixelSpan
+		vx,	vy := getRandomVelocities()
+		collidable := true
+
+		if i == SnakeId {
+			collidable = false
+			x = 0.0
+			y = 0.0
+			vx = 0.005
+			vy = 0.005
+		}
+
+		SpawnEntity(x, y, vx, vy, 0.1, 0.0, 0.0, collidable)
+	}
 }
 
 

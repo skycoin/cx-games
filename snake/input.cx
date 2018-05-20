@@ -71,6 +71,7 @@ func onMouseButtonEvent(window str, button i32, action i32, mods i32) () {
 
 		if action == /* Press */ 1 {
 			LeftMouseButtonDown = true
+			maybeSetAnalogSensitivity(currMouseX, currMouseY)
 
 			if game.Mode >= game.MODE_Playing {
 				entity.Shoot(0)
@@ -125,27 +126,8 @@ func onCursorPosEvent(window str, x f64, y f64) () {
 			game.SetSnakeAimAndSize(
 				f64.f32(deltaX),
 				f64.f32(deltaY))
-		} else { // must be in menu 
-			game.SetIdOfButtonThatPointerIsOn(x, y)
-
-			// respond to mouse buttons 
-			if game.Mode == game.MODE_OptionsMenu && LeftMouseButtonDown {
-				t := game.GetTextOnButtonThatPointerIsOn()
-				fx := getFractionOfSliderMaxValue(x)
-
-				if t == game.AnalogControlsSensitivityXText {
-					str.print("sens x:")
-					game.SetAnalogControlsSensitivityX(fx)
-					f32.print(fx)
-				}
-
-				if t == game.AnalogControlsSensitivityYText {
-					str.print("sens y:")
-					game.SetAnalogControlsSensitivityY(fx)
-					f32.print(fx)
-				}
-			}
-
+		} else { // not playing 
+			maybeSetAnalogSensitivity(x, y)
 		}
 	}
 	
@@ -164,22 +146,52 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 
 	if /* not a repeat */ action != 2 {
 		if /* press */ action == 1 {
+			// shoot 
 			if key == GLFW_KEY_SPACE {
 				entity.Shoot(0)
 			}	
 
+			// close 
 			if key == GLFW_KEY_5 {
 				glfw.SetShouldClose("window", glfw.True)
 			}
 
-			if key == GLFW_KEY_ESCAPE || 
-				key == GLFW_KEY_ENTER ||
-				key == GLFW_KEY_TAB || 
-				key == GLFW_KEY_BACKSPACE {
+			maybeGoToMainMenu(key)
+		}
+	}
+}
 
-				game.SetMode(game.MODE_MainMenu)
-				glfw.SetInputMode("window", glfw.Cursor, glfw.CursorNormal)
-			}
+
+func maybeGoToMainMenu(key i32) () {
+	if key == GLFW_KEY_ESCAPE || 
+		key == GLFW_KEY_ENTER ||
+		key == GLFW_KEY_TAB || 
+		key == GLFW_KEY_BACKSPACE {
+
+		game.SetMode(game.MODE_MainMenu)
+		glfw.SetInputMode("window", glfw.Cursor, glfw.CursorNormal)
+	}
+}
+
+
+func maybeSetAnalogSensitivity(x f64, y f64) () {
+	game.SetIdOfButtonThatPointerIsOn(x, y)
+
+	// respond to mouse buttons 
+	if game.Mode == game.MODE_OptionsMenu && LeftMouseButtonDown {
+		t := game.GetTextOnButtonThatPointerIsOn()
+		fx := getFractionOfSliderMaxValue(x)
+
+		if t == game.AnalogControlsSensitivityXText {
+			str.print("sens x:")
+			game.SetAnalogControlsSensitivityX(fx)
+			f32.print(fx)
+		}
+
+		if t == game.AnalogControlsSensitivityYText {
+			str.print("sens y:")
+			game.SetAnalogControlsSensitivityY(fx)
+			f32.print(fx)
 		}
 	}
 }

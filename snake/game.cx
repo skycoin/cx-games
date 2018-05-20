@@ -338,6 +338,7 @@ func GetPosOfBoxyDistanceVisualizer() (x f32, y f32) {
 
 
 func SetStage(stage i32) () {
+	entity.SpawnMap()
 	Stage = stage
 	EventText = str.concat("Stage ", i32.str(Stage))
 	resetEventText()
