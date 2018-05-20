@@ -418,10 +418,10 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 				mult    := 0.00001
 
 				if collidable {
-					breakInTwo(offX, offY, beX, beY, beR) // actually 2 "new" spawns, & deletes old 1 or 2? that it's replacing 
+					replaceExplodingEntityWith2FragmentSpawns(offX, offY, beX, beY, beR) // actually 2 "new" spawns, & deletes old 1 or 2? that it's replacing 
 				} else {
 					// purely visual particle puff 
-					for ii := 0; ii < 2; ii++ {
+					for ii := 0; ii < 3; ii++ {
 						SpawnEntity(
 							beX, 
 							beY,
@@ -451,8 +451,8 @@ func getRandomVelocities() (x f32, y f32) {
 }
 
 
-func breakInTwo(offX f32, offY f32, beX f32, beY f32, beR f32) () {
-	str.print("breakInTwo()")
+func replaceExplodingEntityWith2FragmentSpawns(offX f32, offY f32, beX f32, beY f32, beR f32) () {
+	str.print("replaceExplodingEntityWith2FragmentSpawns()")
 
 	SpawnEntity(
 		beX + offX, 

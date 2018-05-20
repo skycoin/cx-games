@@ -95,7 +95,7 @@ var DeltaFromCenter     f32        // in Gltext space
 var MenuHighlightId     i32 = -1
 var LongestCurrMExtent  f32 = 0.0  // ....in the current menu.  FIXME: hardwired
 var LongestMainMExtent  f32 = 0.30 // ....in the main    menu.  FIXME: hardwired
-var LongestOptiMExtent  f32 = 1.155 // ...in the options menu.  FIXME: hardwired 
+var LongestOptiMExtent  f32 = 0.713 // ...in the options menu.  FIXME: hardwired 
 var MenuItemBack        str = "<-"
 var SliderHandleExtentX f32
 
@@ -193,7 +193,7 @@ func setupDeltaFromTop() () {
 
 func setupDeltaFromLeft(longExtent f32) () {
 	LongestCurrMExtent = longExtent
-	SliderHandleExtentX = LongestCurrMExtent / 40.0
+	SliderHandleExtentX = LongestCurrMExtent / 20.0
 	DeltaFromCenter = LongestCurrMExtent / ScreenPixelSpan
 	DeltaFromLeftEdge =	ScreenCenterXInGltextSpace - DeltaFromCenter
 }

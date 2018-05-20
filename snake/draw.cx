@@ -444,12 +444,12 @@ func menuRects(sliders bool) () {
 				l -= extent
 				/* draw */ Rect(t, r, b, l, 1.0, 1.0, 1.0)
 								
-				t -= extent * 2.0
-				b += extent * 2.0
+				t -= extent * 3.2
+				b += extent * 3.2
 				l = 0.0 - game.LongestCurrMExtent 
 				r = l + valueWid
 
-				/* draw */ Rect(t, r, b, l, 0.0, 0.0, 0.0)
+				/* draw */ Rect(t, r, b, l, 1.0, 1.0, 1.0)
 			}
 		} else { // normal menu item background 
 			if i == game.MenuHighlightId {
