@@ -14,7 +14,7 @@ import "entity"
 //			* the above 2 plus circle caps, 
 //			* 2 oriented quads (forming hexagonal diamond'ish shape), or 
 //			* unoriented lookup table of sphere rim points) 
-// * juice up ResetEventText with blip of white (or light-violet), & shaking? 
+// * juice up resetEventText with blip of white (or light-violet), & shaking? 
 
 
 
@@ -110,7 +110,7 @@ func Init() () {
 	// event/announcement text 
 	EventText = Name
 	ScreenCenterXInGltextSpace = i32.f32(ScreenNumPixelsWide) / 2.0
-	ResetEventText()
+	resetEventText()
 
 	// screen 
 	// (vertical portion of aspect ratio is always 1.0 (in the movie industry) ) 
@@ -337,13 +337,10 @@ func GetPosOfBoxyDistanceVisualizer() (x f32, y f32) {
 }
 
 
-func SetEventText(s str) () {
-	EventText = s
-}
-
-
 func SetStage(stage i32) () {
 	Stage = stage
+	EventText = str.concat("Stage ", i32.str(Stage))
+	resetEventText()
 }
 
 
@@ -352,7 +349,7 @@ func SetDubPi(f f32) () {
 }
 
 
-func ResetEventText() () {
+func resetEventText() () {
 	EventTextTimeFadeStarts = currTime + EventTextDuration
 	EventTextColorIntensity = 1.0
 	EventTextX = ScreenCenterXInGltextSpace
