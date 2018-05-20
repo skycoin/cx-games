@@ -152,8 +152,8 @@ func SpawnMap() () {
 			collidable = false
 			x = 0.0
 			y = 0.0
-			vx = 0.005
-			vy = 0.005
+			vx = 0.009
+			vy = 0.009
 		}
 
 		SpawnEntity(x, y, vx, vy, 0.1, 0.0, 0.0, collidable)
@@ -281,21 +281,20 @@ func SpawnEntity(
 
 	shouldAppendNewIndex := true
 
-	// look for & resurrect 1 of the dead 
-	// (if possible, otherwise append new entity) 
+	// possibly resurrect 1 of the dead (otherwise append new entity) 
 	num := []f32.len(X)
 	for i := 1; i < num; i++ { // skip 0 (snake)
-		if IsAlive(i) == false {
-			// ...resurrect it with all new values 
+		if IsAlive(i) == false { // ...resurrect it with all new values 
 			shouldAppendNewIndex = false
-			[]f32.write(X, i, x)
-			[]f32.write(Y, i, y)
-			[]f32.write(VelX, i, velX)
-			[]f32.write(VelY, i, velY)
-			[]f32.write(Rad, i, rad)
-			[]f32.write(Expiry, i, expiry)
+
+			[]f32.write(X,              i, x)
+			[]f32.write(Y,              i, y)
+			[]f32.write(VelX,           i, velX)
+			[]f32.write(VelY,           i, velY)
+			[]f32.write(Rad,            i, rad)
+			[]f32.write(Expiry,         i, expiry)
 			[]f32.write(DistanceExpiry, i, distExpiry)
-			[]f32.write(BoxyDistance, i, 0.0)
+			[]f32.write(BoxyDistance,   i, 0.0)
 
 			if collidable {
 				[]i32.write(IsCollidable, i, isTrue)
@@ -304,7 +303,7 @@ func SpawnEntity(
 			}
 
 			// set color?  for now, keeps the same color as the original 
-			i = num // breaks out of loop 
+			i = num // to BREAK out of loop // FIXME once CX breaks exist 
 		}
 	}
 
