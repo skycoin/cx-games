@@ -182,15 +182,15 @@ func maybeSetAnalogSensitivity(x f64, y f64) () {
 		t := game.GetTextOnButtonThatPointerIsOn()
 		fx := getFractionOfSliderMaxValue(x)
 
-		if t == game.AnalogControlsSensitivityXText {
+		if t == game.AnalogControlsSensitivityAimText {
 			str.print("sens x:")
-			game.SetAnalogControlsSensitivityX(fx)
+			game.SetAnalogControlsSensitivityAim(fx)
 			f32.print(fx)
 		}
 
-		if t == game.AnalogControlsSensitivityYText {
+		if t == game.AnalogControlsSensitivitySpeedText {
 			str.print("sens y:")
-			game.SetAnalogControlsSensitivityY(fx)
+			game.SetAnalogControlsSensitivitySpeed(fx)
 			f32.print(fx)
 		}
 	}

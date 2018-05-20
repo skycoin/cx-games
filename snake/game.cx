@@ -26,6 +26,22 @@ var AsteroidVelocityGrain f32 = 0.00002
 var BulletRadius          f32 = 0.015
 var timeDelta             f32
 
+// snake 
+var MinSnakeExtent                     f32 = 0.1
+var MaxSnakeExtent                     f32 = 0.35
+var CurrSnakeExtent                    f32 = 0.17
+var CurrSnakeAim                       f32 = 0.0
+var TailRadius                         f32 = 0.02
+var HeadRadius                         f32 = 0.07
+var shrinkColorIntensity               f32
+var growColorIntensity                 f32
+var rotateNegativelyColorIntensity     f32
+var rotatePositivelyColorIntensity     f32
+var AnalogControlsSensitivityAim       f32 = 0.33
+var AnalogControlsSensitivitySpeed     f32 = 0.33
+var AnalogControlsSensitivityAimText   str = "Sensitivity (Aim)"
+var AnalogControlsSensitivitySpeedText str = "Sensitivity (Speed)"
+
 // special angle constants 
 var DubPi f32
 
@@ -37,22 +53,6 @@ var yOfPerfectRadius       f32 // current pos
 var visualizerAngle        f32
 var visualizerRadius       f32 = 0.6
 var visualizerFrameAdvance f32 = 0.3
-
-// snake 
-var MinSnakeExtent                 f32 = 0.1
-var MaxSnakeExtent                 f32 = 0.35
-var CurrSnakeExtent                f32 = 0.17
-var CurrSnakeAim                   f32 = 0.0
-var TailRadius                     f32 = 0.02
-var HeadRadius                     f32 = 0.07
-var shrinkColorIntensity           f32
-var growColorIntensity             f32
-var rotateNegativelyColorIntensity f32
-var rotatePositivelyColorIntensity f32
-var AnalogControlsSensitivityX     f32 = 0.33
-var AnalogControlsSensitivityY     f32 = 0.33
-var AnalogControlsSensitivityXText str = "Mouse Sensitivity (Horizontal)"
-var AnalogControlsSensitivityYText str = "Mouse Sensitivity (Vertical)"
 
 // game state  
 var currTime f32 = 0.0
@@ -171,8 +171,8 @@ func SetMainMenu() () {
 
 
 func SetOptionsMenu() () {
-	a := AnalogControlsSensitivityXText
-	b := AnalogControlsSensitivityYText
+	a := AnalogControlsSensitivityAimText
+	b := AnalogControlsSensitivitySpeedText
 	c := MenuItemBack
 
 	ButtonNames = []str{a, b, c}	
@@ -221,8 +221,8 @@ func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
 	div := 90.0
 	rotX, rotY := RotatePositionByAngle(deltaX/div, deltaY/div, CurrSnakeAim)
 
-	CurrSnakeAim    += rotX * AnalogControlsSensitivityX * 1.3
-	CurrSnakeExtent += rotY * AnalogControlsSensitivityY * 0.2
+	CurrSnakeAim    += rotX * AnalogControlsSensitivityAim * 1.3
+	CurrSnakeExtent += rotY * AnalogControlsSensitivitySpeed * 0.2
 
 	for CurrSnakeAim >= DubPi {
 		CurrSnakeAim -= DubPi
@@ -395,13 +395,13 @@ func SetIdOfButtonThatPointerIsOn(x f64, y f64) () {
 }
 
 
-func SetAnalogControlsSensitivityX(fraction f32) {
-	AnalogControlsSensitivityX = fraction
+func SetAnalogControlsSensitivityAim(fraction f32) {
+	AnalogControlsSensitivityAim = fraction
 }
 
 
-func SetAnalogControlsSensitivityY(fraction f32) {
-	AnalogControlsSensitivityY = fraction
+func SetAnalogControlsSensitivitySpeed(fraction f32) {
+	AnalogControlsSensitivitySpeed = fraction
 }
 
 

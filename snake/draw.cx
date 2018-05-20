@@ -433,9 +433,9 @@ func menuRects(sliders bool) () {
 				valueWid := game.LongestCurrMExtent * 2.0 - extent * 2.0
 
 				if i == 0 {
-					valueWid *= game.AnalogControlsSensitivityX
+					valueWid *= game.AnalogControlsSensitivityAim
 				} else {
-					valueWid *= game.AnalogControlsSensitivityY
+					valueWid *= game.AnalogControlsSensitivitySpeed
 				}
 
 				l = 0.0 - game.LongestCurrMExtent + extent
