@@ -18,7 +18,7 @@ import "entity"
 
 
 
-var Name str = "  S  N  A  K  E  "
+var Name                  str = "SSS (Shooty Shrinky SNAKE)"
 var NumRadianGrains       i32 = 256 // gives 64 aim/angle/direction possibilities per quadrant 
 var RadianGrainForRNG     f32
 var RadianGrainForLUT     f32 
@@ -39,8 +39,8 @@ var rotateNegativelyColorIntensity     f32
 var rotatePositivelyColorIntensity     f32
 var AnalogControlsSensitivityAim       f32 = 0.33
 var AnalogControlsSensitivitySpeed     f32 = 0.33
-var AnalogControlsSensitivityAimText   str = "Sensitivity (Aim)"
-var AnalogControlsSensitivitySpeedText str = "Sensitivity (Speed)"
+var AnalogControlsSensitivityAimText   str = "Sensitivity of AIM"
+var AnalogControlsSensitivitySpeedText str = "Sensitivity of SPEED"
 
 // special angle constants 
 var DubPi f32
@@ -95,8 +95,8 @@ var DeltaFromCenter     f32        // in Gltext space
 var MenuHighlightId     i32 = -1
 var LongestCurrMExtent  f32 = 0.0  // ....in the current menu.  FIXME: hardwired
 var LongestMainMExtent  f32 = 0.30 // ....in the main    menu.  FIXME: hardwired
-var LongestOptiMExtent  f32 = 0.713 // ...in the options menu.  FIXME: hardwired 
-var MenuItemBack        str = "<-"
+var LongestOptiMExtent  f32 = 0.78 // ....in the options menu.  FIXME: hardwired 
+var MenuItemBack        str = "                <-"
 var SliderHandleExtentX f32
 
 

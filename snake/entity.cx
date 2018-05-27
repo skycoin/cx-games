@@ -109,18 +109,31 @@ func Update() () {
 				oY := []f32.read(Y, i)
 
 				// new spot 
-				nX := oX + vx * mm
-				nY := oY + vy * mm
-				bd := []f32.read(BoxyDistance, i)
-				[]f32.write(BoxyDistance, i, bd + f32.abs(vx * mm) + f32.abs(vy * mm))
+				delX := vx * mm
+				delY := vy * mm
+				nX := oX + delX
+				nY := oY + delY
+				boxyDist := []f32.read(BoxyDistance, i)
+				boxyDel  := f32.abs(delX) + f32.abs(delY)
+				[]f32.write(BoxyDistance, i, boxyDist + boxyDel)
 
 				// detect collision before potential screen wrapping teleport. 
 				// because a screen spanning delta makes no sense for collision 
+			/*
+			SetupChainFromAToB(
+				aX, 
+				aY,
+				aRad, // both radii are the same for collision detection 
+				[]f32.read(X, bId), 
+				[]f32.read(Y, bId), 
+				aRad, // ^^^
+				false)
+			*/
+
 				SetupChainFromAToB(
 					oX, oY, []f32.read(Rad, i),
 					nX, nY, []f32.read(Rad, i), false)
-
-				IsTouching_WillExplode(i)
+				IsTouching_WillExplode(i, boxyDel > []f32.read(Rad, i))
 				updatePosition_MaybeToOppositeEdgeOfScreen(nX, nY, i)
 			}
 		}
@@ -237,7 +250,7 @@ func IsAlive(i i32) (out bool) {
 	
 	if /* entity has a predetermined lifespan */ te != 0.0 
 		&&
-		/* it died */              te <= currFrame {
+		/* it died */                            te <= currFrame {
 
 		return false
 	}
@@ -365,7 +378,7 @@ func SlowDownInAxis(index i32, inX bool) () {
 }
 
 
-func IsTouching_WillExplode(aId i32) (out bool) {
+func IsTouching_WillExplode(aId i32, deltaMoreThanRadius bool) (out bool) {
 	touching := false
 	
 	// A's pos/radius 
@@ -381,7 +394,28 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 		if IsAlive(aId) && IsCollidable(aId) &&
 			IsAlive(bId) && IsCollidable(bId) {
 
-			if isPairTouching(aX, aY, aRad, bId) {
+			//if !deltaMoreThanRadius {
+			//		only compare with 1 sphere position      //uNUSED_BLOCK := 42
+			//} else {
+			//		(1) go by bounding box which contains both head & tail 
+			//			(2) IF collision, compare against a line of overlapping spheres 
+			//					which covers the movement delta 
+
+			// iterate enough positional steps/stride between A & B, 
+			// which will to cover a complete path with no gaps 
+
+			//for ChainProgress <= ChainLength {
+				// fraction towards destination 
+				//frac := ChainProgress / ChainLength
+
+
+
+			if isPairTouching(
+				aX, //AX + frac * DelX, 
+				aY, //AY + frac * DelY, 
+				aRad, //ARad, 
+				bId) {
+
 				touching = true
 				changePairsExpiryAndCollidability(aId, bId)
 
@@ -440,6 +474,15 @@ func IsTouching_WillExplode(aId i32) (out bool) {
 						}
 				}
 			}
+
+
+
+
+
+
+
+				//AdvanceChainProgressBy(ARad)
+			//}
 		}
 	}
 

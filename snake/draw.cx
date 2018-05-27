@@ -132,8 +132,8 @@ func orientedSphere(
 	angle f32, 
 	red f32, green f32, blue f32) () {
 
-	/*
-	*/
+	//
+	//
 	// might return 
 
 
@@ -225,14 +225,14 @@ func Snake() () {
 	//Sphere(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
 	Triangle(entity.BX, entity.BY, game.HeadRadius, game.CurrSnakeAim, 0.0, 0.0, 1.0)
 
-	drawIndicators(sin, cos)
+	drawDirectionalInputIndicators(sin, cos)
 
 	// draw rotation (center hinge) point 
 	Sphere(cX, cY, game.HeadRadius / 3.0, 0.0, 0.0, 1.0)
 
 
 
-	// draw body 
+	// draw most segments of snake's body 
 
 	for entity.ChainProgress <= entity.ChainLength {
 		// fraction towards destination 
@@ -327,7 +327,7 @@ func setupFonts() () {
 }
 
 
-func drawIndicators(sin f32, cos f32) () {
+func drawDirectionalInputIndicators(sin f32, cos f32) () {
 	ie /* indicator extent */ := game.HeadRadius / 4.0
 	rfc /* radius from center (of head) */ := ie + game.HeadRadius
 	hoX /* head offset */ := sin * rfc
@@ -429,7 +429,7 @@ func menuRects(sliders bool) () {
 		r := extent
 
 		if sliders {
-			if i < 2 {
+			if i <= 1 {
 				valueWid := game.LongestCurrMExtent * 2.0 - extent * 2.0
 
 				if i == 0 {
