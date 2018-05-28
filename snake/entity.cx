@@ -119,20 +119,9 @@ func Update() () {
 
 				// detect collision before potential screen wrapping teleport. 
 				// because a screen spanning delta makes no sense for collision 
-			/*
-			SetupChainFromAToB(
-				aX, 
-				aY,
-				aRad, // both radii are the same for collision detection 
-				[]f32.read(X, bId), 
-				[]f32.read(Y, bId), 
-				aRad, // ^^^
-				false)
-			*/
-
-				SetupChainFromAToB(
-					oX, oY, []f32.read(Rad, i),
-					nX, nY, []f32.read(Rad, i), false)
+				//SetupChainFromAToB(
+				//	oX, oY, []f32.read(Rad, i),
+				//	nX, nY, []f32.read(Rad, i), false)
 				IsTouching_WillExplode(i, boxyDel > []f32.read(Rad, i))
 				updatePosition_MaybeToOppositeEdgeOfScreen(nX, nY, i)
 			}
@@ -390,7 +379,7 @@ func IsTouching_WillExplode(aId i32, deltaMoreThanRadius bool) (out bool) {
 	// (up to & excluding entity A) 
 	for bId := []f32.len(X) - 1; bId > aId; bId-- {
 		// checking status of A, because it can die before we cycle thru all Bs 
-		// (& right now, "break" & "continue" keywords/features don't exist) 
+		// (& right now, "break" & "continue" keywords/features don't exist (FIXME)) 
 		if IsAlive(aId) && IsCollidable(aId) &&
 			IsAlive(bId) && IsCollidable(bId) {
 
@@ -408,78 +397,22 @@ func IsTouching_WillExplode(aId i32, deltaMoreThanRadius bool) (out bool) {
 				// fraction towards destination 
 				//frac := ChainProgress / ChainLength
 
+			SetupChainFromAToB(	// FIXME/OPTIMIZEME to only setup/use a chain... 
+								// if total AtoB-encompassing-space overlaps something 
+				aX, 
+				aY,
+				aRad, // both radii are the same for collision detection 
+				[]f32.read(X, bId), 
+				[]f32.read(Y, bId), 
+				aRad, // ^^^
+				false)
 
-
-			if isPairTouching(
+			doTouchResponses(
 				aX, //AX + frac * DelX, 
 				aY, //AY + frac * DelY, 
-				aRad, //ARad, 
-				bId) {
-
-				touching = true
-				changePairsExpiryAndCollidability(aId, bId)
-
-				// biggest entity (as explosion origin)
-				// 1st, set values from entity B
-				beX := []f32.read(X,   bId)
-				beY := []f32.read(Y,   bId)
-				beR := []f32.read(Rad, bId)
-
-				if beR < aRad {
-					beR = aRad
-					beX = aX
-					beY = aY
-				}
-	
-				// random direction 
-				rdi := /* ...int   */ i32.rand(0,    game.NumRadianGrains)
-				rdf := /* ...float */ i32.f32(rdi) * game.RadianGrainForRNG
-				
-				beR /= 2.0 // halve radius, for smaller fragments 
-				offS := 1.1 // offset scalar (from centerpoint of biggest entity) 
-				// 					(to ensure no initial overlap/collision) 
-				offX := f32.cos(rdf) * beR * offS
-				offY := f32.sin(rdf) * beR * offS
-				expiry := 0.0
-				collidable := false
-				
-				
-				if /* smaller than a bullet */ beR <= game.BulletRadius {
-					//FIXME?:   beR = game.BulletRadius // ATM THIS MAKES IT WORSE 
-					expiry = currFrame + 0.5
-					collidable = false
-				}
-
-				// spawn 2 half-radius spheres, slightly separated 
-				// (so there's no collision with each other) 
-				// and lined up (opposite each other, from 0,0) along a random angle 
-				
-				divisor := 1600.0
-				mult    := 0.00001
-
-				if collidable {
-					replaceExplodingEntityWith2FragmentSpawns(offX, offY, beX, beY, beR) // actually 2 "new" spawns, & deletes old 1 or 2? that it's replacing 
-				} else {
-					// purely visual particle puff 
-					for j := 0; j < 2; j++ {
-						SpawnEntity(
-							beX, 
-							beY,
-							i32.f32(i32.rand(-49, 50)) * mult,
-							i32.f32(i32.rand(-49, 50)) * mult,
-							game.BulletRadius, 
-							currFrame + 1.5,
-							0.0, // distance based expiry 
-							collidable)
-						}
-				}
-			}
-
-
-
-
-
-
+				aRad, //ARad,
+				aId, 
+				bId)
 
 				//AdvanceChainProgressBy(ARad)
 			//}
@@ -491,7 +424,69 @@ func IsTouching_WillExplode(aId i32, deltaMoreThanRadius bool) (out bool) {
 
 
 
-// private 
+func doTouchResponses(aX f32, aY f32, aRad f32, aId i32, bId i32) () {
+	if isJustOnePairTouching(aX, aY, aRad, bId) {
+
+		touching = true
+		changePairsExpiryAndCollidability(aId, bId)
+
+		// biggest entity (as explosion origin)
+		// 1st, set values from entity B
+		beX := []f32.read(X,   bId)
+		beY := []f32.read(Y,   bId)
+		beR := []f32.read(Rad, bId)
+
+		if beR < aRad {
+			beR = aRad
+			beX = aX
+			beY = aY
+		}
+
+		// random direction 
+		rdi := /* ...int   */ i32.rand(0,    game.NumRadianGrains)
+		rdf := /* ...float */ i32.f32(rdi) * game.RadianGrainForRNG
+		
+		beR /= 2.0 // halve radius, for smaller fragments 
+		offS := 1.1 // offset scalar (from centerpoint of biggest entity) 
+		// 					(to ensure no initial overlap/collision) 
+		offX := f32.cos(rdf) * beR * offS
+		offY := f32.sin(rdf) * beR * offS
+		expiry := 0.0
+		collidable := false
+		
+		
+		if /* smaller than a bullet */ beR <= game.BulletRadius {
+			//FIXME?:   beR = game.BulletRadius // ATM THIS MAKES IT WORSE 
+			expiry = currFrame + 0.5
+			collidable = false
+		}
+
+		// spawn 2 half-radius spheres, slightly separated 
+		// (so there's no collision with each other) 
+		// and lined up (opposite each other, from 0,0) along a random angle 
+		
+		divisor := 1600.0
+		mult    := 0.00001
+
+		if collidable {
+			replaceExplodingEntityWith2FragmentSpawns(offX, offY, beX, beY, beR) // actually 2 "new" spawns, & deletes old 1 or 2? that it's replacing 
+		} else {
+			// purely visual particle puff 
+			for j := 0; j < 2; j++ {
+				SpawnEntity(
+					beX, 
+					beY,
+					i32.f32(i32.rand(-49, 50)) * mult,
+					i32.f32(i32.rand(-49, 50)) * mult,
+					game.BulletRadius, 
+					currFrame + 1.5,
+					0.0, // distance based expiry 
+					collidable)
+				}
+		}
+	} // end of isTouching 
+}
+
 
 func getRandomVelocities() (x f32, y f32) {
 	return
@@ -525,7 +520,7 @@ func replaceExplodingEntityWith2FragmentSpawns(offX f32, offY f32, beX f32, beY 
 }
 
 
-func isPairTouching(aX f32, aY f32, aRad f32, bId i32) (out bool) {
+func isJustOnePairTouching(aX f32, aY f32, aRad f32, bId i32) (out bool) {
 	touching := false
 	
 	// B's pos/radius 
