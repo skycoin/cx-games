@@ -17,6 +17,6 @@ IF "%1" == "c" dir %gopath%\bin\goy*
 IF "%1" == "c" dir %gopath%\bin\cx*
 IF "%1" == "c" GOTO END
 
-%gopath%\bin\cx input.cx game.cx main.cx entity.cx draw.cx
+%gopath%\bin\cx input.cx game.cx main.cx entity.cx draw.cx cavern.cx
 
 :END

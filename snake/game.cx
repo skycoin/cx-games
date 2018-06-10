@@ -15,6 +15,17 @@ import "entity"
 //			* 2 oriented quads (forming hexagonal diamond'ish shape), or 
 //			* unoriented lookup table of sphere rim points) 
 // * juice up resetEventText with blip of white (or light-violet), & shaking? 
+//
+// HMMM
+// if flying through canyons/caverns/tubes... 
+// in center, normal no-gravity-control, but as you get closer to 
+// outer edge (edge of obstacles(spikes/stalag[t/m]ites) 
+// rather than the "idealized" edge of tube), 
+// you get more of a force push towards the center. 
+// could give a cool feel of "sliding" 
+// against the contours of the spikes? definitely makes it a lot 
+// more forgiving against surface contact deaths?  so players can 
+// have more fun focusing on the shooting/dodging of asteroids/mobs? 
 
 
 
@@ -47,7 +58,8 @@ var AnalogControlsSensitivitySpeedText str = "Sensitivity of SPEED"
 var Pi           f32
 var DubPi        f32
 var HalfPi       f32
-var OneThirdPie  f32 // 1/3 of a whole PIE (the food, not the number) 
+// ----- NOTICE: PI versus PIE (food) ------ 
+var OneThirdPie  f32
 var TwoThirdsPie f32
 
 // 		precalculated lookup table for unit radius circular points/vertices 
@@ -164,11 +176,11 @@ func Update() () {
 }
 
 
-var prevFrameTime f32
+var prevTime f32
 func updateTiming() () {
 	currTime = f64.f32(glfw.GetTime())
-	timeDelta = currTime - prevFrameTime
-	prevFrameTime = currTime
+	timeDelta = currTime - prevTime
+	prevTime = currTime
 }
 
 
@@ -176,7 +188,8 @@ func setupKeyAngles() () {
 	Pi           = 3.141592654
 	HalfPi       = Pi / 2.0
 	DubPi        = Pi * 2.0
-	OneThirdPie  = DubPi / 3.0   // NOTICE: Pi vs. Pie 
+	// ----- NOTICE: PI versus PIE (food) ------ 
+	OneThirdPie  = DubPi / 3.0
 	TwoThirdsPie = OneThirdPie * 2.0
 }
 
