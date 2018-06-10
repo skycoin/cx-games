@@ -15,7 +15,7 @@ var velocityInc         f32
 var mm                  f32 // movement multiplier 
 
 
-// time  
+// time 
 var currFrame f32
 
 
@@ -26,24 +26,35 @@ var pixelSpan f32
 // grains 
 var gradientSpan f32
 
+// vertices of all entities (in LOCAL coordinates, NOT world space) 
+var soupAppendIndex i32
+var VertexSoupX     []f32
+var VertexSoupY     []f32
 
-// entities
+
+
+// entities 
+
 var numEnts i32 = 3 // includes the everpresent player snake entity 
 var SnakeId i32
 var X       []f32
 var Y       []f32
-
 var VelX []f32 // velocity
 var VelY []f32
-
-var Rad            []f32 // radius 
-var Expiry         []f32
-var IsCollidable   []i32 // FIXME when bool arrays are fixed 
-var BoxyDistance   []f32 // a cheap and inaccurate sum of the 2 axis-aligned distances in 2D. 
+var Rad                []f32 // radius 
+var Expiry             []f32 // time-based expiry 
+var IsCollidable       []i32 // FIXME when bool arrays are fixed 
+var BoxyDistance       []f32 // a cheap and inaccurate sum of the 2 
+	// axis-aligned distances in 2D. 
 	// when plotting the full spectrum of radian/angle possibilities, 
-	// it forms a fairly box-like shape (but the 4 "sides" are wavy lines rather than straight) 
-var DistanceExpiry []f32
+	// it forms a fairly box-like shape (but the 4 edges are wavy lines rather than straight) 
+var DistanceExpiry     []f32
 
+//			vertex run 
+var NumVertices        []i32
+var IndexToFirstVertex []i32
+
+//			color 
 var Red   []f32
 var Green []f32
 var Blue  []f32
@@ -303,6 +314,11 @@ func SpawnEntity(
 			[]f32.write(Expiry,         i, expiry)
 			[]f32.write(DistanceExpiry, i, distExpiry)
 			[]f32.write(BoxyDistance,   i, 0.0)
+			
+			// at the moment, there is no need to recalculate a new shape 
+			//		when reusing a dead entity 
+			//[]i32.write(NumVertices,        i, ___)
+			//[]i32.write(IndexToFirstVertex, i, ___)
 
 			if collidable {
 				[]i32.write(IsCollidable, i, isTrue)
@@ -316,17 +332,20 @@ func SpawnEntity(
 	}
 
 	if shouldAppendNewIndex {
-		X = []f32.append(X, x)
-		Y = []f32.append(Y, y)
+		nv := i32.rand(5, 8)   // num vertices 
+
+		X                  = []f32.append(X,                  x)
+		Y                  = []f32.append(Y,                  y)
+		VelX               = []f32.append(VelX,               velX)
+		VelY               = []f32.append(VelY,               velY)
+		Rad                = []f32.append(Rad,                rad)
+		Expiry             = []f32.append(Expiry,             expiry)
+		DistanceExpiry     = []f32.append(DistanceExpiry,     distExpiry)
+		BoxyDistance       = []f32.append(BoxyDistance,       0.0)
+		NumVertices        = []i32.append(NumVertices,        nv)
+		IndexToFirstVertex = []i32.append(IndexToFirstVertex, soupAppendIndex)
 		
-		VelX = []f32.append(VelX, velX)
-		VelY = []f32.append(VelY, velY)
-		
-		Rad = []f32.append(Rad, rad)
-		Expiry = []f32.append(Expiry, expiry)
-		
-		DistanceExpiry = []f32.append(DistanceExpiry, distExpiry)
-		BoxyDistance = []f32.append(BoxyDistance, 0.0)
+		addSpikeyRandomishAsteroid(nv)
 
 		if collidable {
 			IsCollidable = []i32.append(IsCollidable, isTrue)
@@ -334,9 +353,30 @@ func SpawnEntity(
 			IsCollidable = []i32.append(IsCollidable, isFalse)
 		}
 
-		Red   = []f32.append(Red,   i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
-		Green = []f32.append(Green, i32.f32(i32.rand(0, 200) + 100) * gradientSpan)
-		Blue  = []f32.append(Blue,  i32.f32(i32.rand(0, 200) + 100) * gradientSpan)	
+		Red   = []f32.append(Red,   getRandomIntensity())
+		Green = []f32.append(Green, getRandomIntensity())
+		Blue  = []f32.append(Blue,  getRandomIntensity())	
+	}
+}
+
+
+func getRandomIntensity() (out f32) {
+	return i32.f32(i32.rand(0, 200) + 100) * gradientSpan	
+}
+
+
+func addSpikeyRandomishAsteroid(nv i32) () {
+	// get randomish vertices from circle lookup table 
+	nppe := game.NumSpherePoints / nv // number of possibilities per edge 
+	
+	for i := 0; i < nv; i++ { 
+		newX := 0.0
+		newY := 0.0
+
+		VertexSoupX = []f32.append(VertexSoupX, newX)
+		VertexSoupY = []f32.append(VertexSoupY, newY)
+
+		soupAppendIndex++
 	}
 }
 
@@ -348,7 +388,6 @@ func ForcePositiveVelocityAndBloomIt(index i32, inX bool) () {
 		[]f32.write(VelY, index, boundedIncrease([]f32.read(VelY, index)))
 	}
 }
-
 func ForceNegativeVelocityAndBloomIt(index i32, inX bool) () {
 	if inX {
 		[]f32.write(VelX, index, boundedDecrease([]f32.read(VelX, index)))

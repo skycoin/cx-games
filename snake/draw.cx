@@ -10,45 +10,9 @@ import "game"
 
 
 
-// special angle nums 
-var pi           f32
-var halfPi       f32
-var oneThirdPie  f32 // 1/3 of a whole PIE (the food, not the number) 
-var twoThirdsPie f32
-
-// precalculated lookup table for unit radius sphere points/vertices 
-var numSpherePoints            i32 = 20
-var spherePointsAngleIncrement f32
-var spherePointsX              []f32
-var spherePointsY              []f32
-
-
-
 func Init() () {
-	str.print("--- draw.Init()")
-
-	// special angle nums 
-	pi = 3.141592654
-	halfPi = pi / 2.0
-	game.SetDubPi(pi * 2.0)
-	oneThirdPie = game.DubPi / 3.0
-	twoThirdsPie = oneThirdPie * 2.0
-	spherePointsAngleIncrement = game.DubPi / i32.f32(numSpherePoints)
-
 	setupFonts()
-	setupSpherePointTable()
-}
-
-
-func setupSpherePointTable() () {
-	f := 0.0
-
-	for i := 0; i < numSpherePoints; i++ {
-		spherePointsX = []f32.append(spherePointsX, f32.sin(f))
-		spherePointsY = []f32.append(spherePointsY, f32.cos(f))
-
-		f += spherePointsAngleIncrement
-	}
+	str.print("--- draw.Init()")
 }
 
 
@@ -114,10 +78,10 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 	gl.Color3f(red, green, blue)
 
 	
-	for i := 0; i < numSpherePoints; i++ {
+	for i := 0; i < game.NumSpherePoints; i++ {
 		gl.Vertex2f(
-			x + radius * []f32.read(spherePointsX, i),
-			y + radius * []f32.read(spherePointsY, i))
+			x + radius * []f32.read(game.SpherePointsX, i),
+			y + radius * []f32.read(game.SpherePointsY, i))
 	}
 
 	gl.End()
@@ -125,7 +89,7 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 
 
 func orientedSphere(
-	step i32, // the decimated stride thru indices 
+	step i32, // the stride thru indices (decimates game.NumSpherePoints, for lower resolution circle) 
 	x f32, 
 	y f32, 
 	radius f32, 
@@ -134,7 +98,7 @@ func orientedSphere(
 
 	//
 	//
-	// might return 
+	// potentially could add no vertices  
 
 
 
@@ -143,24 +107,24 @@ func orientedSphere(
 
 	// insane number (goes outside of valid index range, requires sanitizing)
 	startIdx := 0
-	if spherePointsAngleIncrement > 0.0 {
-		startIdx = f32.i32(angle / spherePointsAngleIncrement)
+	if game.SpherePointsAngleIncrement > 0.0 {
+		startIdx = f32.i32(angle / game.SpherePointsAngleIncrement)
 	}
 
 	// (FIXME if perfection is needed later... should "round" instead of
 	// effectively "floor"ing, which means subtracting half a radian grain?) 
-	max := numSpherePoints + startIdx
+	max := game.NumSpherePoints + startIdx
 
 	for i := startIdx; i < max; i += step {
 		si := i // sane index 
 
-		for si >= numSpherePoints {
-			si -= numSpherePoints
+		for si >= game.NumSpherePoints {
+			si -= game.NumSpherePoints
 		}
 
 		gl.Vertex2f(
-			x + radius * []f32.read(spherePointsX, si),
-			y + radius * []f32.read(spherePointsY, si))
+			x + radius * []f32.read(game.SpherePointsX, si),
+			y + radius * []f32.read(game.SpherePointsY, si))
 	}
 
 	gl.End()
@@ -173,10 +137,10 @@ func Triangle(x f32, y f32, radius f32, angle f32, red f32, green f32, blue f32)
 
 	aX := radius * f32.sin(angle)
 	aY := radius * f32.cos(angle)
-	bX := radius * f32.sin(angle + oneThirdPie)
-	bY := radius * f32.cos(angle + oneThirdPie)
-	cX := radius * f32.sin(angle + twoThirdsPie)
-	cY := radius * f32.cos(angle + twoThirdsPie)
+	bX := radius * f32.sin(angle + game.OneThirdPie)
+	bY := radius * f32.cos(angle + game.OneThirdPie)
+	cX := radius * f32.sin(angle + game.TwoThirdsPie)
+	cY := radius * f32.cos(angle + game.TwoThirdsPie)
 
 	gl.Vertex2f(x + aX, y + aY)
 	gl.Vertex2f(x + bX, y + bY)
@@ -339,7 +303,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		entity.BX - hoX, 
 		entity.BY - hoY, 
 		ie, 
-		game.CurrSnakeAim + pi,
+		game.CurrSnakeAim + game.Pi,
 		ci, 0.0, 1.0)
 	
 	// grow 
@@ -355,28 +319,28 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 	qqX, qqY := game.RotatePositionByAngle(
 		hoX,
 		hoY,
-		halfPi)
+		game.HalfPi)
 
 	ci = game.GetRotateNegativelyColorIntensity()
 	Triangle(
 		entity.BX + qqX, 
 		entity.BY + qqY, 
 		ie, 
-		game.CurrSnakeAim - halfPi,
+		game.CurrSnakeAim - game.HalfPi,
 		ci, 0.0, 1.0)
 
 	// rotate positive 
 	qqX, qqY = game.RotatePositionByAngle(
 		hoX,
 		hoY,
-		0.0 - halfPi)
+		0.0 - game.HalfPi)
 	
 	ci = game.GetRotatePositivelyColorIntensity()
 	Triangle(
 		entity.BX + qqX, 
 		entity.BY + qqY, 
 		ie, 
-		game.CurrSnakeAim + halfPi,
+		game.CurrSnakeAim + game.HalfPi,
 		ci, 0.0, 1.0)
 }
 

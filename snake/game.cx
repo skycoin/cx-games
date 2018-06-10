@@ -42,8 +42,19 @@ var AnalogControlsSensitivitySpeed     f32 = 0.33
 var AnalogControlsSensitivityAimText   str = "Sensitivity of AIM"
 var AnalogControlsSensitivitySpeedText str = "Sensitivity of SPEED"
 
-// special angle constants 
-var DubPi f32
+// geometry constants (FIXME when CX has constants) 
+// 			key angles 
+var Pi           f32
+var DubPi        f32
+var HalfPi       f32
+var OneThirdPie  f32 // 1/3 of a whole PIE (the food, not the number) 
+var TwoThirdsPie f32
+
+// 		precalculated lookup table for unit radius circular points/vertices 
+var NumSpherePoints            i32 = 20
+var SpherePointsAngleIncrement f32
+var SpherePointsX              []f32
+var SpherePointsY              []f32
 
 // full spectrum cos/sin angle/radius test visualizers 
 var xOfBoxyDistance        f32
@@ -122,8 +133,10 @@ func Init() () {
 	ScreenBoundsLeft = 0.0 - WindowExtentX
 	ScreenPixelSpan = 2.0 / i32.f32(ScreenNumPixelsHigh)
 
-	SetMode(MODE_MainMenu)
+	setupKeyAngles()
+	setupSpherePointTable()
 	entity.Init()
+	SetMode(MODE_MainMenu)
 	str.print("--- game.Init()")
 }
 
@@ -156,6 +169,30 @@ func updateTiming() () {
 	currTime = f64.f32(glfw.GetTime())
 	timeDelta = currTime - prevFrameTime
 	prevFrameTime = currTime
+}
+
+
+func setupKeyAngles() () {
+	Pi           = 3.141592654
+	HalfPi       = Pi / 2.0
+	DubPi        = Pi * 2.0
+	OneThirdPie  = DubPi / 3.0   // NOTICE: Pi vs. Pie 
+	TwoThirdsPie = OneThirdPie * 2.0
+}
+
+
+func setupSpherePointTable() () {
+	SpherePointsAngleIncrement = DubPi / i32.f32(NumSpherePoints)
+	str.print("SpherePointsAngleIncrement")
+	f32.print(SpherePointsAngleIncrement)
+
+	f := 0.0
+	for i := 0; i < NumSpherePoints; i++ {
+		SpherePointsX = []f32.append(SpherePointsX, f32.sin(f))
+		SpherePointsY = []f32.append(SpherePointsY, f32.cos(f))
+
+		f += SpherePointsAngleIncrement
+	}
 }
 
 
@@ -342,11 +379,6 @@ func SetStage(stage i32) () {
 	Stage = stage
 	EventText = str.concat("Stage ", i32.str(Stage))
 	resetEventText()
-}
-
-
-func SetDubPi(f f32) () {
-	DubPi = f
 }
 
 
