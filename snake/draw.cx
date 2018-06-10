@@ -43,15 +43,34 @@ func Entities() () {
 	// for now, all others are spheres 
 	for i := 1; i < []f32.len(entity.X); i++ {
 		if entity.IsAlive(i) {
-			Sphere(
-				[]f32.read(entity.X, i), 
-				[]f32.read(entity.Y, i), 
+			Polygon(
+				i, 
+				[]f32.read(entity.X, i),
+				[]f32.read(entity.Y, i),
 				[]f32.read(entity.Rad, i),
 				[]f32.read(entity.Red, i), 
 				[]f32.read(entity.Green, i), 
 				[]f32.read(entity.Blue, i))
 		}
 	}
+}
+
+
+func Polygon(id i32, x f32, y f32, radius f32, red f32, green f32, blue f32) () {
+	gl.Begin(gl.POLYGON)
+	gl.Color3f(red, green, blue)
+	
+	num   := []i32.read(entity.NumVertices,        id)
+	start := []i32.read(entity.IndexToFirstVertex, id)
+
+	for i := start; i < start + num; i++ {
+		xx := x + radius * []f32.read(entity.VertexSoupX, i)
+		yy := y + radius * []f32.read(entity.VertexSoupY, i)		
+
+		gl.Vertex2f(xx, yy)
+	}
+
+	gl.End()
 }
 
 

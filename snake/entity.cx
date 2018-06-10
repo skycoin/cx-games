@@ -365,18 +365,21 @@ func getRandomIntensity() (out f32) {
 }
 
 
-func addSpikeyRandomishAsteroid(nv i32) () {
+func addSpikeyRandomishAsteroid(numSides i32) () {
 	// get randomish vertices from circle lookup table 
-	nppe := game.NumSpherePoints / nv // number of possibilities per edge 
+	nppe := game.NumSpherePoints / numSides // number of possibilities per edge 
 	
-	for i := 0; i < nv; i++ { 
-		newX := 0.0
-		newY := 0.0
+	for i := 0; i < numSides; i++ { 
+		rnd := i * nppe // start with root of possibilities 
+		rnd += i32.rand(0, nppe)
+		x := []f32.read(game.SpherePointsX, rnd)
+		y := []f32.read(game.SpherePointsY, rnd)
 
-		VertexSoupX = []f32.append(VertexSoupX, newX)
-		VertexSoupY = []f32.append(VertexSoupY, newY)
+		VertexSoupX = []f32.append(VertexSoupX, x)
+		VertexSoupY = []f32.append(VertexSoupY, y)
 
 		soupAppendIndex++
+		str.print("adding vertex")
 	}
 }
 
