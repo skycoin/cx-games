@@ -1,0 +1,103 @@
+package cavern
+
+
+
+// HMMM
+//
+// if flying through canyons/caverns/tubes... 
+// in center, normal no-gravity-control, but as you get closer to 
+// outer edge (edge of obstacles(spikes/stalag[t/m]ites) 
+// rather than the "idealized" edge of tube), 
+// you get more of a force push towards the center. 
+// could give a cool feel of "sliding" 
+// against the contours of the spikes? definitely makes it a lot 
+// more forgiving against surface contact deaths?  so players can 
+// have more fun focusing on the shooting/dodging of asteroids/mobs? 
+
+
+
+var NumNodes     i32 = 5
+var EndTipLeftX  f32
+var EndTipLeftY  f32
+var EndTipRightX f32
+var EndTipRightY f32
+
+
+// current node (for generating the path) 
+var currNodeId    i32
+var currX         f32
+var currY         f32
+var currAim       f32
+var currThickness f32
+// previous node
+var prevX         f32
+var prevY         f32
+var prevLength    f32
+
+
+
+// cache of nodes
+// (final world positions/etc.) 
+
+// 		path == centerpoint (& line) between side edges 
+var PathX []f32
+var PathY []f32
+
+// 		left edge 
+var LeftX []f32
+var LeftY []f32
+
+// 		right edge 
+var RightX []f32
+var RightY []f32
+
+// 		...
+var Aim         []f32
+var Length      []f32
+var ThickExtent []f32
+
+
+
+func Init() () {
+	str.print("--- cavern.Init()")
+	NumNodes := 20
+
+	for i := 0; i < NumNodes; i++ {
+		addNode()
+	}
+
+	/*   FIXME:TODO: project endpoint/tip out by this nodes aim & length 
+	EndTipLeftX = currY?????
+	EndTipLeftY
+	EndTipRightX
+	EndTipRightY
+	*/
+}
+
+
+func addNode() () {
+	len := 0.6
+	thE := 0.2
+	lX  := currX - thE
+	rX  := currX + thE
+
+	PathX       = []f32.append(PathX,       currX)
+	PathY       = []f32.append(PathY,       currY)
+	LeftX       = []f32.append(PathX,       lX)
+	LeftY       = []f32.append(PathY,       currY)
+	RightX      = []f32.append(PathX,       rX)
+	RightY      = []f32.append(PathY,       currY)
+	Aim         = []f32.append(Aim,         0.0)
+	Length      = []f32.append(Length,      len)
+	ThickExtent = []f32.append(ThickExtent, thE)
+
+	if /* not root node */ currNodeId != 0 {
+		blah := 2
+	}
+
+	prevX      = currX
+	prevY      = currY
+	prevLength = len
+	currNodeId++
+	str.print("addED node")
+}

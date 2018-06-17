@@ -41,6 +41,7 @@ func All() () {
 func Entities() () {
 	// skipping 0 (reserved for player entity), which has it's own draw func. 
 	// for now, all others are spheres 
+	
 	for i := 1; i < []f32.len(entity.X); i++ {
 		if entity.IsAlive(i) {
 			Polygon(

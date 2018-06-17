@@ -2,7 +2,7 @@ package game
 
 import "ccInput"
 import "entity"
-
+import "cavern"
 
 
 // TODO: 
@@ -15,17 +15,6 @@ import "entity"
 //			* 2 oriented quads (forming hexagonal diamond'ish shape), or 
 //			* unoriented lookup table of sphere rim points) 
 // * juice up resetEventText with blip of white (or light-violet), & shaking? 
-//
-// HMMM
-// if flying through canyons/caverns/tubes... 
-// in center, normal no-gravity-control, but as you get closer to 
-// outer edge (edge of obstacles(spikes/stalag[t/m]ites) 
-// rather than the "idealized" edge of tube), 
-// you get more of a force push towards the center. 
-// could give a cool feel of "sliding" 
-// against the contours of the spikes? definitely makes it a lot 
-// more forgiving against surface contact deaths?  so players can 
-// have more fun focusing on the shooting/dodging of asteroids/mobs? 
 
 
 
@@ -148,6 +137,7 @@ func Init() () {
 	setupKeyAngles()
 	setupSpherePointTable()
 	entity.Init()
+	cavern.Init()
 	SetMode(MODE_MainMenu)
 	str.print("--- game.Init()")
 }
@@ -471,3 +461,40 @@ func setPosOfVisualizers() () {
 }
 
 
+func PathNodeExists(id i32) (out bool) {
+	if id < []f32.len(cavern.PathX) {
+		return true;
+	} 
+
+	return false;
+}
+
+
+func GetNodeVertices(id i32) (
+	x0 f32, y0 f32,
+	x1 f32, y1 f32,
+	x2 f32, y2 f32, 
+	x3 f32, y3 f32) {
+
+	farLX := []f32.read(cavern.EndTipLeftX)
+	farLY := []f32.read(cavern.EndTipLeftY)
+	farRX := []f32.read(cavern.EndTipRightX)
+	farRY := []f32.read(cavern.EndTipRightY)
+
+	return
+		// close left 
+		[]f32.read(cavern.LeftX,  id),
+		[]f32.read(cavern.LeftY,  id),
+		
+		// far left 
+		farLX,
+		farLY,
+
+		// far right 
+		farRX,
+		farRY,
+
+		// close right 
+		[]f32.read(cavern.RightX, id),
+		[]f32.read(cavern.RightY, id)
+}
