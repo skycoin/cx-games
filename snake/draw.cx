@@ -74,9 +74,9 @@ func path() () {
 		gl.Begin(gl.POLYGON)
 
 		// color 
-		red := 0.7
+		red := 0.2
 		green := 0.4
-		blue := 0.2
+		blue := 0.7
 		gl.Color3f(red, green, blue)
 
 		// near & far points/vertices 
