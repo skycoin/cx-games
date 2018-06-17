@@ -90,7 +90,7 @@ var ScreenCenterXInGltextSpace f32
 var ScreenNumPixelsWide i32 = 1280
 var ScreenNumPixelsHigh i32 = 720
 var ScreenPixelSpan     f32 // in GL graphics coords 
-var WindowExtentX       f32
+var WindowExtentX       f32 // Y is always 1.0 
 var ScreenBoundsTop     f32
 var ScreenBoundsRight   f32
 var ScreenBoundsBottom  f32
@@ -467,6 +467,14 @@ func PathNodeExists(id i32) (out bool) {
 	} 
 
 	return false;
+}
+
+
+func GetEndTip() (lX f32, lY f32, rX f32, rY f32) {
+	return cavern.EndTipLeftX,
+			cavern.EndTipLeftY,
+			cavern.EndTipRightX,
+			cavern.EndTipRightY
 }
 
 

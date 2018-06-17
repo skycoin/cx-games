@@ -30,9 +30,9 @@ func All() () {
 	/* draw */ menuMaybe()
 	/* draw */ Snake()
 	/* draw */ Entities()
+	/* draw */ path()
 	/* draw */ maybeEventText()
 	/* draw */ maybeHelpText()
-	/* draw */ path()
 	
 	//EntityAttachedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...moves with player 
 
@@ -43,9 +43,9 @@ func path() () {
 
 	gl.Begin(gl.POLYGON)
 
-	red := 1.0
-	green := 1.0
-	blue := 1.0
+	red := 0.3
+	green := 0.3
+	blue := 0.3
 	gl.Color3f(red, green, blue)
 	
 
@@ -66,12 +66,19 @@ func path() () {
 		id++
 	}
 
+
+	lX, lY, rX, rY := game.GetEndTip()
+	gl.Vertex2f(lX, lY)	
+	gl.Vertex2f(rX, rY)	
+
+
+
 	id--
 
-	// 2nd string all rights together, going from tip of tail, back to root/head 
+	// now string all rights together, going from tip of tail, back to root/head 
 	for game.PathNodeExists(id) {
-		str.print("path node:")
-		i32.print(id)
+		//str.print("path node:")
+		//i32.print(id)
 
 		rX, rY := game.GetRightVertexFor(id)
 		gl.Vertex2f(rX, rY)	
