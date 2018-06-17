@@ -462,7 +462,7 @@ func setPosOfVisualizers() () {
 
 
 func PathNodeExists(id i32) (out bool) {
-	if id < []f32.len(cavern.PathX) {
+	if id >= 0   &&   id < []f32.len(cavern.PathX) {
 		return true;
 	} 
 

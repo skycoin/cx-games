@@ -27,6 +27,7 @@ func All() () {
 	
 	*/
 
+	/* draw */ //debugPathEdgePoints()
 	/* draw */ menuMaybe()
 	/* draw */ Snake()
 	/* draw */ Entities()
@@ -39,37 +40,17 @@ func All() () {
 }
 
 
-func path() () {
-
-	gl.Begin(gl.POLYGON)
-
-	red := 0.3
-	green := 0.3
-	blue := 0.3
-	gl.Color3f(red, green, blue)
-	
-
-
-
-
+func debugPathEdgePoints() () {
+	rad := 0.01
 
 	id := 0 // of node 
 
 	// 1st string all lefts together 
 	for game.PathNodeExists(id) {
-		//str.print("path node:")
-		//i32.print(id)
-
 		lX, lY := game.GetLeftVertexFor(id)
-		gl.Vertex2f(lX, lY)	
-
+		Sphere(lX, lY, rad, 0.8, 0.8, 0.8)
 		id++
 	}
-
-
-	lX, lY, rX, rY := game.GetEndTip()
-	gl.Vertex2f(lX, lY)	
-	gl.Vertex2f(rX, rY)	
 
 
 
@@ -77,16 +58,41 @@ func path() () {
 
 	// now string all rights together, going from tip of tail, back to root/head 
 	for game.PathNodeExists(id) {
+		rX, rY := game.GetRightVertexFor(id)
+		Sphere(rX, rY, rad, 0.8, 0.8, 0.8)
+		id--
+	}
+}
+
+
+func path() () {
+	id := 0 // of node 
+	for game.PathNodeExists(id) {
 		//str.print("path node:")
 		//i32.print(id)
 
-		rX, rY := game.GetRightVertexFor(id)
-		gl.Vertex2f(rX, rY)	
+		gl.Begin(gl.POLYGON)
 
-		id--
+		// color 
+		red := 0.7
+		green := 0.4
+		blue := 0.2
+		gl.Color3f(red, green, blue)
+
+		// near & far points/vertices 
+		nLX, nLY, 
+		nRX, nRY,
+		fLX, fLY, 
+		fRX, fRY := game.Get4NodeVertices(id)
+		gl.Vertex2f(nLX, nLY)	
+		gl.Vertex2f(nRX, nRY)	
+		gl.Vertex2f(fLX, fLY)	
+		gl.Vertex2f(fRX, fRY)
+
+		gl.End()
+
+		id++
 	}
-
-	gl.End()
 }
 
 

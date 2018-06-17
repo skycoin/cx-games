@@ -16,7 +16,7 @@ package cavern
 
 
 
-var NumNodes     i32 = 15
+var NumNodes     i32 = 35
 var EndTipLeftX  f32 = -0.15
 var EndTipLeftY  f32 = 1.0
 var EndTipRightX f32 = 0.15
@@ -26,9 +26,9 @@ var EndTipRightY f32 = 1.0
 // current node (for generating the path) 
 var currNodeId    i32
 var cenX          f32 // current center position 
-var cenY          f32 = -0.9
+var cenY          f32 = -0.99
 var currAim       f32
-var currThickness f32
+var currThickness f32 = 0.55 //...extent
 // previous node
 var prevX         f32 // previous center position 
 var prevY         f32
@@ -66,7 +66,7 @@ func Init() () {
 	}
 
 
-	
+
 	/*   FIXME:TODO: project endpoint/tip out by this nodes aim & length 
 	EndTipLeftX = currY?????
 	EndTipLeftY
@@ -78,9 +78,8 @@ func Init() () {
 
 func addNode() () {
 	len := 0.05
-	thE := 0.02
-	lX  := cenX - thE
-	rX  := cenX + thE
+	lX  := cenX - currThickness
+	rX  := cenX + currThickness
 
 	PathX       = []f32.append(PathX,       cenX)
 	PathY       = []f32.append(PathY,       cenY)
@@ -90,7 +89,7 @@ func addNode() () {
 	RightY      = []f32.append(RightY,      cenY)
 	Aim         = []f32.append(Aim,         0.0)
 	Length      = []f32.append(Length,      len)
-	ThickExtent = []f32.append(ThickExtent, thE)
+	ThickExtent = []f32.append(ThickExtent, currThickness)
 
 	if /* not root node */ currNodeId != 0 {
 		// jitter new position left or right a bit 
