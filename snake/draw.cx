@@ -32,16 +32,33 @@ func All() () {
 	/* draw */ Entities()
 	/* draw */ maybeEventText()
 	/* draw */ maybeHelpText()
+	/* draw */ path()
 	
 	//EntityAttachedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...moves with player 
 
 }
 
 
+func path() () {
+	str.print("path()")
+
+	id := 0 // of node 
+	for game.PathNodeExists(id) {
+		i32.print(id)
+
+		x0, y0, 
+		x1, y1, 
+		x2, x2, 
+		x3, y3 := game.GetNodeVertices(id)
+
+		id++
+	}
+}
+
+
 func Entities() () {
 	// skipping 0 (reserved for player entity), which has it's own draw func. 
-	// for now, all others are spheres 
-	
+
 	for i := 1; i < []f32.len(entity.X); i++ {
 		if entity.IsAlive(i) {
 			Polygon(

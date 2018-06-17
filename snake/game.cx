@@ -476,10 +476,18 @@ func GetNodeVertices(id i32) (
 	x2 f32, y2 f32, 
 	x3 f32, y3 f32) {
 
-	farLX := []f32.read(cavern.EndTipLeftX)
-	farLY := []f32.read(cavern.EndTipLeftY)
-	farRX := []f32.read(cavern.EndTipRightX)
-	farRY := []f32.read(cavern.EndTipRightY)
+	farLX := cavern.EndTipLeftX
+	farLY := cavern.EndTipLeftY
+	farRX := cavern.EndTipRightX
+	farRY := cavern.EndTipRightY
+
+	//if /* parasite node exists */ id + 1 < cavern.NumNodes {
+	//	// set to next nodes edges 
+	//	farLX := []f32.read(cavern.LeftX,  id + 1),
+	//	farLY := []f32.read(cavern.LeftY,  id + 1),
+	//	farRX := []f32.read(cavern.RightX, id + 1),
+	//	farRY := []f32.read(cavern.RightY, id + 1),
+	//}
 
 	return
 		// close left 
