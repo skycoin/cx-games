@@ -470,7 +470,19 @@ func PathNodeExists(id i32) (out bool) {
 }
 
 
-func GetNodeVertices(id i32) (
+func GetLeftVertexFor(id i32) (x f32, y f32) {
+	return []f32.read(cavern.LeftX, id),
+			[]f32.read(cavern.LeftY, id)
+}
+
+
+func GetRightVertexFor(id i32) (x f32, y f32) {
+	return []f32.read(cavern.RightX, id),
+			[]f32.read(cavern.RightY, id)
+}
+
+
+func Get4NodeVertices(id i32) (
 	x0 f32, y0 f32,
 	x1 f32, y1 f32,
 	x2 f32, y2 f32, 
@@ -481,13 +493,13 @@ func GetNodeVertices(id i32) (
 	farRX := cavern.EndTipRightX
 	farRY := cavern.EndTipRightY
 
-	//if /* parasite node exists */ id + 1 < cavern.NumNodes {
-	//	// set to next nodes edges 
-	//	farLX := []f32.read(cavern.LeftX,  id + 1),
-	//	farLY := []f32.read(cavern.LeftY,  id + 1),
-	//	farRX := []f32.read(cavern.RightX, id + 1),
-	//	farRY := []f32.read(cavern.RightY, id + 1),
-	//}
+	if /* parasite node exists */ id + 1 < cavern.NumNodes {
+		// set to next nodes edges 
+		farLX = []f32.read(cavern.LeftX,  id + 1)
+		farLY = []f32.read(cavern.LeftY,  id + 1)
+		farRX = []f32.read(cavern.RightX, id + 1)
+		farRY = []f32.read(cavern.RightY, id + 1)
+	}
 
 	return
 		// close left 

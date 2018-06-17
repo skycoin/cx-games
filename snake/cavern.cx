@@ -25,12 +25,12 @@ var EndTipRightY f32
 
 // current node (for generating the path) 
 var currNodeId    i32
-var currX         f32
-var currY         f32
+var cenX          f32 // current center position 
+var cenY          f32
 var currAim       f32
 var currThickness f32
 // previous node
-var prevX         f32
+var prevX         f32 // previous center position 
 var prevY         f32
 var prevLength    f32
 
@@ -77,25 +77,28 @@ func Init() () {
 func addNode() () {
 	len := 0.6
 	thE := 0.2
-	lX  := currX - thE
-	rX  := currX + thE
+	lX  := cenX - thE
+	rX  := cenX + thE
 
-	PathX       = []f32.append(PathX,       currX)
-	PathY       = []f32.append(PathY,       currY)
+	PathX       = []f32.append(PathX,       cenX)
+	PathY       = []f32.append(PathY,       cenY)
 	LeftX       = []f32.append(PathX,       lX)
-	LeftY       = []f32.append(PathY,       currY)
+	LeftY       = []f32.append(PathY,       cenY)
 	RightX      = []f32.append(PathX,       rX)
-	RightY      = []f32.append(PathY,       currY)
+	RightY      = []f32.append(PathY,       cenY)
 	Aim         = []f32.append(Aim,         0.0)
 	Length      = []f32.append(Length,      len)
 	ThickExtent = []f32.append(ThickExtent, thE)
 
 	if /* not root node */ currNodeId != 0 {
-		blah := 2
+		// jitter new position left or right a bit 
+		cenX += i32.f32(i32.rand(0, 7)) * 0.1 - 0.3 
+		
+		cenY += prevLength
 	}
 
-	prevX      = currX
-	prevY      = currY
+	prevX      = cenX
+	prevY      = cenY
 	prevLength = len
 	currNodeId++
 	str.print("addED node")
