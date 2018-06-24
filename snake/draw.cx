@@ -67,9 +67,13 @@ func debugPathEdgePoints() () {
 
 func path() () {
 	// starting color 
-	red := 0.2
+	red   := 0.2
 	green := 0.4
-	blue := 0.7
+	blue  := 0.7
+
+	// player pos 
+	pX := []f32.read(entity.X, 0)
+	pY := []f32.read(entity.Y, 0)
 
 	id := 0 // of node 
 	for game.PathNodeExists(id) {
@@ -84,10 +88,10 @@ func path() () {
 		nRX, nRY,
 		fLX, fLY, 
 		fRX, fRY := game.Get4NodeVertices(id)
-		gl.Vertex2f(nLX, nLY)	
-		gl.Vertex2f(nRX, nRY)	
-		gl.Vertex2f(fLX, fLY)	
-		gl.Vertex2f(fRX, fRY)
+		gl.Vertex2f(nLX - pX, nLY - pY)	
+		gl.Vertex2f(nRX - pX, nRY - pY)	
+		gl.Vertex2f(fLX - pX, fLY - pY)	
+		gl.Vertex2f(fRX - pX, fRY - pY)
 
 		gl.End()
 
@@ -238,8 +242,8 @@ func Snake() () {
 	yOff := game.CurrSnakeExtent * cos
 	
 	// center pos 
-	cX := []f32.read(entity.X, entity.SnakeId)
-	cY := []f32.read(entity.Y, entity.SnakeId)
+	cX := 0.0 // []f32.read(entity.X, entity.SnakeId)
+	cY := 0.0 // []f32.read(entity.Y, entity.SnakeId)
 
 	// tail pos 
 	tX := cX - xOff
