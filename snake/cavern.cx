@@ -16,7 +16,7 @@ package cavern
 
 
 
-var NumNodes     i32 = 35
+var NumNodes     i32 = 10
 var EndTipLeftX  f32 = -0.15
 var EndTipLeftY  f32 = 1.0
 var EndTipRightX f32 = 0.15
@@ -28,7 +28,7 @@ var currNodeId    i32
 var cenX          f32 // current center position 
 var cenY          f32 = -1.0
 var currAim       f32
-var currThickness f32 = 0.05 //...extent
+var currThickness f32 = 0.65 //...extent
 // previous node
 var prevX         f32 // previous center position 
 var prevY         f32
@@ -79,28 +79,30 @@ func Init() () {
 var prevAim f32
 var halfPi  f32 = 1.570796327
 func addNode() () {
-	aim := 0.0
-	len := 0.05
+	aim      := 0.0
+	tweenAim := 0.0
+	len      := 0.5
 
 	if /* not root node */ currNodeId != 0 {
 		aimChangeGrain := halfPi / 64.0
 		aimDelta := i32.f32(i32.rand(-32, 32))
 		aimDelta *= aimChangeGrain
-		aim = prevAim + aimDelta
+		aim      = prevAim + aimDelta
+		tweenAim = prevAim + aimDelta / 2.0
 
 		// calc pos from previous node 
-		cenX = prevX + f32.sin(aim) * len
-		cenY = prevY + f32.cos(aim) * len
+		cenX = prevX + f32.sin(prevAim) * len
+		cenY = prevY + f32.cos(prevAim) * len
 	}
 
 	PathX       = []f32.append(PathX, cenX)
 	PathY       = []f32.append(PathY, cenY)
 
 	// edges 
-	LeftX  = []f32.append(LeftX,  cenX + f32.sin(aim - halfPi) * currThickness)
-	LeftY  = []f32.append(LeftY,  cenY + f32.cos(aim - halfPi) * currThickness)
-	RightX = []f32.append(RightX, cenX + f32.sin(aim + halfPi) * currThickness)
-	RightY = []f32.append(RightY, cenY + f32.cos(aim + halfPi) * currThickness)
+	LeftX  = []f32.append(LeftX,  cenX + f32.sin(tweenAim - halfPi) * currThickness)
+	LeftY  = []f32.append(LeftY,  cenY + f32.cos(tweenAim - halfPi) * currThickness)
+	RightX = []f32.append(RightX, cenX + f32.sin(tweenAim + halfPi) * currThickness)
+	RightY = []f32.append(RightY, cenY + f32.cos(tweenAim + halfPi) * currThickness)
 	
 	Aim         = []f32.append(Aim, aim)
 	Length      = []f32.append(Length,      len)

@@ -91,8 +91,8 @@ func path() () {
 
 		gl.End()
 
-		green -= 0.05
-		blue  -= 0.05
+		red   += 0.05
+		green += 0.05
 		id++
 	}
 }
