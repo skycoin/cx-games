@@ -12,11 +12,12 @@ package cavern
 // could give a cool feel of "sliding" 
 // against the contours of the spikes? definitely makes it a lot 
 // more forgiving against surface contact deaths?  so players can 
-// have more fun focusing on the shooting/dodging of asteroids/mobs? 
+// have more fun focusing on the shooting/dodging of entities? 
 
 
 
-var NumNodes     i32 = 10
+var NumNodes     i32 = 7
+var halfPi       f32 = 1.570796327
 var EndTipLeftX  f32 = -0.15
 var EndTipLeftY  f32 = 1.0
 var EndTipRightX f32 = 0.15
@@ -25,14 +26,18 @@ var EndTipRightY f32 = 1.0
 
 // current node (for generating the path) 
 var currNodeId    i32
-var cenX          f32 // current center position 
-var cenY          f32 = -1.0
+var cenX          f32 = -2.27 // current center position 
+var cenY          f32
 var currAim       f32
+var currLength    f32 = 0.5
 var currThickness f32 = 0.65 //...extent
 // previous node
 var prevX         f32 // previous center position 
 var prevY         f32
+var prevAim       f32
 var prevLength    f32
+
+var tweenAim      f32
 
 
 
@@ -59,41 +64,36 @@ var ThickExtent []f32
 
 
 func Init() () {
-	str.print("--- cavern.Init()")
+	currAim  = halfPi
+	tweenAim = halfPi
+	prevAim  = halfPi
+	prevX    = cenX
+	prevY    = cenY
 
 	for i := 0; i < NumNodes; i++ {
 		addNode()
 	}
 
+	calcCurrPosFromPrev()
+	EndTipLeftX  = cenX
+	EndTipLeftY  = cenY
+	EndTipRightX = cenX
+	EndTipRightY = cenY
 
-
-	/*   FIXME:TODO: project endpoint/tip out by this nodes aim & length 
-	EndTipLeftX = currY?????
-	EndTipLeftY
-	EndTipRightX
-	EndTipRightY
-	*/
+	str.print("--- cavern.Init()")
 }
 
 
-var prevAim f32
-var halfPi  f32 = 1.570796327
 func addNode() () {
-	aim      := 0.0
-	tweenAim := 0.0
-	len      := 0.5
-
 	if /* not root node */ currNodeId != 0 {
 		aimChangeGrain := halfPi / 64.0
 		aimDelta := i32.f32(i32.rand(-32, 32))
 		aimDelta *= aimChangeGrain
-		aim      = prevAim + aimDelta
+		currAim  = prevAim + aimDelta
 		tweenAim = prevAim + aimDelta / 2.0
-
-		// calc pos from previous node 
-		cenX = prevX + f32.sin(prevAim) * len
-		cenY = prevY + f32.cos(prevAim) * len
 	}
+
+	calcCurrPosFromPrev()
 
 	PathX       = []f32.append(PathX, cenX)
 	PathY       = []f32.append(PathY, cenY)
@@ -104,8 +104,8 @@ func addNode() () {
 	RightX = []f32.append(RightX, cenX + f32.sin(tweenAim + halfPi) * currThickness)
 	RightY = []f32.append(RightY, cenY + f32.cos(tweenAim + halfPi) * currThickness)
 	
-	Aim         = []f32.append(Aim, aim)
-	Length      = []f32.append(Length,      len)
+	Aim         = []f32.append(Aim,         currAim)
+	Length      = []f32.append(Length,      currLength)
 	ThickExtent = []f32.append(ThickExtent, currThickness)
 
 
@@ -114,8 +114,14 @@ func addNode() () {
 	// final updates 
 	prevX      = cenX
 	prevY      = cenY
-	prevAim    = aim
-	prevLength = len
+	prevAim    = currAim
+	prevLength = currLength
 	currNodeId++
 	str.print("addED node")
+}
+
+
+func calcCurrPosFromPrev() () {
+	cenX = prevX + f32.sin(prevAim) * currLength
+	cenY = prevY + f32.cos(prevAim) * currLength
 }
