@@ -66,17 +66,17 @@ func debugPathEdgePoints() () {
 
 
 func path() () {
+	// starting color 
+	red := 0.2
+	green := 0.4
+	blue := 0.7
+
 	id := 0 // of node 
 	for game.PathNodeExists(id) {
 		//str.print("path node:")
 		//i32.print(id)
 
 		gl.Begin(gl.POLYGON)
-
-		// color 
-		red := 0.2
-		green := 0.4
-		blue := 0.7
 		gl.Color3f(red, green, blue)
 
 		// near & far points/vertices 
@@ -91,6 +91,8 @@ func path() () {
 
 		gl.End()
 
+		green -= 0.05
+		blue  -= 0.05
 		id++
 	}
 }
