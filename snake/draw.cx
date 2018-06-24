@@ -10,6 +10,14 @@ import "game"
 
 
 
+// path colors (each node dims/brightens from prior color) 
+var red     f32  = 0.2
+var green   f32  = 0.4
+var blue    f32  = 0.7
+var dimming bool = false
+
+
+
 func Init() () {
 	setupFonts()
 	str.print("--- draw.Init()")
@@ -66,11 +74,6 @@ func debugPathEdgePoints() () {
 
 
 func path() () {
-	// starting color 
-	red   := 0.2
-	green := 0.4
-	blue  := 0.7
-
 	// player pos 
 	pX := []f32.read(entity.X, 0)
 	pY := []f32.read(entity.Y, 0)
@@ -95,9 +98,32 @@ func path() () {
 
 		gl.End()
 
-		red   += 0.05
-		green += 0.05
+		setNodeColor()
 		id++
+	}
+}
+
+
+func setNodeColor() () {
+	ccd /* color channel delta */ := 0.05
+	if dimming {
+		ccd = 0.0 - ccd
+	}
+
+	red   += ccd
+	green += ccd
+
+	// maybe toggle dimming/brightening flag 
+	if dimming {
+		//bool.print(dimming)
+		if red < 0.0 && green < 0.0 {
+			dimming = false
+		}
+	} else {
+		//bool.print(dimming)
+		if red > 1.0 && green > 1.0 {
+			dimming = true
+		}
 	}
 }
 
@@ -297,7 +323,7 @@ func Snake() () {
 			tY + ftd * entity.DelY, 
 			cRad, 
 			game.CurrSnakeAim,
-			1.0, 1.0, 1.0)
+			0.0, 0.0, 0.0)
 
 		entity.AdvanceChainProgressBy(cRad)
 	}
@@ -400,7 +426,6 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		ie, 
 		game.CurrSnakeAim,
 		ci, 0.0, 1.0)
-
 	// rotate negative 
 	qqX, qqY := game.RotatePositionByAngle(
 		hoX,
