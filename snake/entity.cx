@@ -248,7 +248,6 @@ func IsAlive(i i32) (out bool) {
 	te := []f32.read(Expiry, i)
 	de := []f32.read(DistanceExpiry, i)
 
-	
 	if /* entity has a predetermined lifespan */ te != 0.0 
 		&&
 		/* it died */                            te <= currFrame {
@@ -292,8 +291,10 @@ func IsCollidable(i i32) (out bool) {
 func SpawnEntity(
 	x f32, 
 	y f32, 
+
 	velX f32, 
 	velY f32, 
+	
 	rad f32, 
 	expiry f32, 
 	distExpiry f32, 

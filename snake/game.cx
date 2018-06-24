@@ -84,7 +84,7 @@ var EventTextTimeFadeStarts    f32
 var EventTextColorIntensity    f32
 var EventTextX                 f32
 var EventTextY                 f32
-var ScreenCenterXInGltextSpace f32
+var ScreenCenterXInGltextSpace f32 // (pixel space) 
 
 // screen 
 var ScreenNumPixelsWide i32 = 1280

@@ -28,7 +28,7 @@ var currNodeId    i32
 var cenX          f32 // current center position 
 var cenY          f32 = -1.0
 var currAim       f32
-var currThickness f32 = 0.55 //...extent
+var currThickness f32 = 0.05 //...extent
 // previous node
 var prevX         f32 // previous center position 
 var prevY         f32
@@ -76,32 +76,43 @@ func Init() () {
 }
 
 
+var prevAim f32
 func addNode() () {
+	aim := 0.0
 	len := 0.05
 	lX  := cenX - currThickness
 	rX  := cenX + currThickness
 
 	PathX       = []f32.append(PathX,       cenX)
 	PathY       = []f32.append(PathY,       cenY)
+
+	// edges 
 	LeftX       = []f32.append(LeftX,       lX)
 	LeftY       = []f32.append(LeftY,       cenY)
 	RightX      = []f32.append(RightX,      rX)
 	RightY      = []f32.append(RightY,      cenY)
-	Aim         = []f32.append(Aim,         0.0)
+
 	Length      = []f32.append(Length,      len)
 	ThickExtent = []f32.append(ThickExtent, currThickness)
 
 	if /* not root node */ currNodeId != 0 {
-		// jitter new position left or right a bit 
-		jit := i32.f32(i32.rand(0, 100)) * 0.01 - 0.5
-		f32.print(jit)
-		jit *= 0.5 // max deviation space 
-		cenX += jit
-		cenY += len
+		halfPi = 3.141592654 / 2.0
+		aimChangeGrain := halfPi / 64.0
+		aimDelta := i32.f32(i32.rand(-32, 32))
+		aimDelta *= aimChangeGrain
+		aim = prevAim + aimDelta
+
+		// calc pos from previous node 
+		cenX = prevX + f32.sin(aim) * len
+		cenY = prevY + f32.cos(aim) * len
 	}
 
+	Aim = []f32.append(Aim, aim)
+
+	// final updates 
 	prevX      = cenX
 	prevY      = cenY
+	prevAim    = aim
 	prevLength = len
 	currNodeId++
 	str.print("addED node")
