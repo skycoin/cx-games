@@ -136,8 +136,8 @@ func Init() () {
 
 	setupKeyAngles()
 	setupSpherePointTable()
-	entity.Init()
 	cavern.Init()
+	entity.Init()
 	SetMode(MODE_MainMenu)
 	str.print("--- game.Init()")
 }

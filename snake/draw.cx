@@ -115,12 +115,10 @@ func setNodeColor() () {
 
 	// maybe toggle dimming/brightening flag 
 	if dimming {
-		//bool.print(dimming)
 		if red < 0.0 && green < 0.0 {
 			dimming = false
 		}
 	} else {
-		//bool.print(dimming)
 		if red > 1.0 && green > 1.0 {
 			dimming = true
 		}
@@ -426,6 +424,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		ie, 
 		game.CurrSnakeAim,
 		ci, 0.0, 1.0)
+
 	// rotate negative 
 	qqX, qqY := game.RotatePositionByAngle(
 		hoX,

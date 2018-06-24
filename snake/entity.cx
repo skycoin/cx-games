@@ -1,4 +1,5 @@
 package entity
+import "cavern"
 import "game"
 
 
@@ -35,7 +36,7 @@ var VertexSoupY     []f32
 
 // entities 
 
-var numEnts i32 = 3 // includes the everpresent player snake entity 
+var numEnts i32 = 6 // includes the everpresent player snake entity 
 var SnakeId i32
 var X       []f32
 var Y       []f32
@@ -170,14 +171,36 @@ func SpawnMap() () {
 	}
 
 	for i := 1; i < numEnts; i++ {
-		x := game.ScreenBoundsLeft   + i32.f32(i32.rand(0, game.ScreenNumPixelsWide)) * pixelSpan
-		y := game.ScreenBoundsBottom + i32.f32(i32.rand(0, game.ScreenNumPixelsHigh)) * pixelSpan
-		vx,	vy := getRandomVelocities()
-
-		SpawnEntity(x, y, vx, vy, rad, 
+		//vx, vy := getRandomVelocities()
+		SpawnEntity(
+			getPosAndAimFromRandomTrackNode(), 
+			rad, 
 			/* expiries */ 0.0, 0.0, 
 			/* collidable */ true)
 	}
+}
+
+
+func getPosAndAimFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32) {
+	frac := 0.0004
+	rndIdx := i32.rand(0, 7) //cavern.NumNodes)
+	
+	if i32.rand(0, 2) == 0 {
+		x,    y    = game.GetLeftVertexFor(rndIdx)
+		aimX, aimY = game.GetRightVertexFor(rndIdx)
+	} else {
+		x,    y    = game.GetRightVertexFor(rndIdx)
+		aimX, aimY = game.GetLeftVertexFor(rndIdx)
+	}
+
+	aimX -= x
+	aimY -= y
+
+	return 
+		x, 
+		y, 
+		aimX * frac, 
+		aimY * frac
 }
 
 
