@@ -121,6 +121,9 @@ func Entities() () {
 
 
 func Polygon(id i32, x f32, y f32, radius f32, red f32, green f32, blue f32) () {
+	x -= []f32.read(entity.X, entity.SnakeId)
+	y -= []f32.read(entity.Y, entity.SnakeId)
+
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 	

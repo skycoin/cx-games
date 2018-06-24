@@ -294,7 +294,7 @@ func SpawnEntity(
 
 	velX f32, 
 	velY f32, 
-	
+
 	rad f32, 
 	expiry f32, 
 	distExpiry f32, 
@@ -652,6 +652,7 @@ func changePairsExpiryAndCollidability(aId i32, bId i32) () {
 
 
 func updatePosition_MaybeToOppositeEdgeOfScreen(nX f32, nY f32, index i32) () {
+	/*
 	if nX < game.ScreenBoundsLeft {
 		nX = game.ScreenBoundsRight
 	}
@@ -667,6 +668,7 @@ func updatePosition_MaybeToOppositeEdgeOfScreen(nX f32, nY f32, index i32) () {
 	if nY < game.ScreenBoundsBottom {
 		nY = game.ScreenBoundsTop
 	}
+	*/
 
 	[]f32.write(X, index, nX)
 	[]f32.write(Y, index, nY)
