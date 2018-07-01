@@ -172,16 +172,18 @@ func SpawnMap() () {
 
 	for i := 1; i < numEnts; i++ {
 		//vx, vy := getRandomVelocities()
+		x, y, xAim, yAim, thExtent := getPosAimAndDistFromRandomTrackNode()
 		SpawnEntity(
-			getPosAndAimFromRandomTrackNode(), 
+			x, y,
+			xAim, yAim,
 			rad, 
-			/* expiries */ 0.0, 0.0, 
+			/* expiries */ 0.0, thExtent, 
 			/* collidable */ true)
 	}
 }
 
 
-func getPosAndAimFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32) {
+func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, dist f32) {
 	frac := 0.0004
 	rndIdx := i32.rand(0, 7) //cavern.NumNodes)
 	
@@ -200,7 +202,8 @@ func getPosAndAimFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32) {
 		x, 
 		y, 
 		aimX * frac, 
-		aimY * frac
+		aimY * frac,
+		2.0 * game.GetThickExtentFor(rndIdx)
 }
 
 
@@ -399,12 +402,10 @@ func addSpikeyRandomishAsteroid(numSides i32) () {
 		rnd += i32.rand(0, nppe)
 		x := []f32.read(game.SpherePointsX, rnd)
 		y := []f32.read(game.SpherePointsY, rnd)
-
 		VertexSoupX = []f32.append(VertexSoupX, x)
 		VertexSoupY = []f32.append(VertexSoupY, y)
 
 		soupAppendIndex++
-		str.print("adding vertex")
 	}
 }
 
@@ -488,7 +489,6 @@ func IsTouching_WillExplode(aId i32, deltaMoreThanRadius bool) (out bool) {
 
 	return touching
 }
-
 
 
 func doTouchResponses(aX f32, aY f32, aRad f32, aId i32, bId i32) () {

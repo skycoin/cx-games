@@ -478,6 +478,11 @@ func GetEndTip() (lX f32, lY f32, rX f32, rY f32) {
 }
 
 
+func GetThickExtentFor(id i32) (thickExtent f32) {
+	return []f32.read(cavern.ThickExtent, id)
+}
+
+
 func GetLeftVertexFor(id i32) (x f32, y f32) {
 	return []f32.read(cavern.LeftX, id),
 			[]f32.read(cavern.LeftY, id)
