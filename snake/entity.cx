@@ -4,8 +4,6 @@ import "game"
 
 
 
-var numMissileSpawnsNeeded i32
-
 // FIXME: remove when bool arrays are fixed (for now use integers of 0 or 1) 
 var isFalse i32 = 0
 var isTrue  i32 = 1
@@ -40,20 +38,18 @@ var VertexSoupY     []f32
 
 var numEnts i32 = 6 // includes the everpresent player snake entity 
 var SnakeId i32
-
-var X                  []f32
-var Y                  []f32
-var VelX               []f32 // velocity
-var VelY               []f32
+var X       []f32
+var Y       []f32
+var VelX []f32 // velocity
+var VelY []f32
 var Rad                []f32 // radius 
-var TimeExpiry         []f32
-var DistanceExpiry     []f32
+var Expiry             []f32 // time-based expiry 
 var IsCollidable       []i32 // FIXME when bool arrays are fixed 
-var WasAliveLastFrame  []i32 // ^^^
-var BoxyDistance       []f32 // distance travelled since spawned 
-	// cheap & inaccurate (simple sum of the 2 dimensions' distances). 
-	// when plotting the full spectrum of radian/angle/aim possibilities, 
+var BoxyDistance       []f32 // a cheap and inaccurate sum of the 2 
+	// axis-aligned distances in 2D. 
+	// when plotting the full spectrum of radian/angle possibilities, 
 	// it forms a fairly box-like shape (but the 4 edges are wavy lines rather than straight) 
+var DistanceExpiry     []f32
 
 //			vertex run 
 var NumVertices        []i32
@@ -98,18 +94,23 @@ func Init() () {
 }
 
 
+var prevNumLastingEnts i32 = 0
 var prevFrame f32 = 0.0
-func Update() () { // per frame 
-	numMissileSpawnsNeeded = 0
-
+func Update() () {
+	currNumLastingEnts := 0;
  	currFrame   = f64.f32(glfw.GetTime())
  	deltaFrame := currFrame - prevFrame
  	mm          = deltaFrame * 200.0
  	velocityInc = deltaFrame / 50.0
 
-	// cycle thru entities 
+	// per frame...
 	for i := 0; i < []f32.len(X); i++ {
+		// ...per relevant entity 
 		if IsAlive(i) {
+			if isLasting(i) {
+				currNumLastingEnts++;
+			}
+
 			// movement 
 			vx := []f32.read(VelX, i) 
 			vy := []f32.read(VelY, i)
@@ -139,29 +140,18 @@ func Update() () { // per frame
 		}
 	}
 
-
-
-	// now that number of new spawns has been calculated, 
-	// make as many new spawns as needed 
-	for i := 0; i < numMissileSpawnsNeeded; i++ {
-		x, y, xAim, yAim, dist := getPosAimAndDistFromRandomTrackNode()
-
-		SpawnEntity(
-			x, y,
-			xAim, yAim,
-			rad, 
-			/* expiries */ 0.0, dist, 
-			/* collidable */ true)
-	}
-
-
-
-	/*
-	if finished the level/map {		
+	// just detecting when a stage is finished 
+	// (player/snake would generally be alive here) 
+	// (moment of expiry (state change) prob will be handled elsewhere) 
+	
+	if currNumLastingEnts != prevNumLastingEnts &&
+		currNumLastingEnts <= 1 {
+		
+		numEnts++
 		game.SetStage(game.Stage + 1);
 	}
-	*/
 
+	prevNumLastingEnts = currNumLastingEnts
 	prevFrame = currFrame
 }
 
@@ -194,6 +184,7 @@ func SpawnMap() () {
 
 
 func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, dist f32) {
+	frac := 0.0004
 	rndIdx := i32.rand(0, 7) //cavern.NumNodes)
 	
 	if i32.rand(0, 2) == 0 {
@@ -207,12 +198,11 @@ func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, di
 	aimX -= x
 	aimY -= y
 
-	f := 0.0004
 	return 
 		x, 
 		y, 
-		aimX * f, 
-		aimY * f,
+		aimX * frac, 
+		aimY * frac,
 		2.0 * game.GetThickExtentFor(rndIdx)
 }
 
@@ -281,7 +271,7 @@ func Shoot(index i32) () {
 
 
 func IsAlive(i i32) (out bool) {
-	te := []f32.read(TimeExpiry i)
+	te := []f32.read(Expiry, i)
 	de := []f32.read(DistanceExpiry, i)
 
 	if /* entity has a predetermined lifespan */ te != 0.0 
@@ -295,11 +285,6 @@ func IsAlive(i i32) (out bool) {
 		&&
 		/* it moved too far */          de <= []f32.read(BoxyDistance, i) {
 	
-		if []i32.read(WasAliveLastFrame, i) == isTrue {
-			[]i32.write(WasAliveLastFrame, i, isFalse)
-			numMissileSpawnsNeeded++
-		}
-
 		return false
 	}
 
@@ -307,9 +292,8 @@ func IsAlive(i i32) (out bool) {
 }
 
 
-// (doesn't expire to time or space distance) 
 func isLasting(i i32) (out bool) {
-	te := []f32.read(TimeExpiry i)
+	te := []f32.read(Expiry, i)
 	de := []f32.read(DistanceExpiry, i)
 	
 	if /* entity HAS NO predetermined lifespan */ te == 0.0 && 
@@ -355,7 +339,7 @@ func SpawnEntity(
 			[]f32.write(VelX,           i, velX)
 			[]f32.write(VelY,           i, velY)
 			[]f32.write(Rad,            i, rad)
-			[]f32.write(TimeExpiry      i, expiry)
+			[]f32.write(Expiry,         i, expiry)
 			[]f32.write(DistanceExpiry, i, distExpiry)
 			[]f32.write(BoxyDistance,   i, 0.0)
 			
@@ -370,14 +354,10 @@ func SpawnEntity(
 				[]i32.write(IsCollidable, i, isFalse)
 			}
 
-			[]i32.write(WasAliveLastFrame, i, isTrue)
-
 			// set color?  for now, keeps the same color as the original 
 			i = num // to BREAK out of loop // FIXME once CX breaks exist 
 		}
 	}
-
-
 
 	if shouldAppendNewIndex {
 		nv := i32.rand(5, 8)   // num vertices 
@@ -387,7 +367,7 @@ func SpawnEntity(
 		VelX               = []f32.append(VelX,               velX)
 		VelY               = []f32.append(VelY,               velY)
 		Rad                = []f32.append(Rad,                rad)
-		TimeExpiry         = []f32.append(TimeExpiry          expiry)
+		Expiry             = []f32.append(Expiry,             expiry)
 		DistanceExpiry     = []f32.append(DistanceExpiry,     distExpiry)
 		BoxyDistance       = []f32.append(BoxyDistance,       0.0)
 		NumVertices        = []i32.append(NumVertices,        nv)
@@ -400,8 +380,6 @@ func SpawnEntity(
 		} else {
 			IsCollidable = []i32.append(IsCollidable, isFalse)
 		}
-
-		WasAliveLastFrame = []i32.append(WasAliveLastFrame, isTrue)
 
 		Red   = []f32.append(Red,   getRandomIntensity())
 		Green = []f32.append(Green, getRandomIntensity())
@@ -650,18 +628,18 @@ func changePairsExpiryAndCollidability(aId i32, bId i32) () {
 		str.print("<A")
 
 		sA := "    expiry (before): "
-		sB := f32.str([]f32.read(TimeExpiry aId))
+		sB := f32.str([]f32.read(Expiry, aId))
 		str.print(str.concat(sA, sB))
 	}
 
 
-	[]f32.write(TimeExpiry       aId, currFrame - 0.1)
+	[]f32.write(Expiry,       aId, currFrame - 0.1)
 	[]i32.write(IsCollidable, aId, isFalse)
 
 
 	if logging {
 		sA := "    expiry (after): "
-		sB := f32.str([]f32.read(TimeExpiry aId))
+		sB := f32.str([]f32.read(Expiry, aId))
 		str.print(str.concat(sA, sB))
 
 		str.print(str.concat("    id: ", i32.str(aId)))
@@ -676,18 +654,18 @@ func changePairsExpiryAndCollidability(aId i32, bId i32) () {
 		str.print("<B")
 
 		sA := "    expiry (before): "
-		sB := f32.str([]f32.read(TimeExpiry bId))
+		sB := f32.str([]f32.read(Expiry, bId))
 		str.print(str.concat(sA, sB))
 	}
 
 
-	[]f32.write(TimeExpiry       bId, currFrame - 0.1)
+	[]f32.write(Expiry,       bId, currFrame - 0.1)
 	[]i32.write(IsCollidable, bId, isFalse)
 
 
 	if logging {
 		sA := "    expiry (after): "
-		sB := f32.str([]f32.read(TimeExpiry bId))
+		sB := f32.str([]f32.read(Expiry, bId))
 		str.print(str.concat(sA, sB))
 
 		str.print(str.concat("    id: ", i32.str(bId)))
