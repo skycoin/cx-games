@@ -43,7 +43,7 @@ var Y       []f32
 var VelX []f32 // velocity
 var VelY []f32
 var Rad                []f32 // radius 
-var Expiry             []f32 // time-based expiry 
+var TimeExpiry         []f32
 var IsCollidable       []i32 // FIXME when bool arrays are fixed 
 var BoxyDistance       []f32 // a cheap and inaccurate sum of the 2 
 	// axis-aligned distances in 2D. 
@@ -271,7 +271,7 @@ func Shoot(index i32) () {
 
 
 func IsAlive(i i32) (out bool) {
-	te := []f32.read(Expiry, i)
+	te := []f32.read(TimeExpiry, i)
 	de := []f32.read(DistanceExpiry, i)
 
 	if /* entity has a predetermined lifespan */ te != 0.0 
@@ -293,7 +293,7 @@ func IsAlive(i i32) (out bool) {
 
 
 func isLasting(i i32) (out bool) {
-	te := []f32.read(Expiry, i)
+	te := []f32.read(TimeExpiry, i)
 	de := []f32.read(DistanceExpiry, i)
 	
 	if /* entity HAS NO predetermined lifespan */ te == 0.0 && 
@@ -322,7 +322,7 @@ func SpawnEntity(
 	velY f32, 
 
 	rad f32, 
-	expiry f32, 
+	timeExpiry f32, 
 	distExpiry f32, 
 	collidable bool) () {
 
@@ -339,7 +339,7 @@ func SpawnEntity(
 			[]f32.write(VelX,           i, velX)
 			[]f32.write(VelY,           i, velY)
 			[]f32.write(Rad,            i, rad)
-			[]f32.write(Expiry,         i, expiry)
+			[]f32.write(TimeExpiry,     i, timeExpiry)
 			[]f32.write(DistanceExpiry, i, distExpiry)
 			[]f32.write(BoxyDistance,   i, 0.0)
 			
@@ -367,7 +367,7 @@ func SpawnEntity(
 		VelX               = []f32.append(VelX,               velX)
 		VelY               = []f32.append(VelY,               velY)
 		Rad                = []f32.append(Rad,                rad)
-		Expiry             = []f32.append(Expiry,             expiry)
+		TimeExpiry         = []f32.append(TimeExpiry,         timeExpiry)
 		DistanceExpiry     = []f32.append(DistanceExpiry,     distExpiry)
 		BoxyDistance       = []f32.append(BoxyDistance,       0.0)
 		NumVertices        = []i32.append(NumVertices,        nv)
@@ -628,18 +628,18 @@ func changePairsExpiryAndCollidability(aId i32, bId i32) () {
 		str.print("<A")
 
 		sA := "    expiry (before): "
-		sB := f32.str([]f32.read(Expiry, aId))
+		sB := f32.str([]f32.read(TimeExpiry, aId))
 		str.print(str.concat(sA, sB))
 	}
 
 
-	[]f32.write(Expiry,       aId, currFrame - 0.1)
+	[]f32.write(TimeExpiry,       aId, currFrame - 0.1)
 	[]i32.write(IsCollidable, aId, isFalse)
 
 
 	if logging {
 		sA := "    expiry (after): "
-		sB := f32.str([]f32.read(Expiry, aId))
+		sB := f32.str([]f32.read(TimeExpiry, aId))
 		str.print(str.concat(sA, sB))
 
 		str.print(str.concat("    id: ", i32.str(aId)))
@@ -654,18 +654,18 @@ func changePairsExpiryAndCollidability(aId i32, bId i32) () {
 		str.print("<B")
 
 		sA := "    expiry (before): "
-		sB := f32.str([]f32.read(Expiry, bId))
+		sB := f32.str([]f32.read(TimeExpiry, bId))
 		str.print(str.concat(sA, sB))
 	}
 
 
-	[]f32.write(Expiry,       bId, currFrame - 0.1)
+	[]f32.write(TimeExpiry,       bId, currFrame - 0.1)
 	[]i32.write(IsCollidable, bId, isFalse)
 
 
 	if logging {
 		sA := "    expiry (after): "
-		sB := f32.str([]f32.read(Expiry, bId))
+		sB := f32.str([]f32.read(TimeExpiry, bId))
 		str.print(str.concat(sA, sB))
 
 		str.print(str.concat("    id: ", i32.str(bId)))
