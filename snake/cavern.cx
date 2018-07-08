@@ -10,9 +10,9 @@ package cavern
 // rather than the "idealized" edge of tube), 
 // you get more of a force push towards the center. 
 // could give a cool feel of "sliding" 
-// against the contours of the spikes? definitely makes it a lot 
+// against the contours of the cavern? definitely makes it a lot 
 // more forgiving against surface contact deaths?  so players can 
-// have more fun focusing on the shooting/dodging of entities? 
+// have more fun focusing on the shooting/dodging of entities 
 
 
 
@@ -59,7 +59,7 @@ var RightY []f32
 // 		...
 var Aim         []f32
 var Length      []f32
-var ThickExtent []f32
+var ThickExtent []f32 // thickness (from center) 
 
 
 
@@ -95,8 +95,8 @@ func addNode() () {
 
 	calcCurrPosFromPrev()
 
-	PathX       = []f32.append(PathX, cenX)
-	PathY       = []f32.append(PathY, cenY)
+	PathX  = []f32.append(PathX, cenX)
+	PathY  = []f32.append(PathY, cenY)
 
 	// edges 
 	LeftX  = []f32.append(LeftX,  cenX + f32.sin(tweenAim - halfPi) * currThickness)

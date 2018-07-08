@@ -38,18 +38,28 @@ var VertexSoupY     []f32
 
 var numEnts i32 = 6 // includes the everpresent player snake entity 
 var SnakeId i32
-var X       []f32
-var Y       []f32
-var VelX []f32 // velocity
-var VelY []f32
+
+// 		types       FIXME, when we got constants 
+var ENT_TYPE_Player    i32 = 0
+var ENT_TYPE_Bullet    i32 = 1
+var ENT_TYPE_Missile   i32 = 2 // map hazard 
+var ENT_TYPE_EnemyShip i32 = 3
+var ENT_TYPE_Debris    i32 = 4
+
+// 		fields of each entity 
+var EntityType         []i32
+var X                  []f32
+var Y                  []f32
+var VelX               []f32 // velocity
+var VelY               []f32
 var Rad                []f32 // radius 
 var TimeExpiry         []f32
+var DistanceExpiry     []f32
 var IsCollidable       []i32 // FIXME when bool arrays are fixed 
 var BoxyDistance       []f32 // a cheap and inaccurate sum of the 2 
 	// axis-aligned distances in 2D. 
 	// when plotting the full spectrum of radian/angle possibilities, 
 	// it forms a fairly box-like shape (but the 4 edges are wavy lines rather than straight) 
-var DistanceExpiry     []f32
 
 //			vertex run 
 var NumVertices        []i32
@@ -159,10 +169,12 @@ func Update() () {
 func SpawnMap() () {
 	rad := 0.1
 
+	// len(X) is count of entities 
 	if /* 1st map/stage/wave */ []f32.len(X) == 0 {
 		// make everpresent snake entity 
 		initVel := 0.009
 		SpawnEntity(
+			ENT_TYPE_Player,
 			0.0, 0.0, 
 			initVel, initVel, 
 			rad, 
@@ -174,6 +186,7 @@ func SpawnMap() () {
 		//vx, vy := getRandomVelocities()
 		x, y, xAim, yAim, thExtent := getPosAimAndDistFromRandomTrackNode()
 		SpawnEntity(
+			ENT_TYPE_Missile,
 			x, y,
 			xAim, yAim,
 			rad, 
@@ -259,6 +272,7 @@ func Shoot(index i32) () {
 	fraction := 0.03 // ...of distance (for velocity) 
 
 	SpawnEntity(
+		ENT_TYPE_Bullet,
 		scX + oX, // pos 
 		scY + oY, // pos 
 		oX * fraction, // velocity 
@@ -315,6 +329,8 @@ func IsCollidable(i i32) (out bool) {
 
 
 func SpawnEntity(
+	entType i32,
+	
 	x f32, 
 	y f32, 
 
@@ -334,6 +350,7 @@ func SpawnEntity(
 		if IsAlive(i) == false { // ...resurrect it with all new values 
 			shouldAppendNewIndex = false
 
+			[]i32.write(EntityType,     i, entType)
 			[]f32.write(X,              i, x)
 			[]f32.write(Y,              i, y)
 			[]f32.write(VelX,           i, velX)
@@ -362,6 +379,7 @@ func SpawnEntity(
 	if shouldAppendNewIndex {
 		nv := i32.rand(5, 8)   // num vertices 
 
+		EntityType         = []i32.append(EntityType,         entType)
 		X                  = []f32.append(X,                  x)
 		Y                  = []f32.append(Y,                  y)
 		VelX               = []f32.append(VelX,               velX)
@@ -541,6 +559,7 @@ func doTouchResponses(aX f32, aY f32, aRad f32, aId i32, bId i32) () {
 			// purely visual particle puff 
 			for j := 0; j < 2; j++ {
 				SpawnEntity(
+					ENT_TYPE_Debris,
 					beX, 
 					beY,
 					i32.f32(i32.rand(-49, 50)) * mult,
@@ -566,6 +585,7 @@ func replaceExplodingEntityWith2FragmentSpawns(offX f32, offY f32, beX f32, beY 
 	str.print("replaceExplodingEntityWith2FragmentSpawns()")
 
 	SpawnEntity(
+		ENT_TYPE_Debris,
 		beX + offX, 
 		beY + offY,
 		0.0, //offX / divisor, 
@@ -576,6 +596,7 @@ func replaceExplodingEntityWith2FragmentSpawns(offX f32, offY f32, beX f32, beY 
 		collidable)
 
 	SpawnEntity(
+		ENT_TYPE_Debris,
 		beX - offX, 
 		beY - offY,
 		0.0, //0.0 - offX / divisor, 
