@@ -45,8 +45,8 @@ var tweenAim      f32
 // (final world positions/etc.) 
 
 // 		path == centerpoint (& line) between side edges 
-var PathX []f32
-var PathY []f32
+var CenterX []f32
+var CenterY []f32
 
 // 		left edge 
 var LeftX []f32
@@ -95,14 +95,14 @@ func addNode() () {
 
 	calcCurrPosFromPrev()
 
-	PathX  = []f32.append(PathX, cenX)
-	PathY  = []f32.append(PathY, cenY)
+	CenterX     = []f32.append(CenterX,     cenX)
+	CenterY     = []f32.append(CenterY,     cenY)
 
 	// edges 
-	LeftX  = []f32.append(LeftX,  cenX + f32.sin(tweenAim - halfPi) * currThickness)
-	LeftY  = []f32.append(LeftY,  cenY + f32.cos(tweenAim - halfPi) * currThickness)
-	RightX = []f32.append(RightX, cenX + f32.sin(tweenAim + halfPi) * currThickness)
-	RightY = []f32.append(RightY, cenY + f32.cos(tweenAim + halfPi) * currThickness)
+	LeftX       = []f32.append(LeftX,       cenX + f32.sin(tweenAim - halfPi) * currThickness)
+	LeftY       = []f32.append(LeftY,       cenY + f32.cos(tweenAim - halfPi) * currThickness)
+	RightX      = []f32.append(RightX,      cenX + f32.sin(tweenAim + halfPi) * currThickness)
+	RightY      = []f32.append(RightY,      cenY + f32.cos(tweenAim + halfPi) * currThickness)
 	
 	Aim         = []f32.append(Aim,         currAim)
 	Length      = []f32.append(Length,      currLength)

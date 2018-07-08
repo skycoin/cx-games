@@ -35,9 +35,10 @@ func All() () {
 	
 	*/
 
-	[]f32.write(entity.X, 1, 0.0)
-	[]f32.write(entity.Y, 1, 0.0)
-	SpecialPolygon(1, 0.0, 0.0, 0.8, 0.0, 0.0, 0.0)
+	// // draw big debug missile in middle of screen, ignoring "camera" pos 
+	//[]f32.write(entity.X, 1, 0.0)
+	//[]f32.write(entity.Y, 1, 0.0)
+	//cameraIgnoringPolygon(1, 0.0, 0.0, 0.8, 0.0, 0.0, 0.0)
 
 	/* draw */ //debugPathEdgePoints()
 	/* draw */ menuMaybe()
@@ -148,7 +149,7 @@ func Entities() () {
 }
 
 
-func SpecialPolygon(id i32, x f32, y f32, radius f32, red f32, green f32, blue f32) () {
+func cameraIgnoringPolygon(id i32, x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 	
@@ -210,7 +211,7 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 	gl.Color3f(red, green, blue)
 
 	
-	for i := 0; i < game.NumSpherePoints; i++ {
+	for i := 0; i < game.NumCircleLUTPoints; i++ {
 		gl.Vertex2f(
 			x + radius * []f32.read(game.SpherePointsX, i),
 			y + radius * []f32.read(game.SpherePointsY, i))
@@ -220,8 +221,8 @@ func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 }
 
 
-func orientedSphere(
-	step i32, // the stride thru indices (decimates game.NumSpherePoints, for lower resolution circle) 
+func aimedYetDecimatedCircleApproximation(
+	step i32, // the stride thru indices (decimates game.NumCircleLUTPoints, for lower resolution) 
 	x f32, 
 	y f32, 
 	radius f32, 
@@ -245,13 +246,13 @@ func orientedSphere(
 
 	// (FIXME if perfection is needed later... should "round" instead of
 	// effectively "floor"ing, which means subtracting half a radian grain?) 
-	max := game.NumSpherePoints + startIdx
+	max := game.NumCircleLUTPoints + startIdx
 
 	for i := startIdx; i < max; i += step {
 		si := i // sane index 
 
-		for si >= game.NumSpherePoints {
-			si -= game.NumSpherePoints
+		for si >= game.NumCircleLUTPoints {
+			si -= game.NumCircleLUTPoints
 		}
 
 		gl.Vertex2f(
@@ -337,7 +338,7 @@ func Snake() () {
 		// current radius 
 		cRad := game.TailRadius + ftd * entity.DelRad
 
-		orientedSphere(
+		aimedYetDecimatedCircleApproximation(
 			5,
 			tX + ftd * entity.DelX, 
 			tY + ftd * entity.DelY, 

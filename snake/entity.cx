@@ -54,6 +54,7 @@ var X                  []f32
 var Y                  []f32
 var VelX               []f32 // velocity
 var VelY               []f32
+var Aim                []f32 // heading/rotation/orientation  
 var Rad                []f32 // radius 
 var TimeExpiry         []f32
 var DistanceExpiry     []f32
@@ -171,6 +172,9 @@ func Update() () {
 func SpawnMap() () {
 	rad := 0.1
 
+
+	// MAKE PLAYER 
+
 	// len(X) is count of entities 
 	if /* 1st map/stage/wave */ []f32.len(X) == 0 {
 		// make everpresent snake entity 
@@ -179,18 +183,21 @@ func SpawnMap() () {
 			ENT_TYPE_Player,
 			0.0, 0.0, 
 			initVel, initVel, 
+			0.0, // aim   FIXME (get rid of separate CurrSnakeAim variable?) 
 			rad, 
 			/* expiries */ 0.0, 0.0, 
 			/* collidable */ false)
 	}
 
+	// MAKE MISSILES 
 	for i := 1; i < numEnts; i++ {
 		//vx, vy := getRandomVelocities()
-		x, y, xAim, yAim, thExtent := getPosAimAndDistFromRandomTrackNode()
+		x, y, xAim, yAim, aim, thExtent := getPosAimAndDistFromRandomTrackNode()
 		SpawnEntity(
 			ENT_TYPE_Missile,
 			x, y,
 			xAim, yAim,
+			aim,
 			rad, 
 			/* expiries */ 0.0, thExtent, 
 			/* collidable */ true)
@@ -198,7 +205,7 @@ func SpawnMap() () {
 }
 
 
-func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, dist f32) {
+func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, aim f32, dist f32) {
 	frac := 0.0004
 	rndIdx := i32.rand(0, 7) //cavern.NumNodes)
 	
@@ -218,7 +225,8 @@ func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, di
 		y, 
 		aimX * frac, 
 		aimY * frac,
-		2.0 * game.GetThickExtentFor(rndIdx)
+		game.GetAimForNode(rndIdx),
+		game.GetThickExtentFor(rndIdx) * 2.0
 }
 
 
@@ -279,6 +287,7 @@ func Shoot(index i32) () {
 		scY + oY, // pos 
 		oX * fraction, // velocity 
 		oY * fraction, // velocity 
+		game.CurrSnakeAim, // FIXME when more than player needs to shoot 
 		game.BulletRadius,
 		0.0, //f64.f32(glfw.GetTime()) + 0.75, // time expiry
 		game.ScreenBoundsRight,                // distance expiry 
@@ -339,6 +348,7 @@ func SpawnEntity(
 	velX f32, 
 	velY f32, 
 
+	aim f32,
 	rad f32, 
 	timeExpiry f32, 
 	distExpiry f32, 
@@ -357,6 +367,7 @@ func SpawnEntity(
 			[]f32.write(Y,              i, y)
 			[]f32.write(VelX,           i, velX)
 			[]f32.write(VelY,           i, velY)
+			[]f32.write(Aim,            i, aim)
 			[]f32.write(Rad,            i, rad)
 			[]f32.write(TimeExpiry,     i, timeExpiry)
 			[]f32.write(DistanceExpiry, i, distExpiry)
@@ -391,6 +402,7 @@ func SpawnEntity(
 		Y                  = []f32.append(Y,                  y)
 		VelX               = []f32.append(VelX,               velX)
 		VelY               = []f32.append(VelY,               velY)
+		Aim                = []f32.append(Aim,                aim)
 		Rad                = []f32.append(Rad,                rad)
 		TimeExpiry         = []f32.append(TimeExpiry,         timeExpiry)
 		DistanceExpiry     = []f32.append(DistanceExpiry,     distExpiry)
@@ -506,7 +518,7 @@ func addMissile() () {
 
 func addSpikeyRandomishAsteroid(numSides i32) () {
 	// get randomish vertices from circle lookup table 
-	nppe := game.NumSpherePoints / numSides // number of possibilities per edge 
+	nppe := game.NumCircleLUTPoints / numSides // number of possibilities per edge 
 	
 	for i := 0; i < numSides; i++ { 
 		rnd := i * nppe // start with root of possibilities 
@@ -657,11 +669,12 @@ func doTouchResponses(aX f32, aY f32, aRad f32, aId i32, bId i32) () {
 					beY,
 					i32.f32(i32.rand(-49, 50)) * mult,
 					i32.f32(i32.rand(-49, 50)) * mult,
+					0.0, // aim, which won't be needed for round particles 
 					game.BulletRadius, 
 					currFrame + 1.5,
 					0.0, // distance based expiry 
 					collidable)
-				}
+			}
 		}
 	} // end of isTouching 
 }
