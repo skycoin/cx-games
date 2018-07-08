@@ -35,6 +35,10 @@ func All() () {
 	
 	*/
 
+	[]f32.write(entity.X, 1, 0.0)
+	[]f32.write(entity.Y, 1, 0.0)
+	SpecialPolygon(1, 0.0, 0.0, 0.8, 0.0, 0.0, 0.0)
+
 	/* draw */ //debugPathEdgePoints()
 	/* draw */ menuMaybe()
 	/* draw */ Snake()
@@ -141,6 +145,24 @@ func Entities() () {
 				[]f32.read(entity.Blue, i))
 		}
 	}
+}
+
+
+func SpecialPolygon(id i32, x f32, y f32, radius f32, red f32, green f32, blue f32) () {
+	gl.Begin(gl.POLYGON)
+	gl.Color3f(red, green, blue)
+	
+	num   := []i32.read(entity.NumVertices,        id)
+	start := []i32.read(entity.IndexToFirstVertex, id)
+
+	for i := start; i < start + num; i++ {
+		xx := radius * []f32.read(entity.VertexSoupX, i)
+		yy := radius * []f32.read(entity.VertexSoupY, i)		
+
+		gl.Vertex2f(xx, yy)
+	}
+
+	gl.End()
 }
 
 

@@ -4,6 +4,8 @@ import "game"
 
 
 
+var numVertsPerMissile i32 = 20
+
 // FIXME: remove when bool arrays are fixed (for now use integers of 0 or 1) 
 var isFalse i32 = 0
 var isTrue  i32 = 1
@@ -377,7 +379,12 @@ func SpawnEntity(
 	}
 
 	if shouldAppendNewIndex {
-		nv := i32.rand(5, 8)   // num vertices 
+		nv := numVertsPerMissile
+		
+		if entType == ENT_TYPE_Bullet { 
+			// for now uses "meteor" shape 
+			nv = i32.rand(5, 8)   // num vertices 
+		}
 
 		EntityType         = []i32.append(EntityType,         entType)
 		X                  = []f32.append(X,                  x)
@@ -390,24 +397,110 @@ func SpawnEntity(
 		BoxyDistance       = []f32.append(BoxyDistance,       0.0)
 		NumVertices        = []i32.append(NumVertices,        nv)
 		IndexToFirstVertex = []i32.append(IndexToFirstVertex, soupAppendIndex)
-		
-		addSpikeyRandomishAsteroid(nv)
+		Red                = []f32.append(Red,                getRandomIntensity())
+		Green              = []f32.append(Green,              getRandomIntensity())
+		Blue               = []f32.append(Blue,               getRandomIntensity())	
 
 		if collidable {
 			IsCollidable = []i32.append(IsCollidable, isTrue)
 		} else {
 			IsCollidable = []i32.append(IsCollidable, isFalse)
 		}
-
-		Red   = []f32.append(Red,   getRandomIntensity())
-		Green = []f32.append(Green, getRandomIntensity())
-		Blue  = []f32.append(Blue,  getRandomIntensity())	
+		
+		if /****/ entType == ENT_TYPE_Missile {
+			addMissile()
+		} else {
+			//if entType == ENT_TYPE_Bullet {
+			addSpikeyRandomishAsteroid(nv)
+			//}
+		}
 	}
 }
 
 
 func getRandomIntensity() (out f32) {
 	return i32.f32(i32.rand(0, 200) + 100) * gradientSpan	
+}
+
+
+func addMissile() () {
+	// start at the fore/impact tip. 
+	// plot out the right side 
+	// (including right fins/wings), 
+	// ending at the aft/exhaust tip. 
+	// then mirror that shape to the other side. 
+	// working from rear tip to impact tip 
+
+	soupAppendIndex += numVertsPerMissile
+
+
+
+	// fore/impact tip 
+	VertexSoupX = []f32.append(VertexSoupX, 0.0)
+	VertexSoupY = []f32.append(VertexSoupY, 0.5)
+	
+	VertexSoupX = []f32.append(VertexSoupX, 0.1) // 1
+	VertexSoupY = []f32.append(VertexSoupY, 0.3)
+	
+	VertexSoupX = []f32.append(VertexSoupX, 0.1) // 2
+	VertexSoupY = []f32.append(VertexSoupY, 0.2)
+	
+	VertexSoupX = []f32.append(VertexSoupX, 0.2) // 3
+	VertexSoupY = []f32.append(VertexSoupY, 0.0) // 7
+	
+	VertexSoupX = []f32.append(VertexSoupX, 0.1) // 4
+	VertexSoupY = []f32.append(VertexSoupY, 0.03) // 6
+	
+	VertexSoupX = []f32.append(VertexSoupX, 0.1) // 5
+	VertexSoupY = []f32.append(VertexSoupY, -0.2) // 5
+
+	VertexSoupX = []f32.append(VertexSoupX, 0.2)
+	VertexSoupY = []f32.append(VertexSoupY, -0.3) // 4
+	
+	VertexSoupX = []f32.append(VertexSoupX, 0.2)
+	VertexSoupY = []f32.append(VertexSoupY, -0.5) // 3
+	
+	VertexSoupX = []f32.append(VertexSoupX, 0.1)
+	VertexSoupY = []f32.append(VertexSoupY, -0.4) // 2
+	
+	VertexSoupX = []f32.append(VertexSoupX, 0.05)
+	VertexSoupY = []f32.append(VertexSoupY, -0.4) // 1
+
+
+
+	// middle point (aft/exhaust tip) 
+	VertexSoupX = []f32.append(VertexSoupX, 0.0)
+	VertexSoupY = []f32.append(VertexSoupY, -0.45) // 0
+
+
+
+	// reversed & mirrored for LEFT side 
+	VertexSoupX = []f32.append(VertexSoupX, -0.05)
+	VertexSoupY = []f32.append(VertexSoupY, -0.4) // 1
+
+	VertexSoupX = []f32.append(VertexSoupX, -0.1)
+	VertexSoupY = []f32.append(VertexSoupY, -0.4) // 2
+	
+	VertexSoupX = []f32.append(VertexSoupX, -0.2)
+	VertexSoupY = []f32.append(VertexSoupY, -0.5) // 3
+	
+	VertexSoupX = []f32.append(VertexSoupX, -0.2)
+	VertexSoupY = []f32.append(VertexSoupY, -0.3) // 4
+	
+	VertexSoupX = []f32.append(VertexSoupX, -0.1) // 5
+	VertexSoupY = []f32.append(VertexSoupY, -0.2) // 5
+
+	VertexSoupX = []f32.append(VertexSoupX, -0.1) // 4
+	VertexSoupY = []f32.append(VertexSoupY, 0.03) // 6
+	
+	VertexSoupX = []f32.append(VertexSoupX, -0.2) // 3
+	VertexSoupY = []f32.append(VertexSoupY, 0.0) // 7
+	
+	VertexSoupX = []f32.append(VertexSoupX, -0.1) // 2
+	VertexSoupY = []f32.append(VertexSoupY, 0.2)
+	
+	VertexSoupX = []f32.append(VertexSoupX, -0.1) // 1
+	VertexSoupY = []f32.append(VertexSoupY, 0.3)
 }
 
 
