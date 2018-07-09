@@ -170,7 +170,7 @@ func Update() () {
 
 
 func SpawnMap() () {
-	rad := 0.1
+	missileRad := 0.25
 
 
 	// MAKE PLAYER 
@@ -184,7 +184,7 @@ func SpawnMap() () {
 			0.0, 0.0, 
 			initVel, initVel, 
 			0.0, // aim   FIXME (get rid of separate CurrSnakeAim variable?) 
-			rad, 
+			missileRad, 
 			/* expiries */ 0.0, 0.0, 
 			/* collidable */ false)
 	}
@@ -198,7 +198,7 @@ func SpawnMap() () {
 			x, y,
 			xAim, yAim,
 			aim,
-			rad, 
+			missileRad, 
 			/* expiries */ 0.0, thExtent, 
 			/* collidable */ true)
 	}
@@ -420,7 +420,7 @@ func SpawnEntity(
 		}
 		
 		if /****/ entType == ENT_TYPE_Missile {
-			addMissile()
+			addMissile(aim)
 		} else {
 			//if entType == ENT_TYPE_Bullet {
 			addSpikeyRandomishAsteroid(nv)
@@ -435,7 +435,14 @@ func getRandomIntensity() (out f32) {
 }
 
 
-func addMissile() () {
+func appendToVertexSoup(aim f32, x f32, y f32) () {
+	rotX, rotY = game.RotatePositionByAngle(x, y, aim)
+	VertexSoupX = []f32.append(VertexSoupX, rotX)
+	VertexSoupY = []f32.append(VertexSoupY, rotY)
+}
+
+
+func addMissile(aim f32) () {
 	// start at the fore/impact tip. 
 	// plot out the right side 
 	// (including right fins/wings), 
@@ -448,71 +455,32 @@ func addMissile() () {
 
 
 	// fore/impact tip 
-	VertexSoupX = []f32.append(VertexSoupX, 0.0)
-	VertexSoupY = []f32.append(VertexSoupY, 0.5)
+	appendToVertexSoup(aim, 0.0, 0.5)
 	
-	VertexSoupX = []f32.append(VertexSoupX, 0.1) // 1
-	VertexSoupY = []f32.append(VertexSoupY, 0.3)
+	// right side/fins 
+	appendToVertexSoup(aim, 0.1, 0.3)
+	appendToVertexSoup(aim, 0.1, 0.2)
+	appendToVertexSoup(aim, 0.2, 0.0)
+	appendToVertexSoup(aim, 0.1, 0.03)
+	appendToVertexSoup(aim, 0.1, -0.2)
+	appendToVertexSoup(aim, 0.2, -0.3)
+	appendToVertexSoup(aim, 0.2, -0.5)
+	appendToVertexSoup(aim, 0.1, -0.4)
+	appendToVertexSoup(aim, 0.05, -0.4)
 	
-	VertexSoupX = []f32.append(VertexSoupX, 0.1) // 2
-	VertexSoupY = []f32.append(VertexSoupY, 0.2)
-	
-	VertexSoupX = []f32.append(VertexSoupX, 0.2) // 3
-	VertexSoupY = []f32.append(VertexSoupY, 0.0) // 7
-	
-	VertexSoupX = []f32.append(VertexSoupX, 0.1) // 4
-	VertexSoupY = []f32.append(VertexSoupY, 0.03) // 6
-	
-	VertexSoupX = []f32.append(VertexSoupX, 0.1) // 5
-	VertexSoupY = []f32.append(VertexSoupY, -0.2) // 5
-
-	VertexSoupX = []f32.append(VertexSoupX, 0.2)
-	VertexSoupY = []f32.append(VertexSoupY, -0.3) // 4
-	
-	VertexSoupX = []f32.append(VertexSoupX, 0.2)
-	VertexSoupY = []f32.append(VertexSoupY, -0.5) // 3
-	
-	VertexSoupX = []f32.append(VertexSoupX, 0.1)
-	VertexSoupY = []f32.append(VertexSoupY, -0.4) // 2
-	
-	VertexSoupX = []f32.append(VertexSoupX, 0.05)
-	VertexSoupY = []f32.append(VertexSoupY, -0.4) // 1
-
-
-
 	// middle point (aft/exhaust tip) 
-	VertexSoupX = []f32.append(VertexSoupX, 0.0)
-	VertexSoupY = []f32.append(VertexSoupY, -0.45) // 0
+	appendToVertexSoup(aim, 0.0, -0.45)
 
-
-
-	// reversed & mirrored for LEFT side 
-	VertexSoupX = []f32.append(VertexSoupX, -0.05)
-	VertexSoupY = []f32.append(VertexSoupY, -0.4) // 1
-
-	VertexSoupX = []f32.append(VertexSoupX, -0.1)
-	VertexSoupY = []f32.append(VertexSoupY, -0.4) // 2
-	
-	VertexSoupX = []f32.append(VertexSoupX, -0.2)
-	VertexSoupY = []f32.append(VertexSoupY, -0.5) // 3
-	
-	VertexSoupX = []f32.append(VertexSoupX, -0.2)
-	VertexSoupY = []f32.append(VertexSoupY, -0.3) // 4
-	
-	VertexSoupX = []f32.append(VertexSoupX, -0.1) // 5
-	VertexSoupY = []f32.append(VertexSoupY, -0.2) // 5
-
-	VertexSoupX = []f32.append(VertexSoupX, -0.1) // 4
-	VertexSoupY = []f32.append(VertexSoupY, 0.03) // 6
-	
-	VertexSoupX = []f32.append(VertexSoupX, -0.2) // 3
-	VertexSoupY = []f32.append(VertexSoupY, 0.0) // 7
-	
-	VertexSoupX = []f32.append(VertexSoupX, -0.1) // 2
-	VertexSoupY = []f32.append(VertexSoupY, 0.2)
-	
-	VertexSoupX = []f32.append(VertexSoupX, -0.1) // 1
-	VertexSoupY = []f32.append(VertexSoupY, 0.3)
+	// right-side reversed & mirrored for LEFT-side 
+	appendToVertexSoup(aim, -0.05, -0.4)
+	appendToVertexSoup(aim, -0.1, -0.4)
+	appendToVertexSoup(aim, -0.2, -0.5)
+	appendToVertexSoup(aim, -0.2, -0.3)
+	appendToVertexSoup(aim, -0.1, -0.2)
+	appendToVertexSoup(aim, -0.1, 0.03)
+	appendToVertexSoup(aim, -0.2, 0.0)
+	appendToVertexSoup(aim, -0.1, 0.2)
+	appendToVertexSoup(aim, -0.1, 0.3)
 }
 
 

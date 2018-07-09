@@ -178,10 +178,9 @@ func Polygon(id i32, x f32, y f32, radius f32, red f32, green f32, blue f32) () 
 	start := []i32.read(entity.IndexToFirstVertex, id)
 
 	for i := start; i < start + num; i++ {
-		xx := x + radius * []f32.read(entity.VertexSoupX, i)
-		yy := y + radius * []f32.read(entity.VertexSoupY, i)		
-
-		gl.Vertex2f(xx, yy)
+		gl.Vertex2f(
+			x + radius * []f32.read(entity.VertexSoupX, i), 
+			y + radius * []f32.read(entity.VertexSoupY, i))
 	}
 
 	gl.End()
