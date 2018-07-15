@@ -352,12 +352,12 @@ func Snake() () {
 
 func maybeEventText() () { // @ top of screen 
 	if game.EventTextTimeFadeStarts != 0.0 && // (text has expiry set &...) 
-		game.EventTextColorIntensity > 0.0 {  // (...still has color) 
+		game.EventTextIntensity > 0.0 {       // (...still has some color intensity) 
 
 		gl.Color4f(
-			game.EventTextColorIntensity, 
-			0.0, //game.EventTextColorIntensity, // made it white at the time 
-			game.EventTextColorIntensity, 
+			game.EventTextIntensity, 
+			0.0, //game.EventTextIntensity, // now magenta (was white) 
+			game.EventTextIntensity, 
 			1.0)
 
 		CcText(

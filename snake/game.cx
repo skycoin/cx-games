@@ -81,7 +81,7 @@ var MODE_Dead        i32 = 3
 var EventText                  str
 var EventTextDuration          f32 = 2.5
 var EventTextTimeFadeStarts    f32
-var EventTextColorIntensity    f32
+var EventTextIntensity         f32
 var EventTextX                 f32
 var EventTextY                 f32
 var ScreenCenterXInGltextSpace f32 // (pixel space) 
@@ -98,25 +98,26 @@ var ScreenBoundsLeft    f32
 
 // menu / text 
 var ButtonNames         []str
-var TextHeight          f32 = 64.0 // by the pixels of text Space
+var TextHeight          f32 = 64.0 // in pixels of text Space 
 var TextOffset          f32        // calculated (on init) to be a fraction of TextHeight above 
 var TextFraction        f32 = 0.16
-var DeltaFromTop        f32        // in Gltext space 
-var DeltaFromLeftEdge   f32        // in Gltext space 
-var DeltaFromCenter     f32        // in Gltext space 
 var MenuHighlightId     i32 = -1
-var LongestCurrMExtent  f32 = 0.0  // ....in the current menu.  FIXME: hardwired
+var LongestCurrMExtent  f32        // ....in the current menu.  FIXME: hardwired
 var LongestMainMExtent  f32 = 0.30 // ....in the main    menu.  FIXME: hardwired
 var LongestOptiMExtent  f32 = 0.78 // ....in the options menu.  FIXME: hardwired 
 var MenuItemBack        str = "                <-"
 var SliderHandleExtentX f32
+// 		in Gltext space 
+var DeltaFromTop        f32
+var DeltaFromLeftEdge   f32
+var DeltaFromCenter     f32
 
 
 
 
 func Init() () {
 	updateTiming()
-	setupKeyAngles()
+	setupFrequentlyUsedAngles()
 	TextOffset = TextFraction * TextHeight
 
 	// event/announcement text 
@@ -152,8 +153,8 @@ func Update() () {
 
 	// text events/announcements 
 	if currTime > EventTextTimeFadeStarts {
-		EventTextColorIntensity -= timeDelta * 0.5
-		pixelRT                += timeDelta * 50.0
+		EventTextIntensity -= timeDelta * 0.5
+		pixelRT            += timeDelta * 50.0
 		
 		for pixelRT > 1.0 {
 			pixelRT -= 1.0
@@ -173,7 +174,7 @@ func updateTiming() () {
 }
 
 
-func setupKeyAngles() () {
+func setupFrequentlyUsedAngles() () {
 	Pi             = 3.141592654
 	HalfPi         = Pi / 2.0
 	Full360        = Pi * 2.0
@@ -386,7 +387,7 @@ func SetStage(stage i32) () {
 
 func resetEventText() () {
 	EventTextTimeFadeStarts = currTime + EventTextDuration
-	EventTextColorIntensity = 1.0
+	EventTextIntensity = 1.0
 	EventTextX = ScreenCenterXInGltextSpace
 	EventTextY = 0.0
 }
