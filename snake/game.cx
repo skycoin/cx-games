@@ -15,6 +15,7 @@ import "cavern"
 //			* 2 oriented quads (forming hexagonal diamond'ish shape), or 
 //			* unoriented lookup table of sphere rim points) 
 // * juice up resetEventText with blip of white (or light-violet), & shaking? 
+// * combine random angle/full360/aim grain vars with num LUT grain vars? 
 
 
 
@@ -22,7 +23,7 @@ var Name                  str = "Stretchy"
 var NumGrainsOfFull360    i32 = 256 // gives 64 aim possibilities per quadrant 
 var Full360Grain          f32
 var RadianGrainForLUT     f32 
-var AsteroidVelocityGrain f32 = 0.00002
+var VelocityGrain         f32 = 0.00002
 var BulletRadius          f32 = 0.015
 var timeDelta             f32
 
