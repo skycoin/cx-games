@@ -19,8 +19,8 @@ import "cavern"
 
 
 var Name                  str = "Stretchy"
-var NumRadianGrains       i32 = 256 // gives 64 aim/angle/direction possibilities per quadrant 
-var RadianGrainForRNG     f32
+var NumGrainsOfFull360    i32 = 256 // gives 64 aim possibilities per quadrant 
+var Full360Grain          f32
 var RadianGrainForLUT     f32 
 var AsteroidVelocityGrain f32 = 0.00002
 var BulletRadius          f32 = 0.015
@@ -33,14 +33,15 @@ var CurrSnakeExtent                    f32 = 0.17
 var CurrSnakeAim                       f32 = 0.0
 var TailRadius                         f32 = 0.02
 var HeadRadius                         f32 = 0.07
-var shrinkColorIntensity               f32
-var growColorIntensity                 f32
-var rotateNegativelyColorIntensity     f32
-var rotatePositivelyColorIntensity     f32
 var AnalogControlsSensitivityAim       f32 = 0.33
 var AnalogControlsSensitivitySpeed     f32 = 0.33
 var AnalogControlsSensitivityAimText   str = "Sensitivity of AIM"
 var AnalogControlsSensitivitySpeedText str = "Sensitivity of SPEED"
+//		 color channel intensities 
+var shrinkIntensity                    f32
+var growIntensity                      f32
+var aimDecreaseIntensity               f32
+var aimIncreaseIntensity               f32
 
 // geometry constants (FIXME when CX has constants) 
 // 			key angles/aim/rotation/orientation 
@@ -115,7 +116,7 @@ var SliderHandleExtentX f32
 
 func Init() () {
 	updateTiming()
-	RadianGrainForRNG = 2.0 * 3.141592654 / i32.f32(NumRadianGrains)
+	setupKeyAngles()
 	TextOffset = TextFraction * TextHeight
 
 	// event/announcement text 
@@ -133,7 +134,6 @@ func Init() () {
 	ScreenBoundsLeft = 0.0 - WindowExtentX
 	ScreenPixelSpan = 2.0 / i32.f32(ScreenNumPixelsHigh)
 
-	setupKeyAngles()
 	setupSpherePointTable()
 	cavern.Init()
 	entity.Init()
@@ -179,6 +179,7 @@ func setupKeyAngles() () {
 	Full360        = Pi * 2.0
 	ThirdOf360     = Full360 / 3.0
 	TwoThirdsOf360 = ThirdOf360 * 2.0
+	Full360Grain   = Full360 / i32.f32(NumGrainsOfFull360)
 }
 
 
@@ -238,10 +239,10 @@ func setupDeltaFromLeft(longExtent f32) () {
 
 
 func fadeDirectionalIndicatorsColorIntensity() () {
-	rotatePositivelyColorIntensity = fadeColorIntensity(rotatePositivelyColorIntensity)
-	rotateNegativelyColorIntensity = fadeColorIntensity(rotateNegativelyColorIntensity)
-	growColorIntensity = fadeColorIntensity(growColorIntensity)
-	shrinkColorIntensity = fadeColorIntensity(shrinkColorIntensity)
+	aimIncreaseIntensity = fadeColorIntensity(aimIncreaseIntensity)
+	aimDecreaseIntensity = fadeColorIntensity(aimDecreaseIntensity)
+	growIntensity   = fadeColorIntensity(growIntensity)
+	shrinkIntensity = fadeColorIntensity(shrinkIntensity)
 }
 
 
@@ -282,39 +283,39 @@ func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
 
 	// set directional indicator colors 
 	if rotX > 0.0 {
-		rotatePositivelyColorIntensity += rotX * timeDelta * rotateMul
-		if rotatePositivelyColorIntensity > 1.0 {
-			rotatePositivelyColorIntensity = 1.0
+		aimIncreaseIntensity += rotX * timeDelta * rotateMul
+		if aimIncreaseIntensity > 1.0 {
+			aimIncreaseIntensity = 1.0
 		}
 	} else {
-		rotatePositivelyColorIntensity = 0.0
+		aimIncreaseIntensity = 0.0
 	}
 
 	if rotX < 0.0 {
-		rotateNegativelyColorIntensity += 0.0 - rotX * timeDelta * rotateMul
-		if rotateNegativelyColorIntensity > 1.0 {
-			rotateNegativelyColorIntensity = 1.0
+		aimDecreaseIntensity += 0.0 - rotX * timeDelta * rotateMul
+		if aimDecreaseIntensity > 1.0 {
+			aimDecreaseIntensity = 1.0
 		}
 	} else {
-		rotateNegativelyColorIntensity = 0.0
+		aimDecreaseIntensity = 0.0
 	}
 
 	if rotY > 0.0 {
-		growColorIntensity += rotY * timeDelta * rotateMul
-		if growColorIntensity > 1.0 {
-			growColorIntensity = 1.0
+		growIntensity += rotY * timeDelta * rotateMul
+		if growIntensity > 1.0 {
+			growIntensity = 1.0
 		}
 	} else {
-		growColorIntensity = 0.0
+		growIntensity = 0.0
 	}
 
 	if rotY < 0.0 {
-		shrinkColorIntensity += 0.0 - rotY * timeDelta * rotateMul
-		if shrinkColorIntensity > 1.0 {
-			shrinkColorIntensity = 1.0
+		shrinkIntensity += 0.0 - rotY * timeDelta * rotateMul
+		if shrinkIntensity > 1.0 {
+			shrinkIntensity = 1.0
 		}
 	} else {
-		shrinkColorIntensity = 0.0
+		shrinkIntensity = 0.0
 	}
 
 
@@ -326,23 +327,23 @@ func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
 }
 
 
-func GetShrinkColorIntensity() (out f32) {
-	return shrinkColorIntensity
+func GetShrinkIntensity() (out f32) {
+	return shrinkIntensity
 }
 
 
-func GetGrowColorIntensity() (out f32) {
-	return growColorIntensity
+func GetGrowIntensity() (out f32) {
+	return growIntensity
 }
 
 
-func GetRotateNegativelyColorIntensity() (out f32) {
-	return rotateNegativelyColorIntensity
+func GetAimDecreaseIntensity() (out f32) {
+	return aimDecreaseIntensity
 }
 
 
-func GetRotatePositivelyColorIntensity() (out f32) {
-	return rotatePositivelyColorIntensity
+func GetAimIncreaseIntensity() (out f32) {
+	return aimIncreaseIntensity
 }
 
 

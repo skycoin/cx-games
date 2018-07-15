@@ -430,7 +430,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 	hoY /* head offset */ := cos * rfc
 	
 	// shrink 
-	ci := game.GetShrinkColorIntensity()
+	ci := game.GetShrinkIntensity()
 	Triangle(
 		entity.BX - hoX, 
 		entity.BY - hoY, 
@@ -439,7 +439,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		ci, 0.0, 1.0)
 	
 	// grow 
-	ci = game.GetGrowColorIntensity()
+	ci = game.GetGrowIntensity()
 	Triangle(
 		entity.BX + hoX, 
 		entity.BY + hoY, 
@@ -453,7 +453,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		hoY,
 		game.HalfPi)
 
-	ci = game.GetRotateNegativelyColorIntensity()
+	ci = game.GetAimDecreaseIntensity()
 	Triangle(
 		entity.BX + qqX, 
 		entity.BY + qqY, 
@@ -467,7 +467,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		hoY,
 		0.0 - game.HalfPi)
 	
-	ci = game.GetRotatePositivelyColorIntensity()
+	ci = game.GetAimIncreaseIntensity()
 	Triangle(
 		entity.BX + qqX, 
 		entity.BY + qqY, 

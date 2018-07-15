@@ -601,8 +601,8 @@ func doTouchResponses(aX f32, aY f32, aRad f32, aId i32, bId i32) () {
 		}
 
 		// random direction 
-		rdi := /* ...int   */ i32.rand(0,    game.NumRadianGrains)
-		rdf := /* ...float */ i32.f32(rdi) * game.RadianGrainForRNG
+		rdi := /* ...int   */ i32.rand(0,    game.NumGrainsOfFull360)
+		rdf := /* ...float */ i32.f32(rdi) * game.Full360Grain
 		
 		beR /= 2.0 // halve radius, for smaller fragments 
 		offS := 1.1 // offset scalar (from centerpoint of biggest entity) 
