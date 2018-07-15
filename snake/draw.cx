@@ -45,7 +45,7 @@ func All() () {
 	/* draw */ Snake()
 	/* draw */ Entities()
 	/* draw */ path()
-	/* draw */ maybeEventText()
+	/* draw */ eventText()
 	/* draw */ maybeHelpText()
 	
 	//EntityAttachedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...moves with player 
@@ -350,7 +350,7 @@ func Snake() () {
 }
 
 
-func maybeEventText() () { // @ top of screen 
+func eventText() () { // .... @ top of screen 
 	if game.EventTextTimeFadeStarts != 0.0 && // (text has expiry set &...) 
 		game.EventTextIntensity > 0.0 {       // (...still has some color intensity) 
 

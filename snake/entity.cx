@@ -43,10 +43,11 @@ var SnakeId i32
 
 // 		types       FIXME, when we got constants 
 var ENT_TYPE_Player    i32 = 0
-var ENT_TYPE_Bullet    i32 = 1
-var ENT_TYPE_Missile   i32 = 2 // map hazard 
+var ENT_TYPE_Bullet    i32 = 1 // spawned by entity 
+var ENT_TYPE_Missile   i32 = 2 // spawned by map (environment hazard) 
 var ENT_TYPE_EnemyShip i32 = 3
 var ENT_TYPE_Debris    i32 = 4
+var ENT_TYPE_Meteor    i32 = 5
 
 // 		fields of each entity 
 var EntityType         []i32
@@ -59,10 +60,12 @@ var Rad                []f32 // radius
 var TimeExpiry         []f32
 var DistanceExpiry     []f32
 var IsCollidable       []i32 // FIXME when bool arrays are fixed 
+var PrevAliveStatus    []i32 // 	^ 
 var BoxyDistance       []f32 // a cheap and inaccurate sum of the 2 
-	// axis-aligned distances in 2D. 
-	// when plotting the full spectrum of radian/angle possibilities, 
-	// it forms a fairly box-like shape (but the 4 edges are wavy lines rather than straight) 
+	                         // axis-aligned distances in 2D. 
+	                         // when plotting the full spectrum of radian/angle possibilities, 
+	                         // it forms a fairly box-like shape 
+	                         // (but the 4 edges are wavy lines rather than straight) 
 
 //			vertex run 
 var NumVertices        []i32
@@ -75,7 +78,7 @@ var Blue  []f32
 
 
 
-// chain of entities 
+// chain of entities (singleton) 
 // (used to plot a variable amount of spheres from point A to point B)
 var ChainLength f32 // distance between end/A/B points 
 var ChainProgress f32 // current fraction along chain's length (0.0 - 1.0) 
@@ -149,6 +152,15 @@ func Update() () {
 				//	nX, nY, []f32.read(Rad, i), false)
 				IsTouching_WillExplode(i, boxyDel > []f32.read(Rad, i))
 				updatePosition(nX, nY, i)
+			}
+		} else { // dead 
+			if /* died THIS frame */ []i32.read(PrevAliveStatus, i) == isTrue {
+				[]i32.write(PrevAliveStatus, i, isFalse)
+
+				if []i32.read(EntityType, i) == ENT_TYPE_Missile {
+					// TODO: reset missile here 
+					nuttin := 0
+				}
 			}
 		}
 	}
@@ -356,6 +368,8 @@ func SpawnEntity(
 
 	shouldAppendNewIndex := true
 
+
+
 	// possibly resurrect 1 of the dead (otherwise append new entity) 
 	num := []f32.len(X)
 	for i := 1; i < num; i++ { // skip 0 (snake)
@@ -384,18 +398,19 @@ func SpawnEntity(
 				[]i32.write(IsCollidable, i, isFalse)
 			}
 
+			[]i32.write(PrevAliveStatus, i, isTrue)
+
+
 			// set color?  for now, keeps the same color as the original 
 			i = num // to BREAK out of loop // FIXME once CX breaks exist 
 		}
 	}
 
+
+
 	if shouldAppendNewIndex {
-		nv := numVertsPerMissile
-		
-		if entType == ENT_TYPE_Bullet { 
-			// for now uses "meteor" shape 
-			nv = i32.rand(5, 8)   // num vertices 
-		}
+		nv := getNumVerts(entType)
+
 
 		EntityType         = []i32.append(EntityType,         entType)
 		X                  = []f32.append(X,                  x)
@@ -412,21 +427,55 @@ func SpawnEntity(
 		Red                = []f32.append(Red,                getRandomIntensity())
 		Green              = []f32.append(Green,              getRandomIntensity())
 		Blue               = []f32.append(Blue,               getRandomIntensity())	
+		PrevAliveStatus    = []i32.append(PrevAliveStatus,    isTrue)
 
 		if collidable {
-			IsCollidable = []i32.append(IsCollidable, isTrue)
+			IsCollidable   = []i32.append(IsCollidable,       isTrue)
 		} else {
-			IsCollidable = []i32.append(IsCollidable, isFalse)
+			IsCollidable   = []i32.append(IsCollidable,       isFalse)
 		}
 		
-		if /****/ entType == ENT_TYPE_Missile {
-			addMissile(aim)
+
+		appendPolygonToSoup(nv, entType, aim)
+	}
+}
+
+
+func appendPolygonToSoup(numVerts i32, entType i32, aim f32) () {
+	if entType == ENT_TYPE_Missile { 
+		appendMissileToSoup(aim)
+	} else {
+		if entType == ENT_TYPE_Bullet ||
+			entType == ENT_TYPE_Debris {
+
+			appendRandomAimTriangleToSoup()
 		} else {
-			//if entType == ENT_TYPE_Bullet {
-			addSpikeyRandomishAsteroid(nv)
-			//}
+			if entType == ENT_TYPE_Meteor { 
+				appendSpikeyRandomishAsteroidToSoup(numVerts)
+			}
 		}
 	}
+}
+
+
+func getNumVerts(entType i32) (numVerts i32) {
+	nv /* num verts */ := 3;
+	
+	if entType == ENT_TYPE_Missile { 
+		nv = numVertsPerMissile
+	} else {
+		if entType == ENT_TYPE_Bullet ||
+			entType == ENT_TYPE_Debris {
+
+			appendRandomAimTriangleToSoup()
+		} else {
+			if entType == ENT_TYPE_Meteor { 
+				nv = i32.rand(5, 8)   // num vertices 
+			}
+		}
+	}
+
+	return nv
 }
 
 
@@ -435,56 +484,14 @@ func getRandomIntensity() (out f32) {
 }
 
 
-func appendToVertexSoup(aim f32, x f32, y f32) () {
-	rotX, rotY = game.RotatePositionByAngle(x, y, aim)
+func appendToSoup(aim f32, x f32, y f32) () {
+	rotX, rotY  = game.RotatePositionByAngle(x, y, aim)
 	VertexSoupX = []f32.append(VertexSoupX, rotX)
 	VertexSoupY = []f32.append(VertexSoupY, rotY)
 }
 
 
-func addMissile(aim f32) () {
-	// start at the fore/impact tip. 
-	// plot out the right side 
-	// (including right fins/wings), 
-	// ending at the aft/exhaust tip. 
-	// then mirror that shape to the other side. 
-	// working from rear tip to impact tip 
-
-	soupAppendIndex += numVertsPerMissile
-
-
-
-	// fore/impact tip 
-	appendToVertexSoup(aim, 0.0, 0.5)
-	
-	// right side/fins 
-	appendToVertexSoup(aim, 0.1, 0.3)
-	appendToVertexSoup(aim, 0.1, 0.2)
-	appendToVertexSoup(aim, 0.2, 0.0)
-	appendToVertexSoup(aim, 0.1, 0.03)
-	appendToVertexSoup(aim, 0.1, -0.2)
-	appendToVertexSoup(aim, 0.2, -0.3)
-	appendToVertexSoup(aim, 0.2, -0.5)
-	appendToVertexSoup(aim, 0.1, -0.4)
-	appendToVertexSoup(aim, 0.05, -0.4)
-	
-	// middle point (aft/exhaust tip) 
-	appendToVertexSoup(aim, 0.0, -0.45)
-
-	// right-side reversed & mirrored for LEFT-side 
-	appendToVertexSoup(aim, -0.05, -0.4)
-	appendToVertexSoup(aim, -0.1, -0.4)
-	appendToVertexSoup(aim, -0.2, -0.5)
-	appendToVertexSoup(aim, -0.2, -0.3)
-	appendToVertexSoup(aim, -0.1, -0.2)
-	appendToVertexSoup(aim, -0.1, 0.03)
-	appendToVertexSoup(aim, -0.2, 0.0)
-	appendToVertexSoup(aim, -0.1, 0.2)
-	appendToVertexSoup(aim, -0.1, 0.3)
-}
-
-
-func addSpikeyRandomishAsteroid(numSides i32) () {
+func appendSpikeyRandomishAsteroidToSoup(numSides i32) () {
 	// get randomish vertices from circle lookup table 
 	nppe := game.NumCircleLUTPoints / numSides // number of possibilities per edge 
 	
@@ -498,6 +505,72 @@ func addSpikeyRandomishAsteroid(numSides i32) () {
 
 		soupAppendIndex++
 	}
+}
+
+
+func appendRandomAimTriangleToSoup(radius f32) () {
+	aim := game.Full360Grain * i32.f32(i32.rand(0, game.NumGrainsOfFull360))
+
+	appendToSoup(aim,                       0.0, radius)
+	appendToSoup(aim + game.ThirdOf360,     0.0, radius)
+	appendToSoup(aim + game.TwoThirdsOf360, 0.0, radius)
+
+	/* 
+	
+	this would bake the size into the soup 
+
+	aX := radius * f32.sin(angle)
+	aY := radius * f32.cos(angle)
+	bX := radius * f32.sin(angle + game.ThirdOf360)
+	bY := radius * f32.cos(angle + game.ThirdOf360)
+	cX := radius * f32.sin(angle + game.TwoThirdsOf360)
+	cY := radius * f32.cos(angle + game.TwoThirdsOf360)
+	
+	*/
+
+	soupAppendIndex += 3
+}
+
+
+func appendMissileToSoup(aim f32) () {
+	// start at the fore/impact tip. 
+	// plot out the right side 
+	// (including right fins/wings), 
+	// ending at the aft/exhaust tip. 
+	// then mirror that shape to the other side. 
+	// working from rear tip to impact tip 
+
+	soupAppendIndex += numVertsPerMissile
+
+
+
+	// fore/impact tip 
+	appendToSoup(aim, 0.0, 0.5)
+	
+	// right side/fins 
+	appendToSoup(aim, 0.1, 0.3)
+	appendToSoup(aim, 0.1, 0.2)
+	appendToSoup(aim, 0.2, 0.0)
+	appendToSoup(aim, 0.1, 0.03)
+	appendToSoup(aim, 0.1, -0.2)
+	appendToSoup(aim, 0.2, -0.3)
+	appendToSoup(aim, 0.2, -0.5)
+	appendToSoup(aim, 0.1, -0.4)
+	appendToSoup(aim, 0.05, -0.4)
+	
+	// middle point (aft/exhaust tip) 
+	appendToSoup(aim, 0.0, -0.45)
+
+	// right-side reversed & mirrored for LEFT-side 
+	appendToSoup(aim, -0.05, -0.4)
+	appendToSoup(aim, -0.1, -0.4)
+	appendToSoup(aim, -0.2, -0.5)
+	appendToSoup(aim, -0.2, -0.3)
+	appendToSoup(aim, -0.1, -0.2)
+	appendToSoup(aim, -0.1, 0.03)
+	appendToSoup(aim, -0.2, 0.0)
+	appendToSoup(aim, -0.1, 0.2)
+	appendToSoup(aim, -0.1, 0.3)
 }
 
 
