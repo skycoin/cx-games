@@ -43,13 +43,12 @@ var AnalogControlsSensitivityAimText   str = "Sensitivity of AIM"
 var AnalogControlsSensitivitySpeedText str = "Sensitivity of SPEED"
 
 // geometry constants (FIXME when CX has constants) 
-// 			key angles 
-var Pi           f32
-var DubPi        f32
-var HalfPi       f32
-// ----- NOTICE: PI versus PIE (food) ------ 
-var OneThirdPie  f32
-var TwoThirdsPie f32
+// 			key angles/aim/rotation/orientation 
+var Pi             f32
+var HalfPi         f32
+var Full360        f32
+var ThirdOf360     f32
+var TwoThirdsOf360 f32
 
 // 		precalculated lookup table for unit radius circular points/vertices 
 var NumCircleLUTPoints         i32 = 20
@@ -175,17 +174,16 @@ func updateTiming() () {
 
 
 func setupKeyAngles() () {
-	Pi           = 3.141592654
-	HalfPi       = Pi / 2.0
-	DubPi        = Pi * 2.0
-	// ----- NOTICE: PI versus PIE (food) ------ 
-	OneThirdPie  = DubPi / 3.0
-	TwoThirdsPie = OneThirdPie * 2.0
+	Pi             = 3.141592654
+	HalfPi         = Pi / 2.0
+	Full360        = Pi * 2.0
+	ThirdOf360     = Full360 / 3.0
+	TwoThirdsOf360 = ThirdOf360 * 2.0
 }
 
 
 func setupSpherePointTable() () {
-	SpherePointsAngleIncrement = DubPi / i32.f32(NumCircleLUTPoints)
+	SpherePointsAngleIncrement = Full360 / i32.f32(NumCircleLUTPoints)
 	str.print("SpherePointsAngleIncrement")
 	f32.print(SpherePointsAngleIncrement)
 
@@ -264,12 +262,12 @@ func SetSnakeAimAndSize(deltaX f32, deltaY f32) () {
 	CurrSnakeAim    += rotX * AnalogControlsSensitivityAim * 1.3
 	CurrSnakeExtent += rotY * AnalogControlsSensitivitySpeed * 0.2
 
-	for CurrSnakeAim >= DubPi {
-		CurrSnakeAim -= DubPi
+	for CurrSnakeAim >= Full360 {
+		CurrSnakeAim -= Full360
 	}
 
 	for CurrSnakeAim < 0.0 {
-		CurrSnakeAim += DubPi
+		CurrSnakeAim += Full360
 	}
 
 	if CurrSnakeExtent > MaxSnakeExtent {
