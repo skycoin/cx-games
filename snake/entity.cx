@@ -148,7 +148,7 @@ func Update() () {
 				//	oX, oY, []f32.read(Rad, i),
 				//	nX, nY, []f32.read(Rad, i), false)
 				IsTouching_WillExplode(i, boxyDel > []f32.read(Rad, i))
-				updatePosition_MaybeToOppositeEdgeOfScreen(nX, nY, i)
+				updatePosition(nX, nY, i)
 			}
 		}
 	}
@@ -769,25 +769,7 @@ func changePairsExpiryAndCollidability(aId i32, bId i32) () {
 }
 
 
-func updatePosition_MaybeToOppositeEdgeOfScreen(nX f32, nY f32, index i32) () {
-	/*
-	if nX < game.ScreenBoundsLeft {
-		nX = game.ScreenBoundsRight
-	}
-
-	if nX > game.ScreenBoundsRight {
-		nX = game.ScreenBoundsLeft
-	}
-
-	if nY > game.ScreenBoundsTop {
-		nY = game.ScreenBoundsBottom
-	}
-
-	if nY < game.ScreenBoundsBottom {
-		nY = game.ScreenBoundsTop
-	}
-	*/
-
+func updatePosition(nX f32, nY f32, index i32) () {
 	[]f32.write(X, index, nX)
 	[]f32.write(Y, index, nY)
 }
