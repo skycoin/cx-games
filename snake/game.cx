@@ -35,8 +35,8 @@ var CurrSnakeAim                       f32 = 0.0
 var TailRadius                         f32 = 0.02
 var HeadRadius                         f32 = 0.07
 var AnalogControlsSensitivityAim       f32 = 0.33
-var AnalogControlsSensitivitySpeed     f32 = 0.33
 var AnalogControlsSensitivityAimText   str = "Sensitivity of AIM"
+var AnalogControlsSensitivitySpeed     f32 = 0.33
 var AnalogControlsSensitivitySpeedText str = "Sensitivity of SPEED"
 //		 color channel intensities 
 var shrinkIntensity                    f32
@@ -243,8 +243,8 @@ func setupDeltaFromLeft(longExtent f32) () {
 func fadeDirectionalIndicatorsColorIntensity() () {
 	aimIncreaseIntensity = fadeColorIntensity(aimIncreaseIntensity)
 	aimDecreaseIntensity = fadeColorIntensity(aimDecreaseIntensity)
-	growIntensity   = fadeColorIntensity(growIntensity)
-	shrinkIntensity = fadeColorIntensity(shrinkIntensity)
+	growIntensity        = fadeColorIntensity(growIntensity)
+	shrinkIntensity      = fadeColorIntensity(shrinkIntensity)
 }
 
 
