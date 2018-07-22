@@ -207,7 +207,7 @@ func SpawnMap() () {
 
 
 func makeMissile() () {
-	missileRad := 0.25
+	missileRad := 0.15
 
 	//vx, vy := getRandomVelocities()
 	x, y, xAim, yAim, aim, thExtent := getPosAimAndDistFromRandomTrackNode()
@@ -446,22 +446,22 @@ func SpawnEntity(
 		}
 		
 
-		appendPolygonToSoup(nv, entType, aim, rad)
+		setupPolygonByItsType(nv, entType, aim, rad)
 	}
 }
 
 
-func appendPolygonToSoup(numVerts i32, entType i32, aim f32, rad f32) () {
+func setupPolygonByItsType(numVerts i32, entType i32, aim f32, rad f32) () {
 	if entType == ENT_TYPE_Missile { 
-		appendMissileToSoup(aim)
+		setupMissilePoly(startId i32, aim)
 	} else {
 		if entType == ENT_TYPE_Bullet ||
 			entType == ENT_TYPE_Debris {
 
-			appendRandomAimTriangleToSoup(rad)
+			setupAimedTriangle(rad)
 		} else {
 			if entType == ENT_TYPE_Meteor { 
-				appendSpikeyMeteorToSoup(numVerts)
+				setupSpikeyMeteorPoly(numVerts)
 			}
 		}
 	}
@@ -489,19 +489,14 @@ func getNumVerts(entType i32) (numVerts i32) {
 }
 
 
-func getRandomIntensity() (out f32) {
-	return i32.f32(i32.rand(0, 200) + 100) * gradientSpan	
-}
-
-
-func appendToSoup(aim f32, x f32, y f32) () {
+func setupVertex(startId i32, aim f32, x f32, y f32) () {
 	rotX, rotY  = game.RotatePositionByAngle(x, y, aim)
 	VertexSoupX = []f32.append(VertexSoupX, rotX)
 	VertexSoupY = []f32.append(VertexSoupY, rotY)
 }
 
 
-func appendSpikeyMeteorToSoup(numSides i32) () {
+func setupSpikeyMeteorPoly(startId i32, numSides i32) () {
 	// get randomish vertices from circle lookup table 
 	nppe := game.NumCircleLUTPoints / numSides // number of possibilities per edge 
 	
@@ -518,31 +513,18 @@ func appendSpikeyMeteorToSoup(numSides i32) () {
 }
 
 
-func appendRandomAimTriangleToSoup(radius f32) () {
+func setupAimedTriangle(startId i32, radius f32) () {
 	aim := game.Full360Grain * i32.f32(i32.rand(0, game.NumGrainsOfFull360))
 
-	appendToSoup(aim,                       0.0, radius)
-	appendToSoup(aim + game.ThirdOf360,     0.0, radius)
-	appendToSoup(aim + game.TwoThirdsOf360, 0.0, radius)
-
-	/* 
-	
-	this would bake the size into the soup 
-
-	aX := radius * f32.sin(angle)
-	aY := radius * f32.cos(angle)
-	bX := radius * f32.sin(angle + game.ThirdOf360)
-	bY := radius * f32.cos(angle + game.ThirdOf360)
-	cX := radius * f32.sin(angle + game.TwoThirdsOf360)
-	cY := radius * f32.cos(angle + game.TwoThirdsOf360)
-	
-	*/
+	setupVertex(startId i32, aim,                       0.0, radius)
+	setupVertex(startId i32, aim + game.ThirdOf360,     0.0, radius)
+	setupVertex(startId i32, aim + game.TwoThirdsOf360, 0.0, radius)
 
 	soupAppendIndex += 3
 }
 
 
-func appendMissileToSoup(aim f32) () {
+func setupMissilePoly(startId i32, startId i32, aim f32) () {
 	// start at the fore/impact tip. 
 	// plot out the right side 
 	// (including right fins/wings), 
@@ -555,32 +537,37 @@ func appendMissileToSoup(aim f32) () {
 
 
 	// fore/impact tip 
-	appendToSoup(aim, 0.0, 0.5)
+	setupVertex(startId i32, aim, 0.0, 0.5)
 	
 	// right side/fins 
-	appendToSoup(aim, 0.1, 0.3)
-	appendToSoup(aim, 0.1, 0.2)
-	appendToSoup(aim, 0.2, 0.0)
-	appendToSoup(aim, 0.1, 0.03)
-	appendToSoup(aim, 0.1, -0.2)
-	appendToSoup(aim, 0.2, -0.3)
-	appendToSoup(aim, 0.2, -0.5)
-	appendToSoup(aim, 0.1, -0.4)
-	appendToSoup(aim, 0.05, -0.4)
+	setupVertex(startId i32, aim, 0.1, 0.3)
+	setupVertex(startId i32, aim, 0.1, 0.2)
+	setupVertex(startId i32, aim, 0.2, 0.0)
+	setupVertex(startId i32, aim, 0.1, 0.03)
+	setupVertex(startId i32, aim, 0.1, -0.2)
+	setupVertex(startId i32, aim, 0.2, -0.3)
+	setupVertex(startId i32, aim, 0.2, -0.5)
+	setupVertex(startId i32, aim, 0.1, -0.4)
+	setupVertex(startId i32, aim, 0.05, -0.4)
 	
 	// middle point (aft/exhaust tip) 
-	appendToSoup(aim, 0.0, -0.45)
+	setupVertex(startId i32, aim, 0.0, -0.45)
 
 	// right-side reversed & mirrored for LEFT-side 
-	appendToSoup(aim, -0.05, -0.4)
-	appendToSoup(aim, -0.1, -0.4)
-	appendToSoup(aim, -0.2, -0.5)
-	appendToSoup(aim, -0.2, -0.3)
-	appendToSoup(aim, -0.1, -0.2)
-	appendToSoup(aim, -0.1, 0.03)
-	appendToSoup(aim, -0.2, 0.0)
-	appendToSoup(aim, -0.1, 0.2)
-	appendToSoup(aim, -0.1, 0.3)
+	setupVertex(startId i32, aim, -0.05, -0.4)
+	setupVertex(startId i32, aim, -0.1, -0.4)
+	setupVertex(startId i32, aim, -0.2, -0.5)
+	setupVertex(startId i32, aim, -0.2, -0.3)
+	setupVertex(startId i32, aim, -0.1, -0.2)
+	setupVertex(startId i32, aim, -0.1, 0.03)
+	setupVertex(startId i32, aim, -0.2, 0.0)
+	setupVertex(startId i32, aim, -0.1, 0.2)
+	setupVertex(startId i32, aim, -0.1, 0.3)
+}
+
+
+func getRandomIntensity() (out f32) {
+	return i32.f32(i32.rand(0, 200) + 100) * gradientSpan	
 }
 
 

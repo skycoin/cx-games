@@ -16,7 +16,7 @@ package cavern
 
 
 
-var NumNodes     i32 = 45
+var NumNodes     i32 = 11
 var halfPi       f32 = 1.570796327
 var EndTipLeftX  f32 = -0.15
 var EndTipLeftY  f32 = 1.0
