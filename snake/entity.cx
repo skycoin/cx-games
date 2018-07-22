@@ -40,7 +40,7 @@ var VertexSoupY     []f32
 
 // entities 
 
-var numEnts i32 = 6 // includes the everpresent player snake entity 
+var numEnts i32 = 3 // includes the everpresent player snake entity 
 var SnakeId i32
 
 // 		types       FIXME, when we got constants 
@@ -160,8 +160,7 @@ func Update() () {
 				[]i32.write(PrevAliveStatus, i, isFalse)
 
 				if []i32.read(EntityType, i) == ENT_TYPE_Missile {
-					// TODO: reset missile here 
-					nuttin := 0
+					makeMissile()
 				}
 			}
 		}
@@ -184,9 +183,6 @@ func Update() () {
 
 
 func SpawnMap() () {
-	missileRad := 0.25
-
-
 	// MAKE PLAYER 
 
 	// len(X) is count of entities 
@@ -198,24 +194,32 @@ func SpawnMap() () {
 			0.0, 0.0, 
 			initVel, initVel, 
 			0.0, // aim   FIXME (get rid of separate CurrSnakeAim variable?) 
-			missileRad, 
+			game.MaxSnakeExtent, 
 			/* expiries */ 0.0, 0.0, 
 			/* collidable */ false)
 	}
 
 	// MAKE MISSILES 
 	for i := 1; i < numEnts; i++ {
-		//vx, vy := getRandomVelocities()
-		x, y, xAim, yAim, aim, thExtent := getPosAimAndDistFromRandomTrackNode()
-		SpawnEntity(
-			ENT_TYPE_Missile,
-			x, y,
-			xAim, yAim,
-			aim,
-			missileRad, 
-			/* expiries */ 0.0, thExtent, 
-			/* collidable */ true)
+		makeMissile()
 	}
+}
+
+
+func makeMissile() () {
+	missileRad := 0.25
+
+	//vx, vy := getRandomVelocities()
+	x, y, xAim, yAim, aim, thExtent := getPosAimAndDistFromRandomTrackNode()
+
+	SpawnEntity(
+		ENT_TYPE_Missile,
+		x, y,
+		xAim, yAim,
+		aim,
+		missileRad, 
+		/* expiries */ 0.0, thExtent, 
+		/* collidable */ true)
 }
 
 
