@@ -409,8 +409,8 @@ func SpawnEntity(
 
 			[]i32.write(PrevAliveStatus, i, isTrue)
 
-
-			// set color?  for now, keeps the same color as the original 
+			si /* start index */ : = []i32.read(IndexToFirstVertex, i)
+			setupPolygonByItsType(si, nv, entType, aim, rad)
 			i = num // to BREAK out of loop // FIXME once CX breaks exist 
 		}
 	}
@@ -446,22 +446,22 @@ func SpawnEntity(
 		}
 		
 
-		setupPolygonByItsType(nv, entType, aim, rad)
+		setupPolygonByItsType(soupAppendIndex, nv, entType, aim, rad)
 	}
 }
 
 
-func setupPolygonByItsType(numVerts i32, entType i32, aim f32, rad f32) () {
+func setupPolygonByItsType(startId i32, numVerts i32, entType i32, aim f32, rad f32) () {
 	if entType == ENT_TYPE_Missile { 
-		setupMissilePoly(startId i32, aim)
+		setupMissilePoly(startId, aim)
 	} else {
 		if entType == ENT_TYPE_Bullet ||
 			entType == ENT_TYPE_Debris {
 
-			setupAimedTriangle(rad)
+			setupAimedTriangle(startId, rad)
 		} else {
 			if entType == ENT_TYPE_Meteor { 
-				setupSpikeyMeteorPoly(numVerts)
+				setupSpikeyMeteorPoly(startId, numVerts)
 			}
 		}
 	}
@@ -489,14 +489,21 @@ func getNumVerts(entType i32) (numVerts i32) {
 }
 
 
-func setupVertex(startId i32, aim f32, x f32, y f32) () {
-	rotX, rotY  = game.RotatePositionByAngle(x, y, aim)
-	VertexSoupX = []f32.append(VertexSoupX, rotX)
-	VertexSoupY = []f32.append(VertexSoupY, rotY)
+func setupVertex(id i32, aim f32, x f32, y f32) () {
+	rotX, rotY := game.RotatePositionByAngle(x, y, aim)
+
+	if id >= []f32.len(VertexSoupX) {
+		VertexSoupX = []f32.append(VertexSoupX, rotX)
+		VertexSoupY = []f32.append(VertexSoupY, rotY)
+		soupAppendIndex++
+	} else {
+		[]f32.write(VertexSoupX, id, rotX)
+		[]f32.write(VertexSoupY, id, rotY)
+	}
 }
 
 
-func setupSpikeyMeteorPoly(startId i32, numSides i32) () {
+func setupSpikeyMeteorPoly(id i32, numSides i32) () {
 	// get randomish vertices from circle lookup table 
 	nppe := game.NumCircleLUTPoints / numSides // number of possibilities per edge 
 	
@@ -505,26 +512,26 @@ func setupSpikeyMeteorPoly(startId i32, numSides i32) () {
 		rnd += i32.rand(0, nppe)
 		x := []f32.read(game.SpherePointsX, rnd)
 		y := []f32.read(game.SpherePointsY, rnd)
-		VertexSoupX = []f32.append(VertexSoupX, x)
-		VertexSoupY = []f32.append(VertexSoupY, y)
-
-		soupAppendIndex++
+		
+		// OPTIMIZEME? no real sense in rotating meteors, 
+		// but we don't even use them ATM, so just doing 
+		// it the easy & systematic way 
+		setupVertex(id, 0.0, x, y)
+		id++
 	}
 }
 
 
-func setupAimedTriangle(startId i32, radius f32) () {
+func setupAimedTriangle(id i32, radius f32) () {
 	aim := game.Full360Grain * i32.f32(i32.rand(0, game.NumGrainsOfFull360))
 
-	setupVertex(startId i32, aim,                       0.0, radius)
-	setupVertex(startId i32, aim + game.ThirdOf360,     0.0, radius)
-	setupVertex(startId i32, aim + game.TwoThirdsOf360, 0.0, radius)
-
-	soupAppendIndex += 3
+	setupVertex(id++, aim,                       0.0, radius)
+	setupVertex(id++, aim + game.ThirdOf360,     0.0, radius)
+	setupVertex(id++, aim + game.TwoThirdsOf360, 0.0, radius)
 }
 
 
-func setupMissilePoly(startId i32, startId i32, aim f32) () {
+func setupMissilePoly(id i32, aim f32) () {
 	// start at the fore/impact tip. 
 	// plot out the right side 
 	// (including right fins/wings), 
@@ -532,37 +539,34 @@ func setupMissilePoly(startId i32, startId i32, aim f32) () {
 	// then mirror that shape to the other side. 
 	// working from rear tip to impact tip 
 
-	soupAppendIndex += numVertsPerMissile
-
-
 
 	// fore/impact tip 
-	setupVertex(startId i32, aim, 0.0, 0.5)
+	setupVertex(id++, aim, 0.0, 0.5)
 	
 	// right side/fins 
-	setupVertex(startId i32, aim, 0.1, 0.3)
-	setupVertex(startId i32, aim, 0.1, 0.2)
-	setupVertex(startId i32, aim, 0.2, 0.0)
-	setupVertex(startId i32, aim, 0.1, 0.03)
-	setupVertex(startId i32, aim, 0.1, -0.2)
-	setupVertex(startId i32, aim, 0.2, -0.3)
-	setupVertex(startId i32, aim, 0.2, -0.5)
-	setupVertex(startId i32, aim, 0.1, -0.4)
-	setupVertex(startId i32, aim, 0.05, -0.4)
+	setupVertex(id++, aim, 0.1, 0.3)
+	setupVertex(id++, aim, 0.1, 0.2)
+	setupVertex(id++, aim, 0.2, 0.0)
+	setupVertex(id++, aim, 0.1, 0.03)
+	setupVertex(id++, aim, 0.1, -0.2)
+	setupVertex(id++, aim, 0.2, -0.3)
+	setupVertex(id++, aim, 0.2, -0.5)
+	setupVertex(id++, aim, 0.1, -0.4)
+	setupVertex(id++, aim, 0.05, -0.4)
 	
 	// middle point (aft/exhaust tip) 
-	setupVertex(startId i32, aim, 0.0, -0.45)
+	setupVertex(id++, aim, 0.0, -0.45)
 
 	// right-side reversed & mirrored for LEFT-side 
-	setupVertex(startId i32, aim, -0.05, -0.4)
-	setupVertex(startId i32, aim, -0.1, -0.4)
-	setupVertex(startId i32, aim, -0.2, -0.5)
-	setupVertex(startId i32, aim, -0.2, -0.3)
-	setupVertex(startId i32, aim, -0.1, -0.2)
-	setupVertex(startId i32, aim, -0.1, 0.03)
-	setupVertex(startId i32, aim, -0.2, 0.0)
-	setupVertex(startId i32, aim, -0.1, 0.2)
-	setupVertex(startId i32, aim, -0.1, 0.3)
+	setupVertex(id++, aim, -0.05, -0.4)
+	setupVertex(id++, aim, -0.1, -0.4)
+	setupVertex(id++, aim, -0.2, -0.5)
+	setupVertex(id++, aim, -0.2, -0.3)
+	setupVertex(id++, aim, -0.1, -0.2)
+	setupVertex(id++, aim, -0.1, 0.03)
+	setupVertex(id++, aim, -0.2, 0.0)
+	setupVertex(id++, aim, -0.1, 0.2)
+	setupVertex(id++, aim, -0.1, 0.3)
 }
 
 
