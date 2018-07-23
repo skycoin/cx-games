@@ -40,7 +40,7 @@ var VertexSoupY     []f32
 
 // entities 
 
-var numEnts i32 = 3 // includes the everpresent player snake entity 
+var numEnts i32 = 2 // includes the everpresent player/snake entity 
 var SnakeId i32
 
 // 		types       FIXME, when we got constants 
@@ -203,11 +203,13 @@ func SpawnMap() () {
 	for i := 1; i < numEnts; i++ {
 		makeMissile()
 	}
+
+	str.print("SpawnMap(): DONE")
 }
 
 
 func makeMissile() () {
-	missileRad := 0.15
+	missileRad := 0.0013
 
 	//vx, vy := getRandomVelocities()
 	x, y, xAim, yAim, aim, thExtent := getPosAimAndDistFromRandomTrackNode()
@@ -409,8 +411,9 @@ func SpawnEntity(
 
 			[]i32.write(PrevAliveStatus, i, isTrue)
 
-			si /* start index */ : = []i32.read(IndexToFirstVertex, i)
-			setupPolygonByItsType(si, nv, entType, aim, rad)
+			fv       := []i32.read(IndexToFirstVertex, i)
+			numVerts := []i32.read(NumVertices,        i)
+			setupPolygonByItsType(fv, numVerts, entType, aim, rad)
 			i = num // to BREAK out of loop // FIXME once CX breaks exist 
 		}
 	}
@@ -447,21 +450,31 @@ func SpawnEntity(
 		
 
 		setupPolygonByItsType(soupAppendIndex, nv, entType, aim, rad)
+
+		str.print("spawned new entity   -   soupAppendIndex:")
+		i32.print(soupAppendIndex)
 	}
 }
 
 
 func setupPolygonByItsType(startId i32, numVerts i32, entType i32, aim f32, rad f32) () {
+	str.print("__________setupPolygonByItsType__________")
+
 	if entType == ENT_TYPE_Missile { 
 		setupMissilePoly(startId, aim)
+		str.print("--------setupMissilePoly--------")
 	} else {
 		if entType == ENT_TYPE_Bullet ||
 			entType == ENT_TYPE_Debris {
 
 			setupAimedTriangle(startId, rad)
+			str.print("--------setupAimedTriangle--------")
 		} else {
 			if entType == ENT_TYPE_Meteor { 
 				setupSpikeyMeteorPoly(startId, numVerts)
+				str.print("--------setupSpikeyMeteorPoly--------")
+			} else {
+				str.print("--------NO CASE FOR ENTITY TYPE--------")
 			}
 		}
 	}
@@ -495,7 +508,13 @@ func setupVertex(id i32, aim f32, x f32, y f32) () {
 	if id >= []f32.len(VertexSoupX) {
 		VertexSoupX = []f32.append(VertexSoupX, rotX)
 		VertexSoupY = []f32.append(VertexSoupY, rotY)
+
+		str.print("setupVertex()   -   before:")
+		i32.print(soupAppendIndex)
+
 		soupAppendIndex++
+
+		i32.print(soupAppendIndex)
 	} else {
 		[]f32.write(VertexSoupX, id, rotX)
 		[]f32.write(VertexSoupY, id, rotY)
@@ -538,35 +557,36 @@ func setupMissilePoly(id i32, aim f32) () {
 	// ending at the aft/exhaust tip. 
 	// then mirror that shape to the other side. 
 	// working from rear tip to impact tip 
+	div := 7.0
 
 
 	// fore/impact tip 
-	setupVertex(id++, aim, 0.0, 0.5)
+	setupVertex(id++, aim,  0.0  / div,  0.5  / div)
 	
 	// right side/fins 
-	setupVertex(id++, aim, 0.1, 0.3)
-	setupVertex(id++, aim, 0.1, 0.2)
-	setupVertex(id++, aim, 0.2, 0.0)
-	setupVertex(id++, aim, 0.1, 0.03)
-	setupVertex(id++, aim, 0.1, -0.2)
-	setupVertex(id++, aim, 0.2, -0.3)
-	setupVertex(id++, aim, 0.2, -0.5)
-	setupVertex(id++, aim, 0.1, -0.4)
-	setupVertex(id++, aim, 0.05, -0.4)
+	setupVertex(id++, aim,  0.1  / div,  0.3  / div)
+	setupVertex(id++, aim,  0.1  / div,  0.2  / div)
+	setupVertex(id++, aim,  0.2  / div,  0.0  / div)
+	setupVertex(id++, aim,  0.1  / div,  0.03 / div)
+	setupVertex(id++, aim,  0.1  / div, -0.2  / div)
+	setupVertex(id++, aim,  0.2  / div, -0.3  / div)
+	setupVertex(id++, aim,  0.2  / div, -0.5  / div)
+	setupVertex(id++, aim,  0.1  / div, -0.4  / div)
+	setupVertex(id++, aim, 0.05  / div, -0.4  / div)
 	
 	// middle point (aft/exhaust tip) 
-	setupVertex(id++, aim, 0.0, -0.45)
+	setupVertex(id++, aim,  0.0  / div, -0.45 / div)
 
 	// right-side reversed & mirrored for LEFT-side 
-	setupVertex(id++, aim, -0.05, -0.4)
-	setupVertex(id++, aim, -0.1, -0.4)
-	setupVertex(id++, aim, -0.2, -0.5)
-	setupVertex(id++, aim, -0.2, -0.3)
-	setupVertex(id++, aim, -0.1, -0.2)
-	setupVertex(id++, aim, -0.1, 0.03)
-	setupVertex(id++, aim, -0.2, 0.0)
-	setupVertex(id++, aim, -0.1, 0.2)
-	setupVertex(id++, aim, -0.1, 0.3)
+	setupVertex(id++, aim, -0.05 / div, -0.4  / div)
+	setupVertex(id++, aim, -0.1  / div, -0.4  / div)
+	setupVertex(id++, aim, -0.2  / div, -0.5  / div)
+	setupVertex(id++, aim, -0.2  / div, -0.3  / div)
+	setupVertex(id++, aim, -0.1  / div, -0.2  / div)
+	setupVertex(id++, aim, -0.1  / div,  0.03 / div)
+	setupVertex(id++, aim, -0.2  / div,  0.0  / div)
+	setupVertex(id++, aim, -0.1  / div,  0.2  / div)
+	setupVertex(id++, aim, -0.1  / div,  0.3  / div)
 }
 
 

@@ -167,20 +167,21 @@ func cameraIgnoringPolygon(id i32, x f32, y f32, radius f32, red f32, green f32,
 }
 
 
-func Polygon(id i32, x f32, y f32, radius f32, red f32, green f32, blue f32) () {
+func Polygon(entityId i32, x f32, y f32, radius f32, red f32, green f32, blue f32) () {
+	// base "camera" on player/snake 
 	x -= []f32.read(entity.X, entity.SnakeId)
 	y -= []f32.read(entity.Y, entity.SnakeId)
 
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 	
-	num   := []i32.read(entity.NumVertices,        id)
-	start := []i32.read(entity.IndexToFirstVertex, id)
+	num   := []i32.read(entity.NumVertices,        entityId)
+	start := []i32.read(entity.IndexToFirstVertex, entityId)
 
-	for i := start; i < start + num; i++ {
+	for i := start; i < start + num; i++ { // i == vertex id 
 		gl.Vertex2f(
-			x + radius * []f32.read(entity.VertexSoupX, i), 
-			y + radius * []f32.read(entity.VertexSoupY, i))
+			x + []f32.read(entity.VertexSoupX, i), 
+			y + []f32.read(entity.VertexSoupY, i))
 	}
 
 	gl.End()
