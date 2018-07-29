@@ -180,8 +180,12 @@ func Polygon(entityId i32, x f32, y f32, radius f32, red f32, green f32, blue f3
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 	
-	num   := []i32.read(entity.NumVertices,        entityId)
 	start := []i32.read(entity.IndexToFirstVertex, entityId)
+	num   := []i32.read(entity.NumVertices,        entityId)
+	
+	str.print("start & num")
+	i32.print(start)
+	i32.print(num)	
 
 	for i := start; i < start + num; i++ { // i == vertex id 
 		gl.Vertex2f(

@@ -40,7 +40,7 @@ var VertexSoupY     []f32
 
 // entities 
 
-var numEnts i32 = 2 // includes the everpresent player/snake entity 
+var numEnts i32 = 6 // includes the everpresent player/snake entity 
 var SnakeId i32
 
 // 		types       FIXME, when we got constants 
@@ -459,6 +459,10 @@ func SpawnEntity(
 
 func setupPolygonByItsType(startId i32, numVerts i32, entType i32, aim f32, rad f32) () {
 	str.print("__________setupPolygonByItsType__________")
+	//str.print("startId:")
+	//i32.print(startId)
+	//str.print("numVerts:")
+	//i32.print(numVerts)
 
 	if entType == ENT_TYPE_Missile { 
 		str.print("--------Missile--------")
@@ -482,7 +486,7 @@ func setupPolygonByItsType(startId i32, numVerts i32, entType i32, aim f32, rad 
 
 
 func getNumVerts(entType i32) (numVerts i32) {
-	nv /* num verts */ := 3
+	nv /* num verts */ := 0
 	
 	if entType == ENT_TYPE_Missile { 
 		nv = numVertsPerMissile
@@ -504,15 +508,16 @@ func getNumVerts(entType i32) (numVerts i32) {
 
 func setupVertex(id i32, aim f32, x f32, y f32) () {
 	rotX, rotY := game.RotatePositionByAngle(x, y, aim)
+	lenVS := []f32.len(VertexSoupX)
 
-	if id >= []f32.len(VertexSoupX) {
+	if id >= lenVS || lenVS == 0 {
 		VertexSoupX = []f32.append(VertexSoupX, rotX)
 		VertexSoupY = []f32.append(VertexSoupY, rotY)
 
 		str.print("setupVertex()   -   soupAppendIndex (before & after):")
 		i32.print(soupAppendIndex)
 
-		soupAppendIndex++
+		//soupAppendIndex++
 
 		i32.print(soupAppendIndex)
 	} else {
@@ -562,8 +567,11 @@ func setupMissilePoly(id i32, aim f32) () {
 	div := 7.0
 
 
+	// FIXME, this whole sequence starts with "id", THEN is always "id++" after. 
+	//			(because "i++" functions like "++i" does normally) 
+
 	// fore/impact tip 
-	setupVertex(id++, aim,  0.0  / div,  0.5  / div)
+	setupVertex(id, aim,  0.0  / div,  0.5  / div)
 	
 	// right side/fins 
 	setupVertex(id++, aim,  0.1  / div,  0.3  / div)
@@ -589,6 +597,8 @@ func setupMissilePoly(id i32, aim f32) () {
 	setupVertex(id++, aim, -0.2  / div,  0.0  / div)
 	setupVertex(id++, aim, -0.1  / div,  0.2  / div)
 	setupVertex(id++, aim, -0.1  / div,  0.3  / div)
+
+	id++
 }
 
 
