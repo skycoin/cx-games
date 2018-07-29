@@ -41,7 +41,7 @@ var tweenAim      f32
 
 
 
-// cache of nodes
+// cache of nodes 
 // (final world positions/etc.) 
 
 // 		path == centerpoint (& line) between side edges 

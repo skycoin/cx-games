@@ -187,8 +187,6 @@ func setupFrequentlyUsedAngles() () {
 
 func setupCirclePointTable() () {
 	CirclePointsAngleIncrement = Full360 / i32.f32(NumCircleLUTPoints)
-	str.print("CirclePointsAngleIncrement")
-	f32.print(CirclePointsAngleIncrement)
 
 	f := 0.0
 	for i := 0; i < NumCircleLUTPoints; i++ {

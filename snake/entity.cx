@@ -40,7 +40,7 @@ var VertexSoupY     []f32
 
 // entities 
 
-var numEnts i32 = 6 // includes the everpresent player/snake entity 
+var numEnts i32 = 4 // includes the everpresent player/snake entity 
 var SnakeId i32
 
 // 		types       FIXME, when we got constants 
@@ -115,7 +115,7 @@ func Init() () {
 var prevNumLastingEnts i32 = 0
 var prevFrame f32 = 0.0
 func Update() () {
-	currNumLastingEnts := 0;
+	currNumLastingEnts := 0
  	currFrame   = f64.f32(glfw.GetTime())
  	deltaFrame := currFrame - prevFrame
  	mm          = deltaFrame * 200.0
@@ -225,9 +225,15 @@ func makeMissile() () {
 }
 
 
+var actuallyNonRandomNodeId i32
 func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, aim f32, dist f32) {
 	frac := 0.0004
-	rndIdx := i32.rand(0, 7) //cavern.NumNodes)
+	rndIdx := actuallyNonRandomNodeId //i32.rand(0, 7) //cavern.NumNodes)
+	
+	actuallyNonRandomNodeId++
+	if 	actuallyNonRandomNodeId >= cavern.NumNodes {
+		actuallyNonRandomNodeId = 0
+	}
 	
 	if i32.rand(0, 2) == 0 {
 		x,    y    = game.GetLeftVertexFor(rndIdx)

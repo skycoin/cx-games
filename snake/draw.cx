@@ -49,7 +49,6 @@ func All() () {
 	/* draw */ maybeHelpText()
 	
 	//EntityAttachedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...moves with player 
-
 }
 
 
@@ -183,9 +182,9 @@ func Polygon(entityId i32, x f32, y f32, radius f32, red f32, green f32, blue f3
 	start := []i32.read(entity.IndexToFirstVertex, entityId)
 	num   := []i32.read(entity.NumVertices,        entityId)
 	
-	str.print("start & num")
-	i32.print(start)
-	i32.print(num)	
+	//str.print("start & num")
+	//i32.print(start)
+	//i32.print(num)
 
 	for i := start; i < start + num; i++ { // i == vertex id 
 		gl.Vertex2f(
