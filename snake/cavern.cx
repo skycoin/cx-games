@@ -87,7 +87,10 @@ func Init() () {
 func addNode() () {
 	if /* not root node */ currNodeId != 0 {
 		aimChangeGrain := halfPi / 64.0
-		aimDelta := i32.f32(i32.rand(-32, 32))
+		
+		//aimDelta := i32.f32(i32.rand(-32, 32))
+		aimDelta := 10.0
+		
 		aimDelta *= aimChangeGrain
 		currAim  = prevAim + aimDelta
 		tweenAim = prevAim + aimDelta / 2.0

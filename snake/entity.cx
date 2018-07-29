@@ -212,12 +212,12 @@ func makeMissile() () {
 	missileRad := 0.0013
 
 	//vx, vy := getRandomVelocities()
-	x, y, xAim, yAim, aim, thExtent := getPosAimAndDistFromRandomTrackNode()
+	x, y, velX, velY, aim, thExtent := getPosAimAndDistFromRandomTrackNode()
 
 	SpawnEntity(
 		ENT_TYPE_Missile,
 		x, y,
-		xAim, yAim,
+		velX, velY,
 		aim,
 		missileRad, 
 		/* expiries */ 0.0, thExtent, 
@@ -451,7 +451,7 @@ func SpawnEntity(
 
 		setupPolygonByItsType(soupAppendIndex, nv, entType, aim, rad)
 
-		str.print("spawned new entity   -   soupAppendIndex:")
+		str.print("appended new entity   -   soupAppendIndex:")
 		i32.print(soupAppendIndex)
 	}
 }
@@ -461,18 +461,18 @@ func setupPolygonByItsType(startId i32, numVerts i32, entType i32, aim f32, rad 
 	str.print("__________setupPolygonByItsType__________")
 
 	if entType == ENT_TYPE_Missile { 
+		str.print("--------Missile--------")
 		setupMissilePoly(startId, aim)
-		str.print("--------setupMissilePoly--------")
 	} else {
 		if entType == ENT_TYPE_Bullet ||
 			entType == ENT_TYPE_Debris {
 
+			str.print("--------AimedTriangle--------")
 			setupAimedTriangle(startId, rad)
-			str.print("--------setupAimedTriangle--------")
 		} else {
 			if entType == ENT_TYPE_Meteor { 
+				str.print("--------SpikeyMeteor--------")
 				setupSpikeyMeteorPoly(startId, numVerts)
-				str.print("--------setupSpikeyMeteorPoly--------")
 			} else {
 				str.print("--------NO CASE FOR ENTITY TYPE--------")
 			}
@@ -509,7 +509,7 @@ func setupVertex(id i32, aim f32, x f32, y f32) () {
 		VertexSoupX = []f32.append(VertexSoupX, rotX)
 		VertexSoupY = []f32.append(VertexSoupY, rotY)
 
-		str.print("setupVertex()   -   before:")
+		str.print("setupVertex()   -   soupAppendIndex (before & after):")
 		i32.print(soupAppendIndex)
 
 		soupAppendIndex++
@@ -518,6 +518,8 @@ func setupVertex(id i32, aim f32, x f32, y f32) () {
 	} else {
 		[]f32.write(VertexSoupX, id, rotX)
 		[]f32.write(VertexSoupY, id, rotY)
+		str.print("setupVertex()   -   wrote to vert soup at id:")
+		i32.print(id)
 	}
 }
 
