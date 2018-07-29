@@ -81,7 +81,7 @@ var Blue  []f32
 
 
 // chain of entities (singleton) 
-// (used to plot a variable amount of spheres from point A to point B)
+// (used to plot a variable amount of circles from point A to point B)
 var ChainLength f32 // distance between end/A/B points 
 var ChainProgress f32 // current fraction along chain's length (0.0 - 1.0) 
 
@@ -268,7 +268,7 @@ func SetupChainFromAToB(
 
 
 
-	// overlap spheres by about half their radius.		
+	// overlap circles by about half their radius.		
 	ChainProgress = 0.0 // current spot in distance spectrum (0.0 - 1.0) 
 	
 	if isSnakeEntity {
@@ -529,8 +529,8 @@ func setupSpikeyMeteorPoly(id i32, numSides i32) () {
 	for i := 0; i < numSides; i++ { 
 		rnd := i * nppe // start with root of possibilities 
 		rnd += i32.rand(0, nppe)
-		x := []f32.read(game.SpherePointsX, rnd)
-		y := []f32.read(game.SpherePointsY, rnd)
+		x := []f32.read(game.CirclePointsX, rnd)
+		y := []f32.read(game.CirclePointsY, rnd)
 		
 		// OPTIMIZEME? no real sense in rotating meteors, 
 		// but we don't even use them ATM, so just doing 
@@ -637,10 +637,10 @@ func IsTouching_WillExplode(aId i32, deltaMoreThanRadius bool) (out bool) {
 			IsAlive(bId) && IsCollidable(bId) {
 
 			//if !deltaMoreThanRadius {
-			//		only compare with 1 sphere position      //uNUSED_BLOCK := 42
+			//		only compare with 1 circle position      //uNUSED_BLOCK := 42
 			//} else {
 			//		(1) go by bounding box which contains both head & tail 
-			//			(2) IF collision, compare against a line of overlapping spheres 
+			//			(2) IF collision, compare against a line of overlapping circles 
 			//					which covers the movement delta 
 
 			// iterate enough positional steps/stride between A & B, 
@@ -713,7 +713,7 @@ func doTouchResponses(aX f32, aY f32, aRad f32, aId i32, bId i32) () {
 			collidable = false
 		}
 
-		// spawn 2 half-radius spheres, slightly separated 
+		// spawn 2 half-radius circles, slightly separated 
 		// (so there's no collision with each other) 
 		// and lined up (opposite each other, from 0,0) along a random angle 
 		

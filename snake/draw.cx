@@ -11,10 +11,10 @@ import "game"
 
 
 // path colors (each node dims/brightens from prior color) 
-var red     f32  = 0.2
-var green   f32  = 0.4
-var blue    f32  = 0.7
-var dimming bool = false
+var red     f32
+var green   f32
+var blue    f32
+var dimming bool
 
 
 
@@ -25,13 +25,13 @@ func Init() () {
 
 
 func All() () {
-	/* test spheres 
+	/* test circles 
 	
 	x, y := game.GetPosOfPerfectRadiusVisualizer()
-	Sphere(x, y, 0.07, 1.0, 0.0, 0.0)	
+	Circle(x, y, 0.07, 1.0, 0.0, 0.0)	
 
 	x, y := game.GetPosOfBoxyDistanceVisualizer()
-	Sphere(x, y, 0.07, 0.0, 1.0, 0.0)	
+	Circle(x, y, 0.07, 0.0, 1.0, 0.0)	
 	
 	*/
 
@@ -40,7 +40,7 @@ func All() () {
 	//[]f32.write(entity.Y, 1, 0.0)
 	//cameraIgnoringPolygon(1, 0.0, 0.0, 0.8, 0.0, 0.0, 0.0)
 
-	/* draw */ //debugPathEdgePoints()
+	/* draw */ //circlesAtPathEdgePoints()
 	/* draw */ menuMaybe()
 	/* draw */ Snake()
 	/* draw */ Entities()
@@ -53,7 +53,7 @@ func All() () {
 }
 
 
-func debugPathEdgePoints() () {
+func circlesAtPathEdgePoints() () {
 	rad := 0.01
 
 	id := 0 // of node 
@@ -61,7 +61,7 @@ func debugPathEdgePoints() () {
 	// 1st string all lefts together 
 	for game.PathNodeExists(id) {
 		lX, lY := game.GetLeftVertexFor(id)
-		Sphere(lX, lY, rad, 0.8, 0.8, 0.8)
+		Circle(lX, lY, rad, 0.8, 0.8, 0.8)
 		id++
 	}
 
@@ -72,13 +72,18 @@ func debugPathEdgePoints() () {
 	// now string all rights together, going from tip of tail, back to root/head 
 	for game.PathNodeExists(id) {
 		rX, rY := game.GetRightVertexFor(id)
-		Sphere(rX, rY, rad, 0.8, 0.8, 0.8)
+		Circle(rX, rY, rad, 0.8, 0.8, 0.8)
 		id--
 	}
 }
 
 
 func path() () {
+	red   = 0.2
+	green = 0.4
+	blue  = 0.7
+	dimming = false
+
 	// player pos 
 	pX := []f32.read(entity.X, 0)
 	pY := []f32.read(entity.Y, 0)
@@ -206,15 +211,15 @@ func Rect(top f32, right f32, bottom f32, left f32, red f32, green f32, blue f32
 }
 
 
-func Sphere(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
+func Circle(x f32, y f32, radius f32, red f32, green f32, blue f32) () {
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 
 	
 	for i := 0; i < game.NumCircleLUTPoints; i++ {
 		gl.Vertex2f(
-			x + radius * []f32.read(game.SpherePointsX, i),
-			y + radius * []f32.read(game.SpherePointsY, i))
+			x + radius * []f32.read(game.CirclePointsX, i),
+			y + radius * []f32.read(game.CirclePointsY, i))
 	}
 
 	gl.End()
@@ -240,8 +245,8 @@ func aimedYetDecimatedCircleApproximation(
 
 	// insane number (goes outside of valid index range, requires sanitizing)
 	startIdx := 0
-	if game.SpherePointsAngleIncrement > 0.0 {
-		startIdx = f32.i32(angle / game.SpherePointsAngleIncrement)
+	if game.CirclePointsAngleIncrement > 0.0 {
+		startIdx = f32.i32(angle / game.CirclePointsAngleIncrement)
 	}
 
 	// (FIXME if perfection is needed later... should "round" instead of
@@ -256,8 +261,8 @@ func aimedYetDecimatedCircleApproximation(
 		}
 
 		gl.Vertex2f(
-			x + radius * []f32.read(game.SpherePointsX, si),
-			y + radius * []f32.read(game.SpherePointsY, si))
+			x + radius * []f32.read(game.CirclePointsX, si),
+			y + radius * []f32.read(game.CirclePointsY, si))
 	}
 
 	gl.End()
@@ -319,13 +324,13 @@ func Snake() () {
 		true)
 
 	// draw head 
-	//Sphere(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
+	//Circle(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
 	Triangle(entity.BX, entity.BY, game.HeadRadius, game.CurrSnakeAim, 0.0, 0.0, 1.0)
 
 	drawDirectionalInputIndicators(sin, cos)
 
 	// draw rotation (center hinge) point 
-	Sphere(cX, cY, game.HeadRadius / 3.0, 0.0, 0.0, 1.0)
+	Circle(cX, cY, game.HeadRadius / 3.0, 0.0, 0.0, 1.0)
 
 
 
