@@ -101,6 +101,10 @@ func addNode() () {
 	ThickExtent = []f32.append(ThickExtent, currThickness)
 
 
+	str.print("just plotted a node.  currAim:")
+	f32.print(currAim)
+
+
 
 	changeAim()
 	calcCurrPosFromPrev()

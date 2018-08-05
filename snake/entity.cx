@@ -577,39 +577,39 @@ func setupMissilePoly(id i32, aim f32) () {
 	// ending at the aft/exhaust tip. 
 	// then mirror that shape to the other side. 
 	// working from rear tip to impact tip 
-	div := 7.0
+	sc := 1.0 / 7.0 // scale/size 
 
 
 	// FIXME, this whole sequence starts with "id", THEN is always "id++" after. 
 	//			(because "i++" functions like "++i" does normally) 
 
 	// fore/impact tip 
-	setupVertex(id, aim,  0.0  / div,  0.5  / div)
+	setupVertex(id,   aim,  0.0  * sc,  0.5  * sc)
 	
 	// right side/fins 
-	setupVertex(id++, aim,  0.1  / div,  0.3  / div)
-	setupVertex(id++, aim,  0.1  / div,  0.2  / div)
-	setupVertex(id++, aim,  0.2  / div,  0.0  / div)
-	setupVertex(id++, aim,  0.1  / div,  0.03 / div)
-	setupVertex(id++, aim,  0.1  / div, -0.2  / div)
-	setupVertex(id++, aim,  0.2  / div, -0.3  / div)
-	setupVertex(id++, aim,  0.2  / div, -0.5  / div)
-	setupVertex(id++, aim,  0.1  / div, -0.4  / div)
-	setupVertex(id++, aim, 0.05  / div, -0.4  / div)
+	setupVertex(id++, aim,  0.1  * sc,  0.3  * sc)
+	setupVertex(id++, aim,  0.1  * sc,  0.2  * sc)
+	setupVertex(id++, aim,  0.2  * sc,  0.0  * sc)
+	setupVertex(id++, aim,  0.1  * sc,  0.03 * sc)
+	setupVertex(id++, aim,  0.1  * sc, -0.2  * sc)
+	setupVertex(id++, aim,  0.2  * sc, -0.3  * sc)
+	setupVertex(id++, aim,  0.2  * sc, -0.5  * sc)
+	setupVertex(id++, aim,  0.1  * sc, -0.4  * sc)
+	setupVertex(id++, aim, 0.05  * sc, -0.4  * sc)
 	
 	// middle point (aft/exhaust tip) 
-	setupVertex(id++, aim,  0.0  / div, -0.45 / div)
+	setupVertex(id++, aim,  0.0  * sc, -0.45 * sc)
 
 	// right-side reversed & mirrored for LEFT-side 
-	setupVertex(id++, aim, -0.05 / div, -0.4  / div)
-	setupVertex(id++, aim, -0.1  / div, -0.4  / div)
-	setupVertex(id++, aim, -0.2  / div, -0.5  / div)
-	setupVertex(id++, aim, -0.2  / div, -0.3  / div)
-	setupVertex(id++, aim, -0.1  / div, -0.2  / div)
-	setupVertex(id++, aim, -0.1  / div,  0.03 / div)
-	setupVertex(id++, aim, -0.2  / div,  0.0  / div)
-	setupVertex(id++, aim, -0.1  / div,  0.2  / div)
-	setupVertex(id++, aim, -0.1  / div,  0.3  / div)
+	setupVertex(id++, aim, -0.05 * sc, -0.4  * sc)
+	setupVertex(id++, aim, -0.1  * sc, -0.4  * sc)
+	setupVertex(id++, aim, -0.2  * sc, -0.5  * sc)
+	setupVertex(id++, aim, -0.2  * sc, -0.3  * sc)
+	setupVertex(id++, aim, -0.1  * sc, -0.2  * sc)
+	setupVertex(id++, aim, -0.1  * sc,  0.03 * sc)
+	setupVertex(id++, aim, -0.2  * sc,  0.0  * sc)
+	setupVertex(id++, aim, -0.1  * sc,  0.2  * sc)
+	setupVertex(id++, aim, -0.1  * sc,  0.3  * sc)
 
 	id++
 }
