@@ -520,7 +520,7 @@ func getNumVerts(entType i32) (numVerts i32) {
 
 
 func setupVertex(id i32, aim f32, x f32, y f32) () {
-	rotX, rotY := game.RotatePositionByAngle(x, y, aim)
+	rotX, rotY := game.RotateAroundOrigin(x, y, aim)
 	lenVS := []f32.len(VertexSoupX)
 
 	if id >= lenVS || lenVS == 0 {

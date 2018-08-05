@@ -457,7 +457,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		ci, 0.0, 1.0)
 
 	// rotate negative 
-	qqX, qqY := game.RotatePositionByAngle(
+	qqX, qqY := game.RotateAroundOrigin(
 		hoX,
 		hoY,
 		game.HalfPi)
@@ -471,7 +471,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		ci, 0.0, 1.0)
 
 	// rotate positive 
-	qqX, qqY = game.RotatePositionByAngle(
+	qqX, qqY = game.RotateAroundOrigin(
 		hoX,
 		hoY,
 		0.0 - game.HalfPi)
