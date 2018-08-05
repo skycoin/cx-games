@@ -160,8 +160,8 @@ func cameraIgnoringPolygon(id i32, x f32, y f32, radius f32, red f32, green f32,
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 	
-	num   := []i32.read(entity.NumVertices,        id)
-	start := []i32.read(entity.IndexToFirstVertex, id)
+	num   := []i32.read(entity.NumVertices, id)
+	start := []i32.read(entity.FirstVertex, id)
 
 	for i := start; i < start + num; i++ {
 		xx := radius * []f32.read(entity.VertexSoupX, i)
@@ -182,8 +182,8 @@ func Polygon(entityId i32, x f32, y f32, radius f32, red f32, green f32, blue f3
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 	
-	start := []i32.read(entity.IndexToFirstVertex, entityId)
-	num   := []i32.read(entity.NumVertices,        entityId)
+	start := []i32.read(entity.FirstVertex, entityId)
+	num   := []i32.read(entity.NumVertices, entityId)
 	
 	//str.print("start & num")
 	//i32.print(start)

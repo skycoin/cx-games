@@ -70,8 +70,8 @@ var BoxyDistance       []f32 // a cheap and inaccurate sum of the 2
 	                         // (but the 4 edges are wavy lines rather than straight) 
 
 //			vertex run 
-var NumVertices        []i32
-var IndexToFirstVertex []i32
+var NumVertices []i32
+var FirstVertex []i32
 
 //			color 
 var Red   []f32
@@ -182,10 +182,11 @@ func Update() () {
 
 
 
-
-	setupMissilePoly(1, currDebugRocketAim)
+	fv := []i32.read(IndexOfFirstVertex, 1)
+	setupMissilePoly(fv, currDebugRocketAim)
 	currDebugRocketAim += 0.001
-	str.print("entity.Update()")
+	str.print("entity.Update()   -   currDebugRocketAim:")
+	f32.print(currDebugRocketAim)
 
 
 
@@ -428,8 +429,8 @@ func SpawnEntity(
 			
 			// at the moment, there is no need to recalculate a new shape 
 			//		when reusing a dead entity 
-			//[]i32.write(NumVertices,        i, ___)
-			//[]i32.write(IndexToFirstVertex, i, ___)
+			//[]i32.write(NumVertices,  i, ___)
+			//[]i32.write(FirstVertex,  i, ___)
 
 			if collidable {
 				[]i32.write(IsCollidable, i, isTrue)
@@ -439,8 +440,8 @@ func SpawnEntity(
 
 			[]i32.write(PrevAliveStatus, i, isTrue)
 
-			fv       := []i32.read(IndexToFirstVertex, i)
-			numVerts := []i32.read(NumVertices,        i)
+			fv       := []i32.read(FirstVertex, i)
+			numVerts := []i32.read(NumVertices, i)
 			setupPolygonByItsType(fv, numVerts, entType, aim, rad)
 			i = num // to BREAK out of loop // FIXME once CX breaks exist 
 		}
@@ -464,7 +465,7 @@ func SpawnEntity(
 		DistanceExpiry     = []f32.append(DistanceExpiry,     distExpiry)
 		BoxyDistance       = []f32.append(BoxyDistance,       0.0)
 		NumVertices        = []i32.append(NumVertices,        nv)
-		IndexToFirstVertex = []i32.append(IndexToFirstVertex, soupAppendIndex)
+		FirstVertex        = []i32.append(FirstVertex,        soupAppendIndex)
 		Red                = []f32.append(Red,                getRandomIntensity())
 		Green              = []f32.append(Green,              getRandomIntensity())
 		Blue               = []f32.append(Blue,               getRandomIntensity())	
@@ -587,7 +588,7 @@ func setupAimedTriangle(id i32, radius f32) () {
 }
 
 
-func setupMissilePoly(id i32, aim f32) () {
+func setupMissilePoly(id i32, aim f32) () { // id is for vertex soup 
 	// start at the fore/impact tip. 
 	// plot out the right side 
 	// (including right fins/wings), 
