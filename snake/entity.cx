@@ -182,9 +182,9 @@ func Update() () {
 
 
 
-	fv := []i32.read(IndexOfFirstVertex, 1)
+	fv := []i32.read(FirstVertex, 1)
 	setupMissilePoly(fv, currDebugRocketAim)
-	currDebugRocketAim += 0.001
+	currDebugRocketAim += 0.07
 	str.print("entity.Update()   -   currDebugRocketAim:")
 	f32.print(currDebugRocketAim)
 

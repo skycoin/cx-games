@@ -28,8 +28,8 @@ func All() () {
 	
 	// test circles 
 
-	//x, y := game.GetPosOfPerfectRadiusVisualizer()
-	//Circle(x, y, 0.07, 1.0, 0.0, 0.0)
+	x, y := game.GetPosOfPerfectRadiusVisualizer()
+	Circle(x, y, 0.07, 1.0, 0.0, 0.0)
 	//Polygon(1, x, y, 0.07, 1.0, 0.0, 0.0)
 
 	//x, y := game.GetPosOfBoxyDistanceVisualizer()
