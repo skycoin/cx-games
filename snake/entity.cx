@@ -229,7 +229,7 @@ func makeMissile() () {
 
 var actuallyNonRandomNodeId i32
 func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, aim f32, dist f32) {
-	frac := 0.0004
+	fractionForVelocity := 0.0004
 	rndIdx := actuallyNonRandomNodeId //i32.rand(0, 7) //cavern.NumNodes)
 	
 	actuallyNonRandomNodeId++
@@ -237,12 +237,15 @@ func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, ai
 		actuallyNonRandomNodeId = 0
 	}
 	
+	aim = []f32.read(cavern.Aim, rndIdx)
 	if i32.rand(0, 2) == 0 {
 		x,    y    = game.GetLeftVertexFor(rndIdx)
 		aimX, aimY = game.GetRightVertexFor(rndIdx)
+		aim += game.HalfPi
 	} else {
 		x,    y    = game.GetRightVertexFor(rndIdx)
 		aimX, aimY = game.GetLeftVertexFor(rndIdx)
+		aim -= game.HalfPi
 	}
 
 	aimX -= x
@@ -251,9 +254,9 @@ func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, ai
 	return 
 		x, 
 		y, 
-		aimX * frac, 
-		aimY * frac,
-		[]f32.read(cavern.Aim, rndIdx),
+		aimX * fractionForVelocity, 
+		aimY * fractionForVelocity,
+		aim,
 		game.GetThickExtentFor(rndIdx) * 2.0
 }
 
