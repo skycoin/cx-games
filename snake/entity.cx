@@ -213,6 +213,8 @@ func makeMissile() () {
 
 	//vx, vy := getRandomVelocities()
 	x, y, velX, velY, aim, thExtent := getPosAimAndDistFromRandomTrackNode()
+	str.print("from getPosAimAndDistFromRandomTrackNode got [aim]:")
+	f32.print(aim)
 
 	SpawnEntity(
 		ENT_TYPE_Missile,
@@ -251,7 +253,7 @@ func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, ai
 		y, 
 		aimX * frac, 
 		aimY * frac,
-		game.GetAimForNode(rndIdx),
+		[]f32.read(cavern.Aim, rndIdx),
 		game.GetThickExtentFor(rndIdx) * 2.0
 }
 
@@ -469,6 +471,8 @@ func setupPolygonByItsType(startId i32, numVerts i32, entType i32, aim f32, rad 
 	//i32.print(startId)
 	//str.print("numVerts:")
 	//i32.print(numVerts)
+	str.print("aim:")
+	f32.print(aim)
 
 	if entType == ENT_TYPE_Missile { 
 		str.print("--------Missile--------")

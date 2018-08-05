@@ -18,6 +18,7 @@ package cavern
 
 var NumNodes     i32 = 11
 var halfPi       f32 = 1.570796327
+var full360      f32
 var EndTipLeftX  f32 = -0.15
 var EndTipLeftY  f32 = 1.0
 var EndTipRightX f32 = 0.15
@@ -64,6 +65,7 @@ var ThickExtent []f32 // thickness (from center)
 
 
 func Init() () {
+	full360  = halfPi * 4.0
 	currAim  = halfPi
 	tweenAim = halfPi
 	prevAim  = halfPi
@@ -85,19 +87,6 @@ func Init() () {
 
 
 func addNode() () {
-	if /* not root node */ currNodeId != 0 {
-		aimChangeGrain := halfPi / 64.0
-		
-		//aimDelta := i32.f32(i32.rand(-32, 32))
-		aimDelta := 10.0
-		
-		aimDelta *= aimChangeGrain
-		currAim  = prevAim + aimDelta
-		tweenAim = prevAim + aimDelta / 2.0
-	}
-
-	calcCurrPosFromPrev()
-
 	CenterX     = []f32.append(CenterX,     cenX)
 	CenterY     = []f32.append(CenterY,     cenY)
 
@@ -113,12 +102,35 @@ func addNode() () {
 
 
 
+	changeAim()
+	calcCurrPosFromPrev()
+
 	// final updates 
 	prevX      = cenX
 	prevY      = cenY
 	prevAim    = currAim
 	prevLength = currLength
 	currNodeId++
+}
+
+
+func changeAim() () {
+	aimChangeGrain := halfPi / 64.0
+	
+	//aimDelta := i32.f32(i32.rand(-32, 32))
+	aimDelta := 10.0
+	
+	aimDelta *= aimChangeGrain
+
+	currAim = prevAim + aimDelta
+	for currAim >= full360 {
+		currAim -= full360
+	}
+	for currAim < 0.0 {
+		currAim += full360
+	}
+
+	tweenAim = prevAim + (aimDelta / 2.0)
 }
 
 

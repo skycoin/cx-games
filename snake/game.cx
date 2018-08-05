@@ -476,11 +476,6 @@ func GetEndTip() (lX f32, lY f32, rX f32, rY f32) {
 }
 
 
-func GetAimForNode(id i32) (aim f32) {
-	return []f32.read(cavern.Aim, id)
-}
-
-
 func GetThickExtentFor(id i32) (thickExtent f32) {
 	return []f32.read(cavern.ThickExtent, id)
 }
