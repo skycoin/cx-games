@@ -146,7 +146,7 @@ func Init() () {
 
 var pixelRT f32 // running total for pixel movement 
 func Update() () {
-	//setPosOfVisualizers()
+	updateDebugVisualizers()
 	updateTiming()
 	fadeDirectionalIndicatorsColorIntensity()
 	ccInput.Update() 
@@ -365,8 +365,8 @@ func RotateAroundOrigin(x f32, y f32, angle f32) (outX f32, outY f32) {
 
 
 func GetPosOfPerfectRadiusVisualizer() (x f32, y f32) {
-	x = xOfPerfectRadius
-	y = yOfPerfectRadius
+	return xOfPerfectRadius,
+			yOfPerfectRadius
 }
 
 
@@ -384,10 +384,10 @@ func SetStage(stage i32) () {
 
 
 func resetEventText() () {
+	EventTextIntensity      = 1.0
 	EventTextTimeFadeStarts = currTime + EventTextDuration
-	EventTextIntensity = 1.0
-	EventTextX = ScreenCenterXInGltextSpace
-	EventTextY = 0.0
+	EventTextX              = ScreenCenterXInGltextSpace
+	EventTextY              = 0.0
 }
 
 
@@ -439,7 +439,7 @@ func SetAnalogControlsSensitivitySpeed(fraction f32) {
 }
 
 
-func setPosOfVisualizers() () {
+func updateDebugVisualizers() () {
 	xOfPerfectRadius, 
 	yOfPerfectRadius = 
 		f32.sin(visualizerAngle) * visualizerRadius, 

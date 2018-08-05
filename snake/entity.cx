@@ -112,6 +112,8 @@ func Init() () {
 }
 
 
+var currDebugRocketAim f32
+
 var prevNumLastingEnts i32 = 0
 var prevFrame f32 = 0.0
 func Update() () {
@@ -176,6 +178,21 @@ func Update() () {
 		numEnts++
 		game.SetStage(game.Stage + 1);
 	}
+
+
+
+
+
+	setupMissilePoly(1, currDebugRocketAim)
+	currDebugRocketAim += 0.001
+	str.print("entity.Update()")
+
+
+
+
+
+
+
 
 	prevNumLastingEnts = currNumLastingEnts
 	prevFrame = currFrame
@@ -597,7 +614,7 @@ func setupMissilePoly(id i32, aim f32) () {
 	setupVertex(id++, aim,  0.1  * sc, -0.4  * sc)
 	setupVertex(id++, aim, 0.05  * sc, -0.4  * sc)
 	
-	// middle point (aft/exhaust tip) 
+	// middle point (aft/afterburner tip) 
 	setupVertex(id++, aim,  0.0  * sc, -0.45 * sc)
 
 	// right-side reversed & mirrored for LEFT-side 
@@ -742,8 +759,8 @@ func doTouchResponses(aX f32, aY f32, aRad f32, aId i32, bId i32) () {
 		// (so there's no collision with each other) 
 		// and lined up (opposite each other, from 0,0) along a random angle 
 		
-		divisor := 1600.0
-		mult    := 0.00001
+		divisor    := 1600.0
+		multiplier := 0.00001
 
 		if collidable {
 			replaceExplodingEntityWith2FragmentSpawns(offX, offY, beX, beY, beR) // actually 2 "new" spawns, & deletes old 1 or 2? that it's replacing 
@@ -754,8 +771,8 @@ func doTouchResponses(aX f32, aY f32, aRad f32, aId i32, bId i32) () {
 					ENT_TYPE_Debris,
 					beX, 
 					beY,
-					i32.f32(i32.rand(-49, 50)) * mult,
-					i32.f32(i32.rand(-49, 50)) * mult,
+					i32.f32(i32.rand(-49, 50)) * multiplier,
+					i32.f32(i32.rand(-49, 50)) * multiplier,
 					0.0, // aim, which won't be needed for round particles 
 					game.BulletRadius, 
 					currFrame + 1.5,

@@ -25,20 +25,23 @@ func Init() () {
 
 
 func All() () {
-	/* test circles 
 	
-	x, y := game.GetPosOfPerfectRadiusVisualizer()
-	Circle(x, y, 0.07, 1.0, 0.0, 0.0)	
+	// test circles 
 
-	x, y := game.GetPosOfBoxyDistanceVisualizer()
-	Circle(x, y, 0.07, 0.0, 1.0, 0.0)	
+	//x, y := game.GetPosOfPerfectRadiusVisualizer()
+	//Circle(x, y, 0.07, 1.0, 0.0, 0.0)
+	//Polygon(1, x, y, 0.07, 1.0, 0.0, 0.0)
+
+	//x, y := game.GetPosOfBoxyDistanceVisualizer()
+	//Circle(x, y, 0.07, 0.0, 1.0, 0.0)
+	//Polygon(1, x, y, 0.07, 0.0, 1.0, 0.0)
 	
-	*/
+
 
 	// // draw big debug missile in middle of screen, ignoring "camera" pos 
 	//[]f32.write(entity.X, 1, 0.0)
 	//[]f32.write(entity.Y, 1, 0.0)
-	//cameraIgnoringPolygon(1, 0.0, 0.0, 0.8, 0.0, 0.0, 0.0)
+	cameraIgnoringPolygon(1, 0.0, 0.0, 1.8, 1.0, 1.0, 1.0)
 
 	/* draw */ //circlesAtPathEdgePoints()
 	/* draw */ menuMaybe()
