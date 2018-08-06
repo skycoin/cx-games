@@ -29,8 +29,9 @@ func All() () {
 	// test circles 
 
 	x, y := game.GetPosOfPerfectRadiusVisualizer()
-	Circle(x, y, 0.07, 1.0, 0.0, 0.0)
-	//Polygon(1, x, y, 0.07, 1.0, 0.0, 0.0)
+	//AimedPerFrameTriangle(x, y, 0.09, entity.CurrDebugRocketAim, 1.0, 0.0, 0.0)
+	//Circle(x, y, 0.07, 1.0, 0.0, 0.0)
+	Polygon(1, x, y, 0.07, 1.0, 0.0, 0.0)
 
 	//x, y := game.GetPosOfBoxyDistanceVisualizer()
 	//Circle(x, y, 0.07, 0.0, 1.0, 0.0)
@@ -38,7 +39,7 @@ func All() () {
 	
 
 
-	// // draw big debug missile in middle of screen, ignoring "camera" pos 
+	// draw debug missile in middle of screen, ignoring "camera" pos 
 	//[]f32.write(entity.X, 1, 0.0)
 	//[]f32.write(entity.Y, 1, 0.0)
 	cameraIgnoringPolygon(1, 0.0, 0.0, 1.8, 1.0, 1.0, 1.0)
@@ -51,7 +52,8 @@ func All() () {
 	/* draw */ eventText()
 	/* draw */ maybeHelpText()
 	
-	//EntityAttachedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s) // ...moves with player 
+	// moves with player 
+	//EntityAttachedText([]f32.read(entity.X, 0), []f32.read(entity.Y, 0), 0.0, 0.0, s)
 }
 
 
@@ -98,7 +100,7 @@ func path() () {
 		gl.Begin(gl.POLYGON)
 		gl.Color3f(red, green, blue)
 
-		// near & far points/vertices 
+		// near & far verts (L & R) 
 		nLX, nLY, 
 		nRX, nRY,
 		fLX, fLY, 
@@ -179,15 +181,15 @@ func Polygon(entityId i32, x f32, y f32, radius f32, red f32, green f32, blue f3
 	x -= []f32.read(entity.X, entity.SnakeId)
 	y -= []f32.read(entity.Y, entity.SnakeId)
 
+
+
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 	
+
+
 	start := []i32.read(entity.FirstVertex, entityId)
 	num   := []i32.read(entity.NumVertices, entityId)
-	
-	//str.print("start & num")
-	//i32.print(start)
-	//i32.print(num)
 
 	for i := start; i < start + num; i++ { // i == vertex id 
 		gl.Vertex2f(
@@ -195,7 +197,14 @@ func Polygon(entityId i32, x f32, y f32, radius f32, red f32, green f32, blue f3
 			y + []f32.read(entity.VertexSoupY, i))
 	}
 
+
+
 	gl.End()
+
+
+
+	str.print("just drew Polygon() with (what could be completely unsynced from vertices) entity.[entityId]Aim:")
+	f32.print([]f32.read(entity.Aim, entityId))
 }
 
 
@@ -242,7 +251,7 @@ func aimedYetDecimatedCircleApproximation(
 
 	//
 	//
-	// potentially could add no vertices  
+	// potentially doesn't add vertices 
 
 
 
@@ -275,7 +284,7 @@ func aimedYetDecimatedCircleApproximation(
 }
 
 
-func Triangle(x f32, y f32, radius f32, angle f32, red f32, green f32, blue f32) () {
+func AimedPerFrameTriangle(x f32, y f32, radius f32, angle f32, red f32, green f32, blue f32) () {
 	gl.Begin(gl.POLYGON)
 	gl.Color3f(red, green, blue)
 
@@ -331,7 +340,7 @@ func Snake() () {
 
 	// draw head 
 	//Circle(entity.BX, entity.BY, game.HeadRadius, 0.0, 0.0, 1.0)
-	Triangle(entity.BX, entity.BY, game.HeadRadius, game.CurrSnakeAim, 0.0, 0.0, 1.0)
+	AimedPerFrameTriangle(entity.BX, entity.BY, game.HeadRadius, game.CurrSnakeAim, 0.0, 0.0, 1.0)
 
 	drawDirectionalInputIndicators(sin, cos)
 
@@ -414,9 +423,6 @@ func EntityAttachedText(x f32, y f32, offsetX f32, offsetY f32, s str) () {
 }
 
 
-
-// private 
-
 func setupFonts() () {
 	wd := os.GetWorkingDirectory()
 	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
@@ -443,7 +449,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 	
 	// shrink 
 	ci := game.GetShrinkIntensity()
-	Triangle(
+	AimedPerFrameTriangle(
 		entity.BX - hoX, 
 		entity.BY - hoY, 
 		ie, 
@@ -452,7 +458,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 	
 	// grow 
 	ci = game.GetGrowIntensity()
-	Triangle(
+	AimedPerFrameTriangle(
 		entity.BX + hoX, 
 		entity.BY + hoY, 
 		ie, 
@@ -466,7 +472,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		game.HalfPi)
 
 	ci = game.GetAimDecreaseIntensity()
-	Triangle(
+	AimedPerFrameTriangle(
 		entity.BX + qqX, 
 		entity.BY + qqY, 
 		ie, 
@@ -480,7 +486,7 @@ func drawDirectionalInputIndicators(sin f32, cos f32) () {
 		0.0 - game.HalfPi)
 	
 	ci = game.GetAimIncreaseIntensity()
-	Triangle(
+	AimedPerFrameTriangle(
 		entity.BX + qqX, 
 		entity.BY + qqY, 
 		ie, 

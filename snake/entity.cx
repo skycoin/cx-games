@@ -112,7 +112,7 @@ func Init() () {
 }
 
 
-var currDebugRocketAim f32
+var CurrDebugRocketAim f32
 
 var prevNumLastingEnts i32 = 0
 var prevFrame f32 = 0.0
@@ -161,7 +161,8 @@ func Update() () {
 			if /* died THIS frame */ []i32.read(PrevAliveStatus, i) == isTrue {
 				[]i32.write(PrevAliveStatus, i, isFalse)
 
-				if []i32.read(EntityType, i) == ENT_TYPE_Missile {
+				//if []i32.read(EntityType, i) == ENT_TYPE_Missile {
+				if []i32.read(EntityType, i) == ENT_TYPE_Bullet {
 					makeMissile()
 				}
 			}
@@ -183,10 +184,11 @@ func Update() () {
 
 
 	fv := []i32.read(FirstVertex, 1)
-	setupMissilePoly(fv, currDebugRocketAim)
-	currDebugRocketAim += 0.07
-	str.print("entity.Update()   -   currDebugRocketAim:")
-	f32.print(currDebugRocketAim)
+	setupAimedTriangle(fv, 0.5, CurrDebugRocketAim)
+	//setupMissilePoly(fv, CurrDebugRocketAim)
+	CurrDebugRocketAim += 0.07
+	str.print("entity.Update()   -   CurrDebugRocketAim:")
+	f32.print(CurrDebugRocketAim)
 
 
 
@@ -206,7 +208,7 @@ func SpawnMap() () {
 	// len(X) is count of entities 
 	if /* 1st map/stage/wave */ []f32.len(X) == 0 {
 		// make everpresent snake entity 
-		initVel := 0.009
+		initVel := 0.0 //0.009 (with current choppy FPS, don't want to jerk whole screen) 
 		SpawnEntity(
 			ENT_TYPE_Player,
 			0.0, 0.0, 
@@ -235,36 +237,37 @@ func makeMissile() () {
 	f32.print(aim)
 
 	SpawnEntity(
-		ENT_TYPE_Missile,
+		ENT_TYPE_Bullet, // or should it be debris? 
+		//ENT_TYPE_Missile,
 		x, y,
 		velX, velY,
-		aim,
+		0.0, //aim,
 		missileRad, 
 		/* expiries */ 0.0, thExtent, 
 		/* collidable */ true)
 }
 
 
-var actuallyNonRandomNodeId i32
+var nonRandomNodeForDebug_Id i32
 func getPosAimAndDistFromRandomTrackNode() (x f32, y f32, aimX f32, aimY f32, aim f32, dist f32) {
 	fractionForVelocity := 0.0004
-	rndIdx := actuallyNonRandomNodeId //i32.rand(0, 7) //cavern.NumNodes)
+	rndIdx := nonRandomNodeForDebug_Id //i32.rand(0, 7) //cavern.NumNodes)
 	
-	actuallyNonRandomNodeId++
-	if 	actuallyNonRandomNodeId >= cavern.NumNodes {
-		actuallyNonRandomNodeId = 0
+	    nonRandomNodeForDebug_Id++
+	if 	nonRandomNodeForDebug_Id >= cavern.NumNodes {
+		nonRandomNodeForDebug_Id = 0
 	}
 	
 	aim = []f32.read(cavern.Aim, rndIdx)
-	if i32.rand(0, 2) == 0 {
+	//if i32.rand(0, 2) == 0 {
 		x,    y    = game.GetLeftVertexFor(rndIdx)
 		aimX, aimY = game.GetRightVertexFor(rndIdx)
-		aim += game.HalfPi
-	} else {
-		x,    y    = game.GetRightVertexFor(rndIdx)
-		aimX, aimY = game.GetLeftVertexFor(rndIdx)
-		aim -= game.HalfPi
-	}
+		//aim += game.HalfPi
+	//} else {
+	//	x,    y    = game.GetRightVertexFor(rndIdx)
+	//	aimX, aimY = game.GetLeftVertexFor(rndIdx)
+	//	aim -= game.HalfPi
+	//}
 
 	aimX -= x
 	aimY -= y
@@ -452,6 +455,9 @@ func SpawnEntity(
 	 // ...otherwise append new entity 
 	if shouldAppendNewIndex {
 		nv := getNumVerts(entType)
+		// randomize aim 
+		//aim = game.Full360Grain * i32.f32(i32.rand(0, game.NumGrainsOfFull360))
+
 
 
 		EntityType         = []i32.append(EntityType,         entType)
@@ -464,8 +470,8 @@ func SpawnEntity(
 		TimeExpiry         = []f32.append(TimeExpiry,         timeExpiry)
 		DistanceExpiry     = []f32.append(DistanceExpiry,     distExpiry)
 		BoxyDistance       = []f32.append(BoxyDistance,       0.0)
-		NumVertices        = []i32.append(NumVertices,        nv)
 		FirstVertex        = []i32.append(FirstVertex,        soupAppendIndex)
+		NumVertices        = []i32.append(NumVertices,        nv)
 		Red                = []f32.append(Red,                getRandomIntensity())
 		Green              = []f32.append(Green,              getRandomIntensity())
 		Blue               = []f32.append(Blue,               getRandomIntensity())	
@@ -480,8 +486,16 @@ func SpawnEntity(
 
 		setupPolygonByItsType(soupAppendIndex, nv, entType, aim, rad)
 
+
+
+
+		l := []f32.len(VertexSoupX)
+
 		str.print("appended new entity   -   soupAppendIndex:")
 		i32.print(soupAppendIndex)
+
+		str.print("len(VertexSoupX):")
+		i32.print(l)
 	}
 }
 
@@ -496,16 +510,20 @@ func setupPolygonByItsType(startId i32, numVerts i32, entType i32, aim f32, rad 
 	f32.print(aim)
 
 	if entType == ENT_TYPE_Missile { 
+		rad = 1.0
 		str.print("--------Missile--------")
-		setupMissilePoly(startId, aim)
+		//setupMissilePoly(startId, aim)
+		setupAimedTriangle(startId, rad, aim)
 	} else {
 		if entType == ENT_TYPE_Bullet ||
 			entType == ENT_TYPE_Debris {
 
+			rad = game.BulletRadius * 2.0
 			str.print("--------AimedTriangle--------")
-			setupAimedTriangle(startId, rad)
+			setupAimedTriangle(startId, rad, aim)
 		} else {
 			if entType == ENT_TYPE_Meteor { 
+				rad = 1.0
 				str.print("--------SpikeyMeteor--------")
 				setupSpikeyMeteorPoly(startId, numVerts)
 			} else {
@@ -545,15 +563,12 @@ func setupVertex(id i32, aim f32, x f32, y f32) () {
 		VertexSoupX = []f32.append(VertexSoupX, rotX)
 		VertexSoupY = []f32.append(VertexSoupY, rotY)
 
-		str.print("setupVertex()   -   soupAppendIndex (before & after):")
-		i32.print(soupAppendIndex)
-
-		//soupAppendIndex++
-
+		str.print("setupVertex()   -   soupAppendIndex:")
 		i32.print(soupAppendIndex)
 	} else {
 		[]f32.write(VertexSoupX, id, rotX)
 		[]f32.write(VertexSoupY, id, rotY)
+
 		str.print("setupVertex()   -   wrote to vert soup at id:")
 		i32.print(id)
 	}
@@ -579,12 +594,16 @@ func setupSpikeyMeteorPoly(id i32, numSides i32) () {
 }
 
 
-func setupAimedTriangle(id i32, radius f32) () {
-	aim := game.Full360Grain * i32.f32(i32.rand(0, game.NumGrainsOfFull360))
+func setupAimedTriangle(id i32, radius f32, aim f32) () {
+	// FIXME, this whole sequence starts with "id", THEN is always "id++" after. 
+	//			(because "i++" functions as if it's "++i") 
+	// ALSO FIXME when parameters are passed by value rather than address
+	//			(we'll need to increment soupAppendIndex) 
 
-	setupVertex(id++, aim,                       0.0, radius)
+	setupVertex(id,   aim,                       0.0, radius)
 	setupVertex(id++, aim + game.ThirdOf360,     0.0, radius)
 	setupVertex(id++, aim + game.TwoThirdsOf360, 0.0, radius)
+	id++
 }
 
 
@@ -599,7 +618,9 @@ func setupMissilePoly(id i32, aim f32) () { // id is for vertex soup
 
 
 	// FIXME, this whole sequence starts with "id", THEN is always "id++" after. 
-	//			(because "i++" functions like "++i" does normally) 
+	//			(because "i++" functions as if it's "++i") 
+	// ALSO FIXME when parameters are passed by value rather than address
+	//			(we'll need to increment soupAppendIndex) 
 
 	// fore/impact tip 
 	setupVertex(id,   aim,  0.0  * sc,  0.5  * sc)

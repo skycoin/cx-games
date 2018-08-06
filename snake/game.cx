@@ -445,7 +445,7 @@ func updateDebugVisualizers() () {
 		f32.sin(visualizerAngle) * visualizerRadius, 
 		f32.cos(visualizerAngle) * visualizerRadius
 
-	bd := 
+	bd := // boxy distance 
 		f32.abs(xOfPerfectRadius) + 
 		f32.abs(yOfPerfectRadius)
 
@@ -453,6 +453,11 @@ func updateDebugVisualizers() () {
 	yOfBoxyDistance = 
 		f32.sin(visualizerAngle) * bd, 
 		f32.cos(visualizerAngle) * bd
+
+	str.print("visualizerAngle:")
+	f32.print(visualizerAngle)
+	str.print("visualizerRadius:")
+	f32.print(visualizerRadius)
 
 	visualizerAngle += 
 	visualizerFrameAdvance

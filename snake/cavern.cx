@@ -27,7 +27,7 @@ var EndTipRightY f32 = 1.0
 
 // current node (for generating the path) 
 var currNodeId    i32
-var cenX          f32 = -2.27 // current center position 
+var cenX          f32 = -1.6 // current center (of path) position 
 var cenY          f32
 var currAim       f32
 var currLength    f32 = 0.5
