@@ -506,8 +506,8 @@ func setupPolygonByItsType(startId i32, numVerts i32, entType i32, aim f32, rad 
 	//i32.print(startId)
 	//str.print("numVerts:")
 	//i32.print(numVerts)
-	str.print("aim:")
-	f32.print(aim)
+	//str.print("aim:")
+	//f32.print(aim)
 
 	if entType == ENT_TYPE_Missile { 
 		rad = 1.0
