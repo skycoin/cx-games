@@ -1,20 +1,21 @@
 package entity
 
+import "app"
+
 
 
 var Ents []Entity
-
-type Vec2 struct {
-	X f32
-	Y f32
-}
+var VertSoup []ColoredVertex
 
 type Entity struct {
+	Pos Vec2 // position 
 	Vel Vec2 // velocity 
+	PolygonStart i32
+	PolygonSize i32
+	ExpiryByTime f32
+	ExpiryByDistance f32
 
 
-	x f32
-	y f32
 	gravity f32
 	radius f32
 }
@@ -23,4 +24,12 @@ type Entity struct {
 
 func Init () () {
 	str.print("entity.Init()")
+}
+
+
+func Update () () {
+	//str.print("entity.Update()")
+
+	unused := 0 // needed cuz... 
+	// EMPTY FUNCS OR FUNCS WITH ONLY COMMENTS WILL CRASH CX FOR NOW 
 }

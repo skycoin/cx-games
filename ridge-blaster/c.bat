@@ -1,1 +1,1 @@
-cx entity.cx environs.cx input.cx main.cx
+cx app.cx entity.cx environs.cx input.cx main.cx

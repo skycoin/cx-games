@@ -1,0 +1,25 @@
+package app
+
+
+
+type Vec2 struct {
+	X f32
+	Y f32
+}
+
+type Vec3 struct {
+	X f32
+	Y f32
+	Z f32
+}
+
+type Color3 struct {
+	R f32
+	G f32
+	B f32
+}
+
+type ColoredVertex struct {
+	Vert Vec3
+	Col Color3
+}
