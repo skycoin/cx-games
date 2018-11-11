@@ -44,16 +44,8 @@ var prevTime f32 // previous
 var currTime f32 // current 
 var timeDelta f32
 
-type Ball struct {
-	x f32
-	y f32
-	vx f32
-	vy f32
-	gravity f32
-	radius f32
-}
 
-var ball Ball
+var ball Entity
 
 
 
@@ -65,18 +57,18 @@ func main () {
 		ccInput.Update()
 
 		// ball velocity & position 
-		ball.vx = getVelocityChangesFromInput(ball.vx, GLFW_KEY_A, GLFW_KEY_D)
-		ball.vy = getVelocityChangesFromInput(ball.vy, GLFW_KEY_S, GLFW_KEY_W)
-		ball.vx = getVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, lEdge, rEdge)
-		ball.vy = getVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, -1.0D, 1.0D)
+		ball.Vel.X = getVelocityChangesFromInput(ball.Vel.X, GLFW_KEY_A, GLFW_KEY_D)
+		ball.Vel.Y = getVelocityChangesFromInput(ball.Vel.Y, GLFW_KEY_S, GLFW_KEY_W)
+		ball.Vel.X = getVelocityChangesOnEdgeCollision(ball.x, ball.Vel.X, ball.radius, lEdge, rEdge)
+		ball.Vel.Y = getVelocityChangesOnEdgeCollision(ball.y, ball.Vel.Y, ball.radius, -1.0D, 1.0D)
 		// when speed gets high enough, a simple velocity reversal isn't enough 
 		// (jitters back & forth without getting back in bounds)
 		ball.x = ensureEntirelyWithinBounds(ball.x, ball.radius, lEdge, rEdge)
 		ball.y = ensureEntirelyWithinBounds(ball.y, ball.radius, -1.0D, 1.0D)
 		
 		// motion 
-		ball.x = f32.add(ball.x, ball.vx)
-		ball.y = f32.add(ball.y, ball.vy)
+		ball.x = f32.add(ball.x, ball.Vel.X)
+		ball.y = f32.add(ball.y, ball.Vel.Y)
 
 		// graphics 
 		bufferWidth, bufferHeight = glfw.GetFramebufferSize("window")
@@ -111,12 +103,8 @@ func init () () {
 	GLFW_KEY_S = 83
 	GLFW_KEY_D = 68
 
-	ball = Ball{
+	ball = Entity{
 		radius: 0.05,
-		x: 0.0,
-		y: 0.0,
-		vx: 0.0,
-		vy: 0.0,
 		gravity: 0.01}
 
 	// graphics 
@@ -223,7 +211,7 @@ func ensureEntirelyWithinBounds (pos f32, rad f32, negEdge f64, posEdge f64) (ou
 }
 
 
-func drawBall (ball Ball) () {
+func drawBall (ball Entity) () {
 	var x f32
 	var y f32
 

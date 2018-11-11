@@ -11,6 +11,12 @@ type Vec2 struct {
 
 type Entity struct {
 	Vel Vec2 // velocity 
+
+
+	x f32
+	y f32
+	gravity f32
+	radius f32
 }
 
 
