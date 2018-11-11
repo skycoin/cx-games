@@ -1,11 +1,11 @@
-package ccInput        // "input" must be reserved?  got errors until I renamed this
+package ccInput
 
 import "glfw"
 
 
 
 func Init() () {
-	str.print("Init")
+	str.print("input.Init()")
 
 	glfw.SetKeyCallback("window", "onKeyEvent")
 	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
@@ -31,13 +31,16 @@ func onMouseButtonEvent(window str, button i32, action i32, mods i32) () {
 }
 
 
-// mouse position
+// mouse position 
 func onCursorPosEvent(window str, x f64, y f64) () {
 	//str.print("onCursorPosEvent")
+
+	unused := 0 // needed cuz... 
+	// EMPTY FUNCS OR FUNCS WITH ONLY COMMENTS WILL CRASH CX FOR NOW 
 }
 
 
-// keys
+// keys 
 func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 	// action == 0, release 
 	// action == 1, press 
@@ -45,10 +48,11 @@ func onKeyEvent(window str, key i32, scancode i32, action i32, mods i32) () {
 
 	if action != 2 { // (not a repeat) 
 		if action == 1 { // (press) 
-			str.print("not repeat & press")
+			str.print("PRESS (not a repeat)")
 
 			// close 
 			if key == 53 { // GLFW_KEY_5 
+				str.print("QUITTING GAME; developer shortcut (key '5') was pressed")
 				glfw.SetShouldClose("window", true)
 			}
 

@@ -1,0 +1,24 @@
+package environs
+
+
+
+type Column struct {
+	floo f32 // floor 
+	ceil f32 // ceiling (0 == open air) 
+}
+
+
+
+// 1st determine size of valid air space, 
+// 2nd, that spans' position within screenspace 
+
+// for collision, 
+// 1st determine range of columns player ship is contained in,
+// 2nd, if above floo
+// 3rd, if below ceiling (skip if open air) 
+
+
+
+func Init () () {
+	str.print("environs.Init()")
+}
