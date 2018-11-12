@@ -7,42 +7,8 @@
 
 package main
 
-import "gl"
-import "glfw"
-
-import "ccInput"
-import "environs"
-import "entity"
-//import "draw"
-
-
-
-var TAU f32
-var FORCE f32
-
-// graphics 
-var WIDTH i32 = 1280
-var HEIGHT i32 = 720
-var bufferWidth i32
-var bufferHeight i32
-var ratio f32
-var lEdge f64 // left 
-var rEdge f64 // right 
-var program i32
-
-// keys 
-var	GLFW_KEY_W i32
-var	GLFW_KEY_A i32
-var	GLFW_KEY_S i32
-var	GLFW_KEY_D i32
-
-// timing 
-var prevTime f32 // previous 
-var currTime f32 // current 
-var timeDelta f32
-
-
-var ball Entity
+import "app"
+import "game"
 
 
 
