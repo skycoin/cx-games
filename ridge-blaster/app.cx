@@ -2,6 +2,14 @@ package app
 
 
 
+var NAME str = "RIDGE BLASTER"
+
+// logic (physics & graphics use) 
+var TAU f32
+var FORCE f32
+
+
+
 type Vec2 struct {
 	X f32
 	Y f32
@@ -22,4 +30,11 @@ type Color3 struct {
 type ColoredVertex struct {
 	Vert Vec3
 	Col Color3
+}
+
+
+
+func PreventCrash_DetailsInside () () {
+	unused := 0 // needed cuz... 
+	// EMPTY FUNCS OR FUNCS WITH ONLY COMMENTS WILL CRASH CX FOR NOW 
 }

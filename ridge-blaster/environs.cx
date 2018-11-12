@@ -19,6 +19,6 @@ type Column struct {
 
 
 
-func Init () () {
-	str.print("environs.Init()")
+func Setup () () {
+	str.print("environs.Setup()")
 }

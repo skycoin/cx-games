@@ -1,0 +1,17 @@
+package draw
+
+
+
+func Init () () {
+	str.print("draw.Init()")
+}
+
+
+func Update () () {
+	str.print("draw.Update()")
+
+	//Circle(ball)
+}
+
+
+

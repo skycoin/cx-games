@@ -1,0 +1,230 @@
+package game
+
+
+import "gl"
+import "glfw"
+
+import "app"
+import "ccInput"
+import "entity"
+//import "environs"
+
+
+
+// physics 
+var ball Entity
+
+// 		timing 
+var prevTime f32 // previous 
+var currTime f32 // current 
+var timeDelta f32
+
+// 		keys 
+var	GLFW_KEY_W i32
+var	GLFW_KEY_A i32
+var	GLFW_KEY_S i32
+var	GLFW_KEY_D i32
+
+// graphics 
+var WIDTH i32 = 1280
+var HEIGHT i32 = 720
+var bufferWidth i32
+var bufferHeight i32
+var ratio f32
+var lEdge f64 // left 
+var rEdge f64 // right 
+var program i32
+
+
+
+func Init () () {
+	str.print("game.Init()")
+
+	// app 
+	TAU = f32.mul(2.0, 3.141592654)
+	FORCE = 0.08
+
+	// physics 
+	ball = Entity{ radius: 0.05, gravity: 0.01 }
+	
+	// 		keys 
+	GLFW_KEY_W = 87
+	GLFW_KEY_A = 65
+	GLFW_KEY_S = 83
+	GLFW_KEY_D = 68	
+
+
+
+	// graphics 
+	glfw.Init()
+	glfw.CreateWindow("window", WIDTH, HEIGHT, NAME)
+	glfw.MakeContextCurrent("window")
+	gl.Init()
+	program = gl.CreateProgram()
+	gl.LinkProgram(program)
+
+	ccInput.Setup()
+	//environs.Setup()
+	entity.Setup()
+}
+
+
+func Update () () {
+	updateTiming()
+	entity.EntUpdate()
+	ccInput.InpUpdate()
+
+	// physics 
+	// 		velocity & position adjust 
+	ball.Vel.X = getVelocityChangesFromInput(ball.Vel.X, GLFW_KEY_A, GLFW_KEY_D)
+	ball.Vel.Y = getVelocityChangesFromInput(ball.Vel.Y, GLFW_KEY_S, GLFW_KEY_W)
+	ball.Vel.X = getVelocityChangesOnEdgeCollision(ball.Pos.X, ball.Vel.X, ball.radius, lEdge, rEdge)
+	ball.Vel.Y = getVelocityChangesOnEdgeCollision(ball.Pos.Y, ball.Vel.Y, ball.radius, -1.0D, 1.0D)
+	// when speed gets high enough, a simple velocity reversal isn't enough 
+	// (jitters back & forth without getting back in bounds)
+	ball.Pos.X = ensureEntirelyWithinBounds(ball.Pos.X, ball.radius, lEdge, rEdge)
+	ball.Pos.Y = ensureEntirelyWithinBounds(ball.Pos.Y, ball.radius, -1.0D, 1.0D)
+	
+	// move 
+	ball.Pos.X = f32.add(ball.Pos.X, ball.Vel.X)
+	ball.Pos.Y = f32.add(ball.Pos.Y, ball.Vel.Y)
+
+
+
+	// graphics 
+	bufferWidth, bufferHeight = glfw.GetFramebufferSize("window")
+	ratio = f32.div(i32.f32(bufferWidth), i32.f32(bufferHeight))
+	lEdge = f32.f64(f32.mul(ratio, -1.0))
+	rEdge = f32.f64(ratio)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.UseProgram(program)
+	gl.MatrixMode(gl.PROJECTION)
+	gl.LoadIdentity()
+	gl.Ortho(lEdge, rEdge, -1.0D, 1.0D, 1.0D, -1.0D)
+	gl.Viewport(0, 0, bufferWidth, bufferHeight)
+	gl.MatrixMode(gl.MODELVIEW)
+
+	drawCircle(ball)
+
+	glfw.PollEvents()
+	glfw.SwapBuffers("window")
+}
+
+
+
+func ShouldProceed () (out bool) {
+	if glfw.ShouldClose("window") {
+		out = false
+	} else {
+		out = true
+	}
+}
+
+
+func updateTiming () () {
+	// prevent 1st delta from being large, which would make moving objects teleport unpredictably 
+	if prevTime == 0.0 {
+		prevTime = f64.f32(glfw.GetTime())
+	}
+
+	currTime = f64.f32(glfw.GetTime())
+	timeDelta = currTime - prevTime
+	prevTime = currTime
+}
+
+
+func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
+	out = f32.add(currentVelocity, FORCE * timeDelta * strength)
+
+	if out > 0.0 {
+		out = 0.0
+	}
+}
+
+
+func dampenPositiveMovement (currentVelocity f32, strength f32) (out f32) {
+	out = f32.sub(currentVelocity, FORCE * timeDelta * strength)
+
+	if out < 0.0 {
+		out = 0.0
+	}
+}
+
+
+func getVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32) {
+	out = velocity
+
+	//______________________________________________________________________ 
+	if i32.eq(glfw.GetKey("window", addKey), 1) { //     speed up positively 
+		if out < 0.0 {
+			out = dampenNegativeMovement(out, 4.0)
+		}
+
+		out = f32.add(out, FORCE * timeDelta)
+	} else //___________________________________________ speed up negatively 
+	if i32.eq(glfw.GetKey("window", subKey), 1) {
+		if out > 0.0 {
+			out = dampenPositiveMovement(out, 4.0)
+		}
+
+		out = f32.sub(out, FORCE * timeDelta)
+	} else { //__________________________________________ slow down 
+		if out > 0.0 {
+			out = dampenPositiveMovement(out, 1.0)
+		} else
+		if out < 0.0 {
+			out = dampenNegativeMovement(out, 1.0)
+		}
+	}
+}
+
+
+// position, velocity, radius, negative value edge boundary, positive value edge boundary 
+func getVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f64, posEdge f64) (out f32) {
+	out = vel
+
+	if f32.lteq(f32.sub(pos, rad), f64.f32(negEdge)) { 
+		// hit neg edge 
+		out = f32.abs(vel)
+	} else
+	if f32.gteq(f32.add(pos, rad), f64.f32(posEdge)) { 
+		// hit pos edge 
+		out = 0 - f32.abs(vel)
+	}
+}
+
+
+// position, radius, negative value edge boundary, positive value edge boundary 
+func ensureEntirelyWithinBounds (pos f32, rad f32, negEdge f64, posEdge f64) (out f32) {
+	out = pos
+	ne := f64.f32(negEdge)
+	pe := f64.f32(posEdge)
+
+	if f32.lteq(f32.sub(pos, rad), ne) { 
+		// hit neg edge 
+		out = f32.add(ne, rad)
+	} else
+	if f32.gteq(f32.add(pos, rad), pe) { 
+		// hit pos edge 
+		out = f32.sub(pe, rad)
+	}
+}
+
+
+func drawCircle (ball Entity) () {
+	var x f32
+	var y f32
+
+	gl.Begin(gl.POLYGON)
+	gl.Color3f(1.0, 1.0, 1.0)
+
+	var i f32
+	for i = 0.0; f32.lt(i, 20.0); i = f32.add(i, 1.0) {
+		x = f32.add(ball.Pos.X, f32.mul(ball.radius, f32.cos(f32.div(f32.mul(i, TAU), 20.0))))
+		y = f32.add(ball.Pos.Y, f32.mul(ball.radius, f32.sin(f32.div(f32.mul(i, TAU), 20.0))))
+
+		gl.Vertex2f(x, y)
+	}
+
+	gl.End()
+}
