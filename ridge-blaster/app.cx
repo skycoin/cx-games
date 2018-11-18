@@ -34,6 +34,13 @@ type ColoredVertex struct {
 
 
 
+func Setup () () {
+	str.print("app.Setup()")
+	TAU = f32.mul(2.0, 3.141592654)
+	FORCE = 0.08
+}
+
+
 func PreventCrash_DetailsInside () () {
 	unused := 0 // needed cuz... 
 	// EMPTY FUNCS OR FUNCS WITH ONLY COMMENTS WILL CRASH CX FOR NOW 

@@ -1,10 +1,24 @@
 package entity
 
+import "glfw"
+
 import "app"
-//import "draw"
+import "collision"
 
 
 
+// 		keys 
+var	GLFW_KEY_W i32
+var	GLFW_KEY_A i32
+var	GLFW_KEY_S i32
+var	GLFW_KEY_D i32
+	
+
+// physics 
+var ball Entity
+var timeDel f32
+
+// pools 
 var Ents []Entity
 var VertSoup []ColoredVertex
 
@@ -25,10 +39,126 @@ type Entity struct {
 
 func Setup () () {
 	str.print("entity.Setup()")
+
+	// 		keys 
+	GLFW_KEY_W = 87
+	GLFW_KEY_A = 65
+	GLFW_KEY_S = 83
+	GLFW_KEY_D = 68	
+
+	// physics 
+	ball = Entity{ radius: 0.05, gravity: 0.01 }
 }
 
 
-func EntUpdate () () {
+func EntUpdate (tDelta f32) () {
 	//str.print("entity.EntUpdate()")
-	app.PreventCrash_DetailsInside()
+
+	// physics 
+	timeDel = tDelta
+	// 		velocity & position adjust 
+	ball.Vel.X = getVelocityChangesFromInput(ball.Vel.X, GLFW_KEY_A, GLFW_KEY_D)
+	ball.Vel.Y = getVelocityChangesFromInput(ball.Vel.Y, GLFW_KEY_S, GLFW_KEY_W)
+	ball.Vel.X = getVelocityChangesOnEdgeCollision(ball.Pos.X, ball.Vel.X, ball.radius, collision.lEdge, collision.rEdge)
+	ball.Vel.Y = getVelocityChangesOnEdgeCollision(ball.Pos.Y, ball.Vel.Y, ball.radius, -1.0D, 1.0D)
+	// when speed gets high enough, a simple velocity reversal isn't enough 
+	// (jitters back & forth without getting back in bounds)
+	ball.Pos.X = ensureEntirelyWithinBounds(ball.Pos.X, ball.radius, collision.lEdge, collision.rEdge)
+	ball.Pos.Y = ensureEntirelyWithinBounds(ball.Pos.Y, ball.radius, -1.0D, 1.0D)
+	
+	// move 
+	ball.Pos.X = f32.add(ball.Pos.X, ball.Vel.X)
+	ball.Pos.Y = f32.add(ball.Pos.Y, ball.Vel.Y)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
+	out = f32.add(currentVelocity, app.FORCE * timeDel * strength)
+
+	if out > 0.0 {
+		out = 0.0
+	}
+}
+
+
+func dampenPositiveMovement (currentVelocity f32, strength f32) (out f32) {
+	out = f32.sub(currentVelocity, app.FORCE * timeDel * strength)
+
+	if out < 0.0 {
+		out = 0.0
+	}
+}
+
+
+func getVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32) {
+	out = velocity
+
+	//______________________________________________________________________ 
+	if i32.eq(glfw.GetKey("window", addKey), 1) { //     speed up positively 
+		if out < 0.0 {
+			out = dampenNegativeMovement(out, 4.0)
+		}
+
+		out = f32.add(out, app.FORCE * timeDel)
+	} else //___________________________________________ speed up negatively 
+	if i32.eq(glfw.GetKey("window", subKey), 1) {
+		if out > 0.0 {
+			out = dampenPositiveMovement(out, 4.0)
+		}
+
+		out = f32.sub(out, app.FORCE * timeDel)
+	} else { //__________________________________________ slow down 
+		if out > 0.0 {
+			out = dampenPositiveMovement(out, 1.0)
+		} else
+		if out < 0.0 {
+			out = dampenNegativeMovement(out, 1.0)
+		}
+	}
+}
+
+
+// position, velocity, radius, negative value edge boundary, positive value edge boundary 
+func getVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f64, posEdge f64) (out f32) {
+	out = vel
+
+	if f32.lteq(f32.sub(pos, rad), f64.f32(negEdge)) { 
+		// hit neg edge 
+		out = f32.abs(vel)
+	} else
+	if f32.gteq(f32.add(pos, rad), f64.f32(posEdge)) { 
+		// hit pos edge 
+		out = 0 - f32.abs(vel)
+	}
+}
+
+
+// position, radius, negative value edge boundary, positive value edge boundary 
+func ensureEntirelyWithinBounds (pos f32, rad f32, negEdge f64, posEdge f64) (out f32) {
+	out = pos
+	ne := f64.f32(negEdge)
+	pe := f64.f32(posEdge)
+
+	if f32.lteq(f32.sub(pos, rad), ne) { 
+		// hit neg edge 
+		out = f32.add(ne, rad)
+	} else
+	if f32.gteq(f32.add(pos, rad), pe) { 
+		// hit pos edge 
+		out = f32.sub(pe, rad)
+	}
 }
