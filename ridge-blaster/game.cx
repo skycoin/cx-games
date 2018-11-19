@@ -67,7 +67,7 @@ func Update () () {
 
 
 	collision.ColUpdate(ratio)
-	draw.DrawUpdate()
+	draw.Polygons()
 
 	glfw.PollEvents()
 	glfw.SwapBuffers("window")

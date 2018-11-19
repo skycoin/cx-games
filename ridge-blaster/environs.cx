@@ -28,7 +28,7 @@ var F32_RAND_GRAIN_SIZE f32
 
 // in the range of 0 to 1 
 func GetRandF32 () (out f32) {
-	NUM_F32_RAND_INCLUSIVE_POINTS = 5
+	NUM_F32_RAND_INCLUSIVE_POINTS = 15
 	F32_RAND_GRAIN_SIZE = 1.0 / i32.f32(NUM_F32_RAND_INCLUSIVE_POINTS - 1)
 	rnd := i32.rand(0, NUM_F32_RAND_INCLUSIVE_POINTS)
 	out = F32_RAND_GRAIN_SIZE * i32.f32(rnd)
@@ -39,20 +39,16 @@ func GetRandF32 () (out f32) {
 func Setup () () {
 	str.print("environs.Setup()")
 
-	//numColumns := 64
-	var f f32
-	var c f32
-	f = GetRandF32()
-	c = GetRandF32()
-	printf("floor %f,   ceiling %f \n", f, c)
-	
-	var colu Column
-	//colu = Column{ Floo: f, Ceil: c }
-	colu = Column{ Floo: f, Ceil: c }
-	printf("colu floor %f,   colu ceiling %f \n", colu.Floo, colu.Ceil)
-	Terrain = append(Terrain, colu)
-/*
-	Terrain[0].Floo = f
-	Terrain[0].Ceil = c
-*/
+	numColumns := 5 //64
+	for i := 0; i < numColumns; i++ {
+		var f f32
+		var c f32
+		f = GetRandF32()
+		c = GetRandF32()
+		printf("floor %f,   ceiling %f \n", f, c)
+		var colu Column
+		colu = Column{ Floo: 0.0 - f, Ceil: 0.0 - c }
+		printf("colu floor %f,   colu ceiling %f \n", colu.Floo, colu.Ceil)
+		Terrain = append(Terrain, colu)
+	}
 }
