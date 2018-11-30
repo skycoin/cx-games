@@ -155,8 +155,10 @@ func getVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f64, 
 // position, radius, negative value edge boundary, positive value edge boundary 
 func ensureEntirelyWithinBounds (pos f32, rad f32, negEdge f64, posEdge f64) (out f32) {
 	out = pos
-	ne := f64.f32(negEdge)
-	pe := f64.f32(posEdge)
+	var ne f32
+	var pe f32
+	ne = f64.f32(negEdge)
+	pe = f64.f32(posEdge)
 
 	if f32.lteq(f32.sub(pos, rad), ne) { 
 		// hit neg edge 
