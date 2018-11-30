@@ -39,7 +39,7 @@ func GetRandF32 () (out f32) {
 func Setup () () {
 	str.print("environs.Setup()")
 
-	numColumns := 5 //64
+	numColumns := 80 //64
 	for i := 0; i < numColumns; i++ {
 		var f f32
 		var c f32

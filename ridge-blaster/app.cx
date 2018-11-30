@@ -3,12 +3,18 @@ package app
 
 
 var NAME str = "RIDGE BLASTER"
-
-// logic (physics & graphics use) 
+var WIDTH i32 = 1280
+var HEIGHT i32 = 720
+var ScreenSizeInPixels VecI
 var TAU f32
 var FORCE f32
 
 
+
+type VecI struct {
+	X i32
+	Y i32
+}
 
 type Vec2 struct {
 	X f32

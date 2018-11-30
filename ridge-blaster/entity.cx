@@ -19,7 +19,6 @@ var ball Entity
 var timeDel f32
 
 // pools 
-var Ents []Entity
 var VertSoup []ColoredVertex
 
 type Entity struct {
@@ -34,6 +33,7 @@ type Entity struct {
 	gravity f32
 	radius f32
 }
+var Ents []Entity
 
 
 
@@ -72,7 +72,12 @@ func EntUpdate (tDelta f32) () {
 }
 
 
-
+func Add (pos Vec2) () {
+	var e Entity
+	e = Entity{ Pos: pos }
+	Ents = append(Ents, e)
+	printf("entity.Add()   x: %f, y: %f \n", pos.X, pos.Y)
+}
 
 
 

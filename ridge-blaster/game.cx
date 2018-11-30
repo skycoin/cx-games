@@ -19,10 +19,6 @@ var currTime f32 // current
 var timeDelta f32
 
 // graphics 
-var WIDTH i32 = 1280
-var HEIGHT i32 = 720
-var bufferWidth i32
-var bufferHeight i32
 var ratio f32
 var program i32
 
@@ -33,7 +29,7 @@ func Init () () {
 
 	// graphics 
 	glfw.Init()
-	glfw.CreateWindow("window", WIDTH, HEIGHT, app.NAME)
+	glfw.CreateWindow("window", app.WIDTH, app.HEIGHT, app.NAME)
 	glfw.MakeContextCurrent("window")
 	gl.Init()
 	program = gl.CreateProgram()
@@ -55,19 +51,19 @@ func Update () () {
 
 
 	// graphics 
-	bufferWidth, bufferHeight = glfw.GetFramebufferSize("window")
-	ratio = f32.div(i32.f32(bufferWidth), i32.f32(bufferHeight))
+	app.ScreenSizeInPixels.X, app.ScreenSizeInPixels.Y = glfw.GetFramebufferSize("window")
+	ratio = f32.div(i32.f32(app.ScreenSizeInPixels.X), i32.f32(app.ScreenSizeInPixels.Y))
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 	gl.UseProgram(program)
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
 	gl.Ortho(collision.lEdge, collision.rEdge, -1.0D, 1.0D, 1.0D, -1.0D)
-	gl.Viewport(0, 0, bufferWidth, bufferHeight)
+	gl.Viewport(0, 0, app.ScreenSizeInPixels.X, app.ScreenSizeInPixels.Y)
 	gl.MatrixMode(gl.MODELVIEW)
 
 
 	collision.ColUpdate(ratio)
-	draw.Polygons()
+	draw.All()
 
 	glfw.PollEvents()
 	glfw.SwapBuffers("window")
