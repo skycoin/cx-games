@@ -47,23 +47,36 @@ func All () () {
 
 
 func gridLines () () {
+	var l f32
+	l = f64.f32(collision.ScreenEdgeL)
+	var r f32
+	r = f64.f32(collision.ScreenEdgeR)
+	numLines := 30
 	var unitSpan f32
-	unitSpan = 0.2
-	gridExtent := 2.0
-	numLines := 10
+	unitSpan = f32.mul(r, 2.0)
+	unitSpan = f32.div(unitSpan, i32.f32(numLines))
+	printf("unitSpan: %v\n", unitSpan)
+	z := 0.2
 
-	fx := 0.0 - gridExtent
-	
+	// vertical 
+	var fx f32
+	fx = l
 	for x := 0; x < numLines; x++ {
-		fy := 0.0 - gridExtent
-		for y := 0; y < numLines; y++ {			
-			gl.Vertex3f(fx, fy, gridExtent)
-			gl.Vertex3f(fx, fy, 0.0 - gridExtent)
-			
-			fy = f32.add(fy, unitSpan)
-		}
+		gl.Vertex3f(fx, l, z)
+		gl.Vertex3f(fx, r, z)
 		
+		printf("fx before inc: %v\n", fx)
 		fx = f32.add(fx, unitSpan)
+	}
+	
+	// horizontal 
+	var fy f32
+	fy = l
+	for y := 0; y < numLines; y++ {			
+		gl.Vertex3f(l, fy, z)
+		gl.Vertex3f(r, fy, z)
+		
+		fy = f32.add(fy, unitSpan)
 	}
 }
 
