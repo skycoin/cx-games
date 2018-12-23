@@ -17,15 +17,54 @@ func Setup () () {
 func All () () {
 	//str.print("draw.Update()")
 
+
 	gl.Begin(gl.QUADS) //POLYGON
 	
 	Terrain()
-	ColorPickerWheel()
+	//ColorPickerWheel()
 	Entities()
 
 	gl.End()
 
+
+	gl.Begin(gl.POLYGON)
+	simpleVertexSequence(0.0)
+	gl.End()
+
+
+	gl.Begin(gl.LINE_LOOP)
+	simpleVertexSequence(0.5)
+	gl.End()
+
+
+	gl.Begin(gl.LINES)
+	gridLines()
+	gl.End()
+
+
 	Circle(entity.ball)
+}
+
+
+func gridLines () () {
+	var unitSpan f32
+	unitSpan = 0.2
+	gridExtent := 2.0
+	numLines := 10
+
+	fx := 0.0 - gridExtent
+	
+	for x := 0; x < numLines; x++ {
+		fy := 0.0 - gridExtent
+		for y := 0; y < numLines; y++ {			
+			gl.Vertex3f(fx, fy, gridExtent)
+			gl.Vertex3f(fx, fy, 0.0 - gridExtent)
+			
+			fy = f32.add(fy, unitSpan)
+		}
+		
+		fx = f32.add(fx, unitSpan)
+	}
 }
 
 
@@ -56,22 +95,31 @@ func Terrain () () {
 	num = len(environs.Terrain) - 1
 
 	var x f32
-	x = f64.f32(collision.lEdge)
+	x = f64.f32(collision.ScreenEdgeL)
 
 	var bott f32
 	bott = 0.0 - 1.0
 
 	var span f32
-	span = f32.div(f64.f32(collision.rEdge) * 2.0, i32.f32(num))
+	span = f32.div(f64.f32(collision.ScreenEdgeR) * 2.0, i32.f32(num))
 
 	for i := 0; i < num; i++ {
 		gl.Color3f(0.6, green, 1.0)
 
-		gl.Vertex2f(x, bott)
-		gl.Vertex2f(x, environs.Terrain[i].Floo)
+		z := 0.0 - environs.Terrain[i].Floo
+		y :=  bott
+		gl.Vertex3f(x, y, z)
+
+		y = environs.Terrain[i].Floo
+		gl.Vertex3f(x, y, z)
+
 		x = f32.add(x, span)
-		gl.Vertex2f(x, environs.Terrain[i+1].Floo)
-		gl.Vertex2f(x, bott)
+
+		y =  environs.Terrain[i+1].Floo
+		gl.Vertex3f(x, y, z)
+
+		y = bott
+		gl.Vertex3f(x, y, z)
 		
 		green = f32.add(green, 0.22)
 	}
@@ -105,6 +153,18 @@ func Entities () () {
 		gl.Vertex2f(lX, tY)
 		gl.Vertex2f(rX, tY)
 		gl.Vertex2f(rX, bY)
+	}
+}
+
+
+func simpleVertexSequence (colorChanIntensity f32) () {
+	gl.Color3f(colorChanIntensity, colorChanIntensity, colorChanIntensity)
+
+	for i := 0; i < len(entity.Ents); i++ {
+		var e Entity
+		e = entity.Ents[i]
+
+		gl.Vertex2f(e.Pos.X, e.Pos.Y)
 	}
 }
 

@@ -2,8 +2,8 @@ package collision
 
 
 
-var lEdge f64 // left 
-var rEdge f64 // right 
+var ScreenEdgeL f64 // left 
+var ScreenEdgeR f64 // right 
 
 
 
@@ -15,6 +15,6 @@ func Setup () () {
 func ColUpdate (ratio f32) () {
 	//str.print("collision.ColUpdate()")
 
-	lEdge = f32.f64(f32.mul(ratio, -1.0))
-	rEdge = f32.f64(ratio)
+	ScreenEdgeL = f32.f64(f32.mul(ratio, -1.0))
+	ScreenEdgeR = f32.f64(ratio)
 }

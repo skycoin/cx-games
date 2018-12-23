@@ -12,15 +12,20 @@ var	GLFW_KEY_W i32
 var	GLFW_KEY_A i32
 var	GLFW_KEY_S i32
 var	GLFW_KEY_D i32
+
+var GLFW_KEY_N i32
+var GLFW_KEY_Y i32
+var GLFW_KEY_F2 i32
+var GLFW_KEY_F3 i32
 	
 
 // physics 
 var ball Entity
+var CamPos app.Vec3
+var CamRot app.Vec3
 var timeDel f32
 
 // pools 
-var VertSoup []ColoredVertex
-
 type Entity struct {
 	Pos Vec2 // position 
 	Vel Vec2 // velocity 
@@ -45,9 +50,16 @@ func Setup () () {
 	GLFW_KEY_A = 65
 	GLFW_KEY_S = 83
 	GLFW_KEY_D = 68	
+	
+	GLFW_KEY_N = 78
+	GLFW_KEY_Y = 89
+	GLFW_KEY_F2 = 291
+	GLFW_KEY_F3 = 292
 
 	// physics 
 	ball = Entity{ radius: 0.05, gravity: 0.01 }
+	CamPos = app.Vec3{ X: 0.0, Y: 0.0, Z: 0.0 }
+	printf("CamPos.X: %v \n", CamPos.X)
 }
 
 
@@ -59,16 +71,17 @@ func EntUpdate (tDelta f32) () {
 	// 		velocity & position adjust 
 	ball.Vel.X = getVelocityChangesFromInput(ball.Vel.X, GLFW_KEY_A, GLFW_KEY_D)
 	ball.Vel.Y = getVelocityChangesFromInput(ball.Vel.Y, GLFW_KEY_S, GLFW_KEY_W)
-	ball.Vel.X = getVelocityChangesOnEdgeCollision(ball.Pos.X, ball.Vel.X, ball.radius, collision.lEdge, collision.rEdge)
+	ball.Vel.X = getVelocityChangesOnEdgeCollision(ball.Pos.X, ball.Vel.X, ball.radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
 	ball.Vel.Y = getVelocityChangesOnEdgeCollision(ball.Pos.Y, ball.Vel.Y, ball.radius, -1.0D, 1.0D)
 	// when speed gets high enough, a simple velocity reversal isn't enough 
 	// (jitters back & forth without getting back in bounds)
-	ball.Pos.X = ensureEntirelyWithinBounds(ball.Pos.X, ball.radius, collision.lEdge, collision.rEdge)
+	ball.Pos.X = ensureEntirelyWithinBounds(ball.Pos.X, ball.radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
 	ball.Pos.Y = ensureEntirelyWithinBounds(ball.Pos.Y, ball.radius, -1.0D, 1.0D)
 	
 	// move 
 	ball.Pos.X = f32.add(ball.Pos.X, ball.Vel.X)
 	ball.Pos.Y = f32.add(ball.Pos.Y, ball.Vel.Y)
+	tempPolling()
 }
 
 
@@ -88,8 +101,48 @@ func Add (pos Vec2) () {
 
 
 
+func tempPolling () () {
+	rotateInc := 0.2
 
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_A), 1) {
+		CamPos.X = i32.add(CamPos.X, 0.0 - 0.001)
+	} else
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_D), 1) {
+		CamPos.X = i32.add(CamPos.X, 0.001)
+	} else {
+		CamPos.X = 0.0
+	}
 
+	// x axis rotation 
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_F2), 1) {
+		CamRot.X = i32.add(CamRot.Y, 0.0 - rotateInc)
+	} else
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_F3), 1) {
+		CamRot.X = i32.add(CamRot.Y, rotateInc)
+	} else {
+		CamRot.X = 0.0
+	}
+
+	// y axis rotation 
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_Y), 1) {
+		CamRot.Y = i32.add(CamRot.Y, 0.0 - rotateInc)
+	} else
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_N), 1) {
+		CamRot.Y = i32.add(CamRot.Y, rotateInc)
+	} else {
+		CamRot.Y = 0.0
+	}
+
+	// forward/back translation 
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_W), 1) {
+		CamPos.Z = i32.add(CamPos.Z, 0.0 - 0.001)
+	} else
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_S), 1) {
+		CamPos.Z = i32.add(CamPos.Z, 0.001)
+	} else {
+		CamPos.Z = 0.0
+	}
+}
 
 func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
 	out = f32.add(currentVelocity, app.FORCE * timeDel * strength)

@@ -33,9 +33,19 @@ type Color3 struct {
 	B f32
 }
 
-type ColoredVertex struct {
+type TriangleOfPointAndColorIds struct {
+	APos i32
+	BPos i32
+	CPos i32
+		
+	AColor i32
+	BColor i32
+	CColor i32
+}
+
+type MultiColorPoint struct {
 	Vert Vec3
-	Col Color3
+	Colors []i32
 }
 
 
@@ -49,5 +59,6 @@ func Setup () () {
 
 func PreventCrash_DetailsInside () () {
 	unused := 0 // needed cuz... 
+	// FIXME: 
 	// EMPTY FUNCS OR FUNCS WITH ONLY COMMENTS WILL CRASH CX FOR NOW 
 }

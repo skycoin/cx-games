@@ -50,8 +50,8 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 func onCursorPosEvent (window str, x f64, y f64) () {
 	var mX f32
 	mX = f32.div(f64.f32(x), i32.f32(app.ScreenSizeInPixels.X))
-	mX = f32.mul(mX, f64.f32(collision.rEdge) * 2.0)
-	MousePointer.X = f32.add(f64.f32(collision.lEdge), mX)
+	mX = f32.mul(mX, f64.f32(collision.ScreenEdgeR) * 2.0)
+	MousePointer.X = f32.add(f64.f32(collision.ScreenEdgeL), mX)
 
 	var mY f32
 	mY = f32.div(f64.f32(y), i32.f32(app.ScreenSizeInPixels.Y))
@@ -70,11 +70,11 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 
 	if action != 2 { // (not a repeat) 
 		if action == 1 { // (press) 
-			//str.print("PRESS (not a repeat)")
+			//str.print("-----------------------------------------PRESS (not a repeat)")
 
 			// close 
 			if key == 53 { // GLFW_KEY_5 
-				str.print("QUITTING GAME; developer shortcut (key '5') was pressed")
+				str.print("----------------- QUITTING GAME -----------------")
 				glfw.SetShouldClose("window", true)
 			}
 
