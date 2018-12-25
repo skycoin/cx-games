@@ -3,20 +3,16 @@ package entity
 import "glfw"
 
 import "app"
+import "ccInput"
 import "collision"
 
 
 
-// 		keys 
-var	GLFW_KEY_W i32
-var	GLFW_KEY_A i32
-var	GLFW_KEY_S i32
-var	GLFW_KEY_D i32
-
-var GLFW_KEY_N i32
-var GLFW_KEY_Y i32
-var GLFW_KEY_F2 i32
-var GLFW_KEY_F3 i32
+// ENTITY TYPES   (FIXME when we have const) 
+var ENTITY_HERO        i32
+var ENTITY_ROCKET      i32
+var ENTITY_PARTICLE    i32
+var ENTITY_EDITOR_NODE i32
 	
 
 // physics 
@@ -27,7 +23,9 @@ var timeDel f32
 
 // pools 
 type Entity struct {
+	Type i32
 	Pos Vec2 // position 
+	Rot f32  // rotation (around z axis) 
 	Vel Vec2 // velocity 
 	PolygonStart i32
 	PolygonSize i32
@@ -45,17 +43,6 @@ var Ents []Entity
 func Setup () () {
 	str.print("entity.Setup()")
 
-	// 		keys 
-	GLFW_KEY_W = 87
-	GLFW_KEY_A = 65
-	GLFW_KEY_S = 83
-	GLFW_KEY_D = 68	
-	
-	GLFW_KEY_N = 78
-	GLFW_KEY_Y = 89
-	GLFW_KEY_F2 = 291
-	GLFW_KEY_F3 = 292
-
 	// physics 
 	ball = Entity{ radius: 0.05, gravity: 0.01 }
 	CamPos = app.Vec3{ X: 0.0, Y: 0.0, Z: 0.0 }
@@ -69,8 +56,8 @@ func EntUpdate (tDelta f32) () {
 	// physics 
 	timeDel = tDelta
 	// 		velocity & position adjust 
-	ball.Vel.X = getVelocityChangesFromInput(ball.Vel.X, GLFW_KEY_A, GLFW_KEY_D)
-	ball.Vel.Y = getVelocityChangesFromInput(ball.Vel.Y, GLFW_KEY_S, GLFW_KEY_W)
+	ball.Vel.X = getVelocityChangesFromInput(ball.Vel.X, ccInput.GLFW_KEY_A, ccInput.GLFW_KEY_D)
+	ball.Vel.Y = getVelocityChangesFromInput(ball.Vel.Y, ccInput.GLFW_KEY_S, ccInput.GLFW_KEY_W)
 	ball.Vel.X = getVelocityChangesOnEdgeCollision(ball.Pos.X, ball.Vel.X, ball.radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
 	ball.Vel.Y = getVelocityChangesOnEdgeCollision(ball.Pos.Y, ball.Vel.Y, ball.radius, -1.0D, 1.0D)
 	// when speed gets high enough, a simple velocity reversal isn't enough 
@@ -104,40 +91,40 @@ func Add (pos Vec2) () {
 func tempPolling () () {
 	rotateInc := 0.2
 
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_A), 1) {
+	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_A), 1) {
 		CamPos.X = i32.add(CamPos.X, 0.0 - 0.001)
 	} else
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_D), 1) {
+	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_D), 1) {
 		CamPos.X = i32.add(CamPos.X, 0.001)
 	} else {
 		CamPos.X = 0.0
 	}
 
 	// x axis rotation 
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_F2), 1) {
+	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_F2), 1) {
 		CamRot.X = i32.add(CamRot.Y, 0.0 - rotateInc)
 	} else
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_F3), 1) {
+	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_F3), 1) {
 		CamRot.X = i32.add(CamRot.Y, rotateInc)
 	} else {
 		CamRot.X = 0.0
 	}
 
 	// y axis rotation 
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_Y), 1) {
+	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_Y), 1) {
 		CamRot.Y = i32.add(CamRot.Y, 0.0 - rotateInc)
 	} else
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_N), 1) {
+	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_N), 1) {
 		CamRot.Y = i32.add(CamRot.Y, rotateInc)
 	} else {
 		CamRot.Y = 0.0
 	}
 
 	// forward/back translation 
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_W), 1) {
+	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_W), 1) {
 		CamPos.Z = i32.add(CamPos.Z, 0.0 - 0.001)
 	} else
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_S), 1) {
+	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_S), 1) {
 		CamPos.Z = i32.add(CamPos.Z, 0.001)
 	} else {
 		CamPos.Z = 0.0

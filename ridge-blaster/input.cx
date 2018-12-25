@@ -10,11 +10,34 @@ import "entity"
 
 var MousePointer Vec2
 
+// keys 
+var	GLFW_KEY_W i32
+var	GLFW_KEY_A i32
+var	GLFW_KEY_S i32
+var	GLFW_KEY_D i32
+
+var GLFW_KEY_N i32
+var GLFW_KEY_Y i32
+var GLFW_KEY_F2 i32
+var GLFW_KEY_F3 i32
+
 
 
 func Setup () () {
 	str.print("input/ccInput.Setup()")
 
+	// keys 
+	GLFW_KEY_W = 87
+	GLFW_KEY_A = 65
+	GLFW_KEY_S = 83
+	GLFW_KEY_D = 68	
+	
+	GLFW_KEY_N = 78
+	GLFW_KEY_Y = 89
+	GLFW_KEY_F2 = 291
+	GLFW_KEY_F3 = 292
+
+	// callbacks 
 	glfw.SetKeyCallback("window", "onKeyEvent")
 	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
 	glfw.SetCursorPosCallback("window", "onCursorPosEvent")

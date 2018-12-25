@@ -9,8 +9,49 @@ import "environs"
 
 
 
+var rngCol          Color3
+var NEG_UNIT_SPAN   f32 // negative... 
+var CRUST_THICKNESS f32
+var currX           f32
+var span            f32
+var currGreen       f32 // component of terrain fill color 
+
+
+
 func Setup () () {
 	str.print("draw.Setup()")
+	
+	NEG_UNIT_SPAN = 0.0 - 1.0
+	CRUST_THICKNESS = 0.015
+
+	var r f32
+	var g f32
+	var b f32
+
+	r = getRandomForColorChannel()
+	f32.print(r)
+
+	g = getRandomForColorChannel()
+	f32.print(g)
+
+	b = getRandomForColorChannel()
+	f32.print(b)
+
+	rngCol = Color3{ R: r, G: g, B: b }
+}
+
+
+func getRandomForColorChannel () (out f32) {
+	str.print("getRandomForColorChannel ()")
+	
+	// 257, cuz without the +1 it can never reach value of 1.0 
+	var colSpan f32
+	colSpan = f32.div(1.0, 257.0)
+	
+	var f f32
+	f = i32.f32(i32.rand(0, 257))
+	
+	out = f32.mul(f, colSpan)
 }
 
 
@@ -20,8 +61,8 @@ func All () () {
 
 	gl.Begin(gl.QUADS) //POLYGON
 	
+	ColorPickerWheel()
 	Terrain()
-	//ColorPickerWheel()
 	Entities()
 
 	gl.End()
@@ -49,13 +90,14 @@ func All () () {
 func gridLines () () {
 	var l f32
 	l = f64.f32(collision.ScreenEdgeL)
+	
 	var r f32
 	r = f64.f32(collision.ScreenEdgeR)
+	
 	numLines := 30
 	var unitSpan f32
 	unitSpan = f32.mul(r, 2.0)
 	unitSpan = f32.div(unitSpan, i32.f32(numLines))
-	printf("unitSpan: %v\n", unitSpan)
 	z := 0.2
 
 	// vertical 
@@ -65,7 +107,6 @@ func gridLines () () {
 		gl.Vertex3f(fx, l, z)
 		gl.Vertex3f(fx, r, z)
 		
-		printf("fx before inc: %v\n", fx)
 		fx = f32.add(fx, unitSpan)
 	}
 	
@@ -97,45 +138,6 @@ func Circle (ball Entity) () {
 	}
 
 	gl.End()
-}
-
-
-func Terrain () () {
-	var green f32
-	green = 0.2
-
-	var num i32
-	num = len(environs.Terrain) - 1
-
-	var x f32
-	x = f64.f32(collision.ScreenEdgeL)
-
-	var bott f32
-	bott = 0.0 - 1.0
-
-	var span f32
-	span = f32.div(f64.f32(collision.ScreenEdgeR) * 2.0, i32.f32(num))
-
-	for i := 0; i < num; i++ {
-		gl.Color3f(0.6, green, 1.0)
-
-		z := 0.0 - environs.Terrain[i].Floo
-		y :=  bott
-		gl.Vertex3f(x, y, z)
-
-		y = environs.Terrain[i].Floo
-		gl.Vertex3f(x, y, z)
-
-		x = f32.add(x, span)
-
-		y =  environs.Terrain[i+1].Floo
-		gl.Vertex3f(x, y, z)
-
-		y = bott
-		gl.Vertex3f(x, y, z)
-		
-		green = f32.add(green, 0.22)
-	}
 }
 
 
@@ -236,4 +238,60 @@ func ColorPickerWheel () () {
 
 		increase = bool.not(increase)
 	}
+}
+
+
+func Terrain () () {
+	var num i32
+	num = len(environs.Terrain) - 1
+	span = f32.div(f64.f32(collision.ScreenEdgeR) * 2.0, i32.f32(num))
+	currGreen = 0.2
+	currX = f64.f32(collision.ScreenEdgeL)
+
+	for i := 0; i < num; i++ {
+		// draw filling (lavender/cyan gradient) 
+		feedTerrainQuadToGL(i, false)
+
+		// draw crust (random color) 
+		feedTerrainQuadToGL(i, true)
+		
+		currGreen = f32.add(currGreen, 0.01)
+		currX     = f32.add(currX,     span)
+	}
+}
+
+
+func feedTerrainQuadToGL(i i32, drawingCrust bool) () {
+	var up f32 // upper y edge of quad 
+	var lo f32 // lower y edge of quad 
+	z := 0.0
+	
+	// 2 left points of quad 
+	up = environs.Terrain[i].Floo
+	if drawingCrust {
+		lo = environs.Terrain[i].Floo - CRUST_THICKNESS
+		gl.Color3f(rngCol.R, rngCol.G, rngCol.B)
+	} else {
+		lo = NEG_UNIT_SPAN	
+		gl.Color3f(0.6, currGreen, 1.0)
+	}
+	
+	
+	// left edge 
+	gl.Vertex3f(currX, lo, z)
+	gl.Vertex3f(currX, up, z)
+
+	
+	// 2 right points of quad 
+	up =  environs.Terrain[i+1].Floo
+	if drawingCrust {
+		lo =  environs.Terrain[i+1].Floo - CRUST_THICKNESS
+	} else {
+		lo = NEG_UNIT_SPAN	
+	}
+
+
+	// right edge 
+	gl.Vertex3f(currX + span, up, z)
+	gl.Vertex3f(currX + span, lo, z)
 }
