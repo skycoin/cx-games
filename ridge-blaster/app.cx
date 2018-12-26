@@ -2,7 +2,7 @@ package app
 
 
 
-var NAME str = "RIDGE BLASTER"
+var NAME str = "RIDGE BLASTER - (W,A,S,D)"
 var WIDTH i32 = 1280
 var HEIGHT i32 = 720
 var ScreenSizeInPixels VecI

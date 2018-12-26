@@ -64,7 +64,7 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 	//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
 	if /* press */ action == 1 {
-		entity.Add(MousePointer)
+		entity.Add(entity.TYPE_EDITOR_NODE, MousePointer)
 	}
 }
 
@@ -93,11 +93,11 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 
 	if action != 2 { // (not a repeat) 
 		if action == 1 { // (press) 
-			//str.print("-----------------------------------------PRESS (not a repeat)")
+			//str.print("-------------------------------------PRESS (not a repeat)")
 
 			// close 
 			if key == 53 { // GLFW_KEY_5 
-				str.print("----------------- QUITTING GAME -----------------")
+				str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 				glfw.SetShouldClose("window", true)
 			}
 

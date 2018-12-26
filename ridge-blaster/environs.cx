@@ -2,8 +2,10 @@ package environs
 
 
 
+var NUM_COLUMNS i32 = 80
 var MINIMUM_CLEARANCE f32 // min gameplay space needed for ship to have 
                           // some wiggle room between ground/floor & ceiling 
+var PopulatedWithEntities bool
 
 type Column struct {
 	Floo f32 // floor 
@@ -35,8 +37,7 @@ func Setup () () {
 	MINIMUM_CLEARANCE = 0.3
 	maxY := 1.0 - MINIMUM_CLEARANCE
 	var prevFloo f32
-	numColumns := 80 //64
-	for i := 0; i < numColumns; i++ {
+	for i := 0; i < NUM_COLUMNS; i++ {
 		var f f32
 		var c f32
 		f = f32.add(f, GetRandF32())
@@ -52,11 +53,12 @@ func Setup () () {
 			f = f32.sub(maxY, f32.abs(f))
 		}
 		
-		printf("floor %f,   ceiling %f \n", f, c)
+		//printf("floor %f,   ceiling %f \n", f, c)
 		var colu Column
 		colu = Column{ Floo: 0.0 - f, Ceil: 0.0 - c }
-		printf("colu floor %f,   colu ceiling %f \n", colu.Floo, colu.Ceil)
+		//printf("colu floor %f,   colu ceiling %f \n", colu.Floo, colu.Ceil)
 		Terrain = append(Terrain, colu)
+		
 		prevFloo = f
 	}
 }
@@ -70,7 +72,7 @@ func GetRandF32 () (out f32) {
 	out = F32_RAND_GRAIN_SIZE * i32.f32(rnd)
 	out = f32.sub(out, 0.15)
 	
-	printf("GetRandF32 () - rnd: %d - out: %f\n", rnd, out)
+	//printf("GetRandF32 () - rnd: %d - out: %f\n", rnd, out)
 }
 
 

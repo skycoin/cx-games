@@ -2,6 +2,15 @@
 	RIDGE BLASTER 
 
 	(will be similar to the 80s arcade game Scramble) 
+	
+	
+	
+	FORMAL/THOROUGH REPORT & TEST NEEDED FOR THESE BUGS:
+		couldn't make a Vec2 on the spot, as a parameter of entity.Add()
+		had to declare/define first, THEN could pass it
+	
+	ADD 
+		bindings for .rand() on types other than i32
 */
 
 
@@ -17,6 +26,8 @@ func main () {
 	var bar str
 	bar = "__________________________"
 	printf("\n\n\n%s %s %s\n", bar, app.NAME, bar)
+	str.print("use W, A, S, D keys to move")
+	str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
 	game.Init()
 

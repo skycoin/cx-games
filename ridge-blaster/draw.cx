@@ -29,21 +29,14 @@ func Setup () () {
 	var b f32
 
 	r = getRandomForColorChannel()
-	f32.print(r)
-
 	g = getRandomForColorChannel()
-	f32.print(g)
-
 	b = getRandomForColorChannel()
-	f32.print(b)
 
 	rngCol = Color3{ R: r, G: g, B: b }
 }
 
 
 func getRandomForColorChannel () (out f32) {
-	str.print("getRandomForColorChannel ()")
-	
 	// 257, cuz without the +1 it can never reach value of 1.0 
 	var colSpan f32
 	colSpan = f32.div(1.0, 257.0)
@@ -68,10 +61,11 @@ func All () () {
 	gl.End()
 
 
+	/*
 	gl.Begin(gl.POLYGON)
 	simpleVertexSequence(0.0)
 	gl.End()
-
+	*/
 
 	gl.Begin(gl.LINE_LOOP)
 	simpleVertexSequence(0.5)
@@ -164,10 +158,10 @@ func Entities () () {
 		var tY f32
 		tY = f32.add(e.Pos.Y, f)
 		
-		gl.Vertex2f(lX, bY)
-		gl.Vertex2f(lX, tY)
-		gl.Vertex2f(rX, tY)
-		gl.Vertex2f(rX, bY)
+		gl.Vertex3f(lX, bY, 0.0)
+		gl.Vertex3f(lX, tY, 0.0)
+		gl.Vertex3f(rX, tY, 0.0)
+		gl.Vertex3f(rX, bY, 0.0)
 	}
 }
 
@@ -258,6 +252,8 @@ func Terrain () () {
 		currGreen = f32.add(currGreen, 0.01)
 		currX     = f32.add(currX,     span)
 	}
+	
+	environs.PopulatedWithEntities = true
 }
 
 
@@ -294,4 +290,11 @@ func feedTerrainQuadToGL(i i32, drawingCrust bool) () {
 	// right edge 
 	gl.Vertex3f(currX + span, up, z)
 	gl.Vertex3f(currX + span, lo, z)
+
+
+	if bool.not(environs.PopulatedWithEntities) {
+		var v2 Vec2
+		v2 = Vec2{ X: currX + span, Y: up }
+		entity.Add(entity.TYPE_ROCKET, v2)
+	}
 }

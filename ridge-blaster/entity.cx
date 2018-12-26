@@ -5,14 +5,16 @@ import "glfw"
 import "app"
 import "ccInput"
 import "collision"
+import "environs"
 
 
 
-// ENTITY TYPES   (FIXME when we have const) 
-var ENTITY_HERO        i32
-var ENTITY_ROCKET      i32
-var ENTITY_PARTICLE    i32
-var ENTITY_EDITOR_NODE i32
+// ENTITY TYPES   (FIXME when we have constants) 
+var TYPE_HERO        i32 = 0
+var TYPE_BULLET      i32 = 1
+var TYPE_ROCKET      i32 = 2
+var TYPE_PARTICLE    i32 = 3
+var TYPE_EDITOR_NODE i32 = 4
 	
 
 // physics 
@@ -52,6 +54,8 @@ func Setup () () {
 
 func EntUpdate (tDelta f32) () {
 	//str.print("entity.EntUpdate()")
+	
+	//oneTimeInit()
 
 	// physics 
 	timeDel = tDelta
@@ -72,11 +76,43 @@ func EntUpdate (tDelta f32) () {
 }
 
 
-func Add (pos Vec2) () {
+func oneTimeInit () () {
+	if collision.ScreenEdgeR != 0.0D {
+		if bool.not(environs.PopulatedWithEntities) {
+			environs.PopulatedWithEntities = true
+			
+			var span f32
+			span = f32.div(f64.f32(collision.ScreenEdgeR) * 2.0, i32.f32(environs.NUM_COLUMNS))
+			//var span f32
+			//span = f32.mul(f64.f32(collision.ScreenEdgeR), 2.0)
+			//span = f32.div(span, i32.f32(environs.NUM_COLUMNS))
+
+			var x f32
+			x = f64.f32(collision.ScreenEdgeL)
+			
+			for i := 0; i < environs.NUM_COLUMNS; i++ {
+				if i32.eq(i32.rand(0, 11), 0) {
+					var f f32
+					f = environs.Terrain[i].Floo
+
+					var v2 Vec2
+					v2 = Vec2{ X: x, Y: f }
+					
+					Add(TYPE_ROCKET, v2)
+				}
+				
+				x = f32.add(x, span)
+			}
+		}
+	}
+}
+
+
+func Add (entType i32, pos Vec2) () {
 	var e Entity
-	e = Entity{ Pos: pos }
+	e = Entity{ Type: entType, Pos: pos }
 	Ents = append(Ents, e)
-	printf("entity.Add()   x: %f, y: %f \n", pos.X, pos.Y)
+	//printf("entity.Add()   x: %f, y: %f \n", pos.X, pos.Y)
 }
 
 
