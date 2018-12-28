@@ -24,10 +24,7 @@ var MODE_ATTACKING       i32 = 4
 var MODE_DYING           i32 = 5
 var MODE_DEAD            i32 = 6
 	
-
-
 // physics 
-var ball Entity
 var CamPos app.Vec3
 var CamRot app.Vec3
 var timeDel f32
@@ -36,17 +33,14 @@ var timeDel f32
 type Entity struct {
 	Type i32
 	Pos Vec2 // position 
-	Rot f32  // rotation (around z axis) 
+	//Rot f32  // rotation (around z axis) 
+	Radius f32
 	Vel Vec2 // velocity 
 	PolygonStart i32
 	PolygonSize i32
 	NextMode i32
 	TimeToNextMode f32
 	DistanceToNextMode f32
-
-
-	gravity f32
-	radius f32
 }
 var Ents []Entity
 
@@ -56,7 +50,8 @@ func Setup () () {
 	str.print("entity.Setup()")
 
 	// physics 
-	ball = Entity{ radius: 0.05, gravity: 0.01 }
+	pos := Vec2{X: 0.0, Y: 0.0}
+	Add(TYPE_HERO, pos, 0.05);
 	CamPos = app.Vec3{ X: 0.0, Y: 0.0, Z: 0.0 }
 	printf("CamPos.X: %v \n", CamPos.X)
 }
@@ -65,62 +60,28 @@ func Setup () () {
 func EntUpdate (tDelta f32) () {
 	//str.print("entity.EntUpdate()")
 	
-	//oneTimeInit()
-
 	// physics 
 	timeDel = tDelta
 	// 		velocity & position adjust 
-	ball.Vel.X = getVelocityChangesFromInput(ball.Vel.X, ccInput.GLFW_KEY_A, ccInput.GLFW_KEY_D)
-	ball.Vel.Y = getVelocityChangesFromInput(ball.Vel.Y, ccInput.GLFW_KEY_S, ccInput.GLFW_KEY_W)
-	ball.Vel.X = getVelocityChangesOnEdgeCollision(ball.Pos.X, ball.Vel.X, ball.radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
-	ball.Vel.Y = getVelocityChangesOnEdgeCollision(ball.Pos.Y, ball.Vel.Y, ball.radius, -1.0D, 1.0D)
+	Ents[0].Vel.X = getVelocityChangesFromInput(Ents[0].Vel.X, ccInput.GLFW_KEY_A, ccInput.GLFW_KEY_D)
+	Ents[0].Vel.Y = getVelocityChangesFromInput(Ents[0].Vel.Y, ccInput.GLFW_KEY_S, ccInput.GLFW_KEY_W)
+	Ents[0].Vel.X = getVelocityChangesOnEdgeCollision(Ents[0].Pos.X, Ents[0].Vel.X, Ents[0].Radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
+	Ents[0].Vel.Y = getVelocityChangesOnEdgeCollision(Ents[0].Pos.Y, Ents[0].Vel.Y, Ents[0].Radius, -1.0D, 1.0D)
 	// when speed gets high enough, a simple velocity reversal isn't enough 
 	// (jitters back & forth without getting back in bounds)
-	ball.Pos.X = ensureEntirelyWithinBounds(ball.Pos.X, ball.radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
-	ball.Pos.Y = ensureEntirelyWithinBounds(ball.Pos.Y, ball.radius, -1.0D, 1.0D)
+	Ents[0].Pos.X = ensureEntirelyWithinBounds(Ents[0].Pos.X, Ents[0].Radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
+	Ents[0].Pos.Y = ensureEntirelyWithinBounds(Ents[0].Pos.Y, Ents[0].Radius, -1.0D, 1.0D)
 	
 	// move 
-	ball.Pos.X = f32.add(ball.Pos.X, ball.Vel.X)
-	ball.Pos.Y = f32.add(ball.Pos.Y, ball.Vel.Y)
+	Ents[0].Pos.X = f32.add(Ents[0].Pos.X, Ents[0].Vel.X)
+	Ents[0].Pos.Y = f32.add(Ents[0].Pos.Y, Ents[0].Vel.Y)
 	tempPolling()
 }
 
 
-func oneTimeInit () () {
-	if collision.ScreenEdgeR != 0.0D {
-		if bool.not(environs.PopulatedWithEntities) {
-			environs.PopulatedWithEntities = true
-			
-			var span f32
-			span = f32.div(f64.f32(collision.ScreenEdgeR) * 2.0, i32.f32(environs.NUM_COLUMNS))
-			//var span f32
-			//span = f32.mul(f64.f32(collision.ScreenEdgeR), 2.0)
-			//span = f32.div(span, i32.f32(environs.NUM_COLUMNS))
-
-			var x f32
-			x = f64.f32(collision.ScreenEdgeL)
-			
-			for i := 0; i < environs.NUM_COLUMNS; i++ {
-				if i32.eq(i32.rand(0, 11), 0) {
-					var f f32
-					f = environs.Terrain[i].Floo
-
-					var v2 Vec2
-					v2 = Vec2{ X: x, Y: f }
-					
-					Add(TYPE_ROCKET, v2)
-				}
-				
-				x = f32.add(x, span)
-			}
-		}
-	}
-}
-
-
-func Add (entType i32, pos Vec2) () {
+func Add (entType i32, pos Vec2, rad f32) () {
 	var e Entity
-	e = Entity{ Type: entType, Pos: pos }
+	e = Entity{ Type: entType, Pos: pos, Radius: rad }
 	Ents = append(Ents, e)
 	//printf("entity.Add()   x: %f, y: %f \n", pos.X, pos.Y)
 }

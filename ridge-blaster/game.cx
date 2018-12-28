@@ -63,8 +63,8 @@ func Update () () {
 		gl.Rotatef(entity.CamRot.X, 1.0, 0.0, 0.0)
 		gl.Rotatef(entity.CamRot.Y, 0.0, 1.0, 0.0)
 		gl.Translatef(
-			entity.ball.Pos.X, 
-			entity.ball.Pos.Y, 
+			entity.Ents[0].Pos.X, 
+			entity.Ents[0].Pos.Y, 
 			0.0)
 		gl.Translatef(
 			entity.CamPos.X,

@@ -77,7 +77,7 @@ func All () () {
 	gl.End()
 
 
-	Circle(entity.ball)
+	Circle(entity.Ents[0])
 }
 
 
@@ -116,7 +116,7 @@ func gridLines () () {
 }
 
 
-func Circle (ball Entity) () {
+func Circle (e Entity) () {
 	var x f32
 	var y f32
 
@@ -125,8 +125,8 @@ func Circle (ball Entity) () {
 	
 	var i f32
 	for i = 0.0; f32.lt(i, 20.0); i = f32.add(i, 1.0) {
-		x = f32.add(ball.Pos.X, f32.mul(ball.radius, f32.cos(f32.div(f32.mul(i, app.TAU), 20.0))))
-		y = f32.add(ball.Pos.Y, f32.mul(ball.radius, f32.sin(f32.div(f32.mul(i, app.TAU), 20.0))))
+		x = f32.add(e.Pos.X, f32.mul(e.Radius, f32.cos(f32.div(f32.mul(i, app.TAU), 20.0))))
+		y = f32.add(e.Pos.Y, f32.mul(e.Radius, f32.sin(f32.div(f32.mul(i, app.TAU), 20.0))))
 
 		gl.Vertex2f(x, y)
 	}
@@ -135,6 +135,8 @@ func Circle (ball Entity) () {
 }
 
 
+var bulletExtents Vec2 = Vec2{ X: 0.01, Y: 0.004 }
+var rocketExtents Vec2 = Vec2{ X: 0.01, Y: 0.05 }
 func Entities () () {
 	c := 1.0
 	gl.Color3f(c, c, c)
@@ -142,7 +144,8 @@ func Entities () () {
 	for i := 0; i < len(entity.Ents); i++ {
 		var e Entity
 		e = entity.Ents[i]
-
+		
+		// editor node 
 		var f f32
 		f = 0.009
 
@@ -157,6 +160,17 @@ func Entities () () {
 
 		var tY f32
 		tY = f32.add(e.Pos.Y, f)
+		
+		//if e.Type == entity.TYPE_HERO {
+		//}else
+		if e.Type == entity.TYPE_BULLET  {
+			bY = f32.sub(e.Pos.Y, 0.004)
+			tY = f32.add(e.Pos.Y, 0.004)
+		}else
+		if e.Type == entity.TYPE_ROCKET {
+			bY = f32.sub(e.Pos.Y, rocketExtents.Y)
+			tY = f32.add(e.Pos.Y, rocketExtents.Y)
+		}
 		
 		gl.Vertex3f(lX, bY, 0.0)
 		gl.Vertex3f(lX, tY, 0.0)
@@ -295,6 +309,6 @@ func feedTerrainQuadToGL(i i32, drawingCrust bool) () {
 	if bool.not(environs.PopulatedWithEntities) {
 		var v2 Vec2
 		v2 = Vec2{ X: currX + span, Y: up }
-		entity.Add(entity.TYPE_ROCKET, v2)
+		entity.Add(entity.TYPE_ROCKET, v2, rocketExtents.X)
 	}
 }
