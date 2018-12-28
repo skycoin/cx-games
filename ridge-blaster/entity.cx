@@ -9,13 +9,22 @@ import "environs"
 
 
 
-// ENTITY TYPES   (FIXME when we have constants) 
-var TYPE_HERO        i32 = 0
-var TYPE_BULLET      i32 = 1
-var TYPE_ROCKET      i32 = 2
-var TYPE_PARTICLE    i32 = 3
-var TYPE_EDITOR_NODE i32 = 4
+// TYPES   (FIXME when we have constants) 
+var TYPE_HERO        i32 = 1
+var TYPE_BULLET      i32 = 2
+var TYPE_ROCKET      i32 = 3
+var TYPE_PARTICLE    i32 = 4
+var TYPE_EDITOR_NODE i32 = 5
+
+// MODES 
+var MODE_STATIONARY      i32 = 1
+var MODE_MOVING_STRAIGHT i32 = 2
+var MODE_ROAMING         i32 = 3
+var MODE_ATTACKING       i32 = 4
+var MODE_DYING           i32 = 5
+var MODE_DEAD            i32 = 6
 	
+
 
 // physics 
 var ball Entity
@@ -31,8 +40,9 @@ type Entity struct {
 	Vel Vec2 // velocity 
 	PolygonStart i32
 	PolygonSize i32
-	ExpiryByTime f32
-	ExpiryByDistance f32
+	NextMode i32
+	TimeToNextMode f32
+	DistanceToNextMode f32
 
 
 	gravity f32
