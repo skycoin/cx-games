@@ -64,7 +64,9 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 	//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
 	if /* press */ action == 1 {
-		entity.Add(entity.TYPE_EDITOR_NODE, MousePointer, 0.009)
+		var ent Entity
+		ent = Entity{ Type: entity.TYPE_EDITOR_NODE, Pos: MousePointer, Radius: 0.009 }
+		entity.Add(ent)
 	}
 }
 

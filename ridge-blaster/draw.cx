@@ -307,8 +307,17 @@ func feedTerrainQuadToGL(i i32, drawingCrust bool) () {
 
 
 	if bool.not(environs.PopulatedWithEntities) {
-		var v2 Vec2
-		v2 = Vec2{ X: currX + span, Y: up }
-		entity.Add(entity.TYPE_ROCKET, v2, rocketExtents.X)
+		var pos Vec2
+		pos = Vec2{ 
+			X: currX + span, 
+			Y: f32.add(up, rocketExtents.Y) }
+		
+		var ent Entity
+		ent = Entity{
+			Type: entity.TYPE_ROCKET,
+			Pos: pos,
+			Extents: rocketExtents }
+		
+		entity.Add(ent)
 	}
 }

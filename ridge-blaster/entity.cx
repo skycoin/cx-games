@@ -35,9 +35,11 @@ type Entity struct {
 	Pos Vec2 // position 
 	//Rot f32  // rotation (around z axis) 
 	Radius f32
+	Extents Vec2 // FIXME?...this obviates need for radius? 
 	Vel Vec2 // velocity 
 	PolygonStart i32
 	PolygonSize i32
+	Mode i32
 	NextMode i32
 	TimeToNextMode f32
 	DistanceToNextMode f32
@@ -49,11 +51,28 @@ var Ents []Entity
 func Setup () () {
 	str.print("entity.Setup()")
 
-	// physics 
-	pos := Vec2{X: 0.0, Y: 0.0}
-	Add(TYPE_HERO, pos, 0.05);
+	var pos Vec2
+	pos = Vec2{X: 0.0, Y: 0.0}
+	
+	var ent Entity
+	ent = Entity{ Type: TYPE_HERO, Pos: pos, Radius: 0.05 }
+	
+	Add(ent)
 	CamPos = app.Vec3{ X: 0.0, Y: 0.0, Z: 0.0 }
 	printf("CamPos.X: %v \n", CamPos.X)
+}
+
+
+//func Add (entType i32, pos Vec2, rad f32) () {
+func Add (ent Entity) () {
+	//printf("entity.Add()   x: %f, y: %f \n", pos.X, pos.Y)
+
+
+	//var ent Entity
+	//ent = Entity{ Type: entType, Pos: pos, Radius: rad }
+
+
+	Ents = append(Ents, ent)
 }
 
 
@@ -72,30 +91,18 @@ func EntUpdate (tDelta f32) () {
 	Ents[0].Pos.X = ensureEntirelyWithinBounds(Ents[0].Pos.X, Ents[0].Radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
 	Ents[0].Pos.Y = ensureEntirelyWithinBounds(Ents[0].Pos.Y, Ents[0].Radius, -1.0D, 1.0D)
 	
-	// move 
-	Ents[0].Pos.X = f32.add(Ents[0].Pos.X, Ents[0].Vel.X)
-	Ents[0].Pos.Y = f32.add(Ents[0].Pos.Y, Ents[0].Vel.Y)
-	tempPolling()
+	// moves 
+	var i i32
+	for i = 0; i < len(Ents); i++ {
+		Ents[i].Pos.X = f32.add(Ents[i].Pos.X, Ents[i].Vel.X)
+		Ents[i].Pos.Y = f32.add(Ents[i].Pos.Y, Ents[i].Vel.Y)
+	}
+	
+	//pollCameraControlKeys()
 }
 
 
-func Add (entType i32, pos Vec2, rad f32) () {
-	var e Entity
-	e = Entity{ Type: entType, Pos: pos, Radius: rad }
-	Ents = append(Ents, e)
-	//printf("entity.Add()   x: %f, y: %f \n", pos.X, pos.Y)
-}
-
-
-
-
-
-
-
-
-
-
-func tempPolling () () {
+func pollCameraControlKeys () () {
 	rotateInc := 0.2
 
 	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_A), 1) {
@@ -137,6 +144,7 @@ func tempPolling () () {
 		CamPos.Z = 0.0
 	}
 }
+
 
 func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
 	out = f32.add(currentVelocity, app.FORCE * timeDel * strength)
