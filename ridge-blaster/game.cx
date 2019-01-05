@@ -47,7 +47,7 @@ func Init () () {
 func Update () () {
 	updateTiming()
 	ccInput.InpUpdate()
-	entity.EntUpdate(timeDelta)
+	entity.EntUpdate(timeDelta, currTime)
 
 
 	// graphics 
@@ -77,7 +77,7 @@ func Update () () {
 	gl.MatrixMode(gl.MODELVIEW)
 
 	collision.ColUpdate(ratio)
-	draw.All()
+	draw.All(currTime)
 
 	glfw.PollEvents()
 	glfw.SwapBuffers("window")

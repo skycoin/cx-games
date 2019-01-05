@@ -23,6 +23,8 @@ var MODE_ROAMING         i32 = 3
 var MODE_ATTACKING       i32 = 4
 var MODE_DYING           i32 = 5
 var MODE_DEAD            i32 = 6
+// consider that maybe corpse needs to remain visible....
+// (then _DEAD != inactive/disabled (the Unity term) ) 
 	
 // physics 
 var CamPos app.Vec3
@@ -76,7 +78,7 @@ func Add (ent Entity) () {
 }
 
 
-func EntUpdate (tDelta f32) () {
+func EntUpdate (tDelta f32, currTime f32) () {
 	//str.print("entity.EntUpdate()")
 	
 	// physics 
@@ -94,8 +96,18 @@ func EntUpdate (tDelta f32) () {
 	// moves 
 	var i i32
 	for i = 0; i < len(Ents); i++ {
-		Ents[i].Pos.X = f32.add(Ents[i].Pos.X, Ents[i].Vel.X)
-		Ents[i].Pos.Y = f32.add(Ents[i].Pos.Y, Ents[i].Vel.Y)
+		// mode changes 
+		if Ents[i].TimeToNextMode != 0 && 
+			Ents[i].TimeToNextMode <= currTime {
+			Ents[i].Mode = Ents[i].NextMode
+		}			
+		
+		// movement 
+		if Ents[i].Mode != MODE_DEAD &&
+			Ents[i].Mode != MODE_STATIONARY {
+			Ents[i].Pos.X = f32.add(Ents[i].Pos.X, Ents[i].Vel.X)
+			Ents[i].Pos.Y = f32.add(Ents[i].Pos.Y, Ents[i].Vel.Y)
+		}
 	}
 	
 	//pollCameraControlKeys()
