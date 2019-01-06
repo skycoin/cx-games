@@ -36,18 +36,6 @@ func Setup () () {
 }
 
 
-func getRandomForColorChannel () (out f32) {
-	// 257, cuz without the +1 it can never reach value of 1.0 
-	var colSpan f32
-	colSpan = f32.div(1.0, 257.0)
-	
-	var f f32
-	f = i32.f32(i32.rand(0, 257))
-	
-	out = f32.mul(f, colSpan)
-}
-
-
 func All (currTime f32) () {
 	//str.print("draw.Update()")
 
@@ -62,22 +50,27 @@ func All (currTime f32) () {
 
 
 	/*
+	draws polygon from all entity positions 
 	gl.Begin(gl.POLYGON)
 	simpleVertexSequence(0.0)
 	gl.End()
 	*/
 
+	/*
+	draws loop from all entity positions 
 	gl.Begin(gl.LINE_LOOP)
 	simpleVertexSequence(0.5)
 	gl.End()
+	*/
 
-
+	/*
 	gl.Begin(gl.LINES)
 	gridLines()
 	gl.End()
+	*/
 
-
-	Circle(entity.Ents[0])
+	// hero 
+	//Circle(entity.Ents[0])
 }
 
 
@@ -136,43 +129,38 @@ func Circle (e Entity) () {
 
 
 func Entities () () {
-	c := 1.0
-	gl.Color3f(c, c, c)
-
 	for i := 0; i < len(entity.Ents); i++ {
 		var e Entity
 		e = entity.Ents[i]
 		
-		// editor node 
-		var f f32
-		f = 0.009
-
-		var lX f32
-		lX = f32.sub(e.Pos.X, f)
-
-		var rX f32
-		rX = f32.add(e.Pos.X, f)
-
-		var bY f32
-		bY = f32.sub(e.Pos.Y, f)
-
-		var tY f32
-		tY = f32.add(e.Pos.Y, f)
-		
-		//if e.Type == entity.TYPE_HERO {
-		//}else
-		if e.Type == entity.TYPE_BULLET  {
-			bY = f32.sub(e.Pos.Y, entity.BulletExtents.Y)
-			tY = f32.add(e.Pos.Y, entity.BulletExtents.Y)
+		// colors 
+		if e.Type == entity.TYPE_HERO {
+			c := 0.4
+			gl.Color3f(c, c, c)
+		}else
+		if e.Type == entity.TYPE_BULLET {
+			gl.Color3f(1.0, 1.0, 0.0)
 		}else
 		if e.Type == entity.TYPE_ROCKET {
-			bY = f32.sub(e.Pos.Y, entity.RocketExtents.Y)
-			tY = f32.add(e.Pos.Y, entity.RocketExtents.Y)
+			gl.Color3f(0.0, 0.0, 1.0)
 		}else
 		if e.Type == entity.TYPE_EDITOR_NODE {
-			bY = f32.sub(e.Pos.Y, entity.NodeExtents.Y)
-			tY = f32.add(e.Pos.Y, entity.NodeExtents.Y)
+			cc := 1.0
+			gl.Color3f(cc, cc, cc)
 		}
+
+
+		var lX f32
+		lX = f32.sub(e.Pos.X, e.Extents.X)
+
+		var rX f32
+		rX = f32.add(e.Pos.X, e.Extents.X)
+
+		var bY f32
+		bY = f32.sub(e.Pos.Y, e.Extents.Y)
+
+		var tY f32
+		tY = f32.add(e.Pos.Y, e.Extents.Y)
 		
 		gl.Vertex3f(lX, bY, 0.0)
 		gl.Vertex3f(lX, tY, 0.0)
@@ -334,4 +322,16 @@ func feedTerrainQuadToGL(i i32, drawingCrust bool, currTime f32) () {
 		
 		entity.Add(ent)
 	}
+}
+
+
+func getRandomForColorChannel () (out f32) {
+	// 257, cuz without the +1 it can never reach value of 1.0 
+	var colSpan f32
+	colSpan = f32.div(1.0, 257.0)
+	
+	var f f32
+	f = i32.f32(i32.rand(0, 257))
+	
+	out = f32.mul(f, colSpan)
 }

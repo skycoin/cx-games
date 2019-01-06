@@ -46,7 +46,7 @@ func Init () () {
 
 func Update () () {
 	updateTiming()
-	ccInput.InpUpdate() 
+	ccInput.InpUpdate()
 	entity.EntUpdate(timeDelta, currTime)
 
 

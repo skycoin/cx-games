@@ -69,16 +69,16 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 		
 		if app.Mode < app.MODE_GAME_OVER {
 			t = entity.TYPE_BULLET
-			pos = MousePointer
-			//pos = entity.Ents[0].Pos
-			//pos.X += entity.Ents[0].Extents.X
-			vel = Vec2{ X: 0.01 }
+			pos = entity.Ents[0].Pos
+			pos.X = f32.add(pos.X, entity.Ents[0].Extents.X)
+			pos.X = f32.add(pos.X, entity.BulletExtents.X)
+			vel = Vec2{ X: 0.01, Y: 0.0 }
 			mode = entity.MODE_MOVING_STRAIGHT
 			ext = entity.BulletExtents
 		} else {
 			t = entity.TYPE_EDITOR_NODE
 			pos = MousePointer
-			vel = Vec2{ X: 0.0 }
+			vel = Vec2{ X: 0.0, Y: 0.0 }
 			mode = entity.MODE_STATIONARY
 			ext = entity.NodeExtents
 		}

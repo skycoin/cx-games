@@ -32,6 +32,7 @@ var CamRot app.Vec3
 var timeDel f32
 
 // extents
+var HeroExtents   Vec2 = Vec2{ X: 0.07,  Y: 0.03 }
 var BulletExtents Vec2 = Vec2{ X: 0.01,  Y: 0.004 }
 var RocketExtents Vec2 = Vec2{ X: 0.01,  Y: 0.05 }
 var NodeExtents   Vec2 = Vec2{ X: 0.009, Y: 0.009 }
@@ -59,10 +60,15 @@ func Setup () () {
 	str.print("entity.Setup()")
 
 	var pos Vec2
-	pos = Vec2{X: 0.0, Y: 0.0}
+	pos = Vec2{
+		X: 0.0, 
+		Y: 0.0}
 	
 	var ent Entity
-	ent = Entity{ Type: TYPE_HERO, Pos: pos, Radius: 0.05 }
+	ent = Entity{ 
+		Type: TYPE_HERO, 
+		Pos: pos, 
+		Extents: HeroExtents }
 	
 	Add(ent)
 	CamPos = app.Vec3{ X: 0.0, Y: 0.0, Z: 0.0 }
@@ -73,6 +79,14 @@ func Setup () () {
 func Add (ent Entity) () {
 	//printf("entity.Add()   x: %f, y: %f \n", pos.X, pos.Y)
 	Ents = append(Ents, ent)
+	
+	// set radius by extents 
+	// (FIXME?  it's not accurate.  corners lie outside of radius) 
+	if ent.Extents.X > ent.Extents.Y {
+		ent.Radius = ent.Extents.X
+	} else {
+		ent.Radius = ent.Extents.Y
+	}
 }
 
 
