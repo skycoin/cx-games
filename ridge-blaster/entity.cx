@@ -32,8 +32,8 @@ var CamRot app.Vec3
 var timeDel f32
 
 // extents
-var HeroExtents   Vec2 = Vec2{ X: 0.07,  Y: 0.03 }
-var BulletExtents Vec2 = Vec2{ X: 0.01,  Y: 0.004 }
+var HeroExtents   Vec2 = Vec2{ X: 0.08,  Y: 0.04 }
+var BulletExtents Vec2 = Vec2{ X: 0.02,  Y: 0.004 }
 var RocketExtents Vec2 = Vec2{ X: 0.01,  Y: 0.05 }
 var NodeExtents   Vec2 = Vec2{ X: 0.009, Y: 0.009 }
 

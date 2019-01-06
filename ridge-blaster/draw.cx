@@ -142,7 +142,7 @@ func Entities () () {
 			gl.Color3f(1.0, 1.0, 0.0)
 		}else
 		if e.Type == entity.TYPE_ROCKET {
-			gl.Color3f(0.0, 0.0, 1.0)
+			gl.Color3f(1.0, 0.5, 0.0)
 		}else
 		if e.Type == entity.TYPE_EDITOR_NODE {
 			cc := 1.0
