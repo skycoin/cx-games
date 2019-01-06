@@ -9,6 +9,17 @@ var ScreenSizeInPixels VecI
 var TAU f32
 var FORCE f32
 
+// modes 
+// FIXME to consts, when they exist in CX 
+var MODE_TITLE_SCREEN   i32 = 1
+var MODE_MENU           i32 = 2
+var MODE_PLAYING        i32 = 3
+var MODE_GAME_OVER      i32 = 4
+var MODE_EDIT_NODES     i32 = 5
+var MODE_EDIT_TRIANGLES i32 = 6
+var Mode                i32 = MODE_MENU
+
+
 
 
 type VecI struct {

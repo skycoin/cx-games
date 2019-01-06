@@ -135,8 +135,6 @@ func Circle (e Entity) () {
 }
 
 
-var bulletExtents Vec2 = Vec2{ X: 0.01, Y: 0.004 }
-var rocketExtents Vec2 = Vec2{ X: 0.01, Y: 0.05 }
 func Entities () () {
 	c := 1.0
 	gl.Color3f(c, c, c)
@@ -164,12 +162,16 @@ func Entities () () {
 		//if e.Type == entity.TYPE_HERO {
 		//}else
 		if e.Type == entity.TYPE_BULLET  {
-			bY = f32.sub(e.Pos.Y, 0.004)
-			tY = f32.add(e.Pos.Y, 0.004)
+			bY = f32.sub(e.Pos.Y, entity.BulletExtents.Y)
+			tY = f32.add(e.Pos.Y, entity.BulletExtents.Y)
 		}else
 		if e.Type == entity.TYPE_ROCKET {
-			bY = f32.sub(e.Pos.Y, rocketExtents.Y)
-			tY = f32.add(e.Pos.Y, rocketExtents.Y)
+			bY = f32.sub(e.Pos.Y, entity.RocketExtents.Y)
+			tY = f32.add(e.Pos.Y, entity.RocketExtents.Y)
+		}else
+		if e.Type == entity.TYPE_EDITOR_NODE {
+			bY = f32.sub(e.Pos.Y, entity.NodeExtents.Y)
+			tY = f32.add(e.Pos.Y, entity.NodeExtents.Y)
 		}
 		
 		gl.Vertex3f(lX, bY, 0.0)
@@ -315,7 +317,7 @@ func feedTerrainQuadToGL(i i32, drawingCrust bool, currTime f32) () {
 		var pos Vec2
 		pos = Vec2{ 
 			X: currX + span, 
-			Y: f32.add(up, rocketExtents.Y) }
+			Y: f32.add(up, entity.RocketExtents.Y) }
 		
 		var vel Vec2
 		vel = Vec2{ Y: 0.005 }
@@ -328,7 +330,7 @@ func feedTerrainQuadToGL(i i32, drawingCrust bool, currTime f32) () {
 			Mode: entity.MODE_STATIONARY,
 			NextMode: entity.MODE_MOVING_STRAIGHT,
 			TimeToNextMode: time,
-			Extents: rocketExtents }
+			Extents: entity.RocketExtents }
 		
 		entity.Add(ent)
 	}

@@ -31,6 +31,11 @@ var CamPos app.Vec3
 var CamRot app.Vec3
 var timeDel f32
 
+// extents
+var BulletExtents Vec2 = Vec2{ X: 0.01,  Y: 0.004 }
+var RocketExtents Vec2 = Vec2{ X: 0.01,  Y: 0.05 }
+var NodeExtents   Vec2 = Vec2{ X: 0.009, Y: 0.009 }
+
 // pools 
 type Entity struct {
 	Type i32
@@ -65,15 +70,8 @@ func Setup () () {
 }
 
 
-//func Add (entType i32, pos Vec2, rad f32) () {
 func Add (ent Entity) () {
 	//printf("entity.Add()   x: %f, y: %f \n", pos.X, pos.Y)
-
-
-	//var ent Entity
-	//ent = Entity{ Type: entType, Pos: pos, Radius: rad }
-
-
 	Ents = append(Ents, ent)
 }
 

@@ -13,7 +13,7 @@ import "environs"
 
 
 
-// 		timing 
+// timing 
 var prevTime f32 // previous 
 var currTime f32 // current 
 var timeDelta f32
@@ -46,7 +46,7 @@ func Init () () {
 
 func Update () () {
 	updateTiming()
-	ccInput.InpUpdate()
+	ccInput.InpUpdate() 
 	entity.EntUpdate(timeDelta, currTime)
 
 

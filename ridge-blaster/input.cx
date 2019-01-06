@@ -46,9 +46,6 @@ func Setup () () {
 
 func InpUpdate () () {
 	//str.print("input/ccInput.InpUpdate()")
-	app.PreventCrash_DetailsInside()
-
-
 
 	// motion input status 
 	//moveLeft  = keyIsDown(GLFW_KEY_A)
@@ -64,8 +61,36 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 	//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
 	if /* press */ action == 1 {
+		var t    i32
+		var mode i32
+		var pos  Vec2
+		var vel  Vec2
+		var ext  Vec2
+		
+		if app.Mode < app.MODE_GAME_OVER {
+			t = entity.TYPE_BULLET
+			pos = MousePointer
+			//pos = entity.Ents[0].Pos
+			//pos.X += entity.Ents[0].Extents.X
+			vel = Vec2{ X: 0.01 }
+			mode = entity.MODE_MOVING_STRAIGHT
+			ext = entity.BulletExtents
+		} else {
+			t = entity.TYPE_EDITOR_NODE
+			pos = MousePointer
+			vel = Vec2{ X: 0.0 }
+			mode = entity.MODE_STATIONARY
+			ext = entity.NodeExtents
+		}
+		
 		var ent Entity
-		ent = Entity{ Type: entity.TYPE_EDITOR_NODE, Pos: MousePointer, Radius: 0.009 }
+		ent = Entity{ 
+			Type: t, 
+			Pos: pos, 
+			Vel: vel, 
+			Mode: mode, 
+			Extents: ext }
+			
 		entity.Add(ent)
 	}
 }
