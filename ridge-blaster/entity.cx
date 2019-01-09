@@ -27,8 +27,8 @@ var MODE_DEAD            i32 = 6
 // (then _DEAD != inactive/disabled (the Unity term) ) 
 	
 // physics 
-var CamPos app.Vec3
-var CamRot app.Vec3
+var CamPos  app.Vec3
+var CamRot  app.Vec3
 var timeDel f32
 
 // extents
@@ -235,23 +235,29 @@ func getVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32
 	//______________________________________________________________________ 
 	if i32.eq(glfw.GetKey("window", addKey), 1) { //     speed up positively 
 		if out < 0.0 {
-			out = dampenNegativeMovement(out, 4.0)
+			out = dampenNegativeMovement(out, app.DAMP_FACTOR_STRONG)
 		}
 
 		out = f32.add(out, app.FORCE * timeDel)
+		if f32.gt(out, app.MAX_HERO_SPEED) { // enforce speed limit 
+			out = app.MAX_HERO_SPEED
+		}
 	} else //___________________________________________ speed up negatively 
 	if i32.eq(glfw.GetKey("window", subKey), 1) {
 		if out > 0.0 {
-			out = dampenPositiveMovement(out, 4.0)
+			out = dampenPositiveMovement(out, app.DAMP_FACTOR_STRONG)
 		}
 
 		out = f32.sub(out, app.FORCE * timeDel)
+		if f32.lt(out, 0.0 - app.MAX_HERO_SPEED) { // enforce speed limit 
+			out = 0.0 - app.MAX_HERO_SPEED
+		}
 	} else { //__________________________________________ slow down 
 		if out > 0.0 {
-			out = dampenPositiveMovement(out, 1.0)
+			out = dampenPositiveMovement(out, app.DAMP_FACTOR_WEAK)
 		} else
 		if out < 0.0 {
-			out = dampenNegativeMovement(out, 1.0)
+			out = dampenNegativeMovement(out, app.DAMP_FACTOR_WEAK)
 		}
 	}
 }

@@ -302,30 +302,32 @@ func feedTerrainQuadToGL(i i32, drawingCrust bool, currTime f32) () {
 
 
 	if bool.not(environs.PopulatedWithEntities) {
-		var time f32
-		time = i32.f32(i32.rand(0, 20))
-		time = f32.mul(time, 0.5)
-		time = f32.add(currTime, time)
-		
-		var pos Vec2
-		pos = Vec2{ 
-			X: currX + span, 
-			Y: f32.add(up, entity.RocketExtents.Y) }
-		
-		var vel Vec2
-		vel = Vec2{ Y: 0.005 }
-		
-		var ent Entity
-		ent = Entity{
-			Type: entity.TYPE_ROCKET,
-			Pos: pos,
-			Vel: vel,
-			Mode: entity.MODE_STATIONARY,
-			NextMode: entity.MODE_MOVING_STRAIGHT,
-			TimeToNextMode: time,
-			Extents: entity.RocketExtents }
-		
-		entity.Add(ent)
+		if i32.eq(i32.rand(0, 8), 0) {			
+			var time f32
+			time = i32.f32(i32.rand(0, 20))
+			time = f32.mul(time, 0.5)
+			time = f32.add(currTime, time)
+			
+			var pos Vec2
+			pos = Vec2{ 
+				X: currX + span, 
+				Y: f32.add(up, entity.RocketExtents.Y) }
+			
+			var vel Vec2
+			vel = Vec2{ Y: 0.005 }
+			
+			var ent Entity
+			ent = Entity{
+				Type: entity.TYPE_ROCKET,
+				Pos: pos,
+				Vel: vel,
+				Mode: entity.MODE_STATIONARY,
+				NextMode: entity.MODE_MOVING_STRAIGHT,
+				TimeToNextMode: time,
+				Extents: entity.RocketExtents }
+			
+			entity.Add(ent)
+		}
 	}
 }
 
