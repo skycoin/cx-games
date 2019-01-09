@@ -102,8 +102,8 @@ func EntUpdate (tDelta f32, currTime f32) () {
 	Ents[0].Vel.Y = getVelocityChangesOnEdgeCollision(Ents[0].Pos.Y, Ents[0].Vel.Y, Ents[0].Radius, -1.0D, 1.0D)
 	// when speed gets high enough, a simple velocity reversal isn't enough 
 	// (jitters back & forth without getting back in bounds)
-	Ents[0].Pos.X = ensureEntirelyWithinBounds(Ents[0].Pos.X, Ents[0].Radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
-	Ents[0].Pos.Y = ensureEntirelyWithinBounds(Ents[0].Pos.Y, Ents[0].Radius, -1.0D, 1.0D)
+	Ents[0].Pos.X = ensureEntirelyWithinBounds(Ents[0].Pos.X, Ents[0].Extents.X, collision.ScreenEdgeL, collision.ScreenEdgeR)
+	Ents[0].Pos.Y = ensureEntirelyWithinBounds(Ents[0].Pos.Y, Ents[0].Extents.Y, -1.0D, 1.0D)
 	
 	// moves 
 	var i i32
