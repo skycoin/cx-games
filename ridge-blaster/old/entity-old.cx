@@ -657,7 +657,7 @@ func IsTouching_WillExplode(aId i32, deltaMoreThanRadius bool) (out bool) {
 			//					which covers the movement delta 
 
 			// iterate enough positional steps/stride between A & B, 
-			// which will to cover a complete path with no gaps 
+			// which will cover a complete path with no gaps 
 
 			//for ChainProgress <= ChainLength {
 				// fraction towards destination 

@@ -133,6 +133,11 @@ func Entities () () {
 		var e Entity
 		e = entity.Ents[i]
 		
+		//        ______==________________
+		if i32.eq(e.Mode, entity.MODE_DEAD) {
+			continue
+		}
+		
 		// colors 
 		if e.Type == entity.TYPE_HERO {
 			c := 0.4

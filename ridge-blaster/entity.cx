@@ -115,14 +115,55 @@ func EntUpdate (tDelta f32, currTime f32) () {
 		}			
 		
 		// movement 
-		if Ents[i].Mode != MODE_DEAD &&
-			Ents[i].Mode != MODE_STATIONARY {
+		if 	i32.uneq(Ents[i].Mode, MODE_DEAD) &&
+			i32.uneq(Ents[i].Mode, MODE_STATIONARY) {
+			
+			// move 
 			Ents[i].Pos.X = f32.add(Ents[i].Pos.X, Ents[i].Vel.X)
 			Ents[i].Pos.Y = f32.add(Ents[i].Pos.Y, Ents[i].Vel.Y)
+			
+			if Ents[i].Type == TYPE_HERO {
+				//str.print("HERO")
+			} else {
+				var hit bool
+				var other Entity
+				hit, other = checkForHitDownStream(i)
+				if hit {
+					Ents[i].Mode = MODE_DEAD
+					other.Mode   = MODE_DEAD
+					continue
+				}
+			}
 		}
 	}
 	
 	//pollCameraControlKeys()
+}
+
+
+// id is the moving entity, which triggered the need to scan other entities 
+func checkForHitDownStream (id i32) (hit bool, other Entity) {
+	var o i32 // other 
+	for o = id + 1; o < len(Ents); o++ {
+		hit = pairIsTouching(id, o)
+		if hit {
+			//str.print("hit!")
+			other = Ents[o]
+		}
+	}
+}
+
+
+func pairIsTouching (id i32, o i32) (hit bool) {
+	hit = true // lie for a moment 
+	
+	if f32.lt(f32.add(Ents[o].Pos.X, Ents[o].Extents.X), 
+		f32.sub(Ents[id].Pos.X, Ents[id].Extents.X)) ||
+		f32.gt(f32.sub(Ents[o].Pos.X, Ents[o].Extents.X), 
+		f32.add(Ents[id].Pos.X, Ents[id].Extents.X)) {
+		
+		hit = false
+	}
 }
 
 
