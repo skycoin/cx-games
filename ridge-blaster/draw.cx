@@ -24,6 +24,8 @@ func Setup () () {
 	NEG_UNIT_SPAN = 0.0 - 1.0
 	CRUST_THICKNESS = 0.015
 
+	
+	// colors 
 	var r f32
 	var g f32
 	var b f32
@@ -39,16 +41,14 @@ func Setup () () {
 func All (currTime f32) () {
 	//str.print("draw.Update()")
 
-
 	gl.Begin(gl.QUADS) //POLYGON
 	
-	ColorPickerWheel()
+	//ColorPickerWheel()
 	Terrain(currTime)
 	Entities()
 
 	gl.End()
-
-
+	
 	/*
 	draws polygon from all entity positions 
 	gl.Begin(gl.POLYGON)

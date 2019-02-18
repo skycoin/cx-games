@@ -53,25 +53,23 @@ func Update () () {
 	// graphics 
 	app.ScreenSizeInPixels.X, app.ScreenSizeInPixels.Y = glfw.GetFramebufferSize("window")
 	ratio = f32.div(i32.f32(app.ScreenSizeInPixels.X), i32.f32(app.ScreenSizeInPixels.Y))
-	gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.UseProgram(program)
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
 	
 	gl.Ortho(collision.ScreenEdgeL, collision.ScreenEdgeR, -1.0D, 1.0D, 1.0D, -1.0D)
-	/*
-		gl.Rotatef(entity.CamRot.X, 1.0, 0.0, 0.0)
-		gl.Rotatef(entity.CamRot.Y, 0.0, 1.0, 0.0)
-		gl.Translatef(
-			entity.Ents[0].Pos.X, 
-			entity.Ents[0].Pos.Y, 
-			0.0)
-		gl.Translatef(
-			entity.CamPos.X,
-			entity.CamPos.Y,
-			entity.CamPos.Z)
-		printf("CamPos.X: %s \n", f32.str(entity.CamPos.X))
-	*/
+		//gl.Rotatef(entity.CamRot.X, 1.0, 0.0, 0.0)
+		//gl.Rotatef(entity.CamRot.Y, 0.0, 1.0, 0.0)
+		//gl.Translatef(
+			//entity.Ents[0].Pos.X, 
+			//entity.Ents[0].Pos.Y, 
+			//0.0)
+		//gl.Translatef(
+			//entity.CamPos.X,
+			//entity.CamPos.Y,
+			//entity.CamPos.Z)
+		//printf("CamPos.X: %s \n", f32.str(entity.CamPos.X))
 		
 	gl.Viewport(0, 0, app.ScreenSizeInPixels.X, app.ScreenSizeInPixels.Y)
 	gl.MatrixMode(gl.MODELVIEW)
