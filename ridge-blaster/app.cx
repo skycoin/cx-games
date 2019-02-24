@@ -21,7 +21,7 @@ var MODE_PLAYING        i32 = 3
 var MODE_GAME_OVER      i32 = 4
 var MODE_EDIT_NODES     i32 = 5
 var MODE_EDIT_TRIANGLES i32 = 6
-var Mode                i32 = MODE_MENU
+var Mode                i32 = MODE_EDIT_TRIANGLES
 
 
 
@@ -46,21 +46,6 @@ type Color3 struct {
 	R f32
 	G f32
 	B f32
-}
-
-type TriangleOfPointAndColorIds struct {
-	APos i32
-	BPos i32
-	CPos i32
-		
-	AColor i32
-	BColor i32
-	CColor i32
-}
-
-type MultiColorPoint struct {
-	Vert Vec3
-	Colors []i32
 }
 
 

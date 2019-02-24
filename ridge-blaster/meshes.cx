@@ -1,24 +1,34 @@
-package meshes
+package mesh
 
 import "glfw"
 
-
-
-// pools 
-var Colors []Color3
-var Points []MultiColorPoint
-var Triangles []TriangleOfPointAndColorIds
+import "app"
 
 
 
-func Setup () () {
-	str.print("meshes.Setup()")
+type Mesh2D struct {
+	Test str
+	Colors []Color3 // to keep it simple, we'll sync this with Points 
+	Points []Vec3
+	TriangleIndices []i32
+}
+
+var Meshes []Mesh2D
+
+
+
+func Setup2 () () {
+	str.print("mesh.Setup2()")
+	m := Mesh2D{}
+	c := Color3{ R: 1.0, G: 0.5, B: 0.5 }
+	m.Colors = append(m.Colors, c)
+	m.Colors = append(m.Colors, c)
+	m.Colors = append(m.Colors, c)
 }
 
 
-func MeshesUpdate (tDelta f32) () {
-	//str.print("entity.MeshesUpdate()")
-	PreventCrash_DetailsInside
+func Draw (/*tDelta f32*/) () {
+	//str.print("mesh.Draw()")
 }
 
 

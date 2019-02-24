@@ -6,7 +6,7 @@ import "app"
 import "collision"
 import "entity"
 import "environs"
-
+import "mesh"
 
 
 var rngCol          Color3
@@ -20,6 +20,7 @@ var currGreen       f32 // component of terrain fill color
 
 func Setup () () {
 	str.print("draw.Setup()")
+	mesh.Setup2()
 	
 	NEG_UNIT_SPAN = 0.0 - 1.0
 	CRUST_THICKNESS = 0.015
@@ -40,6 +41,7 @@ func Setup () () {
 
 func All (currTime f32) () {
 	//str.print("draw.Update()")
+	mesh.Draw()
 
 	gl.Begin(gl.QUADS) //POLYGON
 	
@@ -129,7 +131,7 @@ func Circle (e Entity) () {
 
 
 func Entities () () {
-	for i := 0; i < len(entity.Ents); i++ {
+	for i := 0; i32.lt(i, len(entity.Ents)); i++ {
 		var e Entity
 		e = entity.Ents[i]
 		
