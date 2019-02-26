@@ -7,9 +7,9 @@ import "app"
 
 
 type Mesh2D struct {
-	Test str
-	Colors []Color3 // to keep it simple, we'll sync this with Points 
-	Points []Vec3
+	Name str
+	Colors []Color3 // to keep it simple, we'll sync this with Points (rather than indices to a palette) 
+	Points []Vec2
 	TriangleIndices []i32
 }
 
@@ -17,13 +17,57 @@ var Meshes []Mesh2D
 
 
 
-func Setup2 () () {
+func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_func_name_ 
 	str.print("mesh.Setup2()")
-	m := Mesh2D{}
-	c := Color3{ R: 1.0, G: 0.5, B: 0.5 }
+	
+	var m Mesh2D
+	m = Mesh2D{ Name: "test triangle" }
+	
+	var c Color3
+	c = Color3{ R: 1.0, G: 0.5, B: 0.9 }
+	
 	m.Colors = append(m.Colors, c)
+	c.B = 0.6
 	m.Colors = append(m.Colors, c)
+	c.B = 0.2
 	m.Colors = append(m.Colors, c)
+	
+	var v Vec2
+	v = Vec2{ X: 0.0, Y: 0.0 }
+
+	v.X = -0.2
+	v.Y = 0.2
+	m.Points = append(m.Points, v)
+	v.X = 0.1
+	v.Y = 0.1
+	m.Points = append(m.Points, v)
+	v.X = 0.0
+	v.Y = -0.0
+	m.Points = append(m.Points, v)
+
+	m.TriangleIndices = append(m.TriangleIndices, 0)
+	m.TriangleIndices = append(m.TriangleIndices, 1)
+	m.TriangleIndices = append(m.TriangleIndices, 2)
+	
+	Meshes = append(Meshes, m)
+
+			str.print("___Setup2")
+			f32.print(Meshes[0].Colors[0].R)
+			f32.print(Meshes[0].Colors[0].G)
+			f32.print(Meshes[0].Colors[0].B)
+			str.print("^^^Setup2")
+
+			
+			str.print("___Setup2")
+			f32.print(Meshes[0].Points[0].X)
+			f32.print(Meshes[0].Points[0].Y)
+
+			f32.print(Meshes[0].Points[1].X)
+			f32.print(Meshes[0].Points[1].Y)
+
+			f32.print(Meshes[0].Points[2].X)
+			f32.print(Meshes[0].Points[2].Y)
+			str.print("^^^Setup2")
 }
 
 

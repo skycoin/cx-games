@@ -41,15 +41,25 @@ func Setup () () {
 
 func All (currTime f32) () {
 	//str.print("draw.Update()")
-	mesh.Draw()
+	//mesh.Draw()
 
+
+
+	// quads 
 	gl.Begin(gl.QUADS) //POLYGON
-	
 	//ColorPickerWheel()
 	Terrain(currTime)
 	Entities()
-
 	gl.End()
+
+
+	
+	// tris 
+	gl.Begin(gl.TRIANGLES)
+	triangles()
+	gl.End()
+
+
 	
 	/*
 	draws polygon from all entity positions 
@@ -73,6 +83,52 @@ func All (currTime f32) () {
 
 	// hero 
 	//Circle(entity.Ents[0])
+}
+
+
+func triangles () () {
+	for i := 0; i32.lt(i, len(mesh.Meshes)); i++ {
+		var m Mesh2D
+		m = mesh.Meshes[i]
+
+		//WORKS f32.print(mesh.Meshes[i].Points[1].X)
+		/*
+			f32.print(m.Points[i].X)
+			f32.print(mesh.Meshes[i].Points[i].Y)
+
+			f32.print(mesh.Meshes[i].Points[1].X)
+			f32.print(mesh.Meshes[i].Points[1].Y)
+
+			f32.print(mesh.Meshes[i].Points[2].X)
+			f32.print(mesh.Meshes[i].Points[2].Y)
+		*/
+
+		for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
+			var pId i32 // point index 
+			pId = m.TriangleIndices[j]
+			
+			var c Color3
+			c = m.Colors[pId]
+			gl.Color3f(c.R, c.G, c.B)
+			
+			var v Vec2
+			v = m.Points[pId]
+			
+			gl.Vertex2f(v.X, v.Y)
+		}
+	}
+}
+
+
+func simpleVertexSequence (colorChanIntensity f32) () {
+	gl.Color3f(colorChanIntensity, colorChanIntensity, colorChanIntensity)
+
+	for i := 0; i < len(entity.Ents); i++ {
+		var e Entity
+		e = entity.Ents[i]
+
+		gl.Vertex2f(e.Pos.X, e.Pos.Y)
+	}
 }
 
 
@@ -173,18 +229,6 @@ func Entities () () {
 		gl.Vertex3f(lX, tY, 0.0)
 		gl.Vertex3f(rX, tY, 0.0)
 		gl.Vertex3f(rX, bY, 0.0)
-	}
-}
-
-
-func simpleVertexSequence (colorChanIntensity f32) () {
-	gl.Color3f(colorChanIntensity, colorChanIntensity, colorChanIntensity)
-
-	for i := 0; i < len(entity.Ents); i++ {
-		var e Entity
-		e = entity.Ents[i]
-
-		gl.Vertex2f(e.Pos.X, e.Pos.Y)
 	}
 }
 

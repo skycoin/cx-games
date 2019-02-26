@@ -7,7 +7,8 @@
 	
 	FORMAL/THOROUGH REPORT & TEST NEEDED FOR THESE BUGS:
 		couldn't make a Vec2 on the spot, as a parameter of entity.Add()
-		had to declare/define first, THEN could pass it
+			had to declare/define first, THEN could pass it
+		couldn't use indexception ( [[ ]] )
 	
 	ADD 
 		bindings for .rand() on types other than i32
