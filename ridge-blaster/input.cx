@@ -61,8 +61,10 @@ func InpUpdate () () {
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 	//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
+	if /* release */ action == 0 {
+	} else
 	if /* press */ action == 1 {
-		fireOrActivate()
+		fireOrActivate()	
 	}
 }
 
@@ -93,11 +95,15 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 		if action == 1 { // (press) 
 			//str.print("-------------------------------------PRESS (not a repeat)")
 
-			// close 
+			if key == 52 { // GLFW_KEY_4 
+				str.print("^^^^ switching EDIT mode^^^^")
+				app.Mode = app.MODE_EDIT_TRIANGLES
+			} else
 			if key == 53 { // GLFW_KEY_5 
-				str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+				 // close 
+				 str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 				glfw.SetShouldClose("window", true)
-			}else
+			} else
 			if key == GLFW_KEY_SPACE {
 				fireOrActivate()
 			}
@@ -131,6 +137,7 @@ func maybeToggleMousePointer (key i32) () {
 }
 
 
+var userTri []Vec2
 func fireOrActivate () () {
 	var t    i32
 	var mode i32
@@ -138,6 +145,7 @@ func fireOrActivate () () {
 	var vel  Vec2
 	var ext  Vec2
 	
+	// handle modes 
 	if app.Mode < app.MODE_GAME_OVER {
 		t = entity.TYPE_BULLET
 		pos = entity.Ents[0].Pos
@@ -146,7 +154,19 @@ func fireOrActivate () () {
 		vel = Vec2{ X: app.MAX_HERO_SPEED * 2.0, Y: 0.0 }
 		mode = entity.MODE_MOVING_STRAIGHT
 		ext = entity.BulletExtents
-	} else {
+	} else 
+	if app.Mode == app.MODE_EDIT_TRIANGLES {
+		// allow player to slide across 3 verts while holding LMB 
+		
+		for i := 0; i32.lt(i, len(entity.Ents)); i++ {
+			if MousePointer.X > f32.sub(entity.Ents[i].Pos.X, entity.NodeExtents.X) &&
+				MousePointer.X < f32.add(entity.Ents[i].Pos.X, entity.NodeExtents.X) &&
+				MousePointer.Y > f32.sub(entity.Ents[i].Pos.Y, entity.NodeExtents.Y) &&
+				MousePointer.Y < f32.add(entity.Ents[i].Pos.Y, entity.NodeExtents.Y) {
+				str.print("clicked on a vertex node!")			
+			}
+		}
+	} else { // atm, only MODE_EDIT_VERTICES / GAME_OVER? 
 		t = entity.TYPE_EDITOR_NODE
 		pos = MousePointer
 		vel = Vec2{ X: 0.0, Y: 0.0 }

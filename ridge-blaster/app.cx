@@ -19,10 +19,10 @@ var MODE_TITLE_SCREEN   i32 = 1
 var MODE_MENU           i32 = 2
 var MODE_PLAYING        i32 = 3
 var MODE_GAME_OVER      i32 = 4
-var MODE_EDIT_NODES     i32 = 5
+var MODE_EDIT_VERTICES  i32 = 5
 var MODE_EDIT_TRIANGLES i32 = 6
 var MODE_EDIT_MAX       i32 = 7
-var Mode                i32 = MODE_EDIT_TRIANGLES
+var Mode                i32 = MODE_EDIT_VERTICES
 
 
 
