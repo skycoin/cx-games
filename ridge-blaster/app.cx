@@ -21,6 +21,7 @@ var MODE_PLAYING        i32 = 3
 var MODE_GAME_OVER      i32 = 4
 var MODE_EDIT_NODES     i32 = 5
 var MODE_EDIT_TRIANGLES i32 = 6
+var MODE_EDIT_MAX       i32 = 7
 var Mode                i32 = MODE_EDIT_TRIANGLES
 
 
@@ -54,11 +55,4 @@ func Setup () () {
 	str.print("app.Setup()")
 	TAU = f32.mul(2.0, 3.141592654)
 	FORCE = 0.04
-}
-
-
-func PreventCrash_DetailsInside () () {
-	unused := 0 // needed cuz... 
-	// FIXME: 
-	// EMPTY FUNCS OR FUNCS WITH ONLY COMMENTS WILL CRASH CX FOR NOW 
 }
