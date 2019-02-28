@@ -137,7 +137,6 @@ func maybeToggleMousePointer (key i32) () {
 }
 
 
-var userTri []Vec2
 func fireOrActivate () () {
 	var t    i32
 	var mode i32
@@ -156,14 +155,22 @@ func fireOrActivate () () {
 		ext = entity.BulletExtents
 	} else 
 	if app.Mode == app.MODE_EDIT_TRIANGLES {
-		// allow player to slide across 3 verts while holding LMB 
+		// TODO enhancement: allow player to slide across 3 verts while holding LMB 
 		
 		for i := 0; i32.lt(i, len(entity.Ents)); i++ {
 			if MousePointer.X > f32.sub(entity.Ents[i].Pos.X, entity.NodeExtents.X) &&
 				MousePointer.X < f32.add(entity.Ents[i].Pos.X, entity.NodeExtents.X) &&
 				MousePointer.Y > f32.sub(entity.Ents[i].Pos.Y, entity.NodeExtents.Y) &&
 				MousePointer.Y < f32.add(entity.Ents[i].Pos.Y, entity.NodeExtents.Y) {
-				str.print("clicked on a vertex node!")			
+				
+				if i32.gteq(entity.PickedTrianglesNextId, 3) {
+					entity.PickedTrianglesNextId = 0
+				}
+
+				entity.PickedTriangle[entity.PickedTrianglesNextId] = i
+				printf("entity.PickedTrianglesNextId: %d \n", entity.PickedTrianglesNextId)
+				entity.PickedTrianglesNextId = i32.add(entity.PickedTrianglesNextId, 1)		
+				printf("entity.PickedTrianglesNextId after raising: %d \n", entity.PickedTrianglesNextId)
 			}
 		}
 	} else { // atm, only MODE_EDIT_VERTICES / GAME_OVER? 

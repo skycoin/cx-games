@@ -54,10 +54,18 @@ type Entity struct {
 }
 var Ents []Entity
 
+var PickedTrianglesNextId i32
+var PickedTriangle []i32
+
 
 
 func Setup () () {
 	str.print("entity.Setup()")
+
+	// these values only used if PickedTrianglesNextId >= 3 
+	PickedTriangle = append(PickedTriangle, 0)
+	PickedTriangle = append(PickedTriangle, 1)
+	PickedTriangle = append(PickedTriangle, 2)
 
 	var pos Vec2
 	pos = Vec2{

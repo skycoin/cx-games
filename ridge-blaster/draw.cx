@@ -210,6 +210,22 @@ func Entities () () {
 		if e.Type == entity.TYPE_EDITOR_NODE {
 			cc := 1.0
 			gl.Color3f(cc, cc, cc)
+			
+			// highlighted colors 
+			for j := 0; i32.lt(j, entity.PickedTrianglesNextId); j++ {
+				
+				if i == entity.PickedTriangle[j] {
+					if j == 0 {
+						gl.Color3f(1.0, 0.0, 0.0) // red 
+					}
+					if j == 1 {
+						gl.Color3f(0.0, 1.0, 0.0) // green 
+					}
+					if j == 2 {
+						gl.Color3f(0.0, 0.0, 1.0) // blue 
+					}
+				}
+			}
 		}
 
 
