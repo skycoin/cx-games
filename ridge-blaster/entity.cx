@@ -6,6 +6,7 @@ import "app"
 import "ccInput"
 import "collision"
 import "environs"
+import "mesh"
 
 
 
@@ -303,3 +304,21 @@ func ensureEntirelyWithinBounds (pos f32, rad f32, negEdge f64, posEdge f64) (ou
 		out = f32.sub(pe, rad)
 	}
 }
+
+
+func MakeNewTriangleFromPicked() () {
+str.print("MakeNewTriangleFromPicked")
+	var a i32
+	var b i32
+	var c i32
+	a = PickedTriangle[0]
+	b = PickedTriangle[1]
+	c = PickedTriangle[2]
+
+	f32.print(Ents[b].Pos.X)
+	f32.print(Ents[b].Pos.Y)
+	mesh.MakeNewTriangle(Ents[a].Pos, Ents[b].Pos, Ents[c].Pos)
+}
+
+
+//for i := 0; i32.lt(i, PickedTrianglesNextId); i++ {
