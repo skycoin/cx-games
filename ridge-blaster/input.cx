@@ -96,8 +96,13 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 			//str.print("-------------------------------------PRESS (not a repeat)")
 
 			if key == 52 { // GLFW_KEY_4 
-				str.print("^^^^ switching EDIT mode^^^^")
-				app.Mode = app.MODE_EDIT_TRIANGLES
+				if app.Mode == app.MODE_EDIT_TRIANGLES {
+					app.Mode = app.MODE_EDIT_VERTICES
+					str.print("^^^^ now in MODE_EDIT_VERTICES ^^^^")
+				} else {
+					app.Mode = app.MODE_EDIT_TRIANGLES
+					str.print("^^^^ now in MODE_EDIT_TRIANGLES ^^^^")
+				}
 			} else
 			if key == 53 { // GLFW_KEY_5 
 				 // close 

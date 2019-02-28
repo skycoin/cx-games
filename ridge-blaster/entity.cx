@@ -315,8 +315,6 @@ str.print("MakeNewTriangleFromPicked")
 	b = PickedTriangle[1]
 	c = PickedTriangle[2]
 
-	f32.print(Ents[b].Pos.X)
-	f32.print(Ents[b].Pos.Y)
 	mesh.MakeNewTriangle(Ents[a].Pos, Ents[b].Pos, Ents[c].Pos)
 }
 
