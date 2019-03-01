@@ -8,10 +8,17 @@
 	FORMAL/THOROUGH REPORT & TEST NEEDED FOR THESE BUGS:
 		couldn't make a Vec2 on the spot, as a parameter of entity.Add()
 			had to declare/define first, THEN could pass it
-		couldn't use indexception ( [[ ]] )
+		
+		DEF NEEDS TO BE ADDED TO ISSUES
+			couldn't use indexception ( [[ ]] ) 
+			no friendly errors / warnings trying to use unimported packages 
 	
 	ADD 
 		bindings for .rand() on types other than i32
+		
+	PAYCHECKS 
+		according to Amaury, they are making a new paycheck policy:
+			"you need to send your invoice before 5th, shanghai time"
 */
 
 

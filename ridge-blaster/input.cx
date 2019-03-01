@@ -179,26 +179,32 @@ func fireOrActivate () () {
 		var p Vec2
 		p = MousePointer
 		
-		for i := 0; i32.lt(i, len(mesh.EditorMeshes.Points)); i++ {
+		// i cycles through editor mesh points 
+		for i := 0; i32.lt(i, len(mesh.EditorMeshes[0].Points)); i++ {
 			if p.X > f32.sub(mesh.EditorMeshes[0].Points[i].X, entity.NodeExtents.X) &&
 				p.X < f32.add(mesh.EditorMeshes[0].Points[i].X, entity.NodeExtents.X) &&
 				p.Y > f32.sub(mesh.EditorMeshes[0].Points[i].Y, entity.NodeExtents.Y) &&
 				p.Y < f32.add(mesh.EditorMeshes[0].Points[i].Y, entity.NodeExtents.Y) {
 				
+				printf("EditorMeshes[0].Points' i: %d \n", i)
+
 				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
 					mesh.PickedTrianglesNextId = 0
 				}
 
 				mesh.PickedTriangle[mesh.PickedTrianglesNextId] = i
-				mesh.PickedTrianglesNextId = i32.add(mesh.PickedTrianglesNextId, 1)		
+				mesh.PickedTrianglesNextId = i32.add(mesh.PickedTrianglesNextId, 1)
 
 				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
 					mesh.MakeNewEditorTriangle()
 				}
+				
+				break
 			}
 		}
 	} else { // atm, only MODE_EDIT_VERTICES / GAME_OVER? 
 		mesh.EditorMeshes[0].Points = append(
 		mesh.EditorMeshes[0].Points, MousePointer)
+		printf("num Points: %d \n", len(mesh.EditorMeshes[0].Points))
 	}
 }

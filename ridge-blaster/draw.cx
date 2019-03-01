@@ -45,8 +45,8 @@ func All (currTime f32) () {
 
 
 	if /* editing */ 
-		app.Mode >= app.MODE_EDIT_VERTICES &&
-		app.Mode <= app.MODE_EDIT_MAX {
+		i32.gteq(app.Mode, app.MODE_EDIT_VERTICES) &&
+		i32.lteq(app.Mode, app.MODE_EDIT_MAX) {
 		
 		gl.Begin(gl.TRIANGLES) //////////////
 		editorTriangles()
@@ -91,7 +91,16 @@ func editorTriangles () () {
 		m = mesh.EditorMeshes[i]
 
 		for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
-			var pId i32 // point index 
+			// give feedback when not multiple of 3 
+			var leftover i32
+			leftover = i32.mod(len(m.TriangleIndices), 3)
+			if i32.uneq(0, leftover) {
+				printf("********* ERROR! leftover: %d in editorTriangles() \n", leftover)
+				printf("********* ERROR! leftover: %d in editorTriangles() \n", leftover)
+				printf("********* ERROR! leftover: %d in editorTriangles() \n", leftover)
+			}
+		
+			var pId i32 // point id (from tri ids) 
 			pId = m.TriangleIndices[j]
 			
 			var c Color3

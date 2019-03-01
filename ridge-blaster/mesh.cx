@@ -113,30 +113,77 @@ func MakeNewRect (top f32, right f32, bottom f32, left f32) () {
 }
 
 
-func MakeNewEditorTriangle () () {
+func MakeNewTriangle /* NON-editor */ (a Vec2, b Vec2, c Vec2) () {
+	////////////////// UNTESTED \\\\\\\\\\\\\\\\\\\\\
+	str.print("mesh.MakeNewTriangle()   (NON-editor)")
+	
+	var m Mesh2D
+	m = Mesh2D{ Name: "NON-editor triangle" }
+	
+	var col Color3
+	col = Color3{ R: 1.0, G: 0.5, B: 0.9 }
+	
+	m.Colors = append(m.Colors, col)
+	col.B = 0.6
+	m.Colors = append(m.Colors, col)
+	col.B = 0.2
+	m.Colors = append(m.Colors, col)
+	
+	m.Points = append(m.Points, a)
+	m.Points = append(m.Points, b)
+	m.Points = append(m.Points, c)
+	
+	var tii /* tri indices index */ i32
+	tii = len(Meshes[0].TriangleIndices)
+	
+	Meshes[0].TriangleIndices = append(Meshes[0].TriangleIndices, tii)
+	tii = i32.add(tii, 1)
+	Meshes[0].TriangleIndices = append(Meshes[0].TriangleIndices, tii)
+	tii = i32.add(tii, 1)
+	Meshes[0].TriangleIndices = append(Meshes[0].TriangleIndices, tii)
+	
+	Meshes = append(Meshes, m)
+}
+
+
+func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) EditorMesh 
 	str.print("mesh.MakeNewEditorTriangle()")
 	
-	/*
-		var m Mesh2D
-		m = Mesh2D{ Name: "editor triangle" }
-		
-		var col Color3
-		col = Color3{ R: 1.0, G: 0.5, B: 0.9 }
-		
-		m.Colors = append(m.Colors, col)
-		col.B = 0.6
-		m.Colors = append(m.Colors, col)
-		col.B = 0.2
-		m.Colors = append(m.Colors, col)
-		
-		m.Points = append(m.Points, a)
-		m.Points = append(m.Points, b)
-		m.Points = append(m.Points, c)
-	*/
-
+	
+	// feedback BEFORE 
+	printf("PickedTriangle[0]: %d \n", PickedTriangle[0])
+	printf("PickedTriangle[1]: %d \n", PickedTriangle[1])
+	printf("PickedTriangle[2]: %d \n", PickedTriangle[2])
+	
+	var numIds i32
+	numIds = len(EditorMeshes[0].TriangleIndices)
+	printf("numIds BEFORE: %d \n", numIds)
+	
+	var numErrTris i32 // erroneous leftover indices where number of indices are not a multiple of 3 
+	var numTris    i32
+	numTris    = i32.div(numIds, 3)
+	numErrTris = i32.mod(numIds, 3)
+	printf("numTris BEFORE: %d \n", numTris)
+	
+	
+	// MEAT of func 
 	EditorMeshes[0].TriangleIndices = append(EditorMeshes[0].TriangleIndices, PickedTriangle[0])
 	EditorMeshes[0].TriangleIndices = append(EditorMeshes[0].TriangleIndices, PickedTriangle[1])
 	EditorMeshes[0].TriangleIndices = append(EditorMeshes[0].TriangleIndices, PickedTriangle[2])
+
+
+	// feedback AFTER 
+	numIds = len(EditorMeshes[0].TriangleIndices)
+	numTris    = i32.div(numIds, 3)
+	numErrTris = i32.mod(numIds, 3)
+	printf("numIds AFTER: %d \n", numIds)
+	printf("numTris AFTER: %d \n", numTris)
 	
-	////////////////////EditorMeshes = append(EditorMeshes, m)
+	if i32.uneq(numErrTris, 0) {
+		printf("********* ERROR! numErrTris: %d \n", numErrTris)
+		printf("********* ERROR! numErrTris: %d \n", numErrTris)
+		printf("********* ERROR! numErrTris: %d \n", numErrTris)
+	}
+
+	printf("EditorMeshes[0].Points len: %d \n", len(EditorMeshes[0].Points))
 }
