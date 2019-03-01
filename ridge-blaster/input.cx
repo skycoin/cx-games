@@ -205,7 +205,13 @@ func fireOrActivate () () {
 				break
 			}
 		}
-	} else { // atm, only MODE_EDIT_VERTICES / GAME_OVER? 
+	} else { // primarily MODE_EDIT_VERTICES for now 
+		c := Color3{ 
+			R: 1.0, 
+			G: 1.0, 
+			B: 1.0 }
+		mesh.EditorMeshes[0].Colors = append(
+		mesh.EditorMeshes[0].Colors, c)
 		mesh.EditorMeshes[0].Points = append(
 		mesh.EditorMeshes[0].Points, MousePointer)
 		printf("num Points: %d \n", len(mesh.EditorMeshes[0].Points))

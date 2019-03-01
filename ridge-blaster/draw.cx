@@ -48,15 +48,15 @@ func All (currTime f32) () {
 		i32.gteq(app.Mode, app.MODE_EDIT_VERTICES) &&
 		i32.lteq(app.Mode, app.MODE_EDIT_MAX) {
 		
+		gl.Begin(gl.QUADS) //////////////////
+		ColorPickerWheel()
+		editorQuads()
+		gl.End()
+
 		gl.Begin(gl.TRIANGLES) //////////////
 		editorTriangles()
 		gl.End()
 		
-		gl.Begin(gl.QUADS) //////////////////
-		//ColorPickerWheel()
-		editorQuads()
-		gl.End()
-
 		/*
 		draws loop from all entity positions 
 		gl.Begin(gl.LINE_LOOP) //////////////
