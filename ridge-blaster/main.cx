@@ -34,7 +34,12 @@ func main () {
 	var bar str
 	bar = "__________________________"
 	printf("\n\n\n%s %s %s\n", bar, app.NAME, bar)
-	str.print("use W, A, S, D keys to move")
+	str.print("[W], [A], [S], [D] ======== move")
+	str.print("[SPACE] or mouse buttons == shoot")
+	str.print("[5] ======================= quit")
+	str.print("[4] ======================= edit (or toggle between VERTICES & TRIANGLES)")
+	str.print("[3] ======================= play")
+	str.print("[2] ======================= move mesh to play mode? (NOT YET tho)")
 	str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
 	game.Init()
