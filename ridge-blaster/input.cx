@@ -5,6 +5,7 @@ import "glfw"
 import "app"
 import "collision"
 import "entity"
+import "mesh"
 
 
 
@@ -95,18 +96,22 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 		if action == 1 { // (press) 
 			//str.print("-------------------------------------PRESS (not a repeat)")
 
+			if key == 51 { // GLFW_KEY_3 
+				str.print("^^ hit PLAY ^^")
+				app.Mode = app.MODE_PLAYING
+			} else
 			if key == 52 { // GLFW_KEY_4 
-				if app.Mode == app.MODE_EDIT_TRIANGLES {
-					app.Mode = app.MODE_EDIT_VERTICES
-					str.print("^^^^ now in MODE_EDIT_VERTICES ^^^^")
-				} else {
+				if app.Mode == app.MODE_EDIT_VERTICES {
 					app.Mode = app.MODE_EDIT_TRIANGLES
 					str.print("^^^^ now in MODE_EDIT_TRIANGLES ^^^^")
+				} else {
+					app.Mode = app.MODE_EDIT_VERTICES
+					str.print("^^^^ now in MODE_EDIT_VERTICES ^^^^")
 				}
 			} else
 			if key == 53 { // GLFW_KEY_5 
-				 // close 
-				 str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+				// close 
+				str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 				glfw.SetShouldClose("window", true)
 			} else
 			if key == GLFW_KEY_SPACE {
@@ -158,43 +163,42 @@ func fireOrActivate () () {
 		vel = Vec2{ X: app.MAX_HERO_SPEED * 2.0, Y: 0.0 }
 		mode = entity.MODE_MOVING_STRAIGHT
 		ext = entity.BulletExtents
+	
+		var ent Entity
+		ent = Entity{ 
+			Type: t, 
+			Pos: pos, 
+			Vel: vel, 
+			Mode: mode, 
+			Extents: ext }
+		
+		entity.Add(ent)
 	} else 
 	if app.Mode == app.MODE_EDIT_TRIANGLES {
 		// TODO enhancement: allow player to slide across 3 verts while holding LMB 
+		var p Vec2
+		p = MousePointer
 		
-		for i := 0; i32.lt(i, len(entity.Ents)); i++ {
-			if MousePointer.X > f32.sub(entity.Ents[i].Pos.X, entity.NodeExtents.X) &&
-				MousePointer.X < f32.add(entity.Ents[i].Pos.X, entity.NodeExtents.X) &&
-				MousePointer.Y > f32.sub(entity.Ents[i].Pos.Y, entity.NodeExtents.Y) &&
-				MousePointer.Y < f32.add(entity.Ents[i].Pos.Y, entity.NodeExtents.Y) {
+		for i := 0; i32.lt(i, len(mesh.EditorMeshes.Points)); i++ {
+			if p.X > f32.sub(mesh.EditorMeshes[0].Points[i].X, entity.NodeExtents.X) &&
+				p.X < f32.add(mesh.EditorMeshes[0].Points[i].X, entity.NodeExtents.X) &&
+				p.Y > f32.sub(mesh.EditorMeshes[0].Points[i].Y, entity.NodeExtents.Y) &&
+				p.Y < f32.add(mesh.EditorMeshes[0].Points[i].Y, entity.NodeExtents.Y) {
 				
-				if i32.gteq(entity.PickedTrianglesNextId, 3) {
-					entity.PickedTrianglesNextId = 0
+				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
+					mesh.PickedTrianglesNextId = 0
 				}
 
-				entity.PickedTriangle[entity.PickedTrianglesNextId] = i
-				entity.PickedTrianglesNextId = i32.add(entity.PickedTrianglesNextId, 1)		
+				mesh.PickedTriangle[mesh.PickedTrianglesNextId] = i
+				mesh.PickedTrianglesNextId = i32.add(mesh.PickedTrianglesNextId, 1)		
 
-				if i32.gteq(entity.PickedTrianglesNextId, 3) {
-					entity.MakeNewTriangleFromPicked()
+				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
+					mesh.MakeNewEditorTriangle()
 				}
 			}
 		}
 	} else { // atm, only MODE_EDIT_VERTICES / GAME_OVER? 
-		t = entity.TYPE_EDITOR_NODE
-		pos = MousePointer
-		vel = Vec2{ X: 0.0, Y: 0.0 }
-		mode = entity.MODE_STATIONARY
-		ext = entity.NodeExtents
+		mesh.EditorMeshes[0].Points = append(
+		mesh.EditorMeshes[0].Points, MousePointer)
 	}
-	
-	var ent Entity
-	ent = Entity{ 
-		Type: t, 
-		Pos: pos, 
-		Vel: vel, 
-		Mode: mode, 
-		Extents: ext }
-		
-	entity.Add(ent)
 }

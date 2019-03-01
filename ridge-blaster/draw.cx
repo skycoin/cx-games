@@ -39,42 +39,41 @@ func Setup () () {
 }
 
 
+
 func All (currTime f32) () {
-	//str.print("draw.Update()")
-	//mesh.Draw()
+	//str.print("draw.All()")
 
 
+	if /* editing */ 
+		app.Mode >= app.MODE_EDIT_VERTICES &&
+		app.Mode <= app.MODE_EDIT_MAX {
+		
+		gl.Begin(gl.TRIANGLES) //////////////
+		editorTriangles()
+		gl.End()
+		
+		gl.Begin(gl.QUADS) //////////////////
+		//ColorPickerWheel()
+		editorQuads()
+		gl.End()
 
-	// quads 
-	gl.Begin(gl.QUADS) //POLYGON
-	//ColorPickerWheel()
-	Terrain(currTime)
-	Entities()
-	gl.End()
-
+		/*
+		draws loop from all entity positions 
+		gl.Begin(gl.LINE_LOOP) //////////////
+		simpleVertexSequence(0.5)
+		gl.End()
+		*/
+	} else { // playing (& the rest) 
+		gl.Begin(gl.QUADS)
+		
+		Terrain(currTime)
+		Entities()
+		
+		gl.End()
+	}
 
 	
-	// tris 
-	gl.Begin(gl.TRIANGLES)
-	triangles()
-	gl.End()
-
-
 	
-	/*
-	draws polygon from all entity positions 
-	gl.Begin(gl.POLYGON)
-	simpleVertexSequence(0.0)
-	gl.End()
-	*/
-
-	/*
-	draws loop from all entity positions 
-	gl.Begin(gl.LINE_LOOP)
-	simpleVertexSequence(0.5)
-	gl.End()
-	*/
-
 	/*
 	gl.Begin(gl.LINES)
 	gridLines()
@@ -86,22 +85,10 @@ func All (currTime f32) () {
 }
 
 
-func triangles () () {
-	for i := 0; i32.lt(i, len(mesh.Meshes)); i++ {
+func editorTriangles () () {
+	for i := 0; i32.lt(i, len(mesh.EditorMeshes)); i++ {
 		var m Mesh2D
-		m = mesh.Meshes[i]
-
-		//WORKS f32.print(mesh.Meshes[i].Points[1].X)
-		/*
-			f32.print(m.Points[i].X)
-			f32.print(mesh.Meshes[i].Points[i].Y)
-
-			f32.print(mesh.Meshes[i].Points[1].X)
-			f32.print(mesh.Meshes[i].Points[1].Y)
-
-			f32.print(mesh.Meshes[i].Points[2].X)
-			f32.print(mesh.Meshes[i].Points[2].Y)
-		*/
+		m = mesh.EditorMeshes[i]
 
 		for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
 			var pId i32 // point index 
@@ -186,6 +173,52 @@ func Circle (e Entity) () {
 }
 
 
+func editorQuads () () {
+	for i := 0; i32.lt(i, len(mesh.EditorMeshes[0].Points)); i++ {
+		cc := 1.0
+		gl.Color3f(cc, cc, cc)
+		
+		// highlighted colors 
+		for j := 0; i32.lt(j, mesh.PickedTrianglesNextId); j++ {
+			
+			if i == mesh.PickedTriangle[j] {
+				if j == 0 {
+					gl.Color3f(1.0, 0.0, 0.0) // red 
+				}
+				if j == 1 {
+					gl.Color3f(0.0, 1.0, 0.0) // green 
+				}
+				if j == 2 {
+					gl.Color3f(0.0, 0.0, 1.0) // blue 
+				}
+			}
+		}
+		
+		drawRect(mesh.EditorMeshes[0].Points[i], entity.NodeExtents)
+	}
+}
+
+
+func drawRect (pos Vec2, extents Vec2) () {
+		var lX f32
+		lX = f32.sub(pos.X, extents.X)
+
+		var rX f32
+		rX = f32.add(pos.X, extents.X)
+
+		var bY f32
+		bY = f32.sub(pos.Y, extents.Y)
+
+		var tY f32
+		tY = f32.add(pos.Y, extents.Y)
+		
+		gl.Vertex3f(lX, bY, 0.0)
+		gl.Vertex3f(lX, tY, 0.0)
+		gl.Vertex3f(rX, tY, 0.0)
+		gl.Vertex3f(rX, bY, 0.0)
+}
+
+
 func Entities () () {
 	for i := 0; i32.lt(i, len(entity.Ents)); i++ {
 		var e Entity
@@ -206,45 +239,9 @@ func Entities () () {
 		}else
 		if e.Type == entity.TYPE_ROCKET {
 			gl.Color3f(1.0, 0.5, 0.0)
-		}else
-		if e.Type == entity.TYPE_EDITOR_NODE {
-			cc := 1.0
-			gl.Color3f(cc, cc, cc)
-			
-			// highlighted colors 
-			for j := 0; i32.lt(j, entity.PickedTrianglesNextId); j++ {
-				
-				if i == entity.PickedTriangle[j] {
-					if j == 0 {
-						gl.Color3f(1.0, 0.0, 0.0) // red 
-					}
-					if j == 1 {
-						gl.Color3f(0.0, 1.0, 0.0) // green 
-					}
-					if j == 2 {
-						gl.Color3f(0.0, 0.0, 1.0) // blue 
-					}
-				}
-			}
 		}
-
-
-		var lX f32
-		lX = f32.sub(e.Pos.X, e.Extents.X)
-
-		var rX f32
-		rX = f32.add(e.Pos.X, e.Extents.X)
-
-		var bY f32
-		bY = f32.sub(e.Pos.Y, e.Extents.Y)
-
-		var tY f32
-		tY = f32.add(e.Pos.Y, e.Extents.Y)
 		
-		gl.Vertex3f(lX, bY, 0.0)
-		gl.Vertex3f(lX, tY, 0.0)
-		gl.Vertex3f(rX, tY, 0.0)
-		gl.Vertex3f(rX, bY, 0.0)
+		drawRect(e.Pos, e.Extents)
 	}
 }
 

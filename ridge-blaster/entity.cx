@@ -15,7 +15,6 @@ var TYPE_HERO        i32 = 1
 var TYPE_BULLET      i32 = 2
 var TYPE_ROCKET      i32 = 3
 var TYPE_PARTICLE    i32 = 4
-var TYPE_EDITOR_NODE i32 = 5
 
 // MODES 
 var MODE_STATIONARY      i32 = 1
@@ -55,18 +54,10 @@ type Entity struct {
 }
 var Ents []Entity
 
-var PickedTrianglesNextId i32
-var PickedTriangle []i32
-
 
 
 func Setup () () {
 	str.print("entity.Setup()")
-
-	// these values only used if PickedTrianglesNextId >= 3 
-	PickedTriangle = append(PickedTriangle, 0)
-	PickedTriangle = append(PickedTriangle, 1)
-	PickedTriangle = append(PickedTriangle, 2)
 
 	var pos Vec2
 	pos = Vec2{
@@ -304,19 +295,3 @@ func ensureEntirelyWithinBounds (pos f32, rad f32, negEdge f64, posEdge f64) (ou
 		out = f32.sub(pe, rad)
 	}
 }
-
-
-func MakeNewTriangleFromPicked() () {
-str.print("MakeNewTriangleFromPicked")
-	var a i32
-	var b i32
-	var c i32
-	a = PickedTriangle[0]
-	b = PickedTriangle[1]
-	c = PickedTriangle[2]
-
-	mesh.MakeNewTriangle(Ents[a].Pos, Ents[b].Pos, Ents[c].Pos)
-}
-
-
-//for i := 0; i32.lt(i, PickedTrianglesNextId); i++ {

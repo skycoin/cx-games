@@ -14,11 +14,25 @@ type Mesh2D struct {
 }
 
 var Meshes []Mesh2D
+var EditorMeshes []Mesh2D
+var PickedTrianglesNextId i32
+var PickedTriangle []i32
 
 
 
 func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_func_name_ 
 	str.print("mesh.Setup2()")
+	
+	// editor 
+	var m Mesh2D
+	m = Mesh2D{ Name: "Editor Mesh" }
+	EditorMeshes = append(EditorMeshes, m)
+	// 		triangle pick/selection 
+	// 		(these values only used if PickedTrianglesNextId >= 3) 
+	PickedTriangle = append(PickedTriangle, 0)
+	PickedTriangle = append(PickedTriangle, 1)
+	PickedTriangle = append(PickedTriangle, 2)
+
 	
 	// prelim editor toolbar menu 
 	var y f32
@@ -43,7 +57,6 @@ func Draw (/*tDelta f32*/) () {
 func MakeNewRect (top f32, right f32, bottom f32, left f32) () {
 	var m Mesh2D
 	m = Mesh2D{ Name: "NewRect" }
-
 	
 	
 	// colors 
@@ -65,8 +78,7 @@ func MakeNewRect (top f32, right f32, bottom f32, left f32) () {
 	col.R = f32.sub(col.R, colSpan)
 	m.Colors = append(m.Colors, col)
 
-	
-	
+		
 	// positions 
 	var v Vec2
 	v = Vec2{ X: 0.0, Y: 0.0 }
@@ -86,8 +98,7 @@ func MakeNewRect (top f32, right f32, bottom f32, left f32) () {
 	v.Y = bottom
 	m.Points = append(m.Points, v)
 
-	
-	
+		
 	// triangles 
 	m.TriangleIndices = append(m.TriangleIndices, 0)
 	m.TriangleIndices = append(m.TriangleIndices, 1)
@@ -97,34 +108,35 @@ func MakeNewRect (top f32, right f32, bottom f32, left f32) () {
 	m.TriangleIndices = append(m.TriangleIndices, 3)
 	m.TriangleIndices = append(m.TriangleIndices, 0)
 	
-	
-	
+		
 	Meshes = append(Meshes, m)
 }
 
 
-func MakeNewTriangle(a Vec2, b Vec2, c Vec2) () {
-	str.print("mesh.MakeNewTriangle()")
-	var m Mesh2D
+func MakeNewEditorTriangle () () {
+	str.print("mesh.MakeNewEditorTriangle()")
+	
+	/*
+		var m Mesh2D
+		m = Mesh2D{ Name: "editor triangle" }
+		
+		var col Color3
+		col = Color3{ R: 1.0, G: 0.5, B: 0.9 }
+		
+		m.Colors = append(m.Colors, col)
+		col.B = 0.6
+		m.Colors = append(m.Colors, col)
+		col.B = 0.2
+		m.Colors = append(m.Colors, col)
+		
+		m.Points = append(m.Points, a)
+		m.Points = append(m.Points, b)
+		m.Points = append(m.Points, c)
+	*/
 
-	m = Mesh2D{ Name: "test triangle" }
+	EditorMeshes[0].TriangleIndices = append(EditorMeshes[0].TriangleIndices, PickedTriangle[0])
+	EditorMeshes[0].TriangleIndices = append(EditorMeshes[0].TriangleIndices, PickedTriangle[1])
+	EditorMeshes[0].TriangleIndices = append(EditorMeshes[0].TriangleIndices, PickedTriangle[2])
 	
-	var col Color3
-	col = Color3{ R: 1.0, G: 0.5, B: 0.9 }
-	
-	m.Colors = append(m.Colors, col)
-	col.B = 0.6
-	m.Colors = append(m.Colors, col)
-	col.B = 0.2
-	m.Colors = append(m.Colors, col)
-	
-	m.Points = append(m.Points, a)
-	m.Points = append(m.Points, b)
-	m.Points = append(m.Points, c)
-
-	m.TriangleIndices = append(m.TriangleIndices, 0)
-	m.TriangleIndices = append(m.TriangleIndices, 1)
-	m.TriangleIndices = append(m.TriangleIndices, 2)
-	
-	Meshes = append(Meshes, m)
+	////////////////////EditorMeshes = append(EditorMeshes, m)
 }
