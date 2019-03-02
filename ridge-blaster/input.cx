@@ -206,10 +206,11 @@ func fireOrActivate () () {
 			}
 		}
 	} else { // primarily MODE_EDIT_VERTICES for now 
-		c := Color3{ 
-			R: 1.0, 
-			G: 1.0, 
-			B: 1.0 }
+		var c Color3
+		c = Color3{ 
+			R: 0.5, 
+			G: 0.5, 
+			B: 0.5 }
 		mesh.EditorMeshes[0].Colors = append(
 		mesh.EditorMeshes[0].Colors, c)
 		mesh.EditorMeshes[0].Points = append(
