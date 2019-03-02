@@ -159,10 +159,10 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 	numIds = len(EditorMeshes[0].TriangleIndices)
 	printf("numIds BEFORE: %d \n", numIds)
 	
-	var numErrTris i32 // erroneous leftover indices where number of indices are not a multiple of 3 
-	var numTris    i32
-	numTris    = i32.div(numIds, 3)
-	numErrTris = i32.mod(numIds, 3)
+	var numErrs i32 // erroneous leftover indices (indicating not a multiple of 3) 
+	var numTris i32
+	numTris = i32.div(numIds, 3)
+	numErrs = i32.mod(numIds, 3)
 	printf("numTris BEFORE: %d \n", numTris)
 	
 	
@@ -173,16 +173,16 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 
 
 	// feedback AFTER 
-	numIds = len(EditorMeshes[0].TriangleIndices)
-	numTris    = i32.div(numIds, 3)
-	numErrTris = i32.mod(numIds, 3)
+	numIds  = len(EditorMeshes[0].TriangleIndices)
+	numTris = i32.div(numIds, 3)
+	numErrs = i32.mod(numIds, 3)
 	printf("numIds AFTER: %d \n", numIds)
 	printf("numTris AFTER: %d \n", numTris)
 	
-	if i32.uneq(numErrTris, 0) {
-		printf("********* ERROR! numErrTris: %d \n", numErrTris)
-		printf("********* ERROR! numErrTris: %d \n", numErrTris)
-		printf("********* ERROR! numErrTris: %d \n", numErrTris)
+	if i32.uneq(numErrs, 0) {
+		printf("********* ERROR! numErrs: %d \n", numErrs)
+		printf("********* ERROR! numErrs: %d \n", numErrs)
+		printf("********* ERROR! numErrs: %d \n", numErrs)
 	}
 
 	printf("EditorMeshes[0].Points len: %d \n", len(EditorMeshes[0].Points))
