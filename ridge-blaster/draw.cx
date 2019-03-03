@@ -16,15 +16,21 @@ var currX           f32
 var span            f32
 var currGreen       f32 // component of terrain fill color 
 
+// blink timing 
+var pickedNodesAreBright bool
+var timeLocalToDraw      f32
+var nextBlinkFlip        f32
+var blinkDelay           f32
+
 
 
 func Setup () () {
 	str.print("draw.Setup()")
 	mesh.Setup2()
 	
-	NEG_UNIT_SPAN = 0.0 - 1.0
-	CRUST_THICKNESS = 0.015
-
+	NEG_UNIT_SPAN   = -1.0
+	CRUST_THICKNESS =  0.015
+	blinkDelay      =  0.1
 	
 	// colors 
 	var r f32
@@ -40,9 +46,15 @@ func Setup () () {
 
 
 
-func All (currTime f32) () {
+func All (currTime f32, deltaTime f32) () {
 	//str.print("draw.All()")
 
+	// blink timing 
+	timeLocalToDraw = f32.add(timeLocalToDraw, deltaTime)	
+	for f32.lteq(nextBlinkFlip, timeLocalToDraw) {
+		nextBlinkFlip = f32.add(timeLocalToDraw, blinkDelay)
+		pickedNodesAreBright = bool.not(pickedNodesAreBright)
+	}
 
 	if /* editing */ 
 		i32.gteq(app.Mode, app.MODE_EDIT_VERTICES) &&
@@ -183,24 +195,30 @@ func Circle (e Entity) () {
 
 
 func editorQuads () () {
+	// color channels for colors that have the same value across all 3 
+	white := 1.0
+	gray  := 0.15 // (dark) 
+	
 	for i := 0; i32.lt(i, len(mesh.EditorMeshes[0].Points)); i++ {
-		cc := 1.0
-		gl.Color3f(cc, cc, cc)
+		gl.Color3f(white, white, white)
 		
 		// highlighted colors 
 		for j := 0; i32.lt(j, mesh.PickedTrianglesNextId); j++ {
-			
-			if i == mesh.PickedTriangle[j] {
-				if j == 0 {
-					gl.Color3f(1.0, 0.0, 0.0) // red 
+			if pickedNodesAreBright {
+				if i == mesh.PickedTriangle[j] {
+					if j == 0 {
+						gl.Color3f(1.0, 0.0, 0.0) // red 
+					}
+					if j == 1 {
+						gl.Color3f(0.0, 1.0, 0.0) // green 
+					}
+					if j == 2 {
+						gl.Color3f(0.0, 0.0, 1.0) // blue 
+					}
 				}
-				if j == 1 {
-					gl.Color3f(0.0, 1.0, 0.0) // green 
-				}
-				if j == 2 {
-					gl.Color3f(0.0, 0.0, 1.0) // blue 
-				}
-			}
+			} /*else {
+				gl.Color3f(gray, gray, gray)
+			}*/
 		}
 		
 		drawRect(mesh.EditorMeshes[0].Points[i], entity.NodeExtents)

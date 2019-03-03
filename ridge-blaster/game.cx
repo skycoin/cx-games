@@ -14,8 +14,8 @@ import "environs"
 
 
 // timing 
-var prevTime f32 // previous 
-var currTime f32 // current 
+var prevTime  f32 // previous 
+var currTime  f32 // current 
 var timeDelta f32
 
 // graphics 
@@ -75,7 +75,7 @@ func Update () () {
 	gl.MatrixMode(gl.MODELVIEW)
 
 	collision.ColUpdate(ratio)
-	draw.All(currTime)
+	draw.All(currTime, timeDelta)
 
 	glfw.PollEvents()
 	glfw.SwapBuffers("window")
