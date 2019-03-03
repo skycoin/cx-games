@@ -26,6 +26,7 @@ func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_f
 	// editor 
 	var m Mesh2D
 	m = Mesh2D{ Name: "Editor Mesh" }
+	printf("generating a %s mesh with id: %d\n", m.Name, len(EditorMeshes))
 	EditorMeshes = append(EditorMeshes, m)
 	// 		triangle pick/selection 
 	// 		(these values only used if PickedTrianglesNextId >= 3) 
@@ -108,7 +109,7 @@ func MakeNewRect (top f32, right f32, bottom f32, left f32) () {
 	m.TriangleIndices = append(m.TriangleIndices, 3)
 	m.TriangleIndices = append(m.TriangleIndices, 0)
 	
-		
+	printf("generating a %s mesh with id: %d\n", m.Name, len(Meshes))
 	Meshes = append(Meshes, m)
 }
 
@@ -142,6 +143,7 @@ func MakeNewTriangle /* NON-editor */ (a Vec2, b Vec2, c Vec2) () {
 	tii = i32.add(tii, 1)
 	Meshes[0].TriangleIndices = append(Meshes[0].TriangleIndices, tii)
 	
+	printf("generating a %s mesh with id: %d\n", m.Name, len(Meshes))
 	Meshes = append(Meshes, m)
 }
 
@@ -186,4 +188,23 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 	}
 
 	printf("EditorMeshes[0].Points len: %d \n", len(EditorMeshes[0].Points))
+}
+
+
+func GenerateFromUsersEdit () () {
+	str.print("mesh.GenerateFromUsersEdit ()")
+	var m Mesh2D
+	m = Mesh2D{ Name: "UserGenMesh" }
+	
+	for i := 0; i32.lt(i, len(EditorMeshes[0].Points)); i++ {
+		m.Colors = append(m.Colors, EditorMeshes[0].Colors[i])
+		m.Points = append(m.Points, EditorMeshes[0].Points[i])
+	}
+
+	for j := 0; i32.lt(j, len(EditorMeshes[0].Points)); j++ {
+		m.TriangleIndices = append(m.TriangleIndices, EditorMeshes[0].TriangleIndices[j])
+	}
+		
+	printf("generating a %s mesh with id: %d\n", m.Name, len(Meshes))
+	Meshes = append(Meshes, m)
 }

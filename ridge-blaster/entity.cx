@@ -32,10 +32,10 @@ var CamRot  app.Vec3
 var timeDel f32
 
 // extents
-var HeroExtents   Vec2 = Vec2{ X: 0.08,  Y: 0.04 }
-var BulletExtents Vec2 = Vec2{ X: 0.02,  Y: 0.004 }
-var RocketExtents Vec2 = Vec2{ X: 0.01,  Y: 0.05 }
-var NodeExtents   Vec2 = Vec2{ X: 0.02, Y: 0.02 }
+var HeroExtents   Vec2 = Vec2{ X: 0.08, Y: 0.04  }
+var BulletExtents Vec2 = Vec2{ X: 0.02, Y: 0.004 }
+var RocketExtents Vec2 = Vec2{ X: 0.01, Y: 0.05  }
+var NodeExtents   Vec2 = Vec2{ X: 0.02, Y: 0.02  }
 
 // pools 
 type Entity struct {
@@ -45,12 +45,11 @@ type Entity struct {
 	Radius f32
 	Extents Vec2 // FIXME?...this obviates need for radius? 
 	Vel Vec2 // velocity 
-	PolygonStart i32
-	PolygonSize i32
 	Mode i32
 	NextMode i32
 	TimeToNextMode f32
 	DistanceToNextMode f32
+	MeshId i32
 }
 var Ents []Entity
 
