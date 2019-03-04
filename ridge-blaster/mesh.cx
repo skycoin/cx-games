@@ -27,9 +27,8 @@ func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_f
 	// editor 
 	//		ensure mesh 0 exists, as workspace for user to draw in 
 	var m Mesh2D
-	m = Mesh2D{ Name: "an Editor workspace" }
-	printf("generating %s mesh with id: %d\n", m.Name, len(EditorMeshes))
-	EditorMeshes = append(EditorMeshes, m)
+	m = Mesh2D{ Name: "Editor workspace" }
+	generateAndReportMeshInfo(m, true)
 	//		color wheel 
 	generateColorPickerWheel()
 	// 		triangle for vertex pick/selection 
@@ -40,8 +39,15 @@ func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_f
 }
 
 
-func Draw (/*tDelta f32*/) () {
-	//str.print("mesh.Draw()")
+func generateAndReportMeshInfo (m Mesh2D, editor bool) () {
+	if editor {
+		printf("generating mesh: %d   name: '%s' \n", len(EditorMeshes), m.Name)
+		EditorMeshes = append(EditorMeshes, m)
+	} else {
+		printf("generating mesh: %d   name: '%s' \n", len(Meshes),       m.Name)
+		Meshes       = append(Meshes, m)
+	
+	}
 }
 
 
@@ -120,8 +126,7 @@ func generateColorPickerWheel () () {
 		increase = bool.not(increase)
 	}
 	
-	printf("generating a %s mesh with id: %d\n", m.Name, len(EditorMeshes))
-	EditorMeshes = append(EditorMeshes, m)
+	generateAndReportMeshInfo(m, true)
 }
 
 
@@ -146,15 +151,15 @@ func MakeEditorToolBar (leftAnchored bool) () {
 	}
 
 	//                  t     b    
-	MakeNewMenuItemRect(y, r, y - span, l)
+	MakeNewMenuItem(y, r, y - span, l)
 	y = f32.sub(y, f32.mul(span, 1.2))
-	MakeNewMenuItemRect(y, r, y - span, l)
+	MakeNewMenuItem(y, r, y - span, l)
 	y = f32.sub(y, f32.mul(span, 1.2))
-	MakeNewMenuItemRect(y, r, y - span, l)
+	MakeNewMenuItem(y, r, y - span, l)
 }
 
 
-func MakeNewMenuItemRect (top f32, right f32, bottom f32, left f32) () {
+func MakeNewMenuItem (top f32, right f32, bottom f32, left f32) () {
 	var m Mesh2D
 	m = Mesh2D{ Name: "Menu Item Rect" }
 	
@@ -208,8 +213,65 @@ func MakeNewMenuItemRect (top f32, right f32, bottom f32, left f32) () {
 	m.TriangleIndices = append(m.TriangleIndices, 3)
 	m.TriangleIndices = append(m.TriangleIndices, 0)
 	
-	printf("generating a %s mesh with id: %d\n", m.Name, len(Meshes))
-	EditorMeshes = append(EditorMeshes, m)
+	generateAndReportMeshInfo(m, true)
+}
+
+
+func MakeNewGameAndOtherRect (top f32, right f32, bottom f32, left f32) () {
+	var m Mesh2D
+	m = Mesh2D{ Name: "Rect" }
+	
+	
+	// colors 
+	var col Color3
+	col = Color3{ R: 1.0, G: 0.2, B: 0.2 }
+
+	var colSpan f32
+	colSpan = 0.2	
+
+	col.R = f32.sub(col.R, colSpan)
+	m.Colors = append(m.Colors, col)
+	
+	col.R = f32.sub(col.R, colSpan)
+	m.Colors = append(m.Colors, col)
+	
+	col.R = f32.sub(col.R, colSpan)
+	m.Colors = append(m.Colors, col)
+	
+	col.R = f32.sub(col.R, colSpan)
+	m.Colors = append(m.Colors, col)
+
+		
+	// positions 
+	var v Vec2
+	v = Vec2{ X: 0.0, Y: 0.0 }
+	
+	// start at... 
+	v.X = left
+	v.Y = top
+	// ...then go clockwise 
+	m.Points = append(m.Points, v)
+	v.X = right
+	v.Y = top
+	m.Points = append(m.Points, v)
+	v.X = right
+	v.Y = bottom
+	m.Points = append(m.Points, v)
+	v.X = left
+	v.Y = bottom
+	m.Points = append(m.Points, v)
+
+		
+	// triangles 
+	m.TriangleIndices = append(m.TriangleIndices, 0)
+	m.TriangleIndices = append(m.TriangleIndices, 1)
+	m.TriangleIndices = append(m.TriangleIndices, 2)
+
+	m.TriangleIndices = append(m.TriangleIndices, 2)
+	m.TriangleIndices = append(m.TriangleIndices, 3)
+	m.TriangleIndices = append(m.TriangleIndices, 0)
+	
+	generateAndReportMeshInfo(m, false)
 }
 
 
@@ -242,8 +304,7 @@ func MakeNewTriangle /* NON-editor */ (a Vec2, b Vec2, c Vec2) () {
 	tii = i32.add(tii, 1)
 	Meshes[0].TriangleIndices = append(Meshes[0].TriangleIndices, tii)
 	
-	printf("generating a %s mesh with id: %d\n", m.Name, len(Meshes))
-	Meshes = append(Meshes, m)
+	generateAndReportMeshInfo(m, false)
 }
 
 
@@ -290,8 +351,8 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 }
 
 
-func GenerateFromUsersEdit () () {
-	str.print("mesh.GenerateFromUsersEdit ()")
+func CopyFromUsersEditToOtherModes () () {
+	str.print("mesh.CopyFromUsersEditToOtherModes ()")
 	var m Mesh2D
 	m = Mesh2D{ Name: "UserGenMesh" }
 	
@@ -304,8 +365,7 @@ func GenerateFromUsersEdit () () {
 		m.TriangleIndices = append(m.TriangleIndices, EditorMeshes[0].TriangleIndices[j])
 	}
 		
-	printf("generating a %s mesh with id: %d\n", m.Name, len(Meshes))
-	Meshes = append(Meshes, m)
+	generateAndReportMeshInfo(m, false)
 }
 
 

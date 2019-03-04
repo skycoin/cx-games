@@ -50,7 +50,7 @@ func All (currTime f32, deltaTime f32) () {
 	//str.print("draw.All()")
 	
 	
-	if /* only 1 editor mesh */ i32.lt(len(mesh.EditorMeshes), 2) {
+	if /* only 1 editor mesh */ i32.lt(len(mesh.EditorMeshes), 3) {
 		mesh.MakeEditorToolBar(false)
 	}
 

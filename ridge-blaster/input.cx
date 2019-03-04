@@ -38,6 +38,19 @@ func Setup () () {
 	GLFW_KEY_Y = 89
 	GLFW_KEY_F2 = 291
 	GLFW_KEY_F3 = 292
+	
+	// menu 
+	var mi MenuItem
+	mi = MenuItem{ MeshForIcon: 1, Name: "Color Picker" }
+	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForIcon: 1, Name: "Edit Vertices" }
+	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForIcon: 1, Name: "Edit Triangles" }
+	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForIcon: 1, Name: "Snap-To-Grid" }
+	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForIcon: 1, Name: "Gen Code in CLI" }
+	Menu = append(Menu, mi)
 
 	// callbacks 
 	glfw.SetKeyCallback("window", "onKeyEvent")
@@ -101,7 +114,7 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 			//str.print("-------------------------------------PRESS (not a repeat)")
 
 			if key == 50 { // GLFW_KEY_2 
-				mesh.GenerateFromUsersEdit()
+				mesh.CopyFromUsersEditToOtherModes()
 			} else
 			if key == 51 { // GLFW_KEY_3 
 				str.print("^^ hit PLAY ^^")

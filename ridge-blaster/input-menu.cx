@@ -4,8 +4,15 @@ package ccInput
 
 type MenuItem struct {
 	Name str // just for console text feedback 
+	Pos Vec2
+	Extents Vec2	
 	MeshForIcon i32
 	MeshForHoverText i32
 }
 
 var Menu []MenuItem
+
+
+
+func temp () () {
+}
