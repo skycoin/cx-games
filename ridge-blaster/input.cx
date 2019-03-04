@@ -114,7 +114,7 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 			//str.print("-------------------------------------PRESS (not a repeat)")
 
 			if key == 50 { // GLFW_KEY_2 
-				mesh.CopyFromUsersEditToOtherModes()
+				mesh.CopyFromEditorToGame()
 			} else
 			if key == 51 { // GLFW_KEY_3 
 				str.print("^^ hit PLAY ^^")
