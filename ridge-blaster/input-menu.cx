@@ -6,6 +6,8 @@ type MenuItem struct {
 	Name str // just for console text feedback 
 	Pos Vec2
 	Extents Vec2	
+	MeshForBackId i32
+	MeshForBack mesh.Mesh2D
 	MeshForIcon i32
 	MeshForHoverText i32
 }

@@ -44,7 +44,7 @@ func main () {
 	str.print("[5] ======================= quit")
 	str.print("[4] ======================= edit (or toggle between VERTICES & TRIANGLES)")
 	str.print("[3] ======================= play")
-	str.print("[2] ======================= move mesh to play mode? (NOT YET tho)")
+	str.print("[2] ======================= copy editor mesh to gameplay screen")
 	str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
 	game.Init()

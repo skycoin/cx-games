@@ -3,6 +3,7 @@ package draw
 import "gl"
 
 import "app"
+import "ccInput"
 import "collision"
 import "entity"
 import "environs"
@@ -47,8 +48,7 @@ func Setup () () {
 
 
 func All (currTime f32, deltaTime f32) () {
-	//str.print("draw.All()")
-	
+	//str.print("draw.All()")	
 	
 	if /* only 1 editor mesh */ i32.lt(len(mesh.EditorMeshes), 3) {
 		mesh.MakeEditorToolBar(false)
@@ -69,12 +69,13 @@ func All (currTime f32, deltaTime f32) () {
 		gridLines()
 		gl.End()
 
-		gl.Begin(gl.QUADS) //////////////////
-		editorQuads()
+		gl.Begin(gl.TRIANGLES) //////////////
+		trianglesForAll(mesh.EditorMeshes, true)
+		menuItems()
 		gl.End()
 
-		gl.Begin(gl.TRIANGLES) //////////////
-		triangles(mesh.EditorMeshes)
+		gl.Begin(gl.QUADS) //////////////////
+		editorQuads()
 		gl.End()
 		
 		/*
@@ -98,7 +99,7 @@ func All (currTime f32, deltaTime f32) () {
 		gl.End()
 
 		gl.Begin(gl.TRIANGLES) //////////////
-		triangles(mesh.Meshes)
+		trianglesForAll(mesh.Meshes, false)
 		gl.End()		
 	}
 
@@ -108,8 +109,27 @@ func All (currTime f32, deltaTime f32) () {
 }
 
 
-func triangles (meshes []Mesh2D) () {
+func menuItems () () {
+	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
+		//str.print("draw button")
+		var id i32
+		id = ccInput.Menu[i].MeshForBackId
+		var m Mesh2D
+		//m = mesh.EditorMeshes[id]
+	
+		//for j := 0; i32.lt(j, len(m.Points)); j++ {
+			//m.Points[j].X = 
+		//}
+	}
+}
+
+
+func trianglesForAll (meshes []Mesh2D, editor bool) () {
 	for i := 0; i32.lt(i, len(meshes)); i++ {
+		if bool.and(editor, i32.gt(i, 0)) {
+			break
+		}
+		
 		var m Mesh2D
 		m = meshes[i]
 

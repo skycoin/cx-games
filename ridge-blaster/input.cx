@@ -41,15 +41,17 @@ func Setup () () {
 	
 	// menu 
 	var mi MenuItem
-	mi = MenuItem{ MeshForIcon: 1, Name: "Color Picker" }
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Edit Vertices" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForIcon: 1, Name: "Edit Vertices" }
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Edit Triangles" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForIcon: 1, Name: "Edit Triangles" }
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Color Picker" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForIcon: 1, Name: "Snap-To-Grid" }
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Snap-To-Grid" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForIcon: 1, Name: "Gen Code in CLI" }
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Copy Editor Mesh to Game" }
+	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Gen Mesh Code in CLI" }
 	Menu = append(Menu, mi)
 
 	// callbacks 
@@ -117,16 +119,16 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 				mesh.CopyFromEditorToGame()
 			} else
 			if key == 51 { // GLFW_KEY_3 
-				str.print("^^ hit PLAY ^^")
+				str.print("-> PLAY")
 				app.Mode = app.MODE_PLAYING
 			} else
 			if key == 52 { // GLFW_KEY_4 
 				if app.Mode == app.MODE_EDIT_VERTICES {
 					app.Mode = app.MODE_EDIT_TRIANGLES
-					str.print("^^^^ now in MODE_EDIT_TRIANGLES ^^^^")
+					str.print("-> MODE_EDIT_TRIANGLES")
 				} else {
 					app.Mode = app.MODE_EDIT_VERTICES
-					str.print("^^^^ now in MODE_EDIT_VERTICES ^^^^")
+					str.print("-> MODE_EDIT_VERTICES")
 				}
 			} else
 			if key == 53 { // GLFW_KEY_5 

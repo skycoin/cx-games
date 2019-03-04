@@ -3,7 +3,9 @@ package mesh
 import "glfw"
 
 import "app"
+import "ccInput"
 import "collision"
+
 
 
 
@@ -25,21 +27,23 @@ func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_f
 	str.print("mesh.Setup2()")
 	
 	// editor 
-	//		ensure mesh 0 exists, as workspace for user to draw in 
+	
+	//		mesh 0, blank workspace for user editing 
 	var m Mesh2D
 	m = Mesh2D{ Name: "Editor workspace" }
-	generateAndReportMeshInfo(m, true)
-	//		color wheel 
-	generateColorPickerWheel()
-	// 		triangle for vertex pick/selection 
-	// 		(these values only used if PickedTrianglesNextId >= 3) 
+	makeAndReportOn(m, true)
+	
+	makeColorPickerWheelResource()
+	makeEditorRectResource()
+	
+	// 		vertex pick/selection triangle (these values only used if PickedTrianglesNextId >= 3) 
 	PickedTriangle = append(PickedTriangle, 0)
 	PickedTriangle = append(PickedTriangle, 1)
 	PickedTriangle = append(PickedTriangle, 2)
 }
 
 
-func generateAndReportMeshInfo (m Mesh2D, editor bool) () {
+func makeAndReportOn (m Mesh2D, editor bool) () {
 	if editor {
 		printf("generating editor mesh: %d   name: '%s' \n", len(EditorMeshes), m.Name)
 		EditorMeshes = append(EditorMeshes, m)
@@ -73,11 +77,11 @@ func CopyFromEditorToGame () () {
 		m.TriangleIndices, id)
 	}
 		
-	generateAndReportMeshInfo(m, false)
+	makeAndReportOn(m, false)
 }
 
 
-func generateColorPickerWheel () () {
+func makeColorPickerWheelResource () () {
 	var NUM_ANGS i32
 	NUM_ANGS = 1536 // 3 x 512, 512 needed to show all possible hues between 2 colors 
 	// (256 settings per channel, but we alternate between inc/dec 1 chan at a time)
@@ -152,43 +156,64 @@ func generateColorPickerWheel () () {
 		increase = bool.not(increase)
 	}
 	
-	generateAndReportMeshInfo(m, true)
+	makeAndReportOn(m, true)
 }
 
 
 func MakeEditorToolBar (leftAnchored bool) () {
-	var y f32
-	y = 1.0
-
-	var span f32 // size across icon background 
+	var span f32 // edge to edge size across icon background 
 	span = 0.2
-
-	var l f32
-	l = -1.0
 	
-	var r f32
-	r = l + span
+	var extent f32 // from center of icon background 
+	extent = f32.div(span, 2.0)
+	
+	var /* tool... */ barHei f32
+	barHei = f32.mul(span, i32.f32(len(ccInput.Menu)))
+
+	var y f32
+	y = f32.div(barHei, 2.0)
+	y = f32.add(y, extent)
+
+	var pos Vec2
+	var ext Vec2
+	pos = Vec2{ Y: y }
+	ext = Vec2{ X: extent, Y: extent }
+
+	var x f32
 	
 	if leftAnchored {
-	} else { 
-		// right anchored 
-		l = f64.f32(collision.ScreenEdgeR) - span
-		r = f64.f32(collision.ScreenEdgeR)
+		x = f64.f32(collision.ScreenEdgeL) + extent
+	} else { // right anchored 
+		x = f64.f32(collision.ScreenEdgeR) - extent
 	}
 
-	//                  t     b    
-	MakeNewMenuItem(y, r, y - span, l)
-	y = f32.sub(y, f32.mul(span, 1.2))
-	MakeNewMenuItem(y, r, y - span, l)
-	y = f32.sub(y, f32.mul(span, 1.2))
-	MakeNewMenuItem(y, r, y - span, l)
+	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
+		MakeNewMenuItem(pos, ext)
+		y = f32.sub(y, span)
+	}
 }
 
 
-func MakeNewMenuItem (top f32, right f32, bottom f32, left f32) () {
+func MakeNewMenuItem (pos Vec2, extents Vec2) () {
 	var m Mesh2D
-	m = Mesh2D{ Name: "Menu Item Rect" }
+	m = Mesh2D{ Name: "MenuItem Rect" }
 	
+	
+}
+
+
+func makeEditorRectResource () () {
+	var m Mesh2D
+	m = Mesh2D{ Name: "makeEditorRectResource" }
+	
+	var top f32
+	var right f32
+	var bottom f32
+	var left f32
+	top = 1.0
+	right = 1.0
+	bottom = -1.0
+	left = -1.0
 	
 	// colors 
 	var col Color3
@@ -239,65 +264,7 @@ func MakeNewMenuItem (top f32, right f32, bottom f32, left f32) () {
 	m.TriangleIndices = append(m.TriangleIndices, 3)
 	m.TriangleIndices = append(m.TriangleIndices, 0)
 	
-	generateAndReportMeshInfo(m, true)
-}
-
-
-func MakeNewGameAndOtherRect (top f32, right f32, bottom f32, left f32) () {
-	var m Mesh2D
-	m = Mesh2D{ Name: "Rect" }
-	
-	
-	// colors 
-	var col Color3
-	col = Color3{ R: 1.0, G: 0.2, B: 0.2 }
-
-	var colSpan f32
-	colSpan = 0.2	
-
-	col.R = f32.sub(col.R, colSpan)
-	m.Colors = append(m.Colors, col)
-	
-	col.R = f32.sub(col.R, colSpan)
-	m.Colors = append(m.Colors, col)
-	
-	col.R = f32.sub(col.R, colSpan)
-	m.Colors = append(m.Colors, col)
-	
-	col.R = f32.sub(col.R, colSpan)
-	m.Colors = append(m.Colors, col)
-
-		
-	// positions 
-	var v Vec2
-	v = Vec2{ X: 0.0, Y: 0.0 }
-	
-	// start at... 
-	v.X = left
-	v.Y = top
-	// ...then go clockwise 
-	m.Points = append(m.Points, v)
-	v.X = right
-	v.Y = top
-	m.Points = append(m.Points, v)
-	v.X = right
-	v.Y = bottom
-	m.Points = append(m.Points, v)
-	v.X = left
-	v.Y = bottom
-	m.Points = append(m.Points, v)
-
-		
-	// triangles 
-	m.TriangleIndices = append(m.TriangleIndices, 0)
-	m.TriangleIndices = append(m.TriangleIndices, 1)
-	m.TriangleIndices = append(m.TriangleIndices, 2)
-
-	m.TriangleIndices = append(m.TriangleIndices, 2)
-	m.TriangleIndices = append(m.TriangleIndices, 3)
-	m.TriangleIndices = append(m.TriangleIndices, 0)
-	
-	generateAndReportMeshInfo(m, false)
+	makeAndReportOn(m, true)
 }
 
 
@@ -330,7 +297,7 @@ func MakeNewTriangle /* NON-editor */ (a Vec2, b Vec2, c Vec2) () {
 	tii = i32.add(tii, 1)
 	Meshes[0].TriangleIndices = append(Meshes[0].TriangleIndices, tii)
 	
-	generateAndReportMeshInfo(m, false)
+	makeAndReportOn(m, false)
 }
 
 
