@@ -48,6 +48,11 @@ func Setup () () {
 
 func All (currTime f32, deltaTime f32) () {
 	//str.print("draw.All()")
+	
+	
+	if /* only 1 editor mesh */ i32.lt(len(mesh.EditorMeshes), 2) {
+		mesh.MakeEditorToolBar(false)
+	}
 
 	// blink timing 
 	timeLocalToDraw = f32.add(timeLocalToDraw, deltaTime)	
@@ -60,6 +65,10 @@ func All (currTime f32, deltaTime f32) () {
 		i32.gteq(app.Mode, app.MODE_EDIT_VERTICES) &&
 		i32.lteq(app.Mode, app.MODE_EDIT_MAX) {
 		
+		gl.Begin(gl.LINES)
+		gridLines()
+		gl.End()
+
 		gl.Begin(gl.QUADS) //////////////////
 		ColorPickerWheel()
 		editorQuads()
@@ -76,6 +85,10 @@ func All (currTime f32, deltaTime f32) () {
 		gl.End()
 		*/
 	} else { // playing (& the rest) 
+		//if /* only 1 NON-editor mesh */ i32.lt(len(mesh.Meshes), 2) {
+			//mesh.MakeEditorToolBar(true)
+		//}
+		
 		gl.Begin(gl.QUADS) //////////////////	
 		Terrain(currTime)
 		Entities()		
@@ -86,13 +99,6 @@ func All (currTime f32, deltaTime f32) () {
 		gl.End()		
 	}
 
-	
-	
-	/*
-	gl.Begin(gl.LINES)
-	gridLines()
-	gl.End()
-	*/
 
 	// hero 
 	//Circle(entity.Ents[0])

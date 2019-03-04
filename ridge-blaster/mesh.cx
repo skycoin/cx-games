@@ -3,6 +3,7 @@ package mesh
 import "glfw"
 
 import "app"
+import "collision"
 
 
 
@@ -24,6 +25,7 @@ func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_f
 	str.print("mesh.Setup2()")
 	
 	// editor 
+	//		ensure mesh 0 exists, which user draws into 
 	var m Mesh2D
 	m = Mesh2D{ Name: "Editor Mesh" }
 	printf("generating a %s mesh with id: %d\n", m.Name, len(EditorMeshes))
@@ -33,23 +35,40 @@ func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_f
 	PickedTriangle = append(PickedTriangle, 0)
 	PickedTriangle = append(PickedTriangle, 1)
 	PickedTriangle = append(PickedTriangle, 2)
-	// 		prelim toolbar menu 
-	var y f32
-	y = 1.0
-
-	var h f32
-	h = 0.1
-
-	MakeNewMenuItemRect(y, -0.8, y - h, -1.0)
-	y = f32.sub(y, f32.mul(h, 1.2))
-	MakeNewMenuItemRect(y, -0.8, y - h, -1.0)
-	y = f32.sub(y, f32.mul(h, 1.2))
-	MakeNewMenuItemRect(y, -0.8, y - h, -1.0)
 }
 
 
 func Draw (/*tDelta f32*/) () {
 	//str.print("mesh.Draw()")
+}
+
+
+func MakeEditorToolBar (leftAnchored bool) () {
+	var y f32
+	y = 1.0
+
+	var span f32 // size across icon background 
+	span = 0.2
+
+	var l f32
+	l = -1.0
+	
+	var r f32
+	r = l + span
+	
+	if leftAnchored {
+	} else { 
+		// right anchored 
+		l = f64.f32(collision.ScreenEdgeR) - span
+		r = f64.f32(collision.ScreenEdgeR)
+	}
+
+	//                  t     b    
+	MakeNewMenuItemRect(y, r, y - span, l)
+	y = f32.sub(y, f32.mul(span, 1.2))
+	MakeNewMenuItemRect(y, r, y - span, l)
+	y = f32.sub(y, f32.mul(span, 1.2))
+	MakeNewMenuItemRect(y, r, y - span, l)
 }
 
 
