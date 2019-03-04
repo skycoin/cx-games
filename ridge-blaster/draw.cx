@@ -66,7 +66,7 @@ func All (currTime f32, deltaTime f32) () {
 		gl.End()
 
 		gl.Begin(gl.TRIANGLES) //////////////
-		editorTriangles()
+		triangles(mesh.EditorMeshes)
 		gl.End()
 		
 		/*
@@ -76,12 +76,14 @@ func All (currTime f32, deltaTime f32) () {
 		gl.End()
 		*/
 	} else { // playing (& the rest) 
-		gl.Begin(gl.QUADS)
-		
+		gl.Begin(gl.QUADS) //////////////////	
 		Terrain(currTime)
-		Entities()
-		
+		Entities()		
 		gl.End()
+
+		gl.Begin(gl.TRIANGLES) //////////////
+		triangles(mesh.Meshes)
+		gl.End()		
 	}
 
 	
@@ -97,10 +99,10 @@ func All (currTime f32, deltaTime f32) () {
 }
 
 
-func editorTriangles () () {
-	for i := 0; i32.lt(i, len(mesh.EditorMeshes)); i++ {
+func triangles (meshes []Mesh2D) () {
+	for i := 0; i32.lt(i, len(meshes)); i++ {
 		var m Mesh2D
-		m = mesh.EditorMeshes[i]
+		m = meshes[i]
 
 		for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
 			// give feedback when not multiple of 3 

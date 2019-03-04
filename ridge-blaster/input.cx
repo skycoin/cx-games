@@ -63,9 +63,13 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 	//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
 	if /* release */ action == 0 {
-	} else
-	if /* press */ action == 1 {
-		fireOrActivate()	
+	} else if /* press */ action == 1 {
+		if button == 0 {
+			fireOrActivate()
+		} else
+		if button == 1 {
+			mesh.RemoveVertexNode()
+		}
 	}
 }
 
@@ -211,10 +215,12 @@ func fireOrActivate () () {
 			R: 0.5, 
 			G: 0.5, 
 			B: 0.5 }
+
+		printf("Adding vertex node: %d \n", len(mesh.EditorMeshes[0].Points))
+
 		mesh.EditorMeshes[0].Colors = append(
 		mesh.EditorMeshes[0].Colors, c)
 		mesh.EditorMeshes[0].Points = append(
 		mesh.EditorMeshes[0].Points, MousePointer)
-		printf("num Points: %d \n", len(mesh.EditorMeshes[0].Points))
 	}
 }

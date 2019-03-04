@@ -33,20 +33,18 @@ func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_f
 	PickedTriangle = append(PickedTriangle, 0)
 	PickedTriangle = append(PickedTriangle, 1)
 	PickedTriangle = append(PickedTriangle, 2)
-
-	
-	// prelim editor toolbar menu 
+	// 		prelim toolbar menu 
 	var y f32
 	y = 1.0
 
 	var h f32
 	h = 0.1
 
-	MakeNewRect(y, -0.8, y - h, -1.0)
+	MakeNewMenuItemRect(y, -0.8, y - h, -1.0)
 	y = f32.sub(y, f32.mul(h, 1.2))
-	MakeNewRect(y, -0.8, y - h, -1.0)
+	MakeNewMenuItemRect(y, -0.8, y - h, -1.0)
 	y = f32.sub(y, f32.mul(h, 1.2))
-	MakeNewRect(y, -0.8, y - h, -1.0)
+	MakeNewMenuItemRect(y, -0.8, y - h, -1.0)
 }
 
 
@@ -55,9 +53,9 @@ func Draw (/*tDelta f32*/) () {
 }
 
 
-func MakeNewRect (top f32, right f32, bottom f32, left f32) () {
+func MakeNewMenuItemRect (top f32, right f32, bottom f32, left f32) () {
 	var m Mesh2D
-	m = Mesh2D{ Name: "NewRect" }
+	m = Mesh2D{ Name: "Menu Item Rect" }
 	
 	
 	// colors 
@@ -110,7 +108,7 @@ func MakeNewRect (top f32, right f32, bottom f32, left f32) () {
 	m.TriangleIndices = append(m.TriangleIndices, 0)
 	
 	printf("generating a %s mesh with id: %d\n", m.Name, len(Meshes))
-	Meshes = append(Meshes, m)
+	EditorMeshes = append(EditorMeshes, m)
 }
 
 
@@ -207,4 +205,59 @@ func GenerateFromUsersEdit () () {
 		
 	printf("generating a %s mesh with id: %d\n", m.Name, len(Meshes))
 	Meshes = append(Meshes, m)
+}
+
+
+func RemoveVertexNode () () {
+	if /* NOT editing */ 
+		i32.lt(app.Mode, app.MODE_EDIT_VERTICES) ||
+		i32.gt(app.Mode, app.MODE_EDIT_MAX) {
+		
+		return
+	}
+	
+	printf("mesh.RemoveVertexNode() \n")
+
+	var id i32
+	id = 1
+	
+	var m Mesh2D
+	m = Mesh2D{ Name: EditorMeshes[0].Name }
+
+	for i := 0; i32.lt(i, len(EditorMeshes[0].Points)); i++ {
+		if i32.uneq(i, id) {
+			m.Colors = append(m.Colors, EditorMeshes[0].Colors[i])
+			m.Points = append(m.Points, EditorMeshes[0].Points[i])
+		}
+	}
+
+	for j := 2; i32.lt(j, len(EditorMeshes[0].TriangleIndices)); j = i32.add(j, 3) {
+		var j0 i32
+		var j1 i32
+		var j2 i32
+		j0 = i32.sub(j, 2)
+		j1 = i32.sub(j, 1)
+		j2 = j
+		
+		if i32.uneq(j0, id) &&
+			i32.uneq(j1, id) &&
+			i32.uneq(j2, id) {
+			
+			m.TriangleIndices = append(m.TriangleIndices, getMaybeAdjustedId(id, j0))
+			m.TriangleIndices = append(m.TriangleIndices, getMaybeAdjustedId(id, j1))
+			m.TriangleIndices = append(m.TriangleIndices, getMaybeAdjustedId(id, j2))
+		}
+	}
+
+	EditorMeshes[0] = m
+}
+
+
+func getMaybeAdjustedId (removeId i32, triId i32) (outId i32) {
+	outId = EditorMeshes[0].TriangleIndices[triId]
+
+	// decrease vertex id by 1, if after removed index 
+	if i32.gt(outId, removeId) {
+		outId = i32.sub(outId, 1)
+	}
 }
