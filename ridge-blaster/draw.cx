@@ -79,10 +79,14 @@ func All (currTime f32, deltaTime f32) () {
 		gl.End()
 		
 		/*
-		draws loop from all entity positions 
-		gl.Begin(gl.LINE_LOOP) //////////////
-		simpleVertexSequence(0.5)
-		gl.End()
+			TODO: ADAPT THIS TO HIGHLIGHT MULTIPLE MESHES/SEPARATIONS WHEN IMPLEMENTED 
+					(THIS WILL ALLOW SHARED VERTEX COORDS WITH DIFFERENT COLORS SO
+					THERE CAN BE HARD COLOR CONTRAST BETWEEN MESHES THAT APPEAR CONNECTED) 
+					
+			draws loop from all entity positions 
+			gl.Begin(gl.LINE_LOOP) //////////////
+			simpleVertexSequence(0.5)
+			gl.End()
 		*/
 	} else { // playing (& the rest) 
 		//if /* only 1 NON-editor mesh */ i32.lt(len(mesh.Meshes), 2) {
@@ -149,13 +153,18 @@ func simpleVertexSequence (colorChanIntensity f32) () {
 
 
 func gridLines () () {
+	// single color channel for Dark Gray 
+	var gray f32
+	gray = 0.2
+	gl.Color3f(gray, gray, gray)
+	
 	var l f32
-	l = f64.f32(collision.ScreenEdgeL)
+	l = -1.0
 	
 	var r f32
-	r = f64.f32(collision.ScreenEdgeR)
+	r = 1.0
 	
-	numLines := 30
+	numLines := 20
 	var unitSpan f32
 	unitSpan = f32.mul(r, 2.0)
 	unitSpan = f32.div(unitSpan, i32.f32(numLines))
@@ -164,7 +173,7 @@ func gridLines () () {
 	// vertical 
 	var fx f32
 	fx = l
-	for x := 0; x < numLines; x++ {
+	for x := 0; x <= numLines; x++ {
 		gl.Vertex3f(fx, l, z)
 		gl.Vertex3f(fx, r, z)
 		
@@ -174,7 +183,7 @@ func gridLines () () {
 	// horizontal 
 	var fy f32
 	fy = l
-	for y := 0; y < numLines; y++ {			
+	for y := 0; y <= numLines; y++ {			
 		gl.Vertex3f(l, fy, z)
 		gl.Vertex3f(r, fy, z)
 		
