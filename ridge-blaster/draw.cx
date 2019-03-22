@@ -50,7 +50,7 @@ func Setup () () {
 func All (currTime f32, deltaTime f32) () {
 	//str.print("draw.All()")	
 	
-	if /* only 1 editor mesh */ i32.lt(len(mesh.EditorMeshes), 3) {
+	if /* only 1 editor mesh */ i32.lt(len(mesh.RawEditorMeshes), 3) {
 		mesh.MakeEditorToolBar(false)
 	}
 
@@ -70,8 +70,9 @@ func All (currTime f32, deltaTime f32) () {
 		gl.End()
 
 		gl.Begin(gl.TRIANGLES) //////////////
-		trianglesForAll(mesh.EditorMeshes, true)
-		menuItems()
+		trianglesForAll(mesh.RawEditorMeshes, true)
+		//menuItems()
+		trianglesForAll(mesh.BakedEditorMeshes, true)
 		gl.End()
 
 		gl.Begin(gl.QUADS) //////////////////
@@ -113,9 +114,9 @@ func menuItems () () {
 	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
 		//str.print("draw button")
 		var id i32
-		id = ccInput.Menu[i].MeshForBackId
+		//id = ccInput.Menu[i].MeshForBackId
 		var m Mesh2D
-		//m = mesh.EditorMeshes[id]
+		//m = ccInput.Menu[i].MeshForBack
 	
 		//for j := 0; i32.lt(j, len(m.Points)); j++ {
 			//m.Points[j].X = 
@@ -235,7 +236,7 @@ func editorQuads () () {
 	white := 1.0
 	gray  := 0.15 // (dark) 
 	
-	for i := 0; i32.lt(i, len(mesh.EditorMeshes[0].Points)); i++ {
+	for i := 0; i32.lt(i, len(mesh.RawEditorMeshes[0].Points)); i++ {
 		gl.Color3f(white, white, white)
 		
 		// highlighted colors 
@@ -257,7 +258,7 @@ func editorQuads () () {
 			}*/
 		}
 		
-		drawRect(mesh.EditorMeshes[0].Points[i], entity.NodeExtents)
+		drawRect(mesh.RawEditorMeshes[0].Points[i], entity.NodeExtents)
 	}
 }
 
@@ -289,6 +290,7 @@ func Entities () () {
 		
 		//        ______==________________
 		if i32.eq(e.Mode, entity.MODE_DEAD) {
+			str.print("skipped drawing DEAD ent")
 			continue
 		}
 		

@@ -6,8 +6,9 @@ type MenuItem struct {
 	Name str // just for console text feedback 
 	Pos Vec2
 	Extents Vec2	
-	MeshForBackId i32
-	MeshForBack mesh.Mesh2D
+	// ids unnecessary?  
+	// if not, set these to corresponding entries in the mesh.___Meshes (slices) 
+	MeshForBackId i32 // background 
 	MeshForIcon i32
 	MeshForHoverText i32
 }

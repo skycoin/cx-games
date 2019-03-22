@@ -105,9 +105,12 @@ func EntUpdate (tDelta f32, currTime f32) () {
 	Ents[0].Pos.Y = ensureEntirelyWithinBounds(Ents[0].Pos.Y, Ents[0].Extents.Y, -1.0D, 1.0D)
 	
 	// moves 
+	//		temp debug tallies 
+	var movers i32
+	
 	var i i32
 	for i = 0; i < len(Ents); i++ {
-		// mode changes 
+		// time-based mode changes 
 		if Ents[i].TimeToNextMode != 0 && 
 			Ents[i].TimeToNextMode <= currTime {
 			
@@ -119,6 +122,7 @@ func EntUpdate (tDelta f32, currTime f32) () {
 			i32.uneq(Ents[i].Mode, MODE_STATIONARY) {
 			
 			// move 
+			movers = i32.add(movers, 1)
 			Ents[i].Pos.X = f32.add(Ents[i].Pos.X, Ents[i].Vel.X)
 			Ents[i].Pos.Y = f32.add(Ents[i].Pos.Y, Ents[i].Vel.Y)
 			
@@ -149,6 +153,7 @@ func EntUpdate (tDelta f32, currTime f32) () {
 		}
 	}
 	
+	printf("movers: %d   -   movers: %d \n", movers, movers)
 	//pollCameraControlKeys()
 }
 
