@@ -188,17 +188,44 @@ func MakeEditorToolBar (leftAnchored bool) () {
 	}
 
 	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
-		MakeNewMenuItem(pos, ext)
+		bakeInstanceOfResource(pos, ext)
 		y = f32.sub(y, span)
 	}
 }
 
 
-func MakeNewMenuItem (pos Vec2, extents Vec2) () {
-	var m Mesh2D
-	m = Mesh2D{ Name: "MenuItem Rect" }
+func bakeInstanceOfResource (pos Vec2, extents Vec2) () {
+	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
+		var m Mesh2D
+		m = Mesh2D{ Name: "bakedInstanceOfResource" }
 	
-	
+		str.print("copying and scaling from resource")
+		
+		
+		
+		/*
+		for i := 0; i32.lt(i, len(EditorMeshes[0].Points)); i++ {
+			var c Color3
+			var p Vec2
+			c = EditorMeshes[0].Colors[i]
+			p = EditorMeshes[0].Points[i]
+			m.Colors = append(
+			m.Colors, c)
+			m.Points = append(
+			m.Points, p)
+		}
+
+		for j := 0; i32.lt(j, len(EditorMeshes[0].TriangleIndices)); j++ {
+			var id i32
+			id = EditorMeshes[0].TriangleIndices[j]
+			m.TriangleIndices = append(
+			m.TriangleIndices, id)
+		}
+		*/
+
+
+
+	}
 }
 
 

@@ -39,6 +39,7 @@ var NodeExtents   Vec2 = Vec2{ X: 0.02, Y: 0.02  }
 // pools 
 type Entity struct {
 	Type i32
+	StartPos Vec2 // initial spawn position, ATM just for rockets 
 	Pos Vec2 // position 
 	//Rot f32  // rotation (around z axis) 
 	Radius f32
@@ -109,6 +110,7 @@ func EntUpdate (tDelta f32, currTime f32) () {
 		// mode changes 
 		if Ents[i].TimeToNextMode != 0 && 
 			Ents[i].TimeToNextMode <= currTime {
+			
 			Ents[i].Mode = Ents[i].NextMode
 		}			
 		
@@ -120,15 +122,27 @@ func EntUpdate (tDelta f32, currTime f32) () {
 			Ents[i].Pos.X = f32.add(Ents[i].Pos.X, Ents[i].Vel.X)
 			Ents[i].Pos.Y = f32.add(Ents[i].Pos.Y, Ents[i].Vel.Y)
 			
-			if Ents[i].Type == TYPE_HERO {
-				//str.print("HERO")
+			/* if i32.eq(Ents[i].Type, TYPE_HERO) {
+				var hurrg i32
+				//str.print("TYPE_HERO")
+			} else 
+			*/
+			if i32.eq(Ents[i].Type, TYPE_ROCKET) {
+				//str.print("TYPE_ROCKET")
+				
+				if f32.gt(Ents[i].Pos.Y, 1.0) {
+					Ents[i].Pos.Y = Ents[i].StartPos.Y
+				}
 			} else {
 				var hit bool
 				var other Entity
 				hit, other = checkForHitDownStream(i)
+				
 				if hit {
 					Ents[i].Mode = MODE_DEAD
 					other.Mode   = MODE_DEAD
+					str.print("flipped pair (mover & obstructor) to dead")
+					printf("this ent: %d   -   other ent: %d \n", Ents[i].Mode, other.Mode)
 					continue
 				}
 			}

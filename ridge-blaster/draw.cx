@@ -384,6 +384,7 @@ func feedTerrainQuadToGL(i i32, drawingCrust bool, currTime f32) () {
 			var ent Entity
 			ent = Entity{
 				Type: entity.TYPE_ROCKET,
+				StartPos: pos,
 				Pos: pos,
 				Vel: vel,
 				Mode: entity.MODE_STATIONARY,
