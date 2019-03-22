@@ -48,10 +48,10 @@ func Setup () () {
 
 
 func All (currTime f32, deltaTime f32) () {
-	//str.print("draw.All()")	
+	//str.print("draw.All()")
 	
-	if /* only 1 editor mesh */ i32.lt(len(mesh.RawEditorMeshes), 3) {
-		mesh.MakeEditorToolBar(false)
+	if /* no baked editor meshes */ i32.lt(len(mesh.BakedEditorMeshes), 1) {
+		mesh.MakeButtonArray(false)
 	}
 
 	// blink timing 
@@ -72,7 +72,7 @@ func All (currTime f32, deltaTime f32) () {
 		gl.Begin(gl.TRIANGLES) //////////////
 		trianglesForAll(mesh.RawEditorMeshes, true)
 		//menuItems()
-		trianglesForAll(mesh.BakedEditorMeshes, true)
+		trianglesForAll(mesh.BakedEditorMeshes, false)
 		gl.End()
 
 		gl.Begin(gl.QUADS) //////////////////
@@ -90,8 +90,8 @@ func All (currTime f32, deltaTime f32) () {
 			gl.End()
 		*/
 	} else { // playing (& the rest) 
-		//if /* only 1 NON-editor mesh */ i32.lt(len(mesh.Meshes), 2) {
-			//mesh.MakeEditorToolBar(true)
+		//if /* no game meshes */ i32.lt(len(mesh.Meshes), 1) {
+			//mesh.MakeButtonArray(true)
 		//}
 		
 		gl.Begin(gl.QUADS) //////////////////	
@@ -125,25 +125,23 @@ func menuItems () () {
 }
 
 
-func trianglesForAll (meshes []Mesh2D, editor bool) () {
+func trianglesForAll (meshes []Mesh2D, drawOnly1st bool) () {
 	for i := 0; i32.lt(i, len(meshes)); i++ {
-		if bool.and(editor, i32.gt(i, 0)) {
+		if bool.and(drawOnly1st, i32.gt(i, 0)) {
 			break
 		}
 		
 		var m Mesh2D
 		m = meshes[i]
 
+		// give feedback when not multiple of 3 
+		var leftover i32
+		leftover = i32.mod(len(m.TriangleIndices), 3)
+		if i32.uneq(0, leftover) {
+			printf("********* ERROR! leftover: %d in trianglesForAll() \n", leftover)
+		}
+
 		for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
-			// give feedback when not multiple of 3 
-			var leftover i32
-			leftover = i32.mod(len(m.TriangleIndices), 3)
-			if i32.uneq(0, leftover) {
-				printf("********* ERROR! leftover: %d in editorTriangles() \n", leftover)
-				printf("********* ERROR! leftover: %d in editorTriangles() \n", leftover)
-				printf("********* ERROR! leftover: %d in editorTriangles() \n", leftover)
-			}
-		
 			var pId i32 // point id (from tri ids) 
 			pId = m.TriangleIndices[j]
 			

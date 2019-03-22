@@ -161,7 +161,9 @@ func makeColorPickerWheelResource () () {
 }
 
 
-func MakeEditorToolBar (leftAnchored bool) () {
+func MakeButtonArray (leftAnchored bool) () {
+	str.print("MakeButtonArray ()")
+	
 	var span f32 // edge to edge size across icon background 
 	span = 0.2
 	
@@ -171,42 +173,44 @@ func MakeEditorToolBar (leftAnchored bool) () {
 	var /* tool... */ barHei f32
 	barHei = f32.mul(span, i32.f32(len(ccInput.Menu)))
 
-	var y f32
-	y = f32.div(barHei, 2.0)
-	y = f32.add(y, extent)
-
-	var pos Vec2
-	var ext Vec2
-	pos = Vec2{ Y: y }
-	ext = Vec2{ X: extent, Y: extent }
-
-	var x f32
-	
+	var x f32	
 	if leftAnchored {
 		x = f64.f32(collision.ScreenEdgeL) + extent
 	} else { // right anchored 
 		x = f64.f32(collision.ScreenEdgeR) - extent
 	}
+	
+	var y f32
+	y = f32.div(barHei, 2.0)
+	y = f32.sub(y, extent)
+
+	var pos Vec2
+	var ext Vec2
+	pos = Vec2{ X: x,      Y: y      }
+	ext = Vec2{ X: extent, Y: extent }
 
 	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
 		bakeInstanceOfResource(pos, ext)
-		y = f32.sub(y, span)
+		pos.Y = f32.sub(pos.Y, span)
 	}
 }
 
 
 func bakeInstanceOfResource (pos Vec2, extents Vec2) () {
-	str.print("copying, scaling & positioning (from editor raw meshes)")
-		
+	str.print("bakeInstanceOfResource ()   copying, scaling & positioning (from editor raw meshes)")
+	
 	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
+		var rawId i32
+		rawId = 2
+		
 		var m Mesh2D
 		m = Mesh2D{ Name: "bakedInstanceOfResource" }
 	
-		for k := 0; i32.lt(k, len(RawEditorMeshes[0].Points)); k++ {
+		for k := 0; i32.lt(k, len(RawEditorMeshes[rawId].Points)); k++ {
 			var c Color3
 			var p Vec2
-			c = RawEditorMeshes[0].Colors[k]
-			p = RawEditorMeshes[0].Points[k]
+			c = RawEditorMeshes[rawId].Colors[k]
+			p = RawEditorMeshes[rawId].Points[k]
 			
 			// scale 
 			p.X = f32.mul(p.X, extents.X)
@@ -222,9 +226,9 @@ func bakeInstanceOfResource (pos Vec2, extents Vec2) () {
 			m.Points, p)
 		}
 
-		for j := 0; i32.lt(j, len(RawEditorMeshes[0].TriangleIndices)); j++ {
+		for j := 0; i32.lt(j, len(RawEditorMeshes[rawId].TriangleIndices)); j++ {
 			var id i32
-			id = RawEditorMeshes[0].TriangleIndices[j]
+			id = RawEditorMeshes[rawId].TriangleIndices[j]
 			m.TriangleIndices = append(
 			m.TriangleIndices, id)
 		}
