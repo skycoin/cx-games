@@ -190,52 +190,53 @@ func MakeButtonArray (leftAnchored bool) () {
 	ext = Vec2{ X: extent, Y: extent }
 
 	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
-		bakeInstanceOfResource(pos, ext)
+		bakeInstanceFromRaw(pos, ext)
 		pos.Y = f32.sub(pos.Y, span)
 	}
 }
 
 
-func bakeInstanceOfResource (pos Vec2, extents Vec2) () {
-	str.print("bakeInstanceOfResource ()   copying, scaling & positioning (from editor raw meshes)")
-	
-	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
-		var rawId i32
-		rawId = 2
+func bakeInstanceFromRaw (pos Vec2, extents Vec2) () {
+	str.print("bakeInstanceFromRaw ()   copying, scaling & positioning (from editor raw meshes)")
+	var rawId i32
+	rawId = 2
+			
+	var m Mesh2D
+	m = Mesh2D{ Name: "bakedInstanceFromRaw" }
+	printf("len m.Points: %d \n", len(m.Points))
+	printf("len trianIds: %d \n", len(m.TriangleIndices))
+
+	// bake colors/verts 
+	for k := 0; i32.lt(k, len(RawEditorMeshes[rawId].Points)); k++ {
+		var c Color3
+		var p Vec2
+		c = RawEditorMeshes[rawId].Colors[k]
+		p = RawEditorMeshes[rawId].Points[k]
 		
-		var m Mesh2D
-		m = Mesh2D{ Name: "bakedInstanceOfResource" }
-	
-		for k := 0; i32.lt(k, len(RawEditorMeshes[rawId].Points)); k++ {
-			var c Color3
-			var p Vec2
-			c = RawEditorMeshes[rawId].Colors[k]
-			p = RawEditorMeshes[rawId].Points[k]
-			
-			// scale 
-			p.X = f32.mul(p.X, extents.X)
-			p.Y = f32.mul(p.Y, extents.Y)
-			
-			// position 
-			p.X = f32.add(pos.X, p.X)
-			p.Y = f32.add(pos.Y, p.Y)
-			
-			m.Colors = append(
-			m.Colors, c)
-			m.Points = append(
-			m.Points, p)
-		}
-
-		for j := 0; i32.lt(j, len(RawEditorMeshes[rawId].TriangleIndices)); j++ {
-			var id i32
-			id = RawEditorMeshes[rawId].TriangleIndices[j]
-			m.TriangleIndices = append(
-			m.TriangleIndices, id)
-		}
-
-		BakedEditorMeshes = append(
-		BakedEditorMeshes, m)
+		// scale 
+		p.X = f32.mul(p.X, extents.X)
+		p.Y = f32.mul(p.Y, extents.Y)
+		
+		// position 
+		p.X = f32.add(pos.X, p.X)
+		p.Y = f32.add(pos.Y, p.Y)
+		
+		m.Colors = append(
+		m.Colors, c)
+		m.Points = append(
+		m.Points, p)
 	}
+
+	// bake triangles 
+	for j := 0; i32.lt(j, len(RawEditorMeshes[rawId].TriangleIndices)); j++ {
+		var id i32
+		id = RawEditorMeshes[rawId].TriangleIndices[j]
+		m.TriangleIndices = append(
+		m.TriangleIndices, id)
+	}
+
+	BakedEditorMeshes = append(
+	BakedEditorMeshes, m)
 }
 
 

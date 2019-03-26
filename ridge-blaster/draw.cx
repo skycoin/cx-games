@@ -71,7 +71,6 @@ func All (currTime f32, deltaTime f32) () {
 
 		gl.Begin(gl.TRIANGLES) //////////////
 		trianglesForAll(mesh.RawEditorMeshes, true)
-		//menuItems()
 		trianglesForAll(mesh.BakedEditorMeshes, false)
 		gl.End()
 
@@ -107,21 +106,6 @@ func All (currTime f32, deltaTime f32) () {
 
 	// hero 
 	//Circle(entity.Ents[0])
-}
-
-
-func menuItems () () {
-	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
-		//str.print("draw button")
-		var id i32
-		//id = ccInput.Menu[i].MeshForBackId
-		var m Mesh2D
-		//m = ccInput.Menu[i].MeshForBack
-	
-		//for j := 0; i32.lt(j, len(m.Points)); j++ {
-			//m.Points[j].X = 
-		//}
-	}
 }
 
 
