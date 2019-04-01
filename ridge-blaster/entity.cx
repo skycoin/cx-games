@@ -134,7 +134,7 @@ func EntUpdate (tDelta f32, currTime f32) () {
 			if i32.eq(Ents[i].Type, TYPE_ROCKET) {
 				//str.print("TYPE_ROCKET")
 				
-				if f32.gt(Ents[i].Pos.Y, 1.0) {
+				if f32.gt(f32.sub(Ents[i].Pos.Y, Ents[i].Extents.Y), 1.0) {
 					Ents[i].Pos.Y = Ents[i].StartPos.Y
 				}
 			} else {
