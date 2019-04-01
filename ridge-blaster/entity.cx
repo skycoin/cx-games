@@ -76,7 +76,7 @@ func Setup () () {
 
 
 func Add (ent Entity) () {
-	//printf("entity.Add()   x: %f, y: %f \n", pos.X, pos.Y)
+	//printf("entity.Add()   x: %f, y: %f \n", ent.Pos.X, ent.Pos.Y)
 	Ents = append(Ents, ent)
 	
 	// set radius by extents 
