@@ -231,6 +231,7 @@ func MakeButtonArray (leftAnchored bool) () {
 	ext = Vec2{ X: extent, Y: extent }
 
 	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
+		bakeInstanceFromRaw(pos, ext, 2)
 		bakeInstanceFromRaw(pos, ext, 3)
 		pos.Y = f32.sub(pos.Y, span)
 	}

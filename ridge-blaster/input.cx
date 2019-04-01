@@ -49,8 +49,6 @@ func Setup () () {
 	Menu = append(Menu, mi)
 	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Snap-To-Grid" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Copy Editor Mesh to Game" }
-	Menu = append(Menu, mi)
 	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Gen Mesh Code in CLI" }
 	Menu = append(Menu, mi)
 

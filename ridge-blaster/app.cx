@@ -21,7 +21,8 @@ var MODE_PLAYING        i32 = 3
 var MODE_GAME_OVER      i32 = 4
 var MODE_EDIT_VERTICES  i32 = 5
 var MODE_EDIT_TRIANGLES i32 = 6
-var MODE_EDIT_MAX       i32 = 7
+var MODE_EDIT_COLORS    i32 = 7
+var MODE_EDIT_MAX       i32 = 8
 var Mode                i32 = MODE_EDIT_VERTICES
 
 
