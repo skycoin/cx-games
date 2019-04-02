@@ -145,7 +145,8 @@ func trianglesForAll (meshes []Mesh2D, drawOnly1st bool) () {
 func simpleVertexSequence (colorChanIntensity f32) () {
 	gl.Color3f(colorChanIntensity, colorChanIntensity, colorChanIntensity)
 
-	for i := 0; i < len(entity.Ents); i++ {
+	var i i32
+	for i = 0; i32.lt(i, len(entity.Ents)); i++ {
 		var e Entity
 		e = entity.Ents[i]
 
@@ -295,7 +296,8 @@ func Entities () () {
 
 func Terrain (currTime f32) () {
 	var num i32
-	num = len(environs.Terrain) - 1
+	num = len(environs.Terrain)
+	num = i32.sub(num, 1)
 	span = f32.div(f64.f32(collision.ScreenEdgeR) * 2.0, i32.f32(num))
 	currGreen = 0.2
 	currX = f64.f32(collision.ScreenEdgeL)

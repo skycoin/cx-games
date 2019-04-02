@@ -103,7 +103,7 @@ func GenerateMeshInitFunc () () {
 
 	printf(" \n")
 	
-	for i = 0; i32.lt(i, len(RawEditorMeshes[0].Points)); i++ {
+	for i := 0; i32.lt(i, len(RawEditorMeshes[0].Points)); i++ {
 		printf("    v = Vec2{ X: %f , Y: %f } \n", 
 			RawEditorMeshes[0].Points[i].X,
 			RawEditorMeshes[0].Points[i].Y)
@@ -433,47 +433,80 @@ func RemoveVertexNode () () {
 	
 	printf("mesh.RemoveVertexNode() \n")
 
-	var id i32
-	id = 1
+	var ir i32 // id to remove 
+	ir = 1
 	
 	var m Mesh2D
 	m = Mesh2D{ Name: RawEditorMeshes[0].Name }
-
+	
 	for i := 0; i32.lt(i, len(RawEditorMeshes[0].Points)); i++ {
-		if i32.uneq(i, id) {
-			m.Colors = append(m.Colors, RawEditorMeshes[0].Colors[i])
-			m.Points = append(m.Points, RawEditorMeshes[0].Points[i])
+		if i32.uneq(i, ir) {
+			m.Colors = append(
+			m.Colors, RawEditorMeshes[0].Colors[i])
+			m.Points = append(
+			m.Points, RawEditorMeshes[0].Points[i])
 		}
 	}
 
+	// remove tris that point to "ir" 
+	// (handle 3 at a time (+=3 increment), "j" being the last) 
 	for j := 2; i32.lt(j, len(RawEditorMeshes[0].TriangleIndices)); j = i32.add(j, 3) {
 		var j0 i32
 		var j1 i32
 		var j2 i32
+		
 		j0 = i32.sub(j, 2)
 		j1 = i32.sub(j, 1)
 		j2 = j
 		
-		if i32.uneq(j0, id) &&
-			i32.uneq(j1, id) &&
-			i32.uneq(j2, id) {
+		if i32.uneq(j0, ir) &&
+			i32.uneq(j1, ir) &&
+			i32.uneq(j2, ir) {
 			
-			m.TriangleIndices = append(m.TriangleIndices, getMaybeAdjustedId(id, j0))
-			m.TriangleIndices = append(m.TriangleIndices, getMaybeAdjustedId(id, j1))
-			m.TriangleIndices = append(m.TriangleIndices, getMaybeAdjustedId(id, j2))
+			m.TriangleIndices = append(
+			m.TriangleIndices, RawEditorMeshes[0].TriangleIndices[j0])
+			m.TriangleIndices = append(
+			m.TriangleIndices, RawEditorMeshes[0].TriangleIndices[j1])
+			m.TriangleIndices = append(
+			m.TriangleIndices, RawEditorMeshes[0].TriangleIndices[j2])
 		}
 	}
 
+	// adjust vert ids (down) that are above "ir" 
+	for j := 0; i32.lt(j, len(RawEditorMeshes[0].TriangleIndices)); j++ {
+		m.TriangleIndices[j] = getMaybeAdjustedId(ir, j)
+	}
+
+	/*
+	var num i32
+	num = i32.sub(len(m.Points), 1)
+	printf("---num: %d \n", num)
+	printf("---len(m.Colors): %d \n", len(m.Colors))
+	printf("---len(m.Points): %d \n", len(m.Points))
+	printf("---m.Points[num].X: %f \n", m.Points[num].X)
+	printf("---m.Points[num].Y: %f \n", m.Points[num].Y)
+	printf("---len(m.TriangleIndices): %d \n", len(m.TriangleIndices))
+	
+	num = i32.sub(len(RawEditorMeshes[0].Points), 1)
+	printf("---num: %d \n", num)
+	printf("---len(RawEditorMeshes[0].Colors): %d \n", len(RawEditorMeshes[0].Colors))
+	printf("---len(RawEditorMeshes[0].Points): %d \n", len(RawEditorMeshes[0].Points))
+	printf("---RawEditorMeshes[0].Points[num].X: %f \n", RawEditorMeshes[0].Points[num].X)
+	printf("---RawEditorMeshes[0].Points[num].Y: %f \n", RawEditorMeshes[0].Points[num].Y)
+	printf("---len(RawEditorMeshes[0].TriangleIndices): %d \n", len(RawEditorMeshes[0].TriangleIndices))
+	*/
+	
 	RawEditorMeshes[0] = m
+
 }
 
 
-func getMaybeAdjustedId (removeId i32, triId i32) (outId i32) {
-	outId = RawEditorMeshes[0].TriangleIndices[triId]
+func getMaybeAdjustedId (removeId i32, j i32) (jOut i32) {
+	jOut = RawEditorMeshes[0].TriangleIndices[j]
 
-	// decrease vertex id by 1, if after removed index 
-	if i32.gt(outId, removeId) {
-		outId = i32.sub(outId, 1)
+	// decrease vertex id by 1, if it's after removed index 
+	if i32.gt(jOut, removeId) { // should never == removeId 
+		jOut = i32.sub(jOut, 1)
 	}
 }
 

@@ -202,10 +202,10 @@ func fireOrActivate () () {
 		
 		// i cycles through editor mesh points 
 		for i := 0; i32.lt(i, len(mesh.RawEditorMeshes[0].Points)); i++ {
-			if p.X > f32.sub(mesh.RawEditorMeshes[0].Points[i].X, entity.NodeExtents.X) &&
-				p.X < f32.add(mesh.RawEditorMeshes[0].Points[i].X, entity.NodeExtents.X) &&
-				p.Y > f32.sub(mesh.RawEditorMeshes[0].Points[i].Y, entity.NodeExtents.Y) &&
-				p.Y < f32.add(mesh.RawEditorMeshes[0].Points[i].Y, entity.NodeExtents.Y) {
+			if p.X > (mesh.RawEditorMeshes[0].Points[i].X - entity.NodeExtents.X) &&
+				p.X < (mesh.RawEditorMeshes[0].Points[i].X + entity.NodeExtents.X) &&
+				p.Y > (mesh.RawEditorMeshes[0].Points[i].Y - entity.NodeExtents.Y) &&
+				p.Y < (mesh.RawEditorMeshes[0].Points[i].Y + entity.NodeExtents.Y) {
 				
 				printf("RawEditorMeshes[0].Points' i: %d \n", i)
 

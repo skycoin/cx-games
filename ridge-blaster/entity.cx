@@ -111,7 +111,7 @@ func EntUpdate (tDelta f32, currTime f32) () {
 	var i i32
 	for i = 0; i < len(Ents); i++ {
 		// time-based mode changes 
-		if Ents[i].TimeToNextMode != 0 && 
+		if Ents[i].TimeToNextMode != 0.0 && 
 			Ents[i].TimeToNextMode <= currTime {
 			
 			Ents[i].Mode = Ents[i].NextMode
@@ -126,11 +126,10 @@ func EntUpdate (tDelta f32, currTime f32) () {
 			Ents[i].Pos.X = f32.add(Ents[i].Pos.X, Ents[i].Vel.X)
 			Ents[i].Pos.Y = f32.add(Ents[i].Pos.Y, Ents[i].Vel.Y)
 			
-			/* if i32.eq(Ents[i].Type, TYPE_HERO) {
-				var hurrg i32
-				//str.print("TYPE_HERO")
-			} else 
-			*/
+			//if i32.eq(Ents[i].Type, TYPE_HERO) {
+				//var hurrg i32
+				////str.print("TYPE_HERO")
+			//} else 
 			if i32.eq(Ents[i].Type, TYPE_ROCKET) {
 				//str.print("TYPE_ROCKET")
 				
@@ -160,11 +159,13 @@ func EntUpdate (tDelta f32, currTime f32) () {
 
 // id is the moving entity, which triggered the need to scan other entities 
 func checkForHitDownStream (id i32) (hit bool, other Entity) {
+	str.print("checkForHitDownStream ()")
+	
 	var o i32 // other 
-	for o = id + 1; o < len(Ents); o++ {
+	for o = id + 1; i32.lt(o, len(Ents)); o = i32.add(o, 1) {
 		hit = pairIsTouching(id, o)
 		if hit {
-			//str.print("hit!")
+			str.print("hit!")
 			other = Ents[o]
 		}
 	}
@@ -185,43 +186,44 @@ func pairIsTouching (id i32, o i32) (hit bool) {
 
 
 func pollCameraControlKeys () () {
-	rotateInc := 0.2
+	var rotateInc f32
+	rotateInc = 0.2
 
 	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_A), 1) {
-		CamPos.X = i32.add(CamPos.X, 0.0 - 0.001)
+		CamPos.X = f32.add(CamPos.X, 0.0 - 0.001)
 	} else
 	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_D), 1) {
-		CamPos.X = i32.add(CamPos.X, 0.001)
+		CamPos.X = f32.add(CamPos.X, 0.001)
 	} else {
 		CamPos.X = 0.0
 	}
 
 	// x axis rotation 
 	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_F2), 1) {
-		CamRot.X = i32.add(CamRot.Y, 0.0 - rotateInc)
+		CamRot.X = f32.add(CamRot.Y, 0.0 - rotateInc)
 	} else
 	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_F3), 1) {
-		CamRot.X = i32.add(CamRot.Y, rotateInc)
+		CamRot.X = f32.add(CamRot.Y, rotateInc)
 	} else {
 		CamRot.X = 0.0
 	}
 
 	// y axis rotation 
 	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_Y), 1) {
-		CamRot.Y = i32.add(CamRot.Y, 0.0 - rotateInc)
+		CamRot.Y = f32.add(CamRot.Y, 0.0 - rotateInc)
 	} else
 	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_N), 1) {
-		CamRot.Y = i32.add(CamRot.Y, rotateInc)
+		CamRot.Y = f32.add(CamRot.Y, rotateInc)
 	} else {
 		CamRot.Y = 0.0
 	}
 
 	// forward/back translation 
 	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_W), 1) {
-		CamPos.Z = i32.add(CamPos.Z, 0.0 - 0.001)
+		CamPos.Z = f32.add(CamPos.Z, 0.0 - 0.001)
 	} else
 	if i32.eq(glfw.GetKey("window", ccInput.GLFW_KEY_S), 1) {
-		CamPos.Z = i32.add(CamPos.Z, 0.001)
+		CamPos.Z = f32.add(CamPos.Z, 0.001)
 	} else {
 		CamPos.Z = 0.0
 	}
@@ -290,7 +292,7 @@ func getVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f64, 
 	} else
 	if f32.gteq(f32.add(pos, rad), f64.f32(posEdge)) { 
 		// hit pos edge 
-		out = 0 - f32.abs(vel)
+		out = 0.0 - f32.abs(vel)
 	}
 }
 
