@@ -10,6 +10,8 @@ import "mesh"
 
 
 var MousePointer Vec2
+var draggingVertexNode bool
+var draggedVertexId i32
 
 // keys 
 var	GLFW_KEY_W i32
@@ -74,8 +76,12 @@ func InpUpdate () () {
 // mouse buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 	if /* release */ action == 0 {
-		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
+		if button == 0 {
+			draggingVertexNode = false
+		}
 	} else if /* press */ action == 1 {
+		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
+
 		if button == 0 {
 			fireOrActivate()
 		} else
@@ -104,6 +110,11 @@ func onCursorPosEvent (window str, x f64, y f64) () {
 	mY = f32.div(f64.f32(y), i32.f32(app.ScreenSizeInPixels.Y))
 	mY = f32.mul(mY, 2.0)
 	MousePointer.Y = f32.sub(1.0, mY)
+	
+	if draggingVertexNode {
+		mesh.RawEditorMeshes[0].Points[draggedVertexId].X = MousePointer.X
+		mesh.RawEditorMeshes[0].Points[draggedVertexId].Y = MousePointer.Y
+	}
 	
 	//printf("onCursorPosEvent %f, %f \n", MousePointer.X, MousePointer.Y)
 }
@@ -224,7 +235,10 @@ func fireOrActivate () () {
 				}
 			}
 		} else { // primarily MODE_EDIT_VERTICES for now 
-			if !touched {
+			if touched {
+				draggingVertexNode = true
+				draggedVertexId = i
+			} else {
 				var c Color3
 				c = Color3{ 
 					R: 0.5, 
