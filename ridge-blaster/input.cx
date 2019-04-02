@@ -201,40 +201,44 @@ func fireOrActivate () () {
 			Extents: ext }
 		
 		entity.Add(ent)
-	} else 
-	if app.Mode == app.MODE_EDIT_TRIANGLES {
-		// TODO enhancement: allow player to slide across 3 verts while holding LMB 
+	} else { // an edit mode 
 		var touched bool
 		var i i32
 		touched, i = getTouchedVertexNode(MousePointer)
-		
-		if touched {			
-			printf("RawEditorMeshes[0].Points' i: %d \n", i)
 
-			if i32.gteq(mesh.PickedTrianglesNextId, 3) {
-				mesh.PickedTrianglesNextId = 0
+		if app.Mode == app.MODE_EDIT_TRIANGLES {
+			// TODO enhancement: allow player to slide across 3 verts while holding LMB 
+			
+			if touched {			
+				printf("RawEditorMeshes[0].Points' i: %d \n", i)
+
+				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
+					mesh.PickedTrianglesNextId = 0
+				}
+
+				mesh.PickedTriangle[mesh.PickedTrianglesNextId] = i
+				mesh.PickedTrianglesNextId = i32.add(mesh.PickedTrianglesNextId, 1)
+
+				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
+					mesh.MakeNewEditorTriangle()
+				}
 			}
+		} else { // primarily MODE_EDIT_VERTICES for now 
+			if !touched {
+				var c Color3
+				c = Color3{ 
+					R: 0.5, 
+					G: 0.5, 
+					B: 0.5 }
 
-			mesh.PickedTriangle[mesh.PickedTrianglesNextId] = i
-			mesh.PickedTrianglesNextId = i32.add(mesh.PickedTrianglesNextId, 1)
+				printf("Adding vertex node: %d \n", len(mesh.RawEditorMeshes[0].Points))
 
-			if i32.gteq(mesh.PickedTrianglesNextId, 3) {
-				mesh.MakeNewEditorTriangle()
+				mesh.RawEditorMeshes[0].Colors = append(
+				mesh.RawEditorMeshes[0].Colors, c)
+				mesh.RawEditorMeshes[0].Points = append(
+				mesh.RawEditorMeshes[0].Points, MousePointer)
 			}
 		}
-	} else { // primarily MODE_EDIT_VERTICES for now 
-		var c Color3
-		c = Color3{ 
-			R: 0.5, 
-			G: 0.5, 
-			B: 0.5 }
-
-		printf("Adding vertex node: %d \n", len(mesh.RawEditorMeshes[0].Points))
-
-		mesh.RawEditorMeshes[0].Colors = append(
-		mesh.RawEditorMeshes[0].Colors, c)
-		mesh.RawEditorMeshes[0].Points = append(
-		mesh.RawEditorMeshes[0].Points, MousePointer)
 	}
 }
 

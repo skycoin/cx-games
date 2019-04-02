@@ -13,8 +13,9 @@ var MAX_HERO_SPEED     f32 = 0.02
 var DAMP_FACTOR_WEAK   f32 = 0.25
 var DAMP_FACTOR_STRONG f32 = 1.0
 
+
 // modes 
-// FIXME to consts, when they exist in CX 
+// 		FIXME to consts, when they exist in CX 
 var MODE_TITLE_SCREEN   i32 = 1
 var MODE_MENU           i32 = 2
 var MODE_PLAYING        i32 = 3
@@ -23,6 +24,7 @@ var MODE_EDIT_VERTICES  i32 = 5
 var MODE_EDIT_TRIANGLES i32 = 6
 var MODE_EDIT_COLORS    i32 = 7
 var MODE_EDIT_MAX       i32 = 8
+
 var Mode                i32 = MODE_EDIT_VERTICES
 
 
