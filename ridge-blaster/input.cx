@@ -73,15 +73,21 @@ func InpUpdate () () {
 
 // mouse buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
-	//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
-
 	if /* release */ action == 0 {
+		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 	} else if /* press */ action == 1 {
 		if button == 0 {
 			fireOrActivate()
 		} else
-		if button == 1 {
-			mesh.RemoveVertexNode()
+		if button == 1 && app.Mode == app.MODE_EDIT_VERTICES {
+			str.print("RMB press && app.Mode == app.MODE_EDIT_VERTICES")
+			var touched bool
+			var i i32
+			touched, i = getTouchedVertexNode(MousePointer)
+			
+			if touched {			
+				mesh.RemoveVertexNode(i)
+			}
 		}
 	}
 }
@@ -168,6 +174,7 @@ func maybeToggleMousePointer (key i32) () {
 
 
 func fireOrActivate () () {
+	str.print("fireOrActivate ()")
 	var t    i32
 	var mode i32
 	var pos  Vec2
@@ -197,30 +204,22 @@ func fireOrActivate () () {
 	} else 
 	if app.Mode == app.MODE_EDIT_TRIANGLES {
 		// TODO enhancement: allow player to slide across 3 verts while holding LMB 
-		var p Vec2
-		p = MousePointer
+		var touched bool
+		var i i32
+		touched, i = getTouchedVertexNode(MousePointer)
 		
-		// i cycles through editor mesh points 
-		for i := 0; i32.lt(i, len(mesh.RawEditorMeshes[0].Points)); i++ {
-			if p.X > (mesh.RawEditorMeshes[0].Points[i].X - entity.NodeExtents.X) &&
-				p.X < (mesh.RawEditorMeshes[0].Points[i].X + entity.NodeExtents.X) &&
-				p.Y > (mesh.RawEditorMeshes[0].Points[i].Y - entity.NodeExtents.Y) &&
-				p.Y < (mesh.RawEditorMeshes[0].Points[i].Y + entity.NodeExtents.Y) {
-				
-				printf("RawEditorMeshes[0].Points' i: %d \n", i)
+		if touched {			
+			printf("RawEditorMeshes[0].Points' i: %d \n", i)
 
-				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
-					mesh.PickedTrianglesNextId = 0
-				}
+			if i32.gteq(mesh.PickedTrianglesNextId, 3) {
+				mesh.PickedTrianglesNextId = 0
+			}
 
-				mesh.PickedTriangle[mesh.PickedTrianglesNextId] = i
-				mesh.PickedTrianglesNextId = i32.add(mesh.PickedTrianglesNextId, 1)
+			mesh.PickedTriangle[mesh.PickedTrianglesNextId] = i
+			mesh.PickedTrianglesNextId = i32.add(mesh.PickedTrianglesNextId, 1)
 
-				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
-					mesh.MakeNewEditorTriangle()
-				}
-				
-				break
+			if i32.gteq(mesh.PickedTrianglesNextId, 3) {
+				mesh.MakeNewEditorTriangle()
 			}
 		}
 	} else { // primarily MODE_EDIT_VERTICES for now 
@@ -236,5 +235,22 @@ func fireOrActivate () () {
 		mesh.RawEditorMeshes[0].Colors, c)
 		mesh.RawEditorMeshes[0].Points = append(
 		mesh.RawEditorMeshes[0].Points, MousePointer)
+	}
+}
+
+
+func getTouchedVertexNode(p Vec2) (touched bool, id i32) {
+	touched = false
+	
+	for i := 0; i32.lt(i, len(mesh.RawEditorMeshes[0].Points)); i++ {
+		if p.X > (mesh.RawEditorMeshes[0].Points[i].X - entity.NodeExtents.X) &&
+			p.X < (mesh.RawEditorMeshes[0].Points[i].X + entity.NodeExtents.X) &&
+			p.Y > (mesh.RawEditorMeshes[0].Points[i].Y - entity.NodeExtents.Y) &&
+			p.Y < (mesh.RawEditorMeshes[0].Points[i].Y + entity.NodeExtents.Y) {
+			
+			touched = true
+			id = i			
+			break
+		}
 	}
 }

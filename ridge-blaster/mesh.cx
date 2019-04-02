@@ -243,8 +243,6 @@ func bakeInstanceFromRaw (pos Vec2, extents Vec2, rawId i32) () {
 			
 	var m Mesh2D
 	m = Mesh2D{ Name: "bakedInstanceFromRaw" }
-	printf("len m.Points: %d \n", len(m.Points))
-	printf("len trianIds: %d \n", len(m.TriangleIndices))
 
 	// bake colors/verts 
 	for k := 0; i32.lt(k, len(RawEditorMeshes[rawId].Points)); k++ {
@@ -423,7 +421,7 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 }
 
 
-func RemoveVertexNode () () {
+func RemoveVertexNode (/* id to remove */ ir i32) () {
 	if /* NOT editing */ 
 		i32.lt(app.Mode, app.MODE_EDIT_VERTICES) ||
 		i32.gt(app.Mode, app.MODE_EDIT_MAX) {
@@ -431,11 +429,8 @@ func RemoveVertexNode () () {
 		return
 	}
 	
-	printf("mesh.RemoveVertexNode() \n")
+	printf("mesh.RemoveVertexNode(%d) \n", ir)
 
-	var ir i32 // id to remove 
-	ir = 1
-	
 	var m Mesh2D
 	m = Mesh2D{ Name: RawEditorMeshes[0].Name }
 	

@@ -159,8 +159,6 @@ func EntUpdate (tDelta f32, currTime f32) () {
 
 // id is the moving entity, which triggered the need to scan other entities 
 func checkForHitDownStream (id i32) (hit bool, other Entity) {
-	str.print("checkForHitDownStream ()")
-	
 	var o i32 // other 
 	for o = id + 1; i32.lt(o, len(Ents)); o = i32.add(o, 1) {
 		hit = pairIsTouching(id, o)
