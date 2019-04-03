@@ -231,8 +231,18 @@ func MakeButtonArray (leftAnchored bool) () {
 	ext = Vec2{ X: extent, Y: extent }
 
 	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
-		bakeInstanceFromRaw(pos, ext, 2)
-		bakeInstanceFromRaw(pos, ext, 3)
+		ccInput.Menu[i].Pos = pos
+		ccInput.Menu[i].Extents = ext
+		bakeInstanceFromRaw(pos, ext, 2) // rect background 
+		
+		var rawId i32
+		rawId = i + 3
+		
+		if rawId < len(RawEditorMeshes) {
+			bakeInstanceFromRaw(pos, ext, rawId)
+			ccInput.Menu[i].MeshForIcon = rawId
+		}
+			
 		pos.Y = f32.sub(pos.Y, span)
 	}
 }

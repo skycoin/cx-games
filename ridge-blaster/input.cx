@@ -87,11 +87,11 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 		} else
 		if button == 1 && app.Mode == app.MODE_EDIT_VERTICES {
 			str.print("RMB press && app.Mode == app.MODE_EDIT_VERTICES")
-			var touched bool
+			var touchedVert bool
 			var i i32
-			touched, i = getTouchedVertexNode(MousePointer)
+			touchedVert, i = getTouchedVertexNode(MousePointer)
 			
-			if touched {			
+			if touchedVert {			
 				mesh.RemoveVertexNode(i)
 			}
 		}
@@ -185,7 +185,7 @@ func maybeToggleMousePointer (key i32) () {
 
 
 func fireOrActivate () () {
-	str.print("fireOrActivate ()")
+	//str.print("fireOrActivate ()")
 	var t    i32
 	var mode i32
 	var pos  Vec2
@@ -213,14 +213,27 @@ func fireOrActivate () () {
 		
 		entity.Add(ent)
 	} else { // an edit mode 
-		var touched bool
+		var touchedMI bool // menu item 
 		var i i32
-		touched, i = getTouchedVertexNode(MousePointer)
+		touchedMI, i = getTouchedMenuItem(MousePointer)
+		
+		if touchedMI {
+			printf("pressed menu item %d \n", i)
+			
+			/////
+			/////
+			return ///// don't want to use any vertex nodes 
+			/////
+			/////
+		}
+		
+		var touchedVert bool
+		touchedVert, i = getTouchedVertexNode(MousePointer)
 
 		if app.Mode == app.MODE_EDIT_TRIANGLES {
 			// TODO enhancement: allow player to slide across 3 verts while holding LMB 
 			
-			if touched {			
+			if touchedVert {			
 				printf("RawEditorMeshes[0].Points' i: %d \n", i)
 
 				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
@@ -235,7 +248,7 @@ func fireOrActivate () () {
 				}
 			}
 		} else { // primarily MODE_EDIT_VERTICES for now 
-			if touched {
+			if touchedVert {
 				draggingVertexNode = true
 				draggedVertexId = i
 			} else {
@@ -257,14 +270,39 @@ func fireOrActivate () () {
 }
 
 
-func getTouchedVertexNode(p Vec2) (touched bool, id i32) {
+func getTouchedMenuItem (p Vec2) (touched bool, id i32) {
+	touched = false
+	
+	for i := 0; i32.lt(i, len(Menu)); i++ {
+		var v Vec2
+		var e Vec2
+		v = Menu[i].Pos
+		e = Menu[i].Extents
+		
+		if p.X > (v.X - e.X) &&
+			p.X < (v.X + e.X) &&
+			p.Y > (v.Y - e.Y) &&
+			p.Y < (v.Y + e.Y) {
+			
+			touched = true
+			id = i			
+			break
+		}
+	}
+}
+
+
+func getTouchedVertexNode (p Vec2) (touched bool, id i32) {
 	touched = false
 	
 	for i := 0; i32.lt(i, len(mesh.RawEditorMeshes[0].Points)); i++ {
-		if p.X > (mesh.RawEditorMeshes[0].Points[i].X - entity.NodeExtents.X) &&
-			p.X < (mesh.RawEditorMeshes[0].Points[i].X + entity.NodeExtents.X) &&
-			p.Y > (mesh.RawEditorMeshes[0].Points[i].Y - entity.NodeExtents.Y) &&
-			p.Y < (mesh.RawEditorMeshes[0].Points[i].Y + entity.NodeExtents.Y) {
+		var v Vec2
+		v = mesh.RawEditorMeshes[0].Points[i]
+		
+		if p.X > (v.X - entity.NodeExtents.X) &&
+			p.X < (v.X + entity.NodeExtents.X) &&
+			p.Y > (v.Y - entity.NodeExtents.Y) &&
+			p.Y < (v.Y + entity.NodeExtents.Y) {
 			
 			touched = true
 			id = i			
