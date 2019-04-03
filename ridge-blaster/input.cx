@@ -9,9 +9,10 @@ import "mesh"
 
 
 
-var MousePointer Vec2
+var MousePointer       Vec2
+var SnapToGrid         bool
 var draggingVertexNode bool
-var draggedVertexId i32
+var draggedVertexId    i32
 
 // keys 
 var	GLFW_KEY_W i32
@@ -219,6 +220,21 @@ func fireOrActivate () () {
 			} else { // perform one-time actions 
 				if i == TOOLBAR_GEN_FUNC {
 					mesh.GenerateMeshInitFunc()
+				} else
+				if i == TOOLBAR_SNAP_TO_GRID {
+					SnapToGrid = !SnapToGrid
+					
+					if SnapToGrid {
+						str.print("SNAP_TO_GRID: ON")					
+					} else {
+						str.print("SNAP_TO_GRID: OFF")
+					}
+				} else
+				if i == TOOLBAR_NEW_CANVAS {
+					str.print("-> NEW_CANVAS")
+					var m Mesh2D
+					m = Mesh2D{ Name: "Editor workspace" }
+					mesh.RawEditorMeshes[0] = m
 				} else
 				if i == TOOLBAR_MAINMENU {
 					str.print("-> MAINMENU")
