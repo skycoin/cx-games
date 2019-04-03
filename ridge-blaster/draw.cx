@@ -71,9 +71,11 @@ func All (currTime f32, deltaTime f32) () {
 		trianglesForAll(mesh.BakedEditorMeshes, false)
 		gl.End()
 
-		gl.Begin(gl.QUADS) //////////////////
-		editorQuads()
-		gl.End()
+		if app.EditMode != app.EDIT_COLORS {
+			gl.Begin(gl.QUADS) //////////////////
+			editorQuads()
+			gl.End()
+		}
 		
 		/*
 			TODO: ADAPT THIS TO HIGHLIGHT MULTIPLE MESHES/SEPARATIONS WHEN IMPLEMENTED 
@@ -108,10 +110,17 @@ func All (currTime f32, deltaTime f32) () {
 
 func trianglesForAll (meshes []Mesh2D, drawOnly1st bool) () {
 	for i := 0; i32.lt(i, len(meshes)); i++ {
-		if bool.and(drawOnly1st, i32.gt(i, 0)) {
-			break
+		if app.EditMode == app.EDIT_COLORS {
+			if drawOnly1st && i > 1 {
+			//if bool.and(drawOnly1st, i32.gt(i, 0)) {
+				break
+			}
+		} else {
+			if drawOnly1st && i > 0 {
+				break
+			}
 		}
-		
+
 		var m Mesh2D
 		m = meshes[i]
 
