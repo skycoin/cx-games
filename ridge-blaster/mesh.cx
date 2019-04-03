@@ -40,6 +40,8 @@ func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_f
 	InitEditVerticesIconMesh()
 	InitEditTrianglesIconMesh()
 	InitEditColorsIconMesh()
+	InitGenerateFuncIconMesh()
+	InitSnapToGridIconMesh()
 	InitWipeCanvasIconMesh()
 	InitPlayerShipMesh()
 	
