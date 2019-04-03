@@ -61,10 +61,7 @@ func All (currTime f32, deltaTime f32) () {
 		pickedNodesAreBright = bool.not(pickedNodesAreBright)
 	}
 
-	if /* editing */ 
-		i32.gteq(app.Mode, app.MODE_EDIT_VERTICES) &&
-		i32.lteq(app.Mode, app.MODE_EDIT_MAX) {
-		
+	if app.Mode == app.MODE_EDITOR {		
 		gl.Begin(gl.LINES)
 		gridLines()
 		gl.End()

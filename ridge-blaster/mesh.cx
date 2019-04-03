@@ -432,10 +432,7 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 
 
 func RemoveVertexNode (/* id to remove */ ir i32) () {
-	if /* NOT editing */ 
-		i32.lt(app.Mode, app.MODE_EDIT_VERTICES) ||
-		i32.gt(app.Mode, app.MODE_EDIT_MAX) {
-		
+	if app.Mode != app.MODE_EDITOR {		
 		return
 	}
 	

@@ -16,16 +16,21 @@ var DAMP_FACTOR_STRONG f32 = 1.0
 
 // modes 
 // 		FIXME to consts, when they exist in CX 
-var MODE_TITLE_SCREEN   i32 = 1
-var MODE_MENU           i32 = 2
-var MODE_PLAYING        i32 = 3
-var MODE_GAME_OVER      i32 = 4
-var MODE_EDIT_VERTICES  i32 = 5
-var MODE_EDIT_TRIANGLES i32 = 6
-var MODE_EDIT_COLORS    i32 = 7
-var MODE_EDIT_MAX       i32 = 8
 
-var Mode                i32 = MODE_EDIT_VERTICES
+var MODE_TITLE_SCREEN i32 = 1
+var MODE_MENU         i32 = 2
+var MODE_PLAYING      i32 = 3
+var MODE_GAME_OVER    i32 = 4
+var MODE_EDITOR       i32 = 5
+var MODE_MAX          i32 = 6
+
+var EDIT_VERTICES  i32 = 0
+var EDIT_TRIANGLES i32 = 1
+var EDIT_COLORS    i32 = 2
+var EDIT_MAX       i32 = 3
+
+var Mode           i32 = MODE_EDITOR
+var EditMode       i32 = EDIT_VERTICES
 
 
 

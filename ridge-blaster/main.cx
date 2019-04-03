@@ -42,10 +42,8 @@ func main () {
 	str.print("[W], [A], [S], [D] ======== move")
 	str.print("[LMB] or [SPACE] ========== shoot")
 	str.print("[RMB] ===================== delete vertex node")
+	str.print("[ESC] ===================== edit ")
 	str.print("[5] ======================= quit")
-	str.print("[4] ======================= edit (or toggle between VERTEX & TRIANGLE editing)")
-	str.print("[3] ======================= play")
-	str.print("[2] ======================= GenerateMeshInitFunc")
 	str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
 	game.Init()

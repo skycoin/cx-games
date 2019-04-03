@@ -15,7 +15,32 @@ type MenuItem struct {
 
 var Menu []MenuItem
 
+// toolbar 
+// (Menu item button ids... 
+// 1st correspond to switching editor modes, then... 
+// 2nd, these one-time actions) 
+var TOOLBAR_GEN_FUNC i32 = app.EDIT_MAX // generate mesh init func 
+var TOOLBAR_MAINMENU i32 = app.EDIT_MAX + 1
 
 
-func temp () () {
+
+func setupMainMenu () () {
+}
+
+
+func setupEditorToolbar () () {
+	var mi MenuItem
+	
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Edit Vertices" }
+	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Edit Triangles" }
+	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Color Picker" }
+	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Gen Mesh Init Func" }
+	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "PLAY" }
+	Menu = append(Menu, mi)
+	//mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Snap-To-Grid" }
+	//Menu = append(Menu, mi)
 }

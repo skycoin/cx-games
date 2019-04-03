@@ -19,11 +19,12 @@ var	GLFW_KEY_A i32
 var	GLFW_KEY_S i32
 var	GLFW_KEY_D i32
 
-var GLFW_KEY_SPACE i32 = 32
-var GLFW_KEY_N i32
-var GLFW_KEY_Y i32
-var GLFW_KEY_F2 i32
-var GLFW_KEY_F3 i32
+var GLFW_KEY_SPACE  i32 = 32
+var GLFW_KEY_N      i32
+var GLFW_KEY_Y      i32
+var GLFW_KEY_F2     i32
+var GLFW_KEY_F3     i32
+var GLFW_KEY_ESCAPE i32 = 256
 
 
 
@@ -41,18 +42,7 @@ func Setup () () {
 	GLFW_KEY_F2 = 291
 	GLFW_KEY_F3 = 292
 	
-	// menu 
-	var mi MenuItem
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Edit Vertices" }
-	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Edit Triangles" }
-	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Color Picker" }
-	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Snap-To-Grid" }
-	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Gen Mesh Code in CLI" }
-	Menu = append(Menu, mi)
+	setupEditorToolbar()
 
 	// callbacks 
 	glfw.SetKeyCallback("window", "onKeyEvent")
@@ -85,8 +75,11 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 		if button == 0 {
 			fireOrActivate()
 		} else
-		if button == 1 && app.Mode == app.MODE_EDIT_VERTICES {
-			str.print("RMB press && app.Mode == app.MODE_EDIT_VERTICES")
+		if button == 1 && 
+			app.Mode == app.MODE_EDITOR &&
+			app.EditMode == app.EDIT_VERTICES {
+			
+			str.print("RMB press && EDIT_VERTICES")
 			var touchedVert bool
 			var i i32
 			touchedVert, i = getTouchedVertexNode(MousePointer)
@@ -130,21 +123,12 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 		if action == 1 { // (press) 
 			//str.print("-------------------------------------PRESS (not a repeat)")
 
-			if key == 50 { // GLFW_KEY_2 
-				mesh.GenerateMeshInitFunc()
-			} else
-			if key == 51 { // GLFW_KEY_3 
-				str.print("-> PLAY")
-				app.Mode = app.MODE_PLAYING
-			} else
-			if key == 52 { // GLFW_KEY_4 
-				if app.Mode == app.MODE_EDIT_VERTICES {
-					app.Mode = app.MODE_EDIT_TRIANGLES
-					str.print("-> MODE_EDIT_TRIANGLES")
-				} else {
-					app.Mode = app.MODE_EDIT_VERTICES
-					str.print("-> MODE_EDIT_VERTICES")
-				}
+			//if key == 50 { // GLFW_KEY_2 
+			//} else
+			//if key == 51 { // GLFW_KEY_3 
+			//} else
+			if key == GLFW_KEY_ESCAPE {
+				app.Mode = app.MODE_EDITOR
 			} else
 			if key == 53 { // GLFW_KEY_5 
 				// close 
@@ -193,7 +177,7 @@ func fireOrActivate () () {
 	var ext  Vec2
 	
 	// handle modes 
-	if app.Mode < app.MODE_GAME_OVER {
+	if app.Mode < app.MODE_GAME_OVER { // playing 
 		t = entity.TYPE_BULLET
 		pos = entity.Ents[0].Pos
 		pos.X = f32.add(pos.X, entity.Ents[0].Extents.X)
@@ -212,13 +196,35 @@ func fireOrActivate () () {
 			Extents: ext }
 		
 		entity.Add(ent)
-	} else { // an edit mode 
+	} else if app.Mode == app.MODE_EDITOR {
 		var touchedMI bool // menu item 
 		var i i32
 		touchedMI, i = getTouchedMenuItem(MousePointer)
 		
 		if touchedMI {
-			printf("pressed menu item %d \n", i)
+			printf("pressed menu item %s \n", Menu[i].Name)
+			
+			if i < app.EDIT_MAX { // change EditMode
+				app.EditMode = i
+
+				if app.EditMode == app.EDIT_VERTICES {
+					str.print("-> MODE EDIT_VERTICES")
+				} else
+				if app.EditMode == app.EDIT_TRIANGLES {
+					str.print("-> MODE EDIT_TRIANGLES")
+				} else
+				if app.EditMode == app.EDIT_COLORS {
+					str.print("-> MODE EDIT_COLORS")
+				}
+			} else { // perform one-time actions 
+				if i == TOOLBAR_GEN_FUNC {
+					mesh.GenerateMeshInitFunc()
+				} else
+				if i == TOOLBAR_MAINMENU {
+					str.print("-> MAINMENU")
+					app.Mode = app.MODE_MENU
+				}
+			}
 			
 			/////
 			/////
@@ -230,7 +236,7 @@ func fireOrActivate () () {
 		var touchedVert bool
 		touchedVert, i = getTouchedVertexNode(MousePointer)
 
-		if app.Mode == app.MODE_EDIT_TRIANGLES {
+		if app.EditMode == app.EDIT_TRIANGLES {
 			// TODO enhancement: allow player to slide across 3 verts while holding LMB 
 			
 			if touchedVert {			
@@ -247,7 +253,7 @@ func fireOrActivate () () {
 					mesh.MakeNewEditorTriangle()
 				}
 			}
-		} else { // primarily MODE_EDIT_VERTICES for now 
+		} else if app.EditMode == app.EDIT_VERTICES {
 			if touchedVert {
 				draggingVertexNode = true
 				draggedVertexId = i
