@@ -16,20 +16,27 @@ type Mesh2D struct {
 	TriangleIndices []i32
 }
 
-var Meshes []Mesh2D
-var RawEditorMeshes []Mesh2D
-var BakedEditorMeshes []Mesh2D
+var RawMeshes []Mesh2D
+var SizedMeshes []Mesh2D // partially baked.  just the world size/scale 
+var BakedEditorMeshes []Mesh2D // fully baked.  with world pos & size/scale 
+
 var PickedTrianglesNextId i32
 var PickedTriangle []i32
 
+var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }
 
 
-func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_func_name_ 
-	str.print("mesh.Setup2()")
+
+func Setup () () {
+	str.print("mesh.Setup()")
+	
+	for i := 0; i < len(charMap); i++ {
+		str.print(charMap[i])
+	}
 	
 	// editor 
 	
-	//		mesh 0, blank workspace for user editing 
+	//		mesh 0 == blank workspace for user editing 
 	var m Mesh2D
 	m = Mesh2D{ Name: "Editor workspace" }
 	makeAndReportOn(m, true)
@@ -54,11 +61,11 @@ func Setup2 () () { // FIXME: rename when we can call _func_name_ within _same_f
 
 func makeAndReportOn (m Mesh2D, editor bool) () {
 	if editor {
-		printf("generating editor mesh: %d   name: '%s' \n", len(RawEditorMeshes), m.Name)
-		RawEditorMeshes = append(RawEditorMeshes, m)
+		printf("generating raw mesh:   %d   name: '%s' \n", len(RawMeshes), m.Name)
+		RawMeshes = append(RawMeshes, m)
 	} else {
-		printf("generating game mesh:   %d   name: '%s' \n", len(Meshes),       m.Name)
-		Meshes       = append(Meshes, m)	
+		printf("generating sized mesh: %d   name: '%s' \n", len(SizedMeshes),     m.Name)
+		SizedMeshes     = append(SizedMeshes, m)	
 	}
 }
 
@@ -68,20 +75,20 @@ func UNUSEDCopyFromEditorToGame () () {
 	var m Mesh2D
 	m = Mesh2D{ Name: "Copy of UserGenMesh" }
 	
-	for i := 0; i32.lt(i, len(RawEditorMeshes[0].Points)); i++ {
+	for i := 0; i32.lt(i, len(RawMeshes[0].Points)); i++ {
 		var c Color3
 		var p Vec2
-		c = RawEditorMeshes[0].Colors[i]
-		p = RawEditorMeshes[0].Points[i]
+		c = RawMeshes[0].Colors[i]
+		p = RawMeshes[0].Points[i]
 		m.Colors = append(
 		m.Colors, c)
 		m.Points = append(
 		m.Points, p)
 	}
 
-	for j := 0; i32.lt(j, len(RawEditorMeshes[0].TriangleIndices)); j++ {
+	for j := 0; i32.lt(j, len(RawMeshes[0].TriangleIndices)); j++ {
 		var id i32
-		id = RawEditorMeshes[0].TriangleIndices[j]
+		id = RawMeshes[0].TriangleIndices[j]
 		m.TriangleIndices = append(
 		m.TriangleIndices, id)
 	}
@@ -90,39 +97,41 @@ func UNUSEDCopyFromEditorToGame () () {
 }
 
 
-func GenerateMeshInitFunc () () {
-	printf("func InitMesh () () { \n")
+func GenerateMeshInitFunc (s str) () {
+	printf("___________________________________________________________ \n")
+	printf("Init%sMesh() \n\n", s)
+	printf("func Init%sMesh () () { \n", s)
 	printf("    var m Mesh2D \n")
-	printf("    m = Mesh2D{ Name: InitMesh } \n")
+	printf("    m = Mesh2D{ Name: Raw } \n")
 	printf(" \n")
 	
 	printf("    var c Color3 \n")
 	printf("    var v Vec2 \n\n")
 	
-	for i := 0; i32.lt(i, len(RawEditorMeshes[0].Colors)); i++ {
+	for i := 0; i32.lt(i, len(RawMeshes[0].Colors)); i++ {
 		printf("    c = Color3{ R: %f, G: %f , B: %f } \n", 
-			RawEditorMeshes[0].Colors[i].R,
-			RawEditorMeshes[0].Colors[i].G,
-			RawEditorMeshes[0].Colors[i].B)
+			RawMeshes[0].Colors[i].R,
+			RawMeshes[0].Colors[i].G,
+			RawMeshes[0].Colors[i].B)
 		printf("    m.Colors = append( \n")
 		printf("    m.Colors, c) \n")
 	}
 
 	printf(" \n")
 	
-	for i := 0; i32.lt(i, len(RawEditorMeshes[0].Points)); i++ {
+	for i := 0; i32.lt(i, len(RawMeshes[0].Points)); i++ {
 		printf("    v = Vec2{ X: %f , Y: %f } \n", 
-			RawEditorMeshes[0].Points[i].X,
-			RawEditorMeshes[0].Points[i].Y)
+			RawMeshes[0].Points[i].X,
+			RawMeshes[0].Points[i].Y)
 		printf("    m.Points = append( \n")
 		printf("    m.Points, v) \n")
 	}
 
 	printf(" \n")
 	
-	for j := 0; i32.lt(j, len(RawEditorMeshes[0].TriangleIndices)); j++ {
+	for j := 0; i32.lt(j, len(RawMeshes[0].TriangleIndices)); j++ {
 		printf("    m.TriangleIndices = append( \n")
-		printf("    m.TriangleIndices, %d) \n", RawEditorMeshes[0].TriangleIndices[j])
+		printf("    m.TriangleIndices, %d) \n", RawMeshes[0].TriangleIndices[j])
 	}
 	
 	printf("\n    makeAndReportOn(m, true) \n")
@@ -245,7 +254,7 @@ func MakeButtonArray (leftAnchored bool) () {
 		var rawId i32
 		rawId = i + 3
 		
-		if rawId < len(RawEditorMeshes) {
+		if rawId < len(RawMeshes) {
 			bakeInstanceFromRaw(pos, ext, rawId)
 			ccInput.Menu[i].MeshForIcon = rawId
 		}
@@ -262,11 +271,11 @@ func bakeInstanceFromRaw (pos Vec2, extents Vec2, rawId i32) () {
 	m = Mesh2D{ Name: "bakedInstanceFromRaw" }
 
 	// bake colors/verts 
-	for k := 0; i32.lt(k, len(RawEditorMeshes[rawId].Points)); k++ {
+	for k := 0; i32.lt(k, len(RawMeshes[rawId].Points)); k++ {
 		var c Color3
 		var p Vec2
-		c = RawEditorMeshes[rawId].Colors[k]
-		p = RawEditorMeshes[rawId].Points[k]
+		c = RawMeshes[rawId].Colors[k]
+		p = RawMeshes[rawId].Points[k]
 		
 		// scale 
 		p.X = f32.mul(p.X, extents.X)
@@ -283,9 +292,9 @@ func bakeInstanceFromRaw (pos Vec2, extents Vec2, rawId i32) () {
 	}
 
 	// bake triangles 
-	for j := 0; i32.lt(j, len(RawEditorMeshes[rawId].TriangleIndices)); j++ {
+	for j := 0; i32.lt(j, len(RawMeshes[rawId].TriangleIndices)); j++ {
 		var id i32
-		id = RawEditorMeshes[rawId].TriangleIndices[j]
+		id = RawMeshes[rawId].TriangleIndices[j]
 		m.TriangleIndices = append(
 		m.TriangleIndices, id)
 	}
@@ -383,13 +392,13 @@ func MakeNewTriangle /* NON-editor */ (a Vec2, b Vec2, c Vec2) () {
 	m.Points = append(m.Points, c)
 	
 	var tii /* tri indices index */ i32
-	tii = len(Meshes[0].TriangleIndices)
+	tii = len(SizedMeshes[0].TriangleIndices)
 	
-	Meshes[0].TriangleIndices = append(Meshes[0].TriangleIndices, tii)
+	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
 	tii = i32.add(tii, 1)
-	Meshes[0].TriangleIndices = append(Meshes[0].TriangleIndices, tii)
+	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
 	tii = i32.add(tii, 1)
-	Meshes[0].TriangleIndices = append(Meshes[0].TriangleIndices, tii)
+	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
 	
 	makeAndReportOn(m, false)
 }
@@ -405,7 +414,7 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 	printf("PickedTriangle[2]: %d \n", PickedTriangle[2])
 	
 	var numIds i32
-	numIds = len(RawEditorMeshes[0].TriangleIndices)
+	numIds = len(RawMeshes[0].TriangleIndices)
 	printf("numIds BEFORE: %d \n", numIds)
 	
 	var numErrs i32 // erroneous leftover indices (indicating not a multiple of 3) 
@@ -416,13 +425,13 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 	
 	
 	// MEAT of func 
-	RawEditorMeshes[0].TriangleIndices = append(RawEditorMeshes[0].TriangleIndices, PickedTriangle[0])
-	RawEditorMeshes[0].TriangleIndices = append(RawEditorMeshes[0].TriangleIndices, PickedTriangle[1])
-	RawEditorMeshes[0].TriangleIndices = append(RawEditorMeshes[0].TriangleIndices, PickedTriangle[2])
+	RawMeshes[0].TriangleIndices = append(RawMeshes[0].TriangleIndices, PickedTriangle[0])
+	RawMeshes[0].TriangleIndices = append(RawMeshes[0].TriangleIndices, PickedTriangle[1])
+	RawMeshes[0].TriangleIndices = append(RawMeshes[0].TriangleIndices, PickedTriangle[2])
 
 
 	// feedback AFTER 
-	numIds  = len(RawEditorMeshes[0].TriangleIndices)
+	numIds  = len(RawMeshes[0].TriangleIndices)
 	numTris = i32.div(numIds, 3)
 	numErrs = i32.mod(numIds, 3)
 	printf("numIds AFTER: %d \n", numIds)
@@ -434,7 +443,7 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 		printf("********* ERROR! numErrs: %d \n", numErrs)
 	}
 
-	printf("RawEditorMeshes[0].Points len: %d \n", len(RawEditorMeshes[0].Points))
+	printf("RawMeshes[0].Points len: %d \n", len(RawMeshes[0].Points))
 }
 
 
@@ -446,20 +455,20 @@ func RemoveVertexNode (/* id to remove */ ir i32) () {
 	printf("mesh.RemoveVertexNode(%d) \n", ir)
 
 	var m Mesh2D
-	m = Mesh2D{ Name: RawEditorMeshes[0].Name }
+	m = Mesh2D{ Name: RawMeshes[0].Name }
 	
-	for i := 0; i32.lt(i, len(RawEditorMeshes[0].Points)); i++ {
+	for i := 0; i32.lt(i, len(RawMeshes[0].Points)); i++ {
 		if i32.uneq(i, ir) {
 			m.Colors = append(
-			m.Colors, RawEditorMeshes[0].Colors[i])
+			m.Colors, RawMeshes[0].Colors[i])
 			m.Points = append(
-			m.Points, RawEditorMeshes[0].Points[i])
+			m.Points, RawMeshes[0].Points[i])
 		}
 	}
 
 	// remove tris that point to "ir" 
 	// (handle 3 at a time (+=3 increment), "j" being the last) 
-	for j := 2; i32.lt(j, len(RawEditorMeshes[0].TriangleIndices)); j = i32.add(j, 3) {
+	for j := 2; i32.lt(j, len(RawMeshes[0].TriangleIndices)); j = i32.add(j, 3) {
 		var j0 i32
 		var j1 i32
 		var j2 i32
@@ -473,16 +482,16 @@ func RemoveVertexNode (/* id to remove */ ir i32) () {
 			i32.uneq(j2, ir) {
 			
 			m.TriangleIndices = append(
-			m.TriangleIndices, RawEditorMeshes[0].TriangleIndices[j0])
+			m.TriangleIndices, RawMeshes[0].TriangleIndices[j0])
 			m.TriangleIndices = append(
-			m.TriangleIndices, RawEditorMeshes[0].TriangleIndices[j1])
+			m.TriangleIndices, RawMeshes[0].TriangleIndices[j1])
 			m.TriangleIndices = append(
-			m.TriangleIndices, RawEditorMeshes[0].TriangleIndices[j2])
+			m.TriangleIndices, RawMeshes[0].TriangleIndices[j2])
 		}
 	}
 
 	// adjust vert ids (down) that are above "ir" 
-	for j := 0; i32.lt(j, len(RawEditorMeshes[0].TriangleIndices)); j++ {
+	for j := 0; i32.lt(j, len(RawMeshes[0].TriangleIndices)); j++ {
 		m.TriangleIndices[j] = getMaybeAdjustedId(ir, j)
 	}
 
@@ -496,22 +505,22 @@ func RemoveVertexNode (/* id to remove */ ir i32) () {
 	printf("---m.Points[num].Y: %f \n", m.Points[num].Y)
 	printf("---len(m.TriangleIndices): %d \n", len(m.TriangleIndices))
 	
-	num = i32.sub(len(RawEditorMeshes[0].Points), 1)
+	num = i32.sub(len(RawMeshes[0].Points), 1)
 	printf("---num: %d \n", num)
-	printf("---len(RawEditorMeshes[0].Colors): %d \n", len(RawEditorMeshes[0].Colors))
-	printf("---len(RawEditorMeshes[0].Points): %d \n", len(RawEditorMeshes[0].Points))
-	printf("---RawEditorMeshes[0].Points[num].X: %f \n", RawEditorMeshes[0].Points[num].X)
-	printf("---RawEditorMeshes[0].Points[num].Y: %f \n", RawEditorMeshes[0].Points[num].Y)
-	printf("---len(RawEditorMeshes[0].TriangleIndices): %d \n", len(RawEditorMeshes[0].TriangleIndices))
+	printf("---len(RawMeshes[0].Colors): %d \n", len(RawMeshes[0].Colors))
+	printf("---len(RawMeshes[0].Points): %d \n", len(RawMeshes[0].Points))
+	printf("---RawMeshes[0].Points[num].X: %f \n", RawMeshes[0].Points[num].X)
+	printf("---RawMeshes[0].Points[num].Y: %f \n", RawMeshes[0].Points[num].Y)
+	printf("---len(RawMeshes[0].TriangleIndices): %d \n", len(RawMeshes[0].TriangleIndices))
 	*/
 	
-	RawEditorMeshes[0] = m
+	RawMeshes[0] = m
 
 }
 
 
 func getMaybeAdjustedId (removeId i32, j i32) (jOut i32) {
-	jOut = RawEditorMeshes[0].TriangleIndices[j]
+	jOut = RawMeshes[0].TriangleIndices[j]
 
 	// decrease vertex id by 1, if it's after removed index 
 	if i32.gt(jOut, removeId) { // should never == removeId 

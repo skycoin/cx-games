@@ -37,7 +37,7 @@ import "game"
 func main () {
 	// print app name in shell 
 	var bar str
-	bar = "__________________________"
+	bar = "___________________________"
 	printf("\n\n\n%s %s %s\n", bar, app.NAME, bar)
 	str.print("[W], [A], [S], [D] ======== move")
 	str.print("[LMB] or [SPACE] ========== shoot")

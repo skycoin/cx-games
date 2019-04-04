@@ -106,8 +106,8 @@ func onCursorPosEvent (window str, x f64, y f64) () {
 	MousePointer.Y = f32.sub(1.0, mY)
 	
 	if draggingVertexNode {
-		mesh.RawEditorMeshes[0].Points[draggedVertexId].X = MousePointer.X
-		mesh.RawEditorMeshes[0].Points[draggedVertexId].Y = MousePointer.Y
+		mesh.RawMeshes[0].Points[draggedVertexId].X = MousePointer.X
+		mesh.RawMeshes[0].Points[draggedVertexId].Y = MousePointer.Y
 	}
 	
 	//printf("onCursorPosEvent %f, %f \n", MousePointer.X, MousePointer.Y)
@@ -219,7 +219,7 @@ func fireOrActivate () () {
 				}
 			} else { // perform one-time actions 
 				if i == TOOLBAR_GEN_FUNC {
-					mesh.GenerateMeshInitFunc()
+					mesh.GenerateMeshInitFunc("Char") //"Icon")
 				} else
 				if i == TOOLBAR_SNAP_TO_GRID {
 					SnapToGrid = !SnapToGrid
@@ -234,7 +234,7 @@ func fireOrActivate () () {
 					str.print("-> NEW_CANVAS")
 					var m Mesh2D
 					m = Mesh2D{ Name: "Editor workspace" }
-					mesh.RawEditorMeshes[0] = m
+					mesh.RawMeshes[0] = m
 				} else
 				if i == TOOLBAR_MAINMENU {
 					str.print("-> MAINMENU")
@@ -256,7 +256,7 @@ func fireOrActivate () () {
 			// TODO enhancement: allow player to slide across 3 verts while holding LMB 
 			
 			if touchedVert {			
-				printf("RawEditorMeshes[0].Points' i: %d \n", i)
+				printf("RawMeshes[0].Points' i: %d \n", i)
 
 				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
 					mesh.PickedTrianglesNextId = 0
@@ -280,12 +280,12 @@ func fireOrActivate () () {
 					G: 0.5, 
 					B: 0.5 }
 
-				printf("Adding vertex node: %d \n", len(mesh.RawEditorMeshes[0].Points))
+				printf("Adding vertex node: %d \n", len(mesh.RawMeshes[0].Points))
 
-				mesh.RawEditorMeshes[0].Colors = append(
-				mesh.RawEditorMeshes[0].Colors, c)
-				mesh.RawEditorMeshes[0].Points = append(
-				mesh.RawEditorMeshes[0].Points, MousePointer)
+				mesh.RawMeshes[0].Colors = append(
+				mesh.RawMeshes[0].Colors, c)
+				mesh.RawMeshes[0].Points = append(
+				mesh.RawMeshes[0].Points, MousePointer)
 			}
 		}
 	}
@@ -317,9 +317,9 @@ func getTouchedMenuItem (p Vec2) (touched bool, id i32) {
 func getTouchedVertexNode (p Vec2) (touched bool, id i32) {
 	touched = false
 	
-	for i := 0; i32.lt(i, len(mesh.RawEditorMeshes[0].Points)); i++ {
+	for i := 0; i32.lt(i, len(mesh.RawMeshes[0].Points)); i++ {
 		var v Vec2
-		v = mesh.RawEditorMeshes[0].Points[i]
+		v = mesh.RawMeshes[0].Points[i]
 		
 		if p.X > (v.X - entity.NodeExtents.X) &&
 			p.X < (v.X + entity.NodeExtents.X) &&

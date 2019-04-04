@@ -27,7 +27,7 @@ var blinkDelay           f32
 
 func Setup () () {
 	str.print("draw.Setup()")
-	mesh.Setup2()
+	mesh.Setup()
 	
 	NEG_UNIT_SPAN   = -1.0
 	CRUST_THICKNESS =  0.015
@@ -67,7 +67,7 @@ func All (currTime f32, deltaTime f32) () {
 		gl.End()
 
 		gl.Begin(gl.TRIANGLES) //////////////
-		trianglesForAll(mesh.RawEditorMeshes, true)
+		trianglesForAll(mesh.RawMeshes, true)
 		trianglesForAll(mesh.BakedEditorMeshes, false)
 		gl.End()
 
@@ -88,7 +88,7 @@ func All (currTime f32, deltaTime f32) () {
 			gl.End()
 		*/
 	} else { // playing (& the rest) 
-		//if /* no game meshes */ i32.lt(len(mesh.Meshes), 1) {
+		//if /* no game meshes */ i32.lt(len(mesh.SizedMeshes), 1) {
 			//mesh.MakeButtonArray(true)
 		//}
 		
@@ -98,7 +98,7 @@ func All (currTime f32, deltaTime f32) () {
 		gl.End()
 
 		gl.Begin(gl.TRIANGLES) //////////////
-		trianglesForAll(mesh.Meshes, false)
+		trianglesForAll(mesh.SizedMeshes, false)
 		gl.End()		
 	}
 
@@ -225,7 +225,7 @@ func editorQuads () () {
 	white := 1.0
 	gray  := 0.15 // (dark) 
 	
-	for i := 0; i32.lt(i, len(mesh.RawEditorMeshes[0].Points)); i++ {
+	for i := 0; i32.lt(i, len(mesh.RawMeshes[0].Points)); i++ {
 		gl.Color3f(white, white, white)
 		
 		// highlighted colors 
@@ -247,7 +247,7 @@ func editorQuads () () {
 			}*/
 		}
 		
-		drawRect(mesh.RawEditorMeshes[0].Points[i], entity.NodeExtents)
+		drawRect(mesh.RawMeshes[0].Points[i], entity.NodeExtents)
 	}
 }
 
