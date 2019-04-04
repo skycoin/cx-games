@@ -62,10 +62,12 @@ func Setup () () {
 func makeAndReportOn (m Mesh2D, editor bool) () {
 	if editor {
 		printf("generating raw mesh:   %d   name: '%s' \n", len(RawMeshes), m.Name)
-		RawMeshes = append(RawMeshes, m)
+		RawMeshes = append(
+		RawMeshes, m)
 	} else {
 		printf("generating sized mesh: %d   name: '%s' \n", len(SizedMeshes),     m.Name)
-		SizedMeshes     = append(SizedMeshes, m)	
+		SizedMeshes = append(
+		SizedMeshes, m)	
 	}
 }
 

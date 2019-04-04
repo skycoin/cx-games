@@ -1,5 +1,7 @@
 package ccInput
 
+import "app"
+
 
 
 type MenuItem struct {
