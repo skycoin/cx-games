@@ -377,7 +377,9 @@ func makeEditorRectResource () () {
 }
 
 
-func MakeNewTriangle /* NON-editor */ (a Vec2, b Vec2, c Vec2) () {
+// NON-editor tri 
+/*
+func MakeNewTriangle (a Vec2, b Vec2, c Vec2) () {
 	////////////////// UNTESTED \\\\\\\\\\\\\\\\\\\\\
 	str.print("mesh.MakeNewTriangle()   (NON-editor)")
 	
@@ -397,7 +399,7 @@ func MakeNewTriangle /* NON-editor */ (a Vec2, b Vec2, c Vec2) () {
 	m.Points = append(m.Points, b)
 	m.Points = append(m.Points, c)
 	
-	var tii /* tri indices index */ i32
+	var tii i32 // tri indices index 
 	tii = len(SizedMeshes[0].TriangleIndices)
 	
 	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
@@ -408,7 +410,7 @@ func MakeNewTriangle /* NON-editor */ (a Vec2, b Vec2, c Vec2) () {
 	
 	makeAndReportOn(m, false)
 }
-
+*/
 
 func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) EditorMesh 
 	str.print("mesh.MakeNewEditorTriangle()")
@@ -420,7 +422,7 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 	printf("PickedTriangle[2]: %d \n", PickedTriangle[2])
 	
 	var numIds i32
-	numIds = len(RawMeshes[0].TriangleIndices)
+	numIds = len(EditLayers[CurrLayer].TriangleIndices)
 	printf("numIds BEFORE: %d \n", numIds)
 	
 	var numErrs i32 // erroneous leftover indices (indicating not a multiple of 3) 
@@ -431,15 +433,18 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 	
 	
 	// MEAT of func 
-	RawMeshes[0].TriangleIndices = append(RawMeshes[0].TriangleIndices, PickedTriangle[0])
-	RawMeshes[0].TriangleIndices = append(RawMeshes[0].TriangleIndices, PickedTriangle[1])
-	RawMeshes[0].TriangleIndices = append(RawMeshes[0].TriangleIndices, PickedTriangle[2])
+	EditLayers[CurrLayer].TriangleIndices = append(
+	EditLayers[CurrLayer].TriangleIndices, PickedTriangle[0])
+	EditLayers[CurrLayer].TriangleIndices = append(
+	EditLayers[CurrLayer].TriangleIndices, PickedTriangle[1])
+	EditLayers[CurrLayer].TriangleIndices = append(
+	EditLayers[CurrLayer].TriangleIndices, PickedTriangle[2])
 
 
 	// feedback AFTER 
-	numIds  = len(RawMeshes[0].TriangleIndices)
+	numIds  = len(EditLayers[CurrLayer].TriangleIndices)
 	numTris = i32.div(numIds, 3)
-	numErrs = i32.mod(numIds, 3)
+	numErrs = i32.mod(numIds, 3) // num/how-many erroneous/leftover 
 	printf("numIds AFTER: %d \n", numIds)
 	printf("numTris AFTER: %d \n", numTris)
 	
@@ -449,7 +454,7 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 		printf("********* ERROR! numErrs: %d \n", numErrs)
 	}
 
-	printf("RawMeshes[0].Points len: %d \n", len(RawMeshes[0].Points))
+	printf("EditLayers[CurrLayer].Points len: %d \n", len(EditLayers[0].Points))
 }
 
 
