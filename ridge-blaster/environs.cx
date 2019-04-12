@@ -9,7 +9,7 @@ var PopulatedWithEntities bool
 
 type Column struct {
 	Floo f32 // floor 
-	Ceil f32 // ceiling (0 == open air) 
+	Ceil f32 // ceiling (0.0 == open air) 
 }
 
 var Terrain []Column

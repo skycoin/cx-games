@@ -25,6 +25,7 @@ var BakedEditorMeshes []Mesh2D // fully baked.  with world pos & size/scale
 
 var PickedTrianglesNextId i32
 var PickedTriangle []i32
+var CurrLayer i32
 
 var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }
 
@@ -452,7 +453,7 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 }
 
 
-func RemoveVertexNode (/* id to remove */ ir i32) () {
+func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
 	if app.Mode != app.MODE_EDITOR {		
 		return
 	}
@@ -460,20 +461,20 @@ func RemoveVertexNode (/* id to remove */ ir i32) () {
 	printf("mesh.RemoveVertexNode(%d) \n", ir)
 
 	var m Mesh2D
-	m = Mesh2D{ Name: RawMeshes[0].Name }
+	m = Mesh2D{ Name: EditLayers[CurrLayer].Name }
 	
-	for i := 0; i32.lt(i, len(RawMeshes[0].Points)); i++ {
+	for i := 0; i32.lt(i, len(EditLayers[CurrLayer].Points)); i++ {
 		if i32.uneq(i, ir) {
 			m.Colors = append(
-			m.Colors, RawMeshes[0].Colors[i])
+			m.Colors, EditLayers[CurrLayer].Colors[i])
 			m.Points = append(
-			m.Points, RawMeshes[0].Points[i])
+			m.Points, EditLayers[CurrLayer].Points[i])
 		}
 	}
 
 	// remove tris that point to "ir" 
 	// (handle 3 at a time (+=3 increment), "j" being the last) 
-	for j := 2; i32.lt(j, len(RawMeshes[0].TriangleIndices)); j = i32.add(j, 3) {
+	for j := 2; i32.lt(j, len(EditLayers[CurrLayer].TriangleIndices)); j = i32.add(j, 3) {
 		var j0 i32
 		var j1 i32
 		var j2 i32
@@ -487,17 +488,17 @@ func RemoveVertexNode (/* id to remove */ ir i32) () {
 			i32.uneq(j2, ir) {
 			
 			m.TriangleIndices = append(
-			m.TriangleIndices, RawMeshes[0].TriangleIndices[j0])
+			m.TriangleIndices, EditLayers[CurrLayer].TriangleIndices[j0])
 			m.TriangleIndices = append(
-			m.TriangleIndices, RawMeshes[0].TriangleIndices[j1])
+			m.TriangleIndices, EditLayers[CurrLayer].TriangleIndices[j1])
 			m.TriangleIndices = append(
-			m.TriangleIndices, RawMeshes[0].TriangleIndices[j2])
+			m.TriangleIndices, EditLayers[CurrLayer].TriangleIndices[j2])
 		}
 	}
 
 	// adjust vert ids (down) that are above "ir" 
-	for j := 0; i32.lt(j, len(RawMeshes[0].TriangleIndices)); j++ {
-		m.TriangleIndices[j] = getMaybeAdjustedId(ir, j)
+	for j := 0; i32.lt(j, len(EditLayers[CurrLayer].TriangleIndices)); j++ {
+		m.TriangleIndices[j] = getValidId(layerId, ir, j)
 	}
 
 	/*
@@ -510,22 +511,21 @@ func RemoveVertexNode (/* id to remove */ ir i32) () {
 	printf("---m.Points[num].Y: %f \n", m.Points[num].Y)
 	printf("---len(m.TriangleIndices): %d \n", len(m.TriangleIndices))
 	
-	num = i32.sub(len(RawMeshes[0].Points), 1)
+	num = i32.sub(len(EditLayers[CurrLayer].Points), 1)
 	printf("---num: %d \n", num)
-	printf("---len(RawMeshes[0].Colors): %d \n", len(RawMeshes[0].Colors))
-	printf("---len(RawMeshes[0].Points): %d \n", len(RawMeshes[0].Points))
-	printf("---RawMeshes[0].Points[num].X: %f \n", RawMeshes[0].Points[num].X)
-	printf("---RawMeshes[0].Points[num].Y: %f \n", RawMeshes[0].Points[num].Y)
-	printf("---len(RawMeshes[0].TriangleIndices): %d \n", len(RawMeshes[0].TriangleIndices))
+	printf("---len(EditLayers[CurrLayer].Colors): %d \n", len(EditLayers[CurrLayer].Colors))
+	printf("---len(EditLayers[CurrLayer].Points): %d \n", len(EditLayers[CurrLayer].Points))
+	printf("---EditLayers[CurrLayer].Points[num].X: %f \n", EditLayers[CurrLayer].Points[num].X)
+	printf("---EditLayers[CurrLayer].Points[num].Y: %f \n", EditLayers[CurrLayer].Points[num].Y)
+	printf("---len(EditLayers[CurrLayer].TriangleIndices): %d \n", len(EditLayers[CurrLayer].TriangleIndices))
 	*/
 	
-	RawMeshes[0] = m
-
+	EditLayers[CurrLayer] = m
 }
 
 
-func getMaybeAdjustedId (removeId i32, j i32) (jOut i32) {
-	jOut = RawMeshes[0].TriangleIndices[j]
+func getValidId (layerId i32, removeId i32, j i32) (jOut i32) {
+	jOut = EditLayers[layerId].TriangleIndices[j]
 
 	// decrease vertex id by 1, if it's after removed index 
 	if i32.gt(jOut, removeId) { // should never == removeId 

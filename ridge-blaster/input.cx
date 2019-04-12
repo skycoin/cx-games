@@ -12,6 +12,7 @@ import "mesh"
 var MousePointer       Vec2
 var SnapToGrid         bool
 var draggingVertexNode bool
+var draggedLayerId     i32
 var draggedVertexId    i32
 
 // keys 
@@ -82,11 +83,12 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 			
 			str.print("RMB press && EDIT_VERTICES")
 			var touchedVert bool
+			var lId i32 // layer id 
 			var i i32
-			touchedVert, i = getTouchedVertexNode(MousePointer)
+			touchedVert, lId, i = getTouchedVertexNode(MousePointer)
 			
 			if touchedVert {			
-				mesh.RemoveVertexNode(i)
+				mesh.RemoveVertexNode(lId, i)
 			}
 		}
 	}
@@ -106,8 +108,8 @@ func onCursorPosEvent (window str, x f64, y f64) () {
 	MousePointer.Y = f32.sub(1.0, mY)
 	
 	if draggingVertexNode {
-		mesh.RawMeshes[0].Points[draggedVertexId].X = MousePointer.X
-		mesh.RawMeshes[0].Points[draggedVertexId].Y = MousePointer.Y
+		mesh.EditLayers[draggedLayerId].Points[draggedVertexId].X = MousePointer.X
+		mesh.EditLayers[draggedLayerId].Points[draggedVertexId].Y = MousePointer.Y
 	}
 	
 	//printf("onCursorPosEvent %f, %f \n", MousePointer.X, MousePointer.Y)
@@ -232,9 +234,9 @@ func fireOrActivate () () {
 				} else
 				if i == TOOLBAR_NEW_CANVAS {
 					str.print("-> NEW_CANVAS")
-					var m Mesh2D
-					m = Mesh2D{ Name: "Editor workspace" }
-					mesh.RawMeshes[0] = m
+					//*****var m Mesh2D = Mesh2D{ Name: "Editor workspace" }
+					//*****mesh.EditLayers[mesh.CurrLayer] = m
+					mesh.EditLayers = []Mesh2D{}
 				} else
 				if i == TOOLBAR_MAINMENU {
 					str.print("-> MAINMENU")
@@ -250,13 +252,14 @@ func fireOrActivate () () {
 		}
 		
 		var touchedVert bool
-		touchedVert, i = getTouchedVertexNode(MousePointer)
+		var layerId i32
+		touchedVert, layerId, i = getTouchedVertexNode(MousePointer)
 
 		if app.EditMode == app.EDIT_TRIANGLES {
 			// TODO enhancement: allow player to slide across 3 verts while holding LMB 
 			
 			if touchedVert {			
-				printf("RawMeshes[0].Points' i: %d \n", i)
+				printf("EditLayers[%d].Points[%d] \n", layerId, i)
 
 				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
 					mesh.PickedTrianglesNextId = 0
@@ -270,22 +273,26 @@ func fireOrActivate () () {
 				}
 			}
 		} else if app.EditMode == app.EDIT_VERTICES {
-			if touchedVert {
+			if touchedVert { // drag existing node 
 				draggingVertexNode = true
+				draggedLayerId  = layerId
 				draggedVertexId = i
-			} else {
+			} else { // create new node 
 				var c Color3
 				c = Color3{ 
 					R: 0.5, 
 					G: 0.5, 
 					B: 0.5 }
+					
+				var m Mesh2D
+				m = mesh.EditLayers[mesh.CurrLayer]
 
-				printf("Adding vertex node: %d \n", len(mesh.RawMeshes[0].Points))
+				printf("+ vertex: %d - in layer: %d \n", len(m.Points), mesh.CurrLayer)
 
-				mesh.RawMeshes[0].Colors = append(
-				mesh.RawMeshes[0].Colors, c)
-				mesh.RawMeshes[0].Points = append(
-				mesh.RawMeshes[0].Points, MousePointer)
+				m.Colors = append(
+				m.Colors, c)
+				m.Points = append(
+				m.Points, MousePointer)
 			}
 		}
 	}
@@ -314,21 +321,23 @@ func getTouchedMenuItem (p Vec2) (touched bool, id i32) {
 }
 
 
-func getTouchedVertexNode (p Vec2) (touched bool, id i32) {
+func getTouchedVertexNode (p Vec2) (touched bool, layId i32, vertId i32) {
 	touched = false
 	
-	for i := 0; i32.lt(i, len(mesh.RawMeshes[0].Points)); i++ {
-		var v Vec2
-		v = mesh.RawMeshes[0].Points[i]
-		
-		if p.X > (v.X - entity.NodeExtents.X) &&
-			p.X < (v.X + entity.NodeExtents.X) &&
-			p.Y > (v.Y - entity.NodeExtents.Y) &&
-			p.Y < (v.Y + entity.NodeExtents.Y) {
+	for li := 0; i32.lt(li, len(mesh.EditLayers)); li++ {
+		for i := 0; i32.lt(i, len(mesh.EditLayers[li].Points)); i++ {
+			var v Vec2
+			v = mesh.EditLayers[li].Points[i]
 			
-			touched = true
-			id = i			
-			break
+			if p.X > (v.X - entity.NodeExtents.X) &&
+				p.X < (v.X + entity.NodeExtents.X) &&
+				p.Y > (v.Y - entity.NodeExtents.Y) &&
+				p.Y < (v.Y + entity.NodeExtents.Y) {
+				
+				touched = true
+				layId = i			
+				break
+			}
 		}
 	}
 }
