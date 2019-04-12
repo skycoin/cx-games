@@ -16,8 +16,11 @@ type Mesh2D struct {
 	TriangleIndices []i32
 }
 
+// mesh slices 
+var EditLayers []Mesh2D                                             // DOUBLE ADDED
 var RawMeshes []Mesh2D
 var SizedMeshes []Mesh2D // partially baked.  just the world size/scale 
+var BakedMeshes       []Mesh2D // fully baked.  with world pos & size/scale         // DOUBLE ADDED
 var BakedEditorMeshes []Mesh2D // fully baked.  with world pos & size/scale 
 
 var PickedTrianglesNextId i32
@@ -301,8 +304,8 @@ func bakeInstanceFromRaw (pos Vec2, extents Vec2, rawId i32) () {
 		m.TriangleIndices, id)
 	}
 
-	BakedEditorMeshes = append(
-	BakedEditorMeshes, m)
+	BakedMeshes = append(
+	BakedMeshes, m)
 }
 
 

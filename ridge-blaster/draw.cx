@@ -50,7 +50,7 @@ func Setup () () {
 func All (currTime f32, deltaTime f32) () {
 	//str.print("draw.All()")
 	
-	if /* no baked editor meshes */ i32.lt(len(mesh.BakedEditorMeshes), 1) {
+	if /* no baked meshes */ i32.lt(len(mesh.BakedMeshes), 1) {
 		mesh.MakeButtonArray(false)
 	}
 
@@ -62,18 +62,25 @@ func All (currTime f32, deltaTime f32) () {
 	}
 
 	if app.Mode == app.MODE_EDITOR {		
-		gl.Begin(gl.LINES)
-		gridLines()
-		gl.End()
+		if app.EditMode != app.EDIT_COLORS {
+			gl.Begin(gl.LINES)
+				gridLines()
+			gl.End()
+		}
 
 		gl.Begin(gl.TRIANGLES) //////////////
-		trianglesForAll(mesh.RawMeshes, true)
-		trianglesForAll(mesh.BakedEditorMeshes, false)
+			if app.EditMode == app.EDIT_COLORS {
+				trianglesForAll(mesh.RawMeshes, true)
+			} else {
+				trianglesForAll(mesh.EditLayers, false)
+			}
+			
+			trianglesForAll(mesh.BakedMeshes, false)
 		gl.End()
 
 		if app.EditMode != app.EDIT_COLORS {
 			gl.Begin(gl.QUADS) //////////////////
-			editorQuads()
+				editorQuads()
 			gl.End()
 		}
 		
@@ -82,24 +89,23 @@ func All (currTime f32, deltaTime f32) () {
 					(THIS WILL ALLOW SHARED VERTEX COORDS WITH DIFFERENT COLORS SO
 					THERE CAN BE HARD COLOR CONTRAST BETWEEN MESHES THAT APPEAR CONNECTED) 
 					
-			draws loop from all entity positions 
+			// draws loop from all entity positions 
 			gl.Begin(gl.LINE_LOOP) //////////////
-			simpleVertexSequence(0.5)
+				simpleVertexSequence(0.5)
 			gl.End()
 		*/
 	} else { // playing (& the rest) 
-		//if /* no game meshes */ i32.lt(len(mesh.SizedMeshes), 1) {
-			//mesh.MakeButtonArray(true)
-		//}
-		
 		gl.Begin(gl.QUADS) //////////////////	
 		Terrain(currTime)
 		Entities()		
 		gl.End()
 
-		gl.Begin(gl.TRIANGLES) //////////////
-		trianglesForAll(mesh.SizedMeshes, false)
-		gl.End()		
+		//if /* no game meshes */ i32.lt(len(mesh.SizedMeshes), 1) {
+			//mesh.MakeButtonArray(true)
+		//}
+		//gl.Begin(gl.TRIANGLES) //////////////
+		//trianglesForAll(mesh.SizedMeshes, false)
+		//gl.End()		
 	}
 
 
@@ -110,15 +116,8 @@ func All (currTime f32, deltaTime f32) () {
 
 func trianglesForAll (meshes []Mesh2D, drawOnly1st bool) () {
 	for i := 0; i32.lt(i, len(meshes)); i++ {
-		if app.EditMode == app.EDIT_COLORS {
-			if drawOnly1st && i > 1 {
-			//if bool.and(drawOnly1st, i32.gt(i, 0)) {
-				break
-			}
-		} else {
-			if drawOnly1st && i > 0 {
-				break
-			}
+		if drawOnly1st && i > 0 {
+			break
 		}
 
 		var m Mesh2D
@@ -225,29 +224,31 @@ func editorQuads () () {
 	white := 1.0
 	gray  := 0.15 // (dark) 
 	
-	for i := 0; i32.lt(i, len(mesh.RawMeshes[0].Points)); i++ {
-		gl.Color3f(white, white, white)
-		
-		// highlighted colors 
-		for j := 0; i32.lt(j, mesh.PickedTrianglesNextId); j++ {
-			if pickedNodesAreBright {
-				if i == mesh.PickedTriangle[j] {
-					if j == 0 {
-						gl.Color3f(1.0, 0.0, 0.0) // red 
+	for li := 0; i32.lt(li, len(mesh.EditLayers[li])); li++ {
+		for i := 0; i32.lt(i, len(mesh.EditLayers[li].Points)); i++ {
+			gl.Color3f(white, white, white)
+			
+			// highlighted colors 
+			for j := 0; i32.lt(j, mesh.PickedTrianglesNextId); j++ {
+				if pickedNodesAreBright {
+					if i == mesh.PickedTriangle[j] {
+						if j == 0 {
+							gl.Color3f(1.0, 0.0, 0.0) // red 
+						}
+						if j == 1 {
+							gl.Color3f(0.0, 1.0, 0.0) // green 
+						}
+						if j == 2 {
+							gl.Color3f(0.0, 0.0, 1.0) // blue 
+						}
 					}
-					if j == 1 {
-						gl.Color3f(0.0, 1.0, 0.0) // green 
-					}
-					if j == 2 {
-						gl.Color3f(0.0, 0.0, 1.0) // blue 
-					}
-				}
-			} /*else {
-				gl.Color3f(gray, gray, gray)
-			}*/
+				} /*else {
+					gl.Color3f(gray, gray, gray)
+				}*/
+			}
+			
+			drawRect(mesh.EditLayers[li].Points[i], entity.NodeExtents)
 		}
-		
-		drawRect(mesh.RawMeshes[0].Points[i], entity.NodeExtents)
 	}
 }
 
