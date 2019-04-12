@@ -114,30 +114,32 @@ func GenerateMeshInitFunc (s str) () {
 	printf("    var c Color3 \n")
 	printf("    var v Vec2 \n\n")
 	
-	for i := 0; i32.lt(i, len(RawMeshes[0].Colors)); i++ {
-		printf("    c = Color3{ R: %f, G: %f , B: %f } \n", 
-			RawMeshes[0].Colors[i].R,
-			RawMeshes[0].Colors[i].G,
-			RawMeshes[0].Colors[i].B)
-		printf("    m.Colors = append( \n")
-		printf("    m.Colors, c) \n")
-	}
+	for li := 0; i32.lt(li, len(EditLayers)); li++ {
+		for i := 0; i32.lt(i, len(EditLayers[li].Colors)); i++ {
+			printf("    c = Color3{ R: %f, G: %f , B: %f } \n", 
+				EditLayers[li].Colors[i].R,
+				EditLayers[li].Colors[i].G,
+				EditLayers[li].Colors[i].B)
+			printf("    m.Colors = append( \n")
+			printf("    m.Colors, c) \n")
+		}
 
-	printf(" \n")
-	
-	for i := 0; i32.lt(i, len(RawMeshes[0].Points)); i++ {
-		printf("    v = Vec2{ X: %f , Y: %f } \n", 
-			RawMeshes[0].Points[i].X,
-			RawMeshes[0].Points[i].Y)
-		printf("    m.Points = append( \n")
-		printf("    m.Points, v) \n")
-	}
+		printf(" \n")
+		
+		for i := 0; i32.lt(i, len(EditLayers[li].Points)); i++ {
+			printf("    v = Vec2{ X: %f , Y: %f } \n", 
+				EditLayers[li].Points[i].X,
+				EditLayers[li].Points[i].Y)
+			printf("    m.Points = append( \n")
+			printf("    m.Points, v) \n")
+		}
 
-	printf(" \n")
-	
-	for j := 0; i32.lt(j, len(RawMeshes[0].TriangleIndices)); j++ {
-		printf("    m.TriangleIndices = append( \n")
-		printf("    m.TriangleIndices, %d) \n", RawMeshes[0].TriangleIndices[j])
+		printf(" \n")
+		
+		for j := 0; i32.lt(j, len(EditLayers[li].TriangleIndices)); j++ {
+			printf("    m.TriangleIndices = append( \n")
+			printf("    m.TriangleIndices, %d) \n", EditLayers[li].TriangleIndices[j])
+		}
 	}
 	
 	printf("\n    makeAndReportOn(m, true) \n")
@@ -185,15 +187,23 @@ func makeColorPickerWheelResource () () {
 		ang = f32.add(ang, ANG_I)
 		rightFromCenter = Vec2{ X: f32.sin(ang), Y: f32.cos(ang) }
 		
-		m.Points = append(m.Points, center)
-		m.Points = append(m.Points, leftFromCenter)
-		m.Points = append(m.Points, rightFromCenter)
+		m.Points = append(
+		m.Points, center)
+		m.Points = append(
+		m.Points, leftFromCenter)
+		m.Points = append(
+		m.Points, rightFromCenter)
 
-		m.TriangleIndices = append(m.TriangleIndices, cti)
+		m.TriangleIndices = append(
+		m.TriangleIndices, cti)
 		cti = i32.add(cti, 1)
-		m.TriangleIndices = append(m.TriangleIndices, cti)
+		
+		m.TriangleIndices = append(
+		m.TriangleIndices, cti)
 		cti = i32.add(cti, 1)
-		m.TriangleIndices = append(m.TriangleIndices, cti)
+		
+		m.TriangleIndices = append(
+		m.TriangleIndices, cti)
 		cti = i32.add(cti, 1)
 
 		if i >= 1024 {
@@ -255,10 +265,10 @@ func MakeButtonArray (leftAnchored bool) () {
 	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
 		ccInput.Menu[i].Pos = pos
 		ccInput.Menu[i].Extents = ext
-		bakeInstanceFromRaw(pos, ext, 2) // rect background 
+		bakeInstanceFromRaw(pos, ext, 2) //1) // rect background 
 		
 		var rawId i32
-		rawId = i + 3
+		rawId = i + 3 //2
 		
 		if rawId < len(RawMeshes) {
 			bakeInstanceFromRaw(pos, ext, rawId)
