@@ -38,16 +38,8 @@ func Setup () () {
 		str.print(charMap[i])
 	}
 	
-	// editor 
-	
-	//		mesh 0 == blank workspace for user editing 
-	var m Mesh2D
-	m = Mesh2D{ Name: "Editor workspace" }
-	makeAndReportOn(m, true)
-	
 	makeColorPickerWheelResource()
-	makeEditorRectResource()
-	
+	makeEditorRectResource()	
 	InitEditVerticesIconMesh()
 	InitEditTrianglesIconMesh()
 	InitEditColorsIconMesh()
@@ -56,6 +48,13 @@ func Setup () () {
 	InitWipeCanvasIconMesh()
 	InitPlayerShipMesh()
 	
+	
+	// editor 	
+	var m Mesh2D
+	m = Mesh2D{ Name: "Editor workspace" }
+	EditLayers = append(
+	EditLayers, m)
+	
 	// 		vertex pick/selection triangle (these values only used if PickedTrianglesNextId >= 3) 
 	PickedTriangle = append(PickedTriangle, 0)
 	PickedTriangle = append(PickedTriangle, 1)
@@ -63,44 +62,46 @@ func Setup () () {
 }
 
 
-func makeAndReportOn (m Mesh2D, editor bool) () {
-	if editor {
+func makeAndReportOn (m Mesh2D, raw bool) () {
+	if raw {
 		printf("generating raw mesh:   %d   name: '%s' \n", len(RawMeshes), m.Name)
 		RawMeshes = append(
 		RawMeshes, m)
 	} else {
-		printf("generating sized mesh: %d   name: '%s' \n", len(SizedMeshes),     m.Name)
+		printf("generating sized mesh: %d   name: '%s' \n", len(SizedMeshes), m.Name)
 		SizedMeshes = append(
 		SizedMeshes, m)	
 	}
 }
 
 
-func UNUSEDCopyFromEditorToGame () () {
-	str.print("mesh.CopyFromEditorToGame ()")
+/*
+func UNUSED_CopyFromEditorToGame () () {
+	str.print("mesh.UNUSED_CopyFromEditorToGame ()")
 	var m Mesh2D
 	m = Mesh2D{ Name: "Copy of UserGenMesh" }
 	
-	for i := 0; i32.lt(i, len(RawMeshes[0].Points)); i++ {
+	for i := 0; i32.lt(i, len(EditLayers[CurrLayer].Points)); i++ {
 		var c Color3
 		var p Vec2
-		c = RawMeshes[0].Colors[i]
-		p = RawMeshes[0].Points[i]
+		c = EditLayers[CurrLayer].Colors[i]
+		p = EditLayers[CurrLayer].Points[i]
 		m.Colors = append(
 		m.Colors, c)
 		m.Points = append(
 		m.Points, p)
 	}
 
-	for j := 0; i32.lt(j, len(RawMeshes[0].TriangleIndices)); j++ {
+	for j := 0; i32.lt(j, len(EditLayers[CurrLayer].TriangleIndices)); j++ {
 		var id i32
-		id = RawMeshes[0].TriangleIndices[j]
+		id = EditLayers[CurrLayer].TriangleIndices[j]
 		m.TriangleIndices = append(
 		m.TriangleIndices, id)
 	}
 		
 	makeAndReportOn(m, false)
 }
+*/
 
 
 func GenerateMeshInitFunc (s str) () {
