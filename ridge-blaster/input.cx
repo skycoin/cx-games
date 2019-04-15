@@ -266,7 +266,9 @@ func fireOrActivate () () {
 				}
 
 				mesh.PickedTriangle[mesh.PickedTrianglesNextId] = i
-				mesh.PickedTrianglesNextId = i32.add(mesh.PickedTrianglesNextId, 1)
+				mesh.PickedTrianglesNextId = 
+				i32.add(
+				mesh.PickedTrianglesNextId, 1)
 
 				if i32.gteq(mesh.PickedTrianglesNextId, 3) {
 					mesh.MakeNewEditorTriangle()
@@ -337,7 +339,8 @@ func getTouchedVertexNode (p Vec2) (touched bool, layId i32, vertId i32) {
 				p.Y < (v.Y + entity.NodeExtents.Y) {
 				
 				touched = true
-				layId = i			
+				layId = li			
+				vertId = i			
 				break
 			}
 		}
