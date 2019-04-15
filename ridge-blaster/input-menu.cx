@@ -11,7 +11,7 @@ type MenuItem struct {
 	// ids unnecessary?  
 	// if not, set these to corresponding entries in the mesh.___Meshes (slices) 
 	MeshForBackId i32 // background 
-	MeshForIcon i32
+	RawMeshForIcon i32
 	MeshForHoverText i32
 }
 
@@ -35,18 +35,18 @@ func setupMainMenu () () {
 func setupEditorToolbar () () {
 	var mi MenuItem
 	
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Edit Vertices" }
+	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Vertices" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Edit Triangles" }
+	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Triangles" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Edit Colors" }
+	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Colors" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Gen Init Func" }
+	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Gen Init Func" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "Snap-To-Grid" }
+	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Snap-To-Grid" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "New Canvas" }
+	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "New Canvas" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, MeshForIcon: 1, Name: "PLAY" }
+	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "PLAY" }
 	Menu = append(Menu, mi)
 }

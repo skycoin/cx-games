@@ -221,10 +221,13 @@ func Circle (e Entity) () {
 
 func editorQuads () () {
 	// color channels for colors that have the same value across all 3 
-	white := 1.0
-	gray  := 0.15 // (dark) 
+	var white f32
+	var gray f32
+	white = 1.0
+	gray = 0.15 // (dark) 
 	
-	for li := 0; i32.lt(li, len(mesh.EditLayers[li])); li++ {
+	var li i32
+	for li = 0; i32.lt(li, len(mesh.EditLayers)); li++ {
 		for i := 0; i32.lt(i, len(mesh.EditLayers[li].Points)); i++ {
 			gl.Color3f(white, white, white)
 			
@@ -242,9 +245,9 @@ func editorQuads () () {
 							gl.Color3f(0.0, 0.0, 1.0) // blue 
 						}
 					}
-				} /*else {
-					gl.Color3f(gray, gray, gray)
-				}*/
+				} //else {
+					//gl.Color3f(gray, gray, gray)
+				//}
 			}
 			
 			drawRect(mesh.EditLayers[li].Points[i], entity.NodeExtents)

@@ -293,6 +293,8 @@ func fireOrActivate () () {
 				m.Colors, c)
 				m.Points = append(
 				m.Points, MousePointer)
+
+				mesh.EditLayers[mesh.CurrLayer] = m
 			}
 		}
 	}

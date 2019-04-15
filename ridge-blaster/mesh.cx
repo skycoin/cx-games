@@ -39,7 +39,7 @@ func Setup () () {
 	}
 	
 	makeColorPickerWheelResource()
-	makeEditorRectResource()	
+
 	InitEditVerticesIconMesh()
 	InitEditTrianglesIconMesh()
 	InitEditColorsIconMesh()
@@ -47,6 +47,8 @@ func Setup () () {
 	InitSnapToGridIconMesh()
 	InitWipeCanvasIconMesh()
 	InitPlayerShipMesh()
+
+	makeEditorRectResource()	
 	
 	
 	// editor 	
@@ -266,14 +268,14 @@ func MakeButtonArray (leftAnchored bool) () {
 	for i := 0; i32.lt(i, len(ccInput.Menu)); i++ {
 		ccInput.Menu[i].Pos = pos
 		ccInput.Menu[i].Extents = ext
-		bakeInstanceFromRaw(pos, ext, 2) //1) // rect background 
+		bakeInstanceFromRaw(pos, ext, len(RawMeshes)-1) // rect background 
 		
 		var rawId i32
-		rawId = i + 3 //2
+		rawId = i + 1
 		
 		if rawId < len(RawMeshes) {
 			bakeInstanceFromRaw(pos, ext, rawId)
-			ccInput.Menu[i].MeshForIcon = rawId
+			ccInput.Menu[i].RawMeshForIcon = rawId
 		}
 			
 		pos.Y = f32.sub(pos.Y, span)
