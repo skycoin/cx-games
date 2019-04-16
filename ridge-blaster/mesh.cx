@@ -491,7 +491,7 @@ func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
 	}
 
 	// remove tris that point to "ir" 
-	// (handle 3 at a time (+=3 increment), "j" being the last) 
+	// (handle 3 verts at a time (+=3 increment), "j" being the latest) 
 	for j := 2; i32.lt(j, len(EditLayers[CurrLayer].TriangleIndices)); j = i32.add(j, 3) {
 		var j0 i32
 		var j1 i32
@@ -501,22 +501,31 @@ func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
 		j1 = i32.sub(j, 1)
 		j2 = j
 		
-		if i32.uneq(j0, ir) &&
-			i32.uneq(j1, ir) &&
+		j0 = EditLayers[CurrLayer].TriangleIndices[j0]
+		j1 = EditLayers[CurrLayer].TriangleIndices[j1]
+		j2 = EditLayers[CurrLayer].TriangleIndices[j2]
+		
+		// if tri will remain, copy it 
+		if i32.uneq(j0, ir) && 
+			i32.uneq(j1, ir) && 
 			i32.uneq(j2, ir) {
 			
 			m.TriangleIndices = append(
-			m.TriangleIndices, EditLayers[CurrLayer].TriangleIndices[j0])
+			m.TriangleIndices, j0)
 			m.TriangleIndices = append(
-			m.TriangleIndices, EditLayers[CurrLayer].TriangleIndices[j1])
+			m.TriangleIndices, j1)
 			m.TriangleIndices = append(
-			m.TriangleIndices, EditLayers[CurrLayer].TriangleIndices[j2])
-		}
+			m.TriangleIndices, j2)
+			
+			str.print("SAVING TRIANGLE")
+		} else {
+			str.print("DELETED TRIANGLE")
+		}		
 	}
 
-	// adjust vert ids (down) that are above "ir" 
-	for j := 0; i32.lt(j, len(EditLayers[CurrLayer].TriangleIndices)); j++ {
-		m.TriangleIndices[j] = getValidId(layerId, ir, j)
+	// - vert ids that are > "ir" 
+	for l := 0; i32.lt(l, len(EditLayers[CurrLayer].TriangleIndices)); l++ {
+		m.TriangleIndices[l] = getValidId(layerId, ir, l)
 	}
 
 	/*
@@ -542,11 +551,11 @@ func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
 }
 
 
-func getValidId (layerId i32, removeId i32, j i32) (jOut i32) {
-	jOut = EditLayers[layerId].TriangleIndices[j]
+func getValidId (layer i32, trashVert i32, currVert i32) (id i32) {
+	id = EditLayers[layer].TriangleIndices[currVert]
 
 	// decrease vertex id by 1, if it's after removed index 
-	if i32.gt(jOut, removeId) { // should never == removeId 
-		jOut = i32.sub(jOut, 1)
+	if i32.lt(trashVert, id) {
+		id = i32.sub(id, 1)
 	}
 }
