@@ -74,7 +74,7 @@ func Update () () {
 	gl.Viewport(0, 0, app.ScreenSizeInPixels.X, app.ScreenSizeInPixels.Y)
 	gl.MatrixMode(gl.MODELVIEW)
 
-	collision.ColUpdate(ratio)
+	collision.Update(ratio)
 	draw.All(currTime, timeDelta)
 
 	glfw.PollEvents()

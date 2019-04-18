@@ -1,5 +1,7 @@
 package collision
 
+import "app"
+
 
 
 var ScreenEdgeL f64 // left 
@@ -12,9 +14,20 @@ func Setup () () {
 }
 
 
-func ColUpdate (ratio f32) () {
-	//str.print("collision.ColUpdate()")
+func Update (ratio f32) () {
+	//str.print("collision.Update()")
 
 	ScreenEdgeL = f32.f64(f32.mul(ratio, -1.0))
 	ScreenEdgeR = f32.f64(ratio)
+}
+
+
+func PointWithBox (p Vec2, box Vec2, extents Vec2) (out bool) {
+	if p.X > (box.X - extents.X) &&
+		p.X < (box.X + extents.X) &&
+		p.Y > (box.Y - extents.Y) &&
+		p.Y < (box.Y + extents.Y) {
+		
+		out = true
+	}
 }

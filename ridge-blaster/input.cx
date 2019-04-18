@@ -232,11 +232,20 @@ func fireOrActivate () () {
 						str.print("SNAP_TO_GRID: OFF")
 					}
 				} else
-				if i == TOOLBAR_NEW_CANVAS {
-					str.print("-> NEW_CANVAS")
-					//*****var m Mesh2D = Mesh2D{ Name: "Editor workspace" }
-					//*****mesh.EditLayers[mesh.CurrLayer] = m
-					mesh.EditLayers = []Mesh2D{}
+				if i == TOOLBAR_WIPE_LAYER {
+					str.print("-> WIPE_LAYER")
+					
+					var cs []Color3
+					var vs []Vec2
+					var tis []i32
+					
+					cs = []Color3{}
+					vs = []Vec2{}
+					tis = []i32{}		
+								
+					mesh.EditLayers[mesh.CurrLayer].Colors = cs
+					mesh.EditLayers[mesh.CurrLayer].Points = vs
+					mesh.EditLayers[mesh.CurrLayer].TriangleIndices = tis
 				} else
 				if i == TOOLBAR_MAINMENU {
 					str.print("-> MAINMENU")
@@ -312,11 +321,7 @@ func getTouchedMenuItem (p Vec2) (touched bool, id i32) {
 		v = Menu[i].Pos
 		e = Menu[i].Extents
 		
-		if p.X > (v.X - e.X) &&
-			p.X < (v.X + e.X) &&
-			p.Y > (v.Y - e.Y) &&
-			p.Y < (v.Y + e.Y) {
-			
+		if collision.PointWithBox(p, v, e) {			
 			touched = true
 			id = i			
 			break
@@ -333,11 +338,7 @@ func getTouchedVertexNode (p Vec2) (touched bool, layId i32, vertId i32) {
 			var v Vec2
 			v = mesh.EditLayers[li].Points[i]
 			
-			if p.X > (v.X - entity.NodeExtents.X) &&
-				p.X < (v.X + entity.NodeExtents.X) &&
-				p.Y > (v.Y - entity.NodeExtents.Y) &&
-				p.Y < (v.Y + entity.NodeExtents.Y) {
-				
+			if collision.PointWithBox(p, v, entity.NodeExtents) {			
 				touched = true
 				layId = li			
 				vertId = i			

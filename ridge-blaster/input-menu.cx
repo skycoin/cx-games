@@ -23,7 +23,7 @@ var Menu []MenuItem
 // 2nd, these one-time actions) 
 var TOOLBAR_GEN_FUNC     i32 = app.EDIT_MAX // generate mesh init func 
 var TOOLBAR_SNAP_TO_GRID i32 = app.EDIT_MAX + 1
-var TOOLBAR_NEW_CANVAS   i32 = app.EDIT_MAX + 2
+var TOOLBAR_WIPE_LAYER   i32 = app.EDIT_MAX + 2
 var TOOLBAR_MAINMENU     i32 = app.EDIT_MAX + 3
 
 
@@ -45,7 +45,7 @@ func setupEditorToolbar () () {
 	Menu = append(Menu, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Snap-To-Grid" }
 	Menu = append(Menu, mi)
-	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "New Canvas" }
+	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Wipe Layer" }
 	Menu = append(Menu, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "PLAY" }
 	Menu = append(Menu, mi)
