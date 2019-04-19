@@ -281,9 +281,9 @@ func Entities () () {
 		var e Entity
 		e = entity.Ents[i]
 		
-		//        ______==________________
+		//        ______==___________________
 		if i32.eq(e.Mode, entity.ENTMODE_DEAD) {
-			str.print("skipped drawing DEAD ent")
+			printf("skip DEAD %d     ", i)
 			continue
 		}
 		

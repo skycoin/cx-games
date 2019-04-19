@@ -173,15 +173,13 @@ func maybeToggleMousePointer (key i32) () {
 
 func fireOrActivate () () {
 	//str.print("fireOrActivate ()")
-	var t    i32
 	var mode i32
 	var pos  Vec2
 	var vel  Vec2
 	var ext  Vec2
 	
 	// handle modes 
-	if app.Mode < app.APPMODE_GAME_OVER { // playing 
-		t = entity.TYPE_BULLET
+	if app.Mode == app.APPMODE_PLAYING { // playing 
 		pos = entity.Ents[0].Pos
 		pos.X = f32.add(pos.X, entity.Ents[0].Extents.X)
 		pos.X = f32.add(pos.X, entity.BulletExtents.X)
@@ -192,7 +190,7 @@ func fireOrActivate () () {
 	
 		var ent Entity
 		ent = Entity{ 
-			Type: t, 
+			Type: entity.TYPE_BULLET, 
 			Pos: pos, 
 			Vel: vel, 
 			Mode: mode, 
@@ -248,8 +246,9 @@ func fireOrActivate () () {
 					mesh.EditLayers[mesh.CurrLayer].TriangleIndices = tis
 				} else
 				if i == TOOLBAR_MAINMENU {
-					str.print("-> MAINMENU")
-					app.Mode = app.APPMODE_MENU
+					str.print("-> MAINMENU ---------(or WILL take us to main menu when it's implemented)")
+					entity.SetupHero()
+					app.Mode = app.APPMODE_PLAYING // FIXME: LATER want app.APPMODE_MENU
 				}
 			}
 			

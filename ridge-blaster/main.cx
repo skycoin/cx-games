@@ -5,6 +5,11 @@
 	
 	
 	
+	Amaury: "cxgo.nex was renamed to main.nex and put inside cxgo/parser/"
+	
+	
+	
+	
 	FORMAL/THOROUGH REPORT & TEST NEEDED FOR THESE BUGS:
 		couldn't make a Vec2 on the spot, as a parameter of entity.Add()
 			had to declare/define first, THEN could pass it
@@ -24,6 +29,8 @@
 			
 	INVOICE REPORTS GIVEN
 		[3] I made a struct for Mesh2D objects, and refactored the game from using the entity system to draw the vertex nodes, to using Mesh2D structs to create and render them as they are updated.  I made PLAY, EDITMODE_VERTICES & EDITMODE_TRIANGLES modes, and hotkeys to switch between them.  I separated the drawing of gameplay objects/scenery and editor objects (color picking wheel and exaggerated vertex nodes for easier selection, etc.) to their own modes. I made vertex highlights for the current triangle, and made it draw gray triangles to connect them as soon as the user defines each set of 3 points.
+		
+		(the rest were added to the .PDFs)
 */
 
 

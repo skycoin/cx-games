@@ -18,10 +18,13 @@ var TYPE_PARTICLE    i32 = 4
 // MODES 
 var ENTMODE_STATIONARY      i32 = 1
 var ENTMODE_MOVING_STRAIGHT i32 = 2
-var ENTMODE_ROAMING         i32 = 3
-var ENTMODE_ATTACKING       i32 = 4
-var ENTMODE_DYING           i32 = 5
-var ENTMODE_DEAD            i32 = 6
+var ENTMODE_DYNAMIC_MOVER   i32 = 3
+var ENTMODE_ROAMING         i32 = 4
+var ENTMODE_ATTACKING       i32 = 5
+var ENTMODE_DYING           i32 = 6
+var ENTMODE_DEAD            i32 = 7
+var ENTMODE_MAX             i32 = 8
+
 // consider that maybe corpse needs to remain visible....
 // (then _DEAD != inactive/disabled (the Unity term) ) 
 	
@@ -57,24 +60,34 @@ var Ents []Entity
 
 func Setup () () {
 	str.print("entity.Setup()")
-
-	var pos Vec2
-	pos = Vec2{
-		X: 0.0, 
-		Y: 0.0}
+	SetupHero()
 	
-	var ent Entity
-	ent = Entity{ 
-		Type: TYPE_HERO, 
-		Pos: pos, 
-		Extents: HeroExtents }
-	
-	Add(ent)
 	CamPos = app.Vec3{ X: 0.0, Y: 0.0, Z: 0.0 }
 	printf("CamPos.X: %v \n", CamPos.X)
 }
 
 
+func SetupHero () () {
+	var pos Vec2
+	pos = Vec2{
+		X: -1.0,
+		Y: 0.7}
+	
+	var ent Entity
+	ent = Entity{ 
+		Type: TYPE_HERO, 
+		Mode: ENTMODE_DYNAMIC_MOVER,
+		Pos: pos, 
+		Extents: HeroExtents }
+	
+	if len(Ents) > 0 {
+		str.print("resetting HERO")
+		Ents[0].Mode = ENTMODE_DYNAMIC_MOVER
+		Ents[0].Pos = pos
+	} else {
+		Add(ent)
+	}
+}
 func Add (ent Entity) () {
 	//printf("entity.Add()   x: %f, y: %f \n", ent.Pos.X, ent.Pos.Y)
 	Ents = append(Ents, ent)
@@ -138,14 +151,20 @@ func Update (tDelta f32, currTime f32) () {
 				}
 			} else {
 				var hit bool
-				var other Entity
-				hit, other = checkForHitDownStream(i) // FIXME? could hit multiple targets, but only returning other for the latest 
+				var oId i32 // other (downstream) entity 
+				hit, oId = checkForHitDownStream(i) // FIXME? could hit multiple targets, but only returning other for the latest 
 				
 				if hit {
-					Ents[i].Mode = ENTMODE_DEAD
-					other.Mode   = ENTMODE_DEAD
+					Ents[i].Mode   = ENTMODE_DEAD
+					Ents[oId].Mode = ENTMODE_DEAD
+					
+					if Ents[i].Type == TYPE_HERO {
+						// TODO: explode ship 
+						app.Mode = app.APPMODE_GAME_OVER
+					}
+					
 					str.print("flipped pair (mover & obstructor) to dead")
-					printf("this ent: %d   -   other ent: %d \n", Ents[i].Mode, other.Mode)
+					printf("ent modes for curr: %d   -   other: %d \n", Ents[i].Mode, Ents[oId].Mode)
 					continue
 				}
 			}
@@ -158,14 +177,14 @@ func Update (tDelta f32, currTime f32) () {
 
 
 // id is the moving entity, which triggered the need to scan other entities 
-func checkForHitDownStream (id i32) (hit bool, other Entity) {
+func checkForHitDownStream (id i32) (hit bool, otherId i32) {
 	var o i32 // other 
 	for o = i32.add(id, 1); i32.lt(o, len(Ents)); o = i32.add(o, 1) {
 		if collision.BoxesOverlap(Ents[id].Pos, Ents[o].Pos, Ents[id].Extents, Ents[o].Extents) {
 		
 			hit = true
 			printf("curr id %d hit later id %d \n", id, o)
-			other = Ents[o]
+			otherId = o
 		}
 	}
 }
