@@ -61,15 +61,15 @@ func All (currTime f32, deltaTime f32) () {
 		pickedNodesAreBright = bool.not(pickedNodesAreBright)
 	}
 
-	if app.Mode == app.MODE_EDITOR {		
-		if app.EditMode != app.EDIT_COLORS {
+	if app.Mode == app.APPMODE_EDITOR {		
+		if app.EditMode != app.EDITMODE_COLORS {
 			gl.Begin(gl.LINES)
 				gridLines()
 			gl.End()
 		}
 
 		gl.Begin(gl.TRIANGLES) //////////////
-			if app.EditMode == app.EDIT_COLORS {
+			if app.EditMode == app.EDITMODE_COLORS {
 				trianglesForAll(mesh.RawMeshes, true)
 			} else {
 				trianglesForAll(mesh.EditLayers, false)
@@ -78,7 +78,7 @@ func All (currTime f32, deltaTime f32) () {
 			trianglesForAll(mesh.BakedMeshes, false)
 		gl.End()
 
-		if app.EditMode != app.EDIT_COLORS {
+		if app.EditMode != app.EDITMODE_COLORS {
 			gl.Begin(gl.QUADS) //////////////////
 				editorQuads()
 			gl.End()
@@ -282,7 +282,7 @@ func Entities () () {
 		e = entity.Ents[i]
 		
 		//        ______==________________
-		if i32.eq(e.Mode, entity.MODE_DEAD) {
+		if i32.eq(e.Mode, entity.ENTMODE_DEAD) {
 			str.print("skipped drawing DEAD ent")
 			continue
 		}
@@ -383,8 +383,8 @@ func feedTerrainQuadToGL(i i32, drawingCrust bool, currTime f32) () {
 				StartPos: pos,
 				Pos: pos,
 				Vel: vel,
-				Mode: entity.MODE_STATIONARY,
-				NextMode: entity.MODE_MOVING_STRAIGHT,
+				Mode: entity.ENTMODE_STATIONARY,
+				NextMode: entity.ENTMODE_MOVING_STRAIGHT,
 				TimeToNextMode: time,
 				Extents: entity.RocketExtents }
 			

@@ -53,8 +53,8 @@ func Setup () () {
 }
 
 
-func InpUpdate () () {
-	//str.print("input/ccInput.InpUpdate()")
+func Update () () {
+	//str.print("input/ccInput.Update()")
 
 	// motion input status 
 	//moveLeft  = keyIsDown(GLFW_KEY_A)
@@ -78,10 +78,10 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 			fireOrActivate()
 		} else
 		if button == 1 && 
-			app.Mode == app.MODE_EDITOR &&
-			app.EditMode == app.EDIT_VERTICES {
+			app.Mode == app.APPMODE_EDITOR &&
+			app.EditMode == app.EDITMODE_VERTICES {
 			
-			str.print("RMB press && EDIT_VERTICES")
+			str.print("RMB press && EDITMODE_VERTICES")
 			var touchedVert bool
 			var lId i32 // layer id 
 			var i i32
@@ -131,7 +131,7 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 			//if key == 51 { // GLFW_KEY_3 
 			//} else
 			if key == GLFW_KEY_ESCAPE {
-				app.Mode = app.MODE_EDITOR
+				app.Mode = app.APPMODE_EDITOR
 			} else
 			if key == 53 { // GLFW_KEY_5 
 				// close 
@@ -180,14 +180,14 @@ func fireOrActivate () () {
 	var ext  Vec2
 	
 	// handle modes 
-	if app.Mode < app.MODE_GAME_OVER { // playing 
+	if app.Mode < app.APPMODE_GAME_OVER { // playing 
 		t = entity.TYPE_BULLET
 		pos = entity.Ents[0].Pos
 		pos.X = f32.add(pos.X, entity.Ents[0].Extents.X)
 		pos.X = f32.add(pos.X, entity.BulletExtents.X)
 		pos.X = f32.add(pos.X, 0.03) // hero to bullet padding 
 		vel = Vec2{ X: app.MAX_HERO_SPEED * 2.0, Y: 0.0 }
-		mode = entity.MODE_MOVING_STRAIGHT
+		mode = entity.ENTMODE_MOVING_STRAIGHT
 		ext = entity.BulletExtents
 	
 		var ent Entity
@@ -199,7 +199,7 @@ func fireOrActivate () () {
 			Extents: ext }
 		
 		entity.Add(ent)
-	} else if app.Mode == app.MODE_EDITOR {
+	} else if app.Mode == app.APPMODE_EDITOR {
 		var touchedMI bool // menu item 
 		var i i32
 		touchedMI, i = getTouchedMenuItem(MousePointer)
@@ -207,17 +207,17 @@ func fireOrActivate () () {
 		if touchedMI {
 			printf("pressed menu item %s \n", Menu[i].Name)
 			
-			if i < app.EDIT_MAX { // change EditMode
+			if i < app.EDITMODE_MAX { // change EditMode
 				app.EditMode = i
 
-				if app.EditMode == app.EDIT_VERTICES {
-					str.print("-> MODE EDIT_VERTICES")
+				if app.EditMode == app.EDITMODE_VERTICES {
+					str.print("-> MODE EDITMODE_VERTICES")
 				} else
-				if app.EditMode == app.EDIT_TRIANGLES {
-					str.print("-> MODE EDIT_TRIANGLES")
+				if app.EditMode == app.EDITMODE_TRIANGLES {
+					str.print("-> MODE EDITMODE_TRIANGLES")
 				} else
-				if app.EditMode == app.EDIT_COLORS {
-					str.print("-> MODE EDIT_COLORS")
+				if app.EditMode == app.EDITMODE_COLORS {
+					str.print("-> MODE EDITMODE_COLORS")
 				}
 			} else { // perform one-time actions 
 				if i == TOOLBAR_GEN_FUNC {
@@ -249,7 +249,7 @@ func fireOrActivate () () {
 				} else
 				if i == TOOLBAR_MAINMENU {
 					str.print("-> MAINMENU")
-					app.Mode = app.MODE_MENU
+					app.Mode = app.APPMODE_MENU
 				}
 			}
 			
@@ -264,7 +264,7 @@ func fireOrActivate () () {
 		var layerId i32
 		touchedVert, layerId, i = getTouchedVertexNode(MousePointer)
 
-		if app.EditMode == app.EDIT_TRIANGLES {
+		if app.EditMode == app.EDITMODE_TRIANGLES {
 			// TODO enhancement: allow player to slide across 3 verts while holding LMB 
 			
 			if touchedVert {			
@@ -283,7 +283,7 @@ func fireOrActivate () () {
 					mesh.MakeNewEditorTriangle()
 				}
 			}
-		} else if app.EditMode == app.EDIT_VERTICES {
+		} else if app.EditMode == app.EDITMODE_VERTICES {
 			if touchedVert { // drag existing node 
 				draggingVertexNode = true
 				draggedLayerId  = layerId
@@ -321,7 +321,7 @@ func getTouchedMenuItem (p Vec2) (touched bool, id i32) {
 		v = Menu[i].Pos
 		e = Menu[i].Extents
 		
-		if collision.PointWithBox(p, v, e) {			
+		if collision.BoxesOverlap(p, v, entity.NodeExtents, e) {			
 			touched = true
 			id = i			
 			break
@@ -338,7 +338,7 @@ func getTouchedVertexNode (p Vec2) (touched bool, layId i32, vertId i32) {
 			var v Vec2
 			v = mesh.EditLayers[li].Points[i]
 			
-			if collision.PointWithBox(p, v, entity.NodeExtents) {			
+			if collision.PointInBox(p, v, entity.NodeExtents) {			
 				touched = true
 				layId = li			
 				vertId = i			

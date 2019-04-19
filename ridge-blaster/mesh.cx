@@ -470,7 +470,7 @@ func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) 
 
 
 func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
-	if app.Mode != app.MODE_EDITOR {		
+	if app.Mode != app.APPMODE_EDITOR {		
 		return
 	}
 	

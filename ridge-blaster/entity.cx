@@ -16,12 +16,12 @@ var TYPE_ROCKET      i32 = 3
 var TYPE_PARTICLE    i32 = 4
 
 // MODES 
-var MODE_STATIONARY      i32 = 1
-var MODE_MOVING_STRAIGHT i32 = 2
-var MODE_ROAMING         i32 = 3
-var MODE_ATTACKING       i32 = 4
-var MODE_DYING           i32 = 5
-var MODE_DEAD            i32 = 6
+var ENTMODE_STATIONARY      i32 = 1
+var ENTMODE_MOVING_STRAIGHT i32 = 2
+var ENTMODE_ROAMING         i32 = 3
+var ENTMODE_ATTACKING       i32 = 4
+var ENTMODE_DYING           i32 = 5
+var ENTMODE_DEAD            i32 = 6
 // consider that maybe corpse needs to remain visible....
 // (then _DEAD != inactive/disabled (the Unity term) ) 
 	
@@ -89,8 +89,8 @@ func Add (ent Entity) () {
 }
 
 
-func EntUpdate (tDelta f32, currTime f32) () {
-	//str.print("entity.EntUpdate()")
+func Update (tDelta f32, currTime f32) () {
+	//str.print("entity.Update()")
 	
 	// physics 
 	timeDel = tDelta
@@ -118,8 +118,8 @@ func EntUpdate (tDelta f32, currTime f32) () {
 		}			
 		
 		// movement 
-		if 	i32.uneq(Ents[i].Mode, MODE_DEAD) &&
-			i32.uneq(Ents[i].Mode, MODE_STATIONARY) {
+		if 	i32.uneq(Ents[i].Mode, ENTMODE_DEAD) &&
+			i32.uneq(Ents[i].Mode, ENTMODE_STATIONARY) {
 			
 			// move 
 			movers = i32.add(movers, 1)
@@ -139,11 +139,11 @@ func EntUpdate (tDelta f32, currTime f32) () {
 			} else {
 				var hit bool
 				var other Entity
-				hit, other = checkForHitDownStream(i)
+				hit, other = checkForHitDownStream(i) // FIXME? could hit multiple targets, but only returning other for the latest 
 				
 				if hit {
-					Ents[i].Mode = MODE_DEAD
-					other.Mode   = MODE_DEAD
+					Ents[i].Mode = ENTMODE_DEAD
+					other.Mode   = ENTMODE_DEAD
 					str.print("flipped pair (mover & obstructor) to dead")
 					printf("this ent: %d   -   other ent: %d \n", Ents[i].Mode, other.Mode)
 					continue
@@ -160,25 +160,13 @@ func EntUpdate (tDelta f32, currTime f32) () {
 // id is the moving entity, which triggered the need to scan other entities 
 func checkForHitDownStream (id i32) (hit bool, other Entity) {
 	var o i32 // other 
-	for o = id + 1; i32.lt(o, len(Ents)); o = i32.add(o, 1) {
-		hit = pairIsTouching(id, o)
-		if hit {
-			str.print("hit!")
+	for o = i32.add(id, 1); i32.lt(o, len(Ents)); o = i32.add(o, 1) {
+		if collision.BoxesOverlap(Ents[id].Pos, Ents[o].Pos, Ents[id].Extents, Ents[o].Extents) {
+		
+			hit = true
+			printf("curr id %d hit later id %d \n", id, o)
 			other = Ents[o]
 		}
-	}
-}
-
-
-func pairIsTouching (id i32, o i32) (hit bool) {
-	hit = true // lie for a moment 
-	
-	if f32.lt(f32.add(Ents[o].Pos.X, Ents[o].Extents.X), 
-		f32.sub(Ents[id].Pos.X, Ents[id].Extents.X)) ||
-		f32.gt(f32.sub(Ents[o].Pos.X, Ents[o].Extents.X), 
-		f32.add(Ents[id].Pos.X, Ents[id].Extents.X)) {
-		
-		hit = false
 	}
 }
 

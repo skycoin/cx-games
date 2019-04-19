@@ -21,10 +21,10 @@ var Menu []MenuItem
 // (Menu item button ids... 
 // 1st correspond to switching editor modes, then... 
 // 2nd, these one-time actions) 
-var TOOLBAR_GEN_FUNC     i32 = app.EDIT_MAX // generate mesh init func 
-var TOOLBAR_SNAP_TO_GRID i32 = app.EDIT_MAX + 1
-var TOOLBAR_WIPE_LAYER   i32 = app.EDIT_MAX + 2
-var TOOLBAR_MAINMENU     i32 = app.EDIT_MAX + 3
+var TOOLBAR_GEN_FUNC     i32 = app.EDITMODE_MAX // generate mesh init func 
+var TOOLBAR_SNAP_TO_GRID i32 = app.EDITMODE_MAX + 1
+var TOOLBAR_WIPE_LAYER   i32 = app.EDITMODE_MAX + 2
+var TOOLBAR_MAINMENU     i32 = app.EDITMODE_MAX + 3
 
 
 

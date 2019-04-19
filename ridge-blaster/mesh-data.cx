@@ -1839,7 +1839,7 @@ func InitSnapToGridIconMesh () () {
 
 func InitWipeCanvasIconMesh () () {
     var m Mesh2D
-    m = Mesh2D{ Name: "Wipe Canvas Icon" }
+    m = Mesh2D{ Name: "Wipe Layer Icon" }
 
     var c Color3
     var v Vec2

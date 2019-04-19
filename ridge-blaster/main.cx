@@ -23,7 +23,7 @@
 			"you need to send your invoice before 5th, shanghai time"
 			
 	INVOICE REPORTS GIVEN
-		[3] I made a struct for Mesh2D objects, and refactored the game from using the entity system to draw the vertex nodes, to using Mesh2D structs to create and render them as they are updated.  I made PLAY, EDIT_VERTICES & EDIT_TRIANGLES modes, and hotkeys to switch between them.  I separated the drawing of gameplay objects/scenery and editor objects (color picking wheel and exaggerated vertex nodes for easier selection, etc.) to their own modes. I made vertex highlights for the current triangle, and made it draw gray triangles to connect them as soon as the user defines each set of 3 points.
+		[3] I made a struct for Mesh2D objects, and refactored the game from using the entity system to draw the vertex nodes, to using Mesh2D structs to create and render them as they are updated.  I made PLAY, EDITMODE_VERTICES & EDITMODE_TRIANGLES modes, and hotkeys to switch between them.  I separated the drawing of gameplay objects/scenery and editor objects (color picking wheel and exaggerated vertex nodes for easier selection, etc.) to their own modes. I made vertex highlights for the current triangle, and made it draw gray triangles to connect them as soon as the user defines each set of 3 points.
 */
 
 
