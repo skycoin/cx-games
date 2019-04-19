@@ -50,7 +50,7 @@ func Setup () () {
 func All (currTime f32, deltaTime f32) () {
 	//str.print("draw.All()")
 	
-	if /* no baked meshes */ i32.lt(len(mesh.BakedMeshes), 1) {
+	if /* no baked meshes */ i32.lt(len(mesh.BakedUIMeshes), 1) {
 		mesh.MakeButtonArray(false)
 	}
 
@@ -75,7 +75,7 @@ func All (currTime f32, deltaTime f32) () {
 				trianglesForAll(mesh.EditLayers)
 			}
 			
-			trianglesForAll(mesh.BakedMeshes)
+			trianglesForAll(mesh.BakedUIMeshes)
 		gl.End()
 
 		if app.EditMode != app.EDITMODE_COLORS {

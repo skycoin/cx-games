@@ -209,13 +209,16 @@ func fireOrActivate () () {
 				app.EditMode = i
 
 				if app.EditMode == app.EDITMODE_VERTICES {
-					str.print("-> MODE EDITMODE_VERTICES")
+					str.print("------> EDITMODE_VERTICES")
 				} else
 				if app.EditMode == app.EDITMODE_TRIANGLES {
-					str.print("-> MODE EDITMODE_TRIANGLES")
+					str.print("------> EDITMODE_TRIANGLES")
 				} else
 				if app.EditMode == app.EDITMODE_COLORS {
-					str.print("-> MODE EDITMODE_COLORS")
+					str.print("------> EDITMODE_COLORS")
+				} else
+				if app.EditMode == app.EDITMODE_MESH_PICKER {
+					str.print("------> EDITMODE_MESH_PICKER")
 				}
 			} else { // perform one-time actions 
 				if i == TOOLBAR_GEN_FUNC {
