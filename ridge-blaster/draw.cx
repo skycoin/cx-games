@@ -52,6 +52,7 @@ func All (currTime f32, deltaTime f32) () {
 	
 	if /* no baked UI meshes */ i32.lt(len(mesh.BakedUIMeshes), 1) {
 		mesh.MakeButtonArray(ccInput.EditToolbar, false, true)
+		mesh.MakeButtonArray(ccInput.EditToolbar, true, true)
 	}
 
 	// blink timing 
