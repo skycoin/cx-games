@@ -233,17 +233,9 @@ func fireOrActivate () () {
 				if i == TOOLBAR_WIPE_LAYER {
 					str.print("-> WIPE_LAYER")
 					
-					var cs []Color3
-					var vs []Vec2
-					var tis []i32
-					
-					cs = []Color3{}
-					vs = []Vec2{}
-					tis = []i32{}		
-								
-					mesh.EditLayers[mesh.CurrLayer].Colors = cs
-					mesh.EditLayers[mesh.CurrLayer].Points = vs
-					mesh.EditLayers[mesh.CurrLayer].TriangleIndices = tis
+					var m Mesh2D 
+					m = Mesh2D{}
+					mesh.EditLayers[mesh.CurrLayer] = m
 				} else
 				if i == TOOLBAR_MAINMENU {
 					str.print("-> MAINMENU ---------(or WILL take us to main menu when it's implemented)")
@@ -287,24 +279,30 @@ func fireOrActivate () () {
 				draggingVertexNode = true
 				draggedLayerId  = layerId
 				draggedVertexId = i
-			} else { // create new node 
-				var c Color3
-				c = Color3{ 
-					R: 0.5, 
-					G: 0.5, 
-					B: 0.5 }
+			} else { // create new node... 
+				if MousePointer.X >= -1.0 && // ...when within grid 
+					MousePointer.X <= 1.0 &&
+					MousePointer.Y >= -1.0 &&
+					MousePointer.Y <= 1.0 {
 					
-				var m Mesh2D
-				m = mesh.EditLayers[mesh.CurrLayer]
+					var c Color3
+					c = Color3{ 
+						R: 0.5, 
+						G: 0.5, 
+						B: 0.5 }
+						
+					var m Mesh2D
+					m = mesh.EditLayers[mesh.CurrLayer]
 
-				printf("+ vertex: %d - in layer: %d \n", len(m.Points), mesh.CurrLayer)
+					printf("+ vertex: %d - in layer: %d \n", len(m.Points), mesh.CurrLayer)
 
-				m.Colors = append(
-				m.Colors, c)
-				m.Points = append(
-				m.Points, MousePointer)
+					m.Colors = append(
+					m.Colors, c)
+					m.Points = append(
+					m.Points, MousePointer)
 
-				mesh.EditLayers[mesh.CurrLayer] = m
+					mesh.EditLayers[mesh.CurrLayer] = m
+				}
 			}
 		}
 	}
@@ -320,7 +318,7 @@ func getTouchedMenuItem (p Vec2) (touched bool, id i32) {
 		v = Menu[i].Pos
 		e = Menu[i].Extents
 		
-		if collision.BoxesOverlap(p, v, entity.NodeExtents, e) {			
+		if collision.PointInBox(p, v, e) {			
 			touched = true
 			id = i			
 			break

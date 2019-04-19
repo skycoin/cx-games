@@ -68,10 +68,11 @@ func Setup () () {
 
 
 func SetupHero () () {
+	var x f32
 	var pos Vec2
-	pos = Vec2{
-		X: -1.0,
-		Y: 0.7}
+
+	x = f32.sub(0.0, 1.0)
+	pos = Vec2{	X: x, Y: 0.7 }
 	
 	var ent Entity
 	ent = Entity{ 
@@ -82,8 +83,11 @@ func SetupHero () () {
 	
 	if len(Ents) > 0 {
 		str.print("resetting HERO")
+		/*
 		Ents[0].Mode = ENTMODE_DYNAMIC_MOVER
 		Ents[0].Pos = pos
+		*/
+		Ents[0] = ent
 	} else {
 		Add(ent)
 	}

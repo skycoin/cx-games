@@ -291,22 +291,22 @@ func Entities () () {
 		//        ______==___________________
 		if i32.eq(e.Mode, entity.ENTMODE_DEAD) {
 			printf("skip DEAD %d     ", i)
-			continue
-		}
+			//continue
+		} else {		
+			// colors 
+			if e.Type == entity.TYPE_HERO {
+				c := 0.4
+				gl.Color3f(c, c, c)
+			}else
+			if e.Type == entity.TYPE_BULLET {
+				gl.Color3f(1.0, 1.0, 0.0)
+			}else
+			if e.Type == entity.TYPE_ROCKET {
+				gl.Color3f(1.0, 0.5, 0.0)
+			}
 		
-		// colors 
-		if e.Type == entity.TYPE_HERO {
-			c := 0.4
-			gl.Color3f(c, c, c)
-		}else
-		if e.Type == entity.TYPE_BULLET {
-			gl.Color3f(1.0, 1.0, 0.0)
-		}else
-		if e.Type == entity.TYPE_ROCKET {
-			gl.Color3f(1.0, 0.5, 0.0)
+			drawRect(e.Pos, e.Extents)
 		}
-		
-		drawRect(e.Pos, e.Extents)
 	}
 }
 
