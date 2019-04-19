@@ -22,6 +22,7 @@ type Menu struct {
 
 var Menus       []Menu
 var EditToolbar i32 = 0
+var ButtonSpan  f32 = 0.2
 
 // toolbar 
 // (Menu item button ids... 

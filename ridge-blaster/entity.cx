@@ -116,8 +116,8 @@ func Update (tDelta f32, currTime f32) () {
 	// physics 
 	timeDel = tDelta
 	// 		velocity & position adjust 
-	Ents[0].Vel.X = getVelocityChangesFromInput(Ents[0].Vel.X, ccInput.GLFW_KEY_A, ccInput.GLFW_KEY_D)
-	Ents[0].Vel.Y = getVelocityChangesFromInput(Ents[0].Vel.Y, ccInput.GLFW_KEY_S, ccInput.GLFW_KEY_W)
+	Ents[0].Vel.X = getVelocityChangesFromInput(Ents[0].Vel.X, ccInput.GoLeft(), ccInput.GoRight())
+	Ents[0].Vel.Y = getVelocityChangesFromInput(Ents[0].Vel.Y, ccInput.GoDown(), ccInput.GoUp())
 	Ents[0].Vel.X = getVelocityChangesOnEdgeCollision(Ents[0].Pos.X, Ents[0].Vel.X, Ents[0].Radius, collision.ScreenEdgeL, collision.ScreenEdgeR)
 	Ents[0].Vel.Y = getVelocityChangesOnEdgeCollision(Ents[0].Pos.Y, Ents[0].Vel.Y, Ents[0].Radius, -1.0D, 1.0D)
 	// when speed gets high enough, a simple velocity reversal isn't enough 
@@ -261,11 +261,11 @@ func dampenPositiveMovement (currentVelocity f32, strength f32) (out f32) {
 }
 
 
-func getVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32) {
+func getVelocityChangesFromInput (velocity f32, sub bool, add bool) (out f32) {
 	out = velocity
 
-	//______________________________________________________________________ 
-	if i32.eq(glfw.GetKey("window", addKey), 1) { //     speed up positively 
+	//__________________________________________________ speed up positively 
+	if add {
 		if out < 0.0 {
 			out = dampenNegativeMovement(out, app.DAMP_FACTOR_STRONG)
 		}
@@ -275,7 +275,7 @@ func getVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32
 			out = app.MAX_HERO_SPEED
 		}
 	} else //___________________________________________ speed up negatively 
-	if i32.eq(glfw.GetKey("window", subKey), 1) {
+	if sub {
 		if out > 0.0 {
 			out = dampenPositiveMovement(out, app.DAMP_FACTOR_STRONG)
 		}

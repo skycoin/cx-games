@@ -16,34 +16,30 @@ var draggedLayerId     i32
 var draggedVertexId    i32
 
 // keys 
-var	GLFW_KEY_W i32
-var	GLFW_KEY_A i32
-var	GLFW_KEY_S i32
-var	GLFW_KEY_D i32
+var	GLFW_KEY_W      i32 = 87
+var	GLFW_KEY_A      i32 = 65
+var	GLFW_KEY_S      i32 = 83
+var	GLFW_KEY_D      i32 = 68
+
+var	GLFW_KEY_RIGHT  i32 = 262
+var	GLFW_KEY_LEFT   i32 = 263
+var	GLFW_KEY_DOWN   i32 = 264
+var	GLFW_KEY_UP     i32 = 265
 
 var GLFW_KEY_SPACE  i32 = 32
-var GLFW_KEY_N      i32
-var GLFW_KEY_Y      i32
-var GLFW_KEY_F2     i32
-var GLFW_KEY_F3     i32
 var GLFW_KEY_ESCAPE i32 = 256
+
+//		temp camera control 
+var GLFW_KEY_N      i32 = 78
+var GLFW_KEY_Y      i32 = 89
+var GLFW_KEY_F2     i32 = 291
+var GLFW_KEY_F3     i32 = 292
 
 
 
 func Setup () () {
 	str.print("input/ccInput.Setup()")
 
-	// keys 
-	GLFW_KEY_W = 87
-	GLFW_KEY_A = 65
-	GLFW_KEY_S = 83
-	GLFW_KEY_D = 68	
-	
-	GLFW_KEY_N = 78
-	GLFW_KEY_Y = 89
-	GLFW_KEY_F2 = 291
-	GLFW_KEY_F3 = 292
-	
 	setupEditorToolbar()
 
 	// callbacks 
@@ -62,6 +58,32 @@ func Update () () {
 	//moveUp    = keyIsDown(GLFW_KEY_W)
 	//moveDown  = keyIsDown(GLFW_KEY_S)
 	//str.print("call SetPlayerVelocity() causing prob")
+}
+
+
+func GoLeft() (out bool) {
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_A), 1) ||
+		i32.eq(glfw.GetKey("window", GLFW_KEY_LEFT), 1) {
+		out = true
+	}
+}
+func GoRight() (out bool) {
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_D), 1) ||
+		i32.eq(glfw.GetKey("window", GLFW_KEY_RIGHT), 1) {
+		out = true
+	}
+}
+func GoDown() (out bool) {
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_S), 1) ||
+		i32.eq(glfw.GetKey("window", GLFW_KEY_DOWN), 1) {
+		out = true
+	}
+}
+func GoUp() (out bool) {
+	if i32.eq(glfw.GetKey("window", GLFW_KEY_W), 1) ||
+		i32.eq(glfw.GetKey("window", GLFW_KEY_UP), 1) {
+		out = true
+	}
 }
 
 

@@ -51,8 +51,9 @@ func All (currTime f32, deltaTime f32) () {
 	//str.print("draw.All()")
 	
 	if /* no baked UI meshes */ i32.lt(len(mesh.BakedUIMeshes), 1) {
-		mesh.MakeButtonArray(ccInput.EditToolbar, false, true)
-		mesh.MakeButtonArray(ccInput.EditToolbar, true, true)
+		mesh.BakeButtonArray(ccInput.EditToolbar, false, true)
+		//mesh.BakeButtonArray(ccInput.EditToolbar, true, true)
+		mesh.BakeMeshPickerButtonGrid()
 	}
 
 	// blink timing 
@@ -108,7 +109,7 @@ func All (currTime f32, deltaTime f32) () {
 		}
 
 		//if /* no game meshes */ i32.lt(len(mesh.SizedMeshes), 1) {
-			//mesh.MakeButtonArray(true)
+			//mesh.BakeButtonArray(true)
 		//}
 		//gl.Begin(gl.TRIANGLES) //////////////
 		//trianglesForAll(mesh.SizedMeshes, false)
