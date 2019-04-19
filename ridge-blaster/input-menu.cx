@@ -15,7 +15,13 @@ type MenuItem struct {
 	MeshForHoverText i32
 }
 
-var Menu []MenuItem
+type Menu struct {
+	Name str
+	Items []MenuItem
+}
+
+var Menus       []Menu
+var EditToolbar i32 = 0
 
 // toolbar 
 // (Menu item button ids... 
@@ -33,22 +39,46 @@ func setupMainMenu () () {
 
 
 func setupEditorToolbar () () {
+	var m Menu
 	var mi MenuItem
+	var cm i32 // current menu 
+	cm = EditToolbar
+	m = Menu{}
+
+
+
+	Menus = []Menu{}
+	Menus = append(Menus, m)
+
+
+	
+	// editor toolbar 
+	////// might use .Name as prefix to the hover-text of the edit mode 
+	////// ("edit " + "colors/vertices" for example) 
+	Menus[cm].Name = "Edit" 
 	
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Vertices" }
-	Menu = append(Menu, mi)
+	Menus[cm].Items = append(
+	Menus[cm].Items, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Triangles" }
-	Menu = append(Menu, mi)
+	Menus[cm].Items = append(
+	Menus[cm].Items, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Colors" }
-	Menu = append(Menu, mi)
+	Menus[cm].Items = append(
+	Menus[cm].Items, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Mesh Picker" }
-	Menu = append(Menu, mi)
+	Menus[cm].Items = append(
+	Menus[cm].Items, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Gen Init Func" }
-	Menu = append(Menu, mi)
+	Menus[cm].Items = append(
+	Menus[cm].Items, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Snap-To-Grid" }
-	Menu = append(Menu, mi)
+	Menus[cm].Items = append(
+	Menus[cm].Items, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Wipe Layer" }
-	Menu = append(Menu, mi)
+	Menus[cm].Items = append(
+	Menus[cm].Items, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "PLAY" }
-	Menu = append(Menu, mi)
+	Menus[cm].Items = append(
+	Menus[cm].Items, mi)
 }

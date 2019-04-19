@@ -203,7 +203,7 @@ func fireOrActivate () () {
 		touchedMI, i = getTouchedMenuItem(MousePointer)
 		
 		if touchedMI {
-			printf("pressed menu item %s \n", Menu[i].Name)
+			printf("pressed menu item %s \n", Menus[EditToolbar].Items[i].Name)
 			
 			if i < app.EDITMODE_MAX { // change EditMode
 				app.EditMode = i
@@ -315,11 +315,11 @@ func fireOrActivate () () {
 func getTouchedMenuItem (p Vec2) (touched bool, id i32) {
 	touched = false
 	
-	for i := 0; i32.lt(i, len(Menu)); i++ {
+	for i := 0; i32.lt(i, len(Menus[EditToolbar].Items)); i++ {
 		var v Vec2
 		var e Vec2
-		v = Menu[i].Pos
-		e = Menu[i].Extents
+		v = Menus[EditToolbar].Items[i].Pos
+		e = Menus[EditToolbar].Items[i].Extents
 		
 		if collision.PointInBox(p, v, e) {			
 			touched = true
