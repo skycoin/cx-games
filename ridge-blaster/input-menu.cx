@@ -41,6 +41,8 @@ func setupEditorToolbar () () {
 	Menu = append(Menu, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Colors" }
 	Menu = append(Menu, mi)
+	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Mesh Picker" }
+	Menu = append(Menu, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Gen Init Func" }
 	Menu = append(Menu, mi)
 	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Snap-To-Grid" }

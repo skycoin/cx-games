@@ -21,6 +21,8 @@ var SizedMeshes []Mesh2D // part baked (world size/scale)
 var BakedMeshes []Mesh2D // full baked (world size/scale & pos) 
 var EditLayers  []Mesh2D // TODO: (just using 1 ATM) a slice (amongst other features) allows multiple vertices at the same position (but with different colors).  allows drastic color changes between adjacent triangle sides 
 var CurrLayer   i32
+var ColorWheel  i32
+var GameOver    i32
 
 var PickedTrianglesNextId i32
 var PickedTriangle      []i32
@@ -36,15 +38,20 @@ func Setup () () {
 		str.print(charMap[i])
 	}
 	
+	ColorWheel = len(RawMeshes)
 	makeColorPickerWheelResource()
 
 	InitEditVerticesIconMesh()
 	InitEditTrianglesIconMesh()
 	InitEditColorsIconMesh()
+	InitMeshPickerIconMesh()
 	InitGenerateFuncIconMesh()
 	InitSnapToGridIconMesh()
 	InitWipeCanvasIconMesh()
 	InitPlayerShipMesh()
+
+	GameOver = len(RawMeshes)
+	InitGameOverMesh()
 
 	makeEditorRectResource()	
 	

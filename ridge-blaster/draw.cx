@@ -70,12 +70,12 @@ func All (currTime f32, deltaTime f32) () {
 
 		gl.Begin(gl.TRIANGLES) //////////////
 			if app.EditMode == app.EDITMODE_COLORS {
-				trianglesForAll(mesh.RawMeshes, true)
+				trianglesForOne(mesh.RawMeshes, mesh.ColorWheel)
 			} else {
-				trianglesForAll(mesh.EditLayers, false)
+				trianglesForAll(mesh.EditLayers)
 			}
 			
-			trianglesForAll(mesh.BakedMeshes, false)
+			trianglesForAll(mesh.BakedMeshes)
 		gl.End()
 
 		if app.EditMode != app.EDITMODE_COLORS {
@@ -96,9 +96,15 @@ func All (currTime f32, deltaTime f32) () {
 		*/
 	} else { // playing (& the rest) 
 		gl.Begin(gl.QUADS) //////////////////	
-		Terrain(currTime)
-		Entities()		
+			Terrain(currTime)
+			Entities()
 		gl.End()
+		
+		if app.Mode == app.APPMODE_GAME_OVER {
+			gl.Begin(gl.TRIANGLES)
+				trianglesForOne(mesh.RawMeshes, mesh.GameOver)
+			gl.End()
+		}
 
 		//if /* no game meshes */ i32.lt(len(mesh.SizedMeshes), 1) {
 			//mesh.MakeButtonArray(true)
@@ -114,35 +120,36 @@ func All (currTime f32, deltaTime f32) () {
 }
 
 
-func trianglesForAll (meshes []Mesh2D, drawOnly1st bool) () {
+func trianglesForAll (meshes []Mesh2D) () {
 	for i := 0; i32.lt(i, len(meshes)); i++ {
-		if drawOnly1st && i > 0 {
-			break
-		}
+		trianglesForOne(meshes, i)
+	}
+}
 
-		var m Mesh2D
-		m = meshes[i]
 
-		// give feedback when not multiple of 3 
-		var leftover i32
-		leftover = i32.mod(len(m.TriangleIndices), 3)
-		if i32.uneq(0, leftover) {
-			printf("********* ERROR! leftover: %d in trianglesForAll() \n", leftover)
-		}
+func trianglesForOne (meshes []Mesh2D, i i32) () {
+	var m Mesh2D
+	m = meshes[i]
 
-		for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
-			var pId i32 // point id (from tri ids) 
-			pId = m.TriangleIndices[j]
-			
-			var c Color3
-			c = m.Colors[pId]
-			gl.Color3f(c.R, c.G, c.B)
-			
-			var v Vec2
-			v = m.Points[pId]
-			
-			gl.Vertex2f(v.X, v.Y)
-		}
+	// give feedback when not multiple of 3 
+	var leftover i32
+	leftover = i32.mod(len(m.TriangleIndices), 3)
+	if i32.uneq(0, leftover) {
+		printf("********* ERROR! leftover: %d in triangle () \n", leftover)
+	}
+
+	for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
+		var pId i32 // point id (from tri ids) 
+		pId = m.TriangleIndices[j]
+		
+		var c Color3
+		c = m.Colors[pId]
+		gl.Color3f(c.R, c.G, c.B)
+		
+		var v Vec2
+		v = m.Points[pId]
+		
+		gl.Vertex2f(v.X, v.Y)
 	}
 }
 

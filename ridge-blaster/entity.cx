@@ -104,6 +104,10 @@ func Add (ent Entity) () {
 
 func Update (tDelta f32, currTime f32) () {
 	//str.print("entity.Update()")
+	if app.Mode != app.APPMODE_PLAYING &&
+		app.Mode != app.APPMODE_GAME_OVER {
+		return
+	}
 	
 	// physics 
 	timeDel = tDelta
@@ -131,7 +135,7 @@ func Update (tDelta f32, currTime f32) () {
 		}			
 		
 		// movement 
-		if 	i32.uneq(Ents[i].Mode, ENTMODE_DEAD) &&
+		if 	i32.uneq(Ents[i].Mode, ENTMODE_DEAD) && // not dead, not static 
 			i32.uneq(Ents[i].Mode, ENTMODE_STATIONARY) {
 			
 			// move 

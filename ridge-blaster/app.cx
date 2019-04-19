@@ -24,10 +24,11 @@ var APPMODE_GAME_OVER    i32 = 4
 var APPMODE_EDITOR       i32 = 5
 var APPMODE_MAX          i32 = 6
 
-var EDITMODE_VERTICES  i32 = 0
-var EDITMODE_TRIANGLES i32 = 1
-var EDITMODE_COLORS    i32 = 2
-var EDITMODE_MAX       i32 = 3
+var EDITMODE_VERTICES    i32 = 0
+var EDITMODE_TRIANGLES   i32 = 1
+var EDITMODE_COLORS      i32 = 2
+var EDITMODE_MESH_PICKER i32 = 3
+var EDITMODE_MAX         i32 = 4
 
 var Mode           i32 = APPMODE_PLAYING
 var EditMode       i32 = EDITMODE_VERTICES
