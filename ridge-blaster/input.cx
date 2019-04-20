@@ -335,16 +335,27 @@ func fireOrActivate () () {
 }
 
 
-func getTouchedMenuItem (p Vec2) (touched bool, id i32) {
+func getTouchedMenuItem (mouse Vec2) (touched bool, id i32) {
+	touched, id = getTouchedMenuItemFrom(EditToolbar, mouse)
+	
+	// mesh picker grid menu 
+	var mpTouched bool
+	var mpId i32
+	mpTouched, mpId = getTouchedMenuItemFrom(len(Menus) - 1, mouse)
+	printf("not utilizing yet - mpTouched: %v, mpId: %d \n", mpTouched, mpId)
+}
+
+
+func getTouchedMenuItemFrom (menuId i32, mouse Vec2) (touched bool, id i32) {
 	touched = false
 	
-	for i := 0; i32.lt(i, len(Menus[EditToolbar].Items)); i++ {
-		var v Vec2
+	for i := 0; i32.lt(i, len(Menus[menuId].Items)); i++ {
+		var p Vec2
 		var e Vec2
-		v = Menus[EditToolbar].Items[i].Pos
-		e = Menus[EditToolbar].Items[i].Extents
+		p = Menus[menuId].Items[i].Pos
+		e = Menus[menuId].Items[i].Extents
 		
-		if collision.PointInBox(p, v, e) {			
+		if collision.PointInBox(mouse, p, e) {			
 			touched = true
 			id = i			
 			break

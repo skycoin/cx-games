@@ -9,17 +9,16 @@ import "collision"
 
 
 var currNumRows f32
-var currSpan    f32
+var currSpan    f32 // ...of buttons 
 var uWid        f32 // useable width (of screenspace) 
 var numFit      i32 // number that fit across width of screen 
 
 
 
-func overflowsScreen () (out bool) {
+func gridCellsWouldNotFitScreen () (out bool) {
 	currSpan = 2.0 / currNumRows
 	numFit = f32.i32(uWid / currSpan)
 	
-	printf("len(RawMeshes): %d   -   numFit: %d \n", len(RawMeshes), numFit)
 	if len(RawMeshes) > f32.i32(i32.f32(numFit) * currNumRows) {
 		out = true
 	}
@@ -33,46 +32,45 @@ func BakeMeshPickerButtonGrid () () {
 	uWid = f64.f32(collision.ScreenEdgeR) * 2.0 - ccInput.ButtonSpan
 	
 	currNumRows = 2.0
-	for overflowsScreen() {
-		str.print("gug gug gug")
-		
+	for gridCellsWouldNotFitScreen() {
 		currNumRows = f32.add(currNumRows, 1.0)
 	}
 	
 	var extent f32 // of a button 
 	extent = f32.div(currSpan, 2.0)
 
+	var n i32
 	var x f32	
 	var y f32
+	var gX i32 // 2D grid positions 
+	var gY i32
 
 	x = f64.f32(collision.ScreenEdgeL)
 	x = f32.add(x, extent)
 	y = 1.0 - extent
+	
 
 	var pos Vec2
 	var ext Vec2
-	pos = Vec2{ X: x,      Y: y      }
+	pos = Vec2{}
 	ext = Vec2{ X: extent, Y: extent }
 
-	for i := 0; i32.lt(i, numFit); i++ {
-		str.print("making mesh picker button")
+	n = len(RawMeshes)
+	for i := 0; i32.lt(i, n); i++ {
+		gX = i32.mod(i, numFit)
+		gY = i32.div(i, numFit)
+		
+		printf("making mesh picker button.  x/y: %d,%d \n", gX, gY)
+
+		pos.X = f32.add(x, f32.mul(i32.f32(gX), currSpan))
+		pos.Y = f32.add(y, f32.mul(i32.f32(-gY), currSpan))
 		
 		var menu i32
 		menu = len(ccInput.Menus)
-		ccInput.SetupMenu(menu, len(RawMeshes))
+		ccInput.SetupMenu(menu, n)
 		ccInput.Menus[menu].Items[i].Pos = pos
 		ccInput.Menus[menu].Items[i].Extents = ext
-
-		
-		if i < len(RawMeshes) {
-			bakeInstanceFromRaw(pos, ext, i)
-			ccInput.Menus[menu].Items[i].RawMeshForIcon = i
-		}
-			
-		//if vertical {
-			//pos.Y = f32.sub(pos.Y, currSpan)
-		//} else { // horizontal 
-			pos.X = f32.add(pos.X, currSpan)
-		//}
+		ccInput.Menus[menu].Items[i].RawMeshForIcon = i
+		bakeInstanceFromRaw(pos, ext, i)
 	}
 }
