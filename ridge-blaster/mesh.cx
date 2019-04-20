@@ -167,70 +167,13 @@ func GenerateMeshInitFunc (s str) () {
 }
 
 
-func BakeMeshPickerButtonGrid () () {
-	str.print("BakeMeshPickerButtonGrid ()")
-	
-	
-	var extent f32 // from center of icon background 
-	extent = f32.div(ccInput.ButtonSpan, 2.0)
-	
-	var x f32	
-	var y f32
-
-	/*
-	if vertical {
-		if minimumEdge {
-			x = f64.f32(collision.ScreenEdgeL) + extent
-		} else {
-			x = f64.f32(collision.ScreenEdgeR) - extent
-		}
-		
-		y = f32.div(longSpan, 2.0)
-		y = f32.sub(y, extent)
-	} else { // horizontal 
-		x = f32.div(longSpan, 2.0)
-		x = -x
-		x = f32.add(x, extent)
-
-		if minimumEdge {
-			y = -1.0 + extent
-		} else {
-			y = 1.0 - extent
-		}
-	}
-
-	var pos Vec2
-	var ext Vec2
-	pos = Vec2{ X: x,      Y: y      }
-	ext = Vec2{ X: extent, Y: extent }
-
-	for i := 0; i32.lt(i, numItems); i++ {
-		ccInput.Menus[menu].Items[i].Pos = pos
-		ccInput.Menus[menu].Items[i].Extents = ext
-		bakeInstanceFromRaw(pos, ext, len(RawMeshes)-1) // rect background 
-		
-		if i < len(RawMeshes) {
-			bakeInstanceFromRaw(pos, ext, i)
-			ccInput.Menus[menu].Items[i].RawMeshForIcon = i
-		}
-			
-		if vertical {
-			pos.Y = f32.sub(pos.Y, span)
-		} else { // horizontal 
-			pos.X = f32.add(pos.X, span)
-		}
-	}
-	*/
-}
-
-
 func BakeButtonArray (menu i32, minimumEdge bool, vertical bool) () {
 	str.print("BakeButtonArray ()")
 	
 	var numItems i32
 	numItems = len(ccInput.Menus[menu].Items)
 	
-	var extent f32 // from center of icon background 
+	var extent f32 // of a button 
 	extent = f32.div(ccInput.ButtonSpan, 2.0)
 	
 	var longSpan f32 // span across the longest dimension 

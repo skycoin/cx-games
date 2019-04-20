@@ -39,17 +39,13 @@ func setupMainMenu () () {
 }
 
 
-func setupEditorToolbar () () {
+func SetupMenu (cm i32, numItems i32) () { // current menu 
 	var m Menu
 	var mi MenuItem
-	var cm i32 // current menu 
-	cm = EditToolbar
+
 	m = Menu{}
-
-
-
-	Menus = []Menu{}
-	Menus = append(Menus, m)
+	Menus = append(
+	Menus, m)
 
 
 	
@@ -57,29 +53,37 @@ func setupEditorToolbar () () {
 	////// might use .Name as prefix to the hover-text of the edit mode 
 	////// ("edit " + "colors/vertices" for example) 
 	Menus[cm].Name = "Edit" 
-	
-	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Vertices" }
-	Menus[cm].Items = append(
-	Menus[cm].Items, mi)
-	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Triangles" }
-	Menus[cm].Items = append(
-	Menus[cm].Items, mi)
-	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Colors" }
-	Menus[cm].Items = append(
-	Menus[cm].Items, mi)
-	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Mesh Picker" }
-	Menus[cm].Items = append(
-	Menus[cm].Items, mi)
-	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Gen Init Func" }
-	Menus[cm].Items = append(
-	Menus[cm].Items, mi)
-	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Snap-To-Grid" }
-	Menus[cm].Items = append(
-	Menus[cm].Items, mi)
-	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Wipe Layer" }
-	Menus[cm].Items = append(
-	Menus[cm].Items, mi)
-	mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "PLAY" }
-	Menus[cm].Items = append(
-	Menus[cm].Items, mi)
+
+	for i := 0; i < numItems; i++ {
+		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Vertices" }
+		Menus[cm].Items = append(
+		Menus[cm].Items, mi)
+	}
+
+	/*
+		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Vertices" }
+		Menus[cm].Items = append(
+		Menus[cm].Items, mi)
+		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Triangles" }
+		Menus[cm].Items = append(
+		Menus[cm].Items, mi)
+		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Colors" }
+		Menus[cm].Items = append(
+		Menus[cm].Items, mi)
+		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Mesh Picker" }
+		Menus[cm].Items = append(
+		Menus[cm].Items, mi)
+		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Gen Init Func" }
+		Menus[cm].Items = append(
+		Menus[cm].Items, mi)
+		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Snap-To-Grid" }
+		Menus[cm].Items = append(
+		Menus[cm].Items, mi)
+		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Wipe Layer" }
+		Menus[cm].Items = append(
+		Menus[cm].Items, mi)
+		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "PLAY" }
+		Menus[cm].Items = append(
+		Menus[cm].Items, mi)
+	*/
 }

@@ -40,7 +40,8 @@ var GLFW_KEY_F3     i32 = 292
 func Setup () () {
 	str.print("input/ccInput.Setup()")
 
-	setupEditorToolbar()
+	Menus = []Menu{} // prep all menus 
+	SetupMenu(EditToolbar, 8) // just 1 
 
 	// callbacks 
 	glfw.SetKeyCallback("window", "onKeyEvent")

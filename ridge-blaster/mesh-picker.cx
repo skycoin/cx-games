@@ -1,0 +1,78 @@
+package mesh
+
+//import "glfw"
+
+//import "app"
+import "ccInput"
+import "collision"
+
+
+
+var currNumRows f32
+var currSpan    f32
+var uWid        f32 // useable width (of screenspace) 
+var numFit      i32 // number that fit across width of screen 
+
+
+
+func overflowsScreen () (out bool) {
+	currSpan = 2.0 / currNumRows
+	numFit = f32.i32(uWid / currSpan)
+	
+	printf("len(RawMeshes): %d   -   numFit: %d \n", len(RawMeshes), numFit)
+	if len(RawMeshes) > f32.i32(i32.f32(numFit) * currNumRows) {
+		out = true
+	}
+}
+
+
+func BakeMeshPickerButtonGrid () () {
+	str.print("BakeMeshPickerButtonGrid ()")	
+	
+	// figure out maximum square size that allows all to fit screen 
+	uWid = f64.f32(collision.ScreenEdgeR) * 2.0 - ccInput.ButtonSpan
+	
+	currNumRows = 2.0
+	for overflowsScreen() {
+		str.print("gug gug gug")
+		
+		currNumRows = f32.add(currNumRows, 1.0)
+	}
+	
+	var extent f32 // of a button 
+	extent = f32.div(currSpan, 2.0)
+
+	var x f32	
+	var y f32
+
+	x = f64.f32(collision.ScreenEdgeL)
+	x = f32.add(x, extent)
+	y = 1.0 - extent
+
+	var pos Vec2
+	var ext Vec2
+	pos = Vec2{ X: x,      Y: y      }
+	ext = Vec2{ X: extent, Y: extent }
+
+	for i := 0; i32.lt(i, numFit); i++ {
+		str.print("making mesh picker button")
+		
+		var menu i32
+		menu = len(ccInput.Menus)
+		ccInput.SetupMenu(menu, len(RawMeshes))
+		ccInput.Menus[menu].Items[i].Pos = pos
+		ccInput.Menus[menu].Items[i].Extents = ext
+
+		
+		if i < len(RawMeshes) {
+			bakeInstanceFromRaw(pos, ext, i)
+			ccInput.Menus[menu].Items[i].RawMeshForIcon = i
+		}
+			
+		//if vertical {
+			//pos.Y = f32.sub(pos.Y, currSpan)
+		//} else { // horizontal 
+			pos.X = f32.add(pos.X, currSpan)
+		//}
+	}
+}
