@@ -264,26 +264,18 @@ func editorQuads () () {
 	
 	var li i32
 	for li = 0; i32.lt(li, len(mesh.EditLayers)); li++ {
-		for i := 0; i32.lt(i, len(mesh.EditLayers[li].Points)); i++ {
-			gl.Color3f(white, white, white)
-			
-			// highlighted colors 
-			for j := 0; i32.lt(j, mesh.PickedTrianglesNextId); j++ {
-				if pickedNodesAreBright {
-					if i == mesh.PickedTriangle[j] {
-						if j == 0 {
-							gl.Color3f(1.0, 0.0, 0.0) // red 
-						}
-						if j == 1 {
-							gl.Color3f(0.0, 1.0, 0.0) // green 
-						}
-						if j == 2 {
-							gl.Color3f(0.0, 0.0, 1.0) // blue 
-						}
+		var cols []Color3
+		cols = mesh.EditLayers[li].Colors
+		
+		for i := 0; i32.lt(i, len(cols)); i++ {
+			gl.Color3f(cols[i].R, cols[i].G, cols[i].B)
+
+			if pickedNodesAreBright {
+				for j := 0; j < len(mesh.PickedVerts); j++ {
+					if i == mesh.PickedVerts[j] {
+						gl.Color3f(0.0, 0.0, 1.0) // blue 
 					}
-				} //else {
-					//gl.Color3f(gray, gray, gray)
-				//}
+				}
 			}
 			
 			drawRect(mesh.EditLayers[li].Points[i], entity.NodeExtents)

@@ -5,7 +5,7 @@ import "mesh"
 
 
 
-func firePrimaryAbility() () {
+func firePrimaryAbility () () {
 	var touchedMenuItem bool
 	var i i32
 	touchedMenuItem, i = getTouchedMenuItem(MousePointer)
@@ -18,12 +18,13 @@ func firePrimaryAbility() () {
 }
 
 
-func respondToItem(i i32) () {
+func respondToItem (i i32) () {
 	printf("pressed menu item %s \n", Menus[EditToolbar].Items[i].Name)
 	
 	if i < app.EDITMODE_MAX { // change EditMode
 		app.EditMode = i
 		printEditMode()
+		wipePickedVerts()
 	} else { // perform one-time actions 
 		if i == TOOLBAR_GEN_FUNC {
 			mesh.GenerateMeshInitFunc("Char") //"Icon")
@@ -40,6 +41,8 @@ func respondToItem(i i32) () {
 		if i == TOOLBAR_WIPE_LAYER {
 			str.print("-> WIPE_LAYER")
 			
+			wipePickedVerts()
+			
 			var m Mesh2D 
 			m = Mesh2D{}
 			mesh.EditLayers[mesh.CurrLayer] = m
@@ -53,7 +56,14 @@ func respondToItem(i i32) () {
 }
 
 
-func printEditMode() () {
+func wipePickedVerts () () {
+	var cleanSlate []i32
+	cleanSlate = []i32{}
+	mesh.PickedVerts = cleanSlate
+}
+
+
+func printEditMode () () {
 	if app.EditMode == app.EDITMODE_VERTICES {
 		str.print("------> EDITMODE_VERTICES")
 	} else
@@ -69,36 +79,31 @@ func printEditMode() () {
 }
 
 
-func respondToValidGridSpaceClick() () {
+func respondToValidGridSpaceClick () () {
 	var touchedVert bool
 	var layerId     i32
 	var vertId      i32
 	touchedVert, layerId, vertId = getTouchedVertexNode(MousePointer)
 
 	if app.EditMode == app.EDITMODE_TRIANGLES {
-		// TODO enhancement: allow player to slide across 3 verts while holding LMB 
-		
 		if touchedVert {			
 			printf("EditLayers[%d].Points[%d] \n", layerId, vertId)
+			addPicked(vertId)
+		} else { 
+			addPicked(len(mesh.EditLayers[mesh.CurrLayer].Points))
+			addNewVertexNode()
+		}
 
-			if i32.gteq(mesh.PickedTrianglesNextId, 3) {
-				mesh.PickedTrianglesNextId = 0
-			}
-
-			mesh.PickedTriangle[mesh.PickedTrianglesNextId] = vertId
-			mesh.PickedTrianglesNextId = 
-			i32.add(
-			mesh.PickedTrianglesNextId, 1)
-
-			if i32.gteq(mesh.PickedTrianglesNextId, 3) {
-				mesh.AddNewTriangleInEditor()
-			}
+		if i32.gteq(len(mesh.PickedVerts), 3) {
+			mesh.AddNewTriangleInEditor()
+			wipePickedVerts()
 		}
 	} else if app.EditMode == app.EDITMODE_VERTICES {
 		if touchedVert { // drag existing node 
 			draggingVertexNode = true
 			draggedLayerId  = layerId
 			draggedVertexId = vertId
+			addPicked(vertId)
 		} else { 
 			addNewVertexNode()
 		}
@@ -106,7 +111,27 @@ func respondToValidGridSpaceClick() () {
 }
 
 
-func addNewVertexNode() () {
+func addPicked (id i32) () {
+	var alreadyPicked bool
+	
+	for j := 0; j < len(mesh.PickedVerts); j++ {
+		if id == mesh.PickedVerts[j] {
+			alreadyPicked = true
+		}
+	}
+
+	if alreadyPicked {
+		printf("ignoring ALREADY PICKED vertex \n")
+	} else {
+		mesh.PickedVerts = append(
+		mesh.PickedVerts, id)
+		
+		printf("addPicked() num: %d \n", len(mesh.PickedVerts))
+	}
+}
+
+
+func addNewVertexNode () () {
 	if MousePointer.X >= -1.0 && // ...when within grid 
 		MousePointer.X <= 1.0 &&
 		MousePointer.Y >= -1.0 &&

@@ -29,8 +29,7 @@ var ColorWheel       i32
 var GameOver         i32
 var RidgeBlasterLogo i32
 
-var PickedTrianglesNextId i32
-var PickedTriangle      []i32
+var PickedVerts      []i32
 
 var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }
 
@@ -81,10 +80,8 @@ func Setup () () {
 	EditLayers = append(
 	EditLayers, m)
 	
-	/////// vertex pick/selection triangle (these values only used if PickedTrianglesNextId >= 3) 
-	PickedTriangle = append(PickedTriangle, 0)
-	PickedTriangle = append(PickedTriangle, 1)
-	PickedTriangle = append(PickedTriangle, 2)
+	/////// vertex pick/selection 
+	PickedVerts = []i32{}
 }
 
 
@@ -382,9 +379,9 @@ func AddNewTriangleInEditor () () { // just tri indices to existing global (ATM)
 	
 	
 	// feedback BEFORE 
-	printf("PickedTriangle[0]: %d \n", PickedTriangle[0])
-	printf("PickedTriangle[1]: %d \n", PickedTriangle[1])
-	printf("PickedTriangle[2]: %d \n", PickedTriangle[2])
+	printf("PickedVerts[0]: %d \n", PickedVerts[0])
+	printf("PickedVerts[1]: %d \n", PickedVerts[1])
+	printf("PickedVerts[2]: %d \n", PickedVerts[2])
 	
 	var numIds i32
 	numIds = len(EditLayers[CurrLayer].TriangleIndices)
@@ -399,11 +396,11 @@ func AddNewTriangleInEditor () () { // just tri indices to existing global (ATM)
 	
 	// MEAT of func 
 	EditLayers[CurrLayer].TriangleIndices = append(
-	EditLayers[CurrLayer].TriangleIndices, PickedTriangle[0])
+	EditLayers[CurrLayer].TriangleIndices, PickedVerts[0])
 	EditLayers[CurrLayer].TriangleIndices = append(
-	EditLayers[CurrLayer].TriangleIndices, PickedTriangle[1])
+	EditLayers[CurrLayer].TriangleIndices, PickedVerts[1])
 	EditLayers[CurrLayer].TriangleIndices = append(
-	EditLayers[CurrLayer].TriangleIndices, PickedTriangle[2])
+	EditLayers[CurrLayer].TriangleIndices, PickedVerts[2])
 
 
 	// feedback AFTER 

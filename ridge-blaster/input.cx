@@ -119,10 +119,17 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 
 
 // mouse position 
+var oldX f32
+var oldY f32
+var deltaX f32
+var deltaY f32
 func onCursorPosEvent (window str, x f64, y f64) () {
+	oldX = MousePointer.X
+	oldY = MousePointer.Y
+	
 	var mX f32
 	mX = f32.div(f64.f32(x), i32.f32(app.ScreenSizeInPixels.X))
-	mX = f32.mul(mX, f64.f32(collision.ScreenEdgeR) * 2.0)
+	mX = f32.mul(mX, f32.mul(f64.f32(collision.ScreenEdgeR), 2.0))
 	MousePointer.X = f32.add(f64.f32(collision.ScreenEdgeL), mX)
 
 	var mY f32
@@ -130,9 +137,21 @@ func onCursorPosEvent (window str, x f64, y f64) () {
 	mY = f32.mul(mY, 2.0)
 	MousePointer.Y = f32.sub(1.0, mY)
 	
+	deltaX = f32.sub(MousePointer.X, oldX)
+	deltaY = f32.sub(MousePointer.Y, oldY)
+	
 	if draggingVertexNode {
-		mesh.EditLayers[draggedLayerId].Points[draggedVertexId].X = MousePointer.X
-		mesh.EditLayers[draggedLayerId].Points[draggedVertexId].Y = MousePointer.Y
+		//mesh.EditLayers[draggedLayerId].Points[draggedVertexId].X = MousePointer.X
+		//mesh.EditLayers[draggedLayerId].Points[draggedVertexId].Y = MousePointer.Y
+		
+		for j := 0; j < len(mesh.PickedVerts); j++ {
+			var v i32
+			v = mesh.PickedVerts[j]
+			mesh.EditLayers[mesh.CurrLayer].Points[v].X = f32.add(
+			mesh.EditLayers[mesh.CurrLayer].Points[v].X, deltaX)
+			mesh.EditLayers[mesh.CurrLayer].Points[v].Y = f32.add(
+			mesh.EditLayers[mesh.CurrLayer].Points[v].Y, deltaY)
+		}
 	}
 	
 	//printf("onCursorPosEvent %f, %f \n", MousePointer.X, MousePointer.Y)
