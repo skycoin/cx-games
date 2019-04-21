@@ -338,16 +338,22 @@ func fireOrActivate () () {
 func getTouchedMenuItem (mouse Vec2) (touched bool, id i32) {
 	touched, id = getTouchedMenuItemFrom(EditToolbar, mouse)
 	
-	// mesh picker grid menu 
-	var mpTouched bool
-	var mpId i32
-	mpTouched, mpId = getTouchedMenuItemFrom(len(Menus) - 1, mouse)
-	printf("not utilizing yet - mpTouched: %v, mpId: %d \n", mpTouched, mpId)
+	if app.EditMode == app.EDITMODE_MESH_PICKER {
+		var mpTouched bool
+		var mpId i32
+		mpTouched, mpId = getTouchedMenuItemFrom(len(Menus) - 1, mouse)
+		//printf("not utilizing yet - mpTouched: %v, mpId: %d \n", mpTouched, mpId)
+		
+		if mpTouched {
+			mesh.EditLayers[mesh.CurrLayer] = mesh.RawMeshes[mpId]
+			app.EditMode = app.EDITMODE_VERTICES
+		}
+	}
 }
 
 
 func getTouchedMenuItemFrom (menuId i32, mouse Vec2) (touched bool, id i32) {
-	touched = false
+	printf("menuId: %d \n", menuId)
 	
 	for i := 0; i32.lt(i, len(Menus[menuId].Items)); i++ {
 		var p Vec2

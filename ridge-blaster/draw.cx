@@ -64,7 +64,9 @@ func All (currTime f32, deltaTime f32) () {
 	}
 
 	if app.Mode == app.APPMODE_EDITOR {		
-		if app.EditMode != app.EDITMODE_COLORS {
+		if app.EditMode != app.EDITMODE_COLORS &&
+			app.EditMode != app.EDITMODE_MESH_PICKER {
+			
 			gl.Begin(gl.LINES)
 				gridLines()
 			gl.End()
@@ -77,7 +79,11 @@ func All (currTime f32, deltaTime f32) () {
 				trianglesForAll(mesh.EditLayers)
 			}
 			
-			trianglesForAll(mesh.BakedUIMeshes)
+			trianglesForMenu(mesh.BakedUIMeshes, ccInput.EditToolbar)
+			
+			if app.EditMode == app.EDITMODE_MESH_PICKER {
+				trianglesForMenu(mesh.BakedUIMeshes, i32.sub(len(ccInput.Menus), 1))
+			}
 		gl.End()
 
 		if app.EditMode != app.EDITMODE_COLORS {
@@ -129,7 +135,26 @@ func trianglesForAll (meshes []Mesh2D) () {
 }
 
 
+func trianglesForMenu (meshes []Mesh2D, menuId i32) () {
+	//str.print("trianglesForMenu()")
+	
+	for j := 0; i32.lt(j, len(ccInput.Menus[menuId].Items)); j++ {
+		var bi i32 // baked mesh id 
+		bi = ccInput.Menus[menuId].Items[j].BakedBackground
+		
+		if bi != app.I32_MAX {
+			trianglesForOne(meshes, bi)
+		}
+		
+		bi = ccInput.Menus[menuId].Items[j].BakedIcon
+		trianglesForOne(meshes, bi)
+	}
+}
+
+
 func trianglesForOne (meshes []Mesh2D, i i32) () {
+	//str.print("trianglesForOne()")
+	
 	var m Mesh2D
 	m = meshes[i]
 

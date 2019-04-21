@@ -39,23 +39,26 @@ func BakeMeshPickerButtonGrid () () {
 	var extent f32 // of a button 
 	extent = f32.div(currSpan, 2.0)
 
-	var n i32
-	var x f32	
-	var y f32
-	var gX i32 // 2D grid positions 
-	var gY i32
+	var n    i32
+	var x    f32 // start position 
+	var y    f32 //   "      "
+	var gX   i32 // 2D grid positions 
+	var gY   i32
+	var menu i32
+	var pos  Vec2
+	var ext  Vec2
 
 	x = f64.f32(collision.ScreenEdgeL)
 	x = f32.add(x, extent)
 	y = 1.0 - extent
-	
 
-	var pos Vec2
-	var ext Vec2
 	pos = Vec2{}
 	ext = Vec2{ X: extent, Y: extent }
 
 	n = len(RawMeshes)
+	menu = len(ccInput.Menus)
+	ccInput.SetupMenu(menu, n)
+
 	for i := 0; i32.lt(i, n); i++ {
 		gX = i32.mod(i, numFit)
 		gY = i32.div(i, numFit)
@@ -65,12 +68,9 @@ func BakeMeshPickerButtonGrid () () {
 		pos.X = f32.add(x, f32.mul(i32.f32(gX), currSpan))
 		pos.Y = f32.add(y, f32.mul(i32.f32(-gY), currSpan))
 		
-		var menu i32
-		menu = len(ccInput.Menus)
-		ccInput.SetupMenu(menu, n)
 		ccInput.Menus[menu].Items[i].Pos = pos
 		ccInput.Menus[menu].Items[i].Extents = ext
-		ccInput.Menus[menu].Items[i].RawMeshForIcon = i
-		bakeInstanceFromRaw(pos, ext, i)
+		ccInput.Menus[menu].Items[i].BakedIcon = len(BakedUIMeshes)
+		bakeUICellFromRaw(pos, ext, i)
 	}
 }

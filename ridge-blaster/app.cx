@@ -6,6 +6,7 @@ var NAME               str = "RIDGE BLASTER"
 var WIDTH              i32 = 1280
 var HEIGHT             i32 = 720
 var ScreenSizeInPixels VecI
+var I32_MAX            i32 = 2147483647
 var TAU                f32
 // movement 
 var FORCE              f32

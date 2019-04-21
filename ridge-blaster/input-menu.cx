@@ -5,18 +5,18 @@ import "app"
 
 
 type MenuItem struct {
-	Name str // just for console text feedback 
-	Pos Vec2
-	Extents Vec2	
-	// ids unnecessary?  
-	// if not, set these to corresponding entries in the mesh.___Meshes (slices) 
-	MeshForBackId i32 // background 
-	RawMeshForIcon i32
+	Name             str // just for console text feedback 
+	Pos              Vec2
+	Extents          Vec2	
+	// mesh ids unnecessary? 
+	// if not, set these to ids in the mesh.___Meshes (slices) 
+	BakedBackground  i32
+	BakedIcon        i32
 	MeshForHoverText i32
 }
 
 type Menu struct {
-	Name str
+	Name  str
 	Items []MenuItem
 }
 
@@ -35,10 +35,6 @@ var TOOLBAR_MAINMENU     i32 = app.EDITMODE_MAX + 3
 
 
 
-func setupMainMenu () () {
-}
-
-
 func SetupMenu (cm i32, numItems i32) () { // current menu 
 	var m Menu
 	var mi MenuItem
@@ -55,34 +51,34 @@ func SetupMenu (cm i32, numItems i32) () { // current menu
 	Menus[cm].Name = "Edit" 
 
 	for i := 0; i < numItems; i++ {
-		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Vertices" }
+		mi = MenuItem{ BakedBackground: app.I32_MAX, Name: "common init string" }
 		Menus[cm].Items = append(
 		Menus[cm].Items, mi)
 	}
 
 	/*
-		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Vertices" }
+		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Edit Vertices" }
 		Menus[cm].Items = append(
 		Menus[cm].Items, mi)
-		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Triangles" }
+		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Edit Triangles" }
 		Menus[cm].Items = append(
 		Menus[cm].Items, mi)
-		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Edit Colors" }
+		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Edit Colors" }
 		Menus[cm].Items = append(
 		Menus[cm].Items, mi)
-		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Mesh Picker" }
+		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Mesh Picker" }
 		Menus[cm].Items = append(
 		Menus[cm].Items, mi)
-		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Gen Init Func" }
+		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Gen Init Func" }
 		Menus[cm].Items = append(
 		Menus[cm].Items, mi)
-		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Snap-To-Grid" }
+		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Snap-To-Grid" }
 		Menus[cm].Items = append(
 		Menus[cm].Items, mi)
-		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "Wipe Layer" }
+		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Wipe Layer" }
 		Menus[cm].Items = append(
 		Menus[cm].Items, mi)
-		mi = MenuItem{ MeshForBackId: 2, RawMeshForIcon: 1, Name: "PLAY" }
+		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "PLAY" }
 		Menus[cm].Items = append(
 		Menus[cm].Items, mi)
 	*/
