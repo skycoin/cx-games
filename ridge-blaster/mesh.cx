@@ -377,8 +377,8 @@ func MakeNewTriangle (a Vec2, b Vec2, c Vec2) () {
 }
 */
 
-func MakeNewEditorTriangle () () { // just tri indices to existing global (ATM) EditorMesh 
-	str.print("mesh.MakeNewEditorTriangle()")
+func AddNewTriangleInEditor () () { // just tri indices to existing global (ATM) EditorMesh 
+	str.print("mesh.AddNewTriangleInEditor()")
 	
 	
 	// feedback BEFORE 
