@@ -1,0 +1,121 @@
+package ccInput
+
+import "app"
+//import "collision"
+//import "entity"
+import "mesh"
+
+
+
+func firePrimaryAbility() () {
+	var touchedMI bool // menu item 
+	var i i32
+	touchedMI, i = getTouchedMenuItem(MousePointer)
+	
+	if touchedMI {
+		printf("pressed menu item %s \n", Menus[EditToolbar].Items[i].Name)
+		
+		if i < app.EDITMODE_MAX { // change EditMode
+			app.EditMode = i
+
+			if app.EditMode == app.EDITMODE_VERTICES {
+				str.print("------> EDITMODE_VERTICES")
+			} else
+			if app.EditMode == app.EDITMODE_TRIANGLES {
+				str.print("------> EDITMODE_TRIANGLES")
+			} else
+			if app.EditMode == app.EDITMODE_COLORS {
+				str.print("------> EDITMODE_COLORS")
+			} else
+			if app.EditMode == app.EDITMODE_MESH_PICKER {
+				str.print("------> EDITMODE_MESH_PICKER")
+			}
+		} else { // perform one-time actions 
+			if i == TOOLBAR_GEN_FUNC {
+				mesh.GenerateMeshInitFunc("Char") //"Icon")
+			} else
+			if i == TOOLBAR_SNAP_TO_GRID {
+				SnapToGrid = !SnapToGrid
+				
+				if SnapToGrid {
+					str.print("SNAP_TO_GRID: ON")					
+				} else {
+					str.print("SNAP_TO_GRID: OFF")
+				}
+			} else
+			if i == TOOLBAR_WIPE_LAYER {
+				str.print("-> WIPE_LAYER")
+				
+				var m Mesh2D 
+				m = Mesh2D{}
+				mesh.EditLayers[mesh.CurrLayer] = m
+			} else
+			if i == TOOLBAR_MAINMENU {
+				str.print("-> MAINMENU ---------(or WILL take us to main menu when it's implemented)")
+				entity.SetupHero()
+				app.Mode = app.APPMODE_PLAYING // FIXME: LATER want app.APPMODE_MENU
+			}
+		}
+		
+		/////
+		/////
+		return ///// don't want to use any vertex nodes 
+		/////
+		/////
+	}
+	
+	var touchedVert bool
+	var layerId i32
+	touchedVert, layerId, i = getTouchedVertexNode(MousePointer)
+
+	if app.EditMode == app.EDITMODE_TRIANGLES {
+		// TODO enhancement: allow player to slide across 3 verts while holding LMB 
+		
+		if touchedVert {			
+			printf("EditLayers[%d].Points[%d] \n", layerId, i)
+
+			if i32.gteq(mesh.PickedTrianglesNextId, 3) {
+				mesh.PickedTrianglesNextId = 0
+			}
+
+			mesh.PickedTriangle[mesh.PickedTrianglesNextId] = i
+			mesh.PickedTrianglesNextId = 
+			i32.add(
+			mesh.PickedTrianglesNextId, 1)
+
+			if i32.gteq(mesh.PickedTrianglesNextId, 3) {
+				mesh.MakeNewEditorTriangle()
+			}
+		}
+	} else if app.EditMode == app.EDITMODE_VERTICES {
+		if touchedVert { // drag existing node 
+			draggingVertexNode = true
+			draggedLayerId  = layerId
+			draggedVertexId = i
+		} else { // create new node... 
+			if MousePointer.X >= -1.0 && // ...when within grid 
+				MousePointer.X <= 1.0 &&
+				MousePointer.Y >= -1.0 &&
+				MousePointer.Y <= 1.0 {
+				
+				var c Color3
+				c = Color3{ 
+					R: 0.5, 
+					G: 0.5, 
+					B: 0.5 }
+					
+				var m Mesh2D
+				m = mesh.EditLayers[mesh.CurrLayer]
+
+				printf("+ vertex: %d - in layer: %d \n", len(m.Points), mesh.CurrLayer)
+
+				m.Colors = append(
+				m.Colors, c)
+				m.Points = append(
+				m.Points, MousePointer)
+
+				mesh.EditLayers[mesh.CurrLayer] = m
+			}
+		}
+	}
+}
