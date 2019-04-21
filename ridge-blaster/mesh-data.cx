@@ -2037,41 +2037,59 @@ func InitWipeCanvasIconMesh () () {
     c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
     m.Colors = append(
     m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
 
-    v = Vec2{ X: -0.0333333 , Y: -0.6333333 }
+    v = Vec2{ X: 0.0777779 , Y: -0.5944445 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.1305556 , Y: -0.5694444 }
+    v = Vec2{ X: -0.0194444 , Y: -0.5305556 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.3111111 , Y: -0.6583333 }
+    v = Vec2{ X: -0.1999999 , Y: -0.6194445 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.3277777 , Y: -0.7611111 }
+    v = Vec2{ X: -0.2166665 , Y: -0.7222223 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.2666667 , Y: -0.8638889 }
+    v = Vec2{ X: -0.1555555 , Y: -0.8250001 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.1527778 , Y: -0.9000000 }
+    v = Vec2{ X: -0.0416666 , Y: -0.8611112 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.0444444 , Y: -0.8555555 }
+    v = Vec2{ X: 0.0666668 , Y: -0.8166667 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.0027777 , Y: -0.7472222 }
+    v = Vec2{ X: 0.1138889 , Y: -0.7083334 }
     m.Points = append(
     m.Points, v)
     v = Vec2{ X: 0.2888891 , Y: -0.1916667 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.0694444 , Y: -0.1527778 }
+    v = Vec2{ X: -0.0388888 , Y: -0.1472222 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.2722222 , Y: -0.1861111 }
+    v = Vec2{ X: -0.2666667 , Y: -0.1638889 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.4861112 , Y: -0.2666667 }
+    v = Vec2{ X: -0.5055556 , Y: -0.2222223 }
     m.Points = append(
     m.Points, v)
     v = Vec2{ X: -0.8638889 , Y: 0.6361111 }
@@ -2089,19 +2107,19 @@ func InitWipeCanvasIconMesh () () {
     v = Vec2{ X: 0.6083335 , Y: 0.7750000 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.8333334 , Y: 0.6250000 }
+    v = Vec2{ X: 0.8722223 , Y: 0.6138889 }
     m.Points = append(
     m.Points, v)
     v = Vec2{ X: 0.3305556 , Y: 0.8611111 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.4444445 , Y: -0.2472222 }
+    v = Vec2{ X: 0.4416665 , Y: -0.2583333 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.2305555 , Y: -0.5777777 }
+    v = Vec2{ X: -0.1194443 , Y: -0.5388889 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.1166666 , Y: -0.1583333 }
+    v = Vec2{ X: 0.1722222 , Y: -0.1500000 }
     m.Points = append(
     m.Points, v)
     v = Vec2{ X: 0.7083334 , Y: 0.9250000 }
@@ -2116,16 +2134,16 @@ func InitWipeCanvasIconMesh () () {
     v = Vec2{ X: -0.7555556 , Y: 0.5861111 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.4638889 , Y: -0.1333333 }
+    v = Vec2{ X: -0.4555556 , Y: -0.1000000 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.3083333 , Y: -0.0750000 }
+    v = Vec2{ X: -0.2000000 , Y: -0.0500000 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.0833334 , Y: -0.0361111 }
+    v = Vec2{ X: 0.0388889 , Y: -0.0333334 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.1972222 , Y: -0.0583333 }
+    v = Vec2{ X: 0.2416666 , Y: -0.0500000 }
     m.Points = append(
     m.Points, v)
     v = Vec2{ X: -0.5666667 , Y: 0.6888889 }
@@ -2137,10 +2155,28 @@ func InitWipeCanvasIconMesh () () {
     v = Vec2{ X: 0.0194443 , Y: 0.7972223 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.3138889 , Y: 0.7638889 }
+    v = Vec2{ X: 0.3249999 , Y: 0.7583333 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.5888888 , Y: 0.6388889 }
+    v = Vec2{ X: 0.5944445 , Y: 0.6694445 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.5027777 , Y: 0.5027778 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.4555556 , Y: 0.4111111 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.2277776 , Y: 0.5444444 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.3805555 , Y: 0.2500000 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.3249999 , Y: 0.1472222 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.1305555 , Y: 0.3000000 }
     m.Points = append(
     m.Points, v)
 
@@ -2330,7 +2366,18 @@ func InitWipeCanvasIconMesh () () {
     m.TriangleIndices, 6)
     m.TriangleIndices = append(
     m.TriangleIndices, 1)
-
+    m.TriangleIndices = append(
+    m.TriangleIndices, 35)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 36)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 37)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 38)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 39)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 40)
     makeAndReportOn(m, true)
 }
 
