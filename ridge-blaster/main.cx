@@ -48,7 +48,7 @@ func main () {
 	printf("\n\n\n%s %s %s\n", bar, app.NAME, bar)
 	str.print("[W], [A], [S], [D] ======== move")
 	str.print("[LMB] or [SPACE] ========== shoot, new vertex, drag vertex")
-	str.print("[RMB] ===================== delete vertex node")
+	str.print("[RMB] ===================== delete vertex node (or unselect all")
 	str.print("[ESC] ===================== edit ")
 	str.print("[5] ======================= quit")
 	str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")

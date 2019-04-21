@@ -112,6 +112,8 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 			
 			if touchedVert {			
 				mesh.RemoveVertexNode(lId, i)
+			} else {
+				wipePickedVerts()
 			}
 		}
 	}
