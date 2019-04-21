@@ -455,9 +455,10 @@ func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
 		j2 = EditLayers[CurrLayer].TriangleIndices[j2]
 		
 		// if tri will remain, copy it 
-		if i32.uneq(j0, ir) && 
-			i32.uneq(j1, ir) && 
-			i32.uneq(j2, ir) {
+		if bool.and(bool.and(
+			i32.uneq(j0, ir), 
+			i32.uneq(j1, ir)), 
+			i32.uneq(j2, ir)) {
 
 			m.TriangleIndices = append(
 			m.TriangleIndices, j0)

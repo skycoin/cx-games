@@ -9,11 +9,12 @@ import "mesh"
 
 
 
-var MousePointer       Vec2
-var SnapToGrid         bool
-var draggingVertexNode bool
-var draggedLayerId     i32
-var draggedVertexId    i32
+var MousePointer    Vec2
+var SnapToGrid      bool
+var Dragging        bool
+var DragStart       Vec2
+var draggedLayerId  i32 // these 2 ids were when we could only drag 1... 
+var draggedVertexId i32 // ...vert at a time.  probably useless now 
 
 // keys 
 var	GLFW_KEY_W      i32 = 87
@@ -92,28 +93,47 @@ func GoUp() (out bool) {
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 	if /* release */ action == 0 {
 		if button == 0 {
-			draggingVertexNode = false
+			Dragging = false
+			
+			/* by here, we have the start and end points of the drag box
+				if we were to subtract each vertex' from those ends,
+				for each dimension, we'd have a hit if they both did NOT
+				lie on the same side 
+				(if both were pos or both neg, it would mean NO hit)
+				
+				CAN DRAW gl.LINES with bright toggle
+			*/
 		}
 	} else if /* press */ action == 1 {
 		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
-		if button == 0 {
+		if button == 0 { // LMB 
 			fireOrActivate()
-		} else
-		if button == 1 && 
-			app.Mode == app.APPMODE_EDITOR &&
-			app.EditMode == app.EDITMODE_VERTICES {
+		} else {
+			handleMMBandRMB(button)
+		}
+	}
+}
+
+
+func handleMMBandRMB(button i32) () {
+	if app.Mode == app.APPMODE_EDITOR &&
+		app.EditMode == app.EDITMODE_VERTICES {
 			
+		var touchedVert bool
+		var lId i32 // layer id 
+		var i i32
+		touchedVert, lId, i = getTouchedVertexNode(MousePointer)
+		
+		if button == 1 {
 			str.print("RMB press && EDITMODE_VERTICES")
-			var touchedVert bool
-			var lId i32 // layer id 
-			var i i32
-			touchedVert, lId, i = getTouchedVertexNode(MousePointer)
+			wipePickedVerts()
+		} else
+		if button == 2 {
+			str.print("MMB press && EDITMODE_VERTICES")
 			
 			if touchedVert {			
 				mesh.RemoveVertexNode(lId, i)
-			} else {
-				wipePickedVerts()
 			}
 		}
 	}
@@ -142,7 +162,7 @@ func onCursorPosEvent (window str, x f64, y f64) () {
 	deltaX = f32.sub(MousePointer.X, oldX)
 	deltaY = f32.sub(MousePointer.Y, oldY)
 	
-	if draggingVertexNode {
+	if Dragging {
 		//mesh.EditLayers[draggedLayerId].Points[draggedVertexId].X = MousePointer.X
 		//mesh.EditLayers[draggedLayerId].Points[draggedVertexId].Y = MousePointer.Y
 		

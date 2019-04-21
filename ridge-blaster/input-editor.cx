@@ -80,11 +80,23 @@ func printEditMode () () {
 
 
 func respondToValidGridSpaceClick () () {
+	Dragging = true
+	DragStart = MousePointer
+	
 	var touchedVert bool
 	var layerId     i32
 	var vertId      i32
 	touchedVert, layerId, vertId = getTouchedVertexNode(MousePointer)
 
+	if app.EditMode == app.EDITMODE_VERTICES {
+		if touchedVert { // drag existing node 
+			draggedLayerId  = layerId
+			draggedVertexId = vertId
+			addPicked(vertId)
+		} else { 
+			addNewVertexNode()
+		}
+	} else
 	if app.EditMode == app.EDITMODE_TRIANGLES {
 		if touchedVert {			
 			printf("EditLayers[%d].Points[%d] \n", layerId, vertId)
@@ -97,15 +109,6 @@ func respondToValidGridSpaceClick () () {
 		if i32.gteq(len(mesh.PickedVerts), 3) {
 			mesh.AddNewTriangleInEditor()
 			wipePickedVerts()
-		}
-	} else if app.EditMode == app.EDITMODE_VERTICES {
-		if touchedVert { // drag existing node 
-			draggingVertexNode = true
-			draggedLayerId  = layerId
-			draggedVertexId = vertId
-			addPicked(vertId)
-		} else { 
-			addNewVertexNode()
 		}
 	}
 }

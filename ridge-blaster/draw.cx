@@ -15,7 +15,11 @@ var NEG_UNIT_SPAN   f32 // negative...
 var CRUST_THICKNESS f32
 var currX           f32
 var span            f32
+// single color channel intensities 
 var currGreen       f32 // component of terrain fill color 
+var minCI           f32 = 0.0
+var darkCI          f32 = 0.2
+var maxCI           f32 = 1.0
 
 // blink timing 
 var pickedNodesAreBright bool
@@ -69,6 +73,7 @@ func All (currTime f32, deltaTime f32) () {
 			
 			gl.Begin(gl.LINES)
 				gridLines()
+				maybeDragBox()				
 			gl.End()
 		}
 
@@ -80,8 +85,7 @@ func All (currTime f32, deltaTime f32) () {
 				trianglesForMenu(mesh.BakedUIMeshes, i32.sub(len(ccInput.Menus), 1))
 			} else {
 				trianglesForAll(mesh.EditLayers)
-			}
-			
+			}			
 			
 			trianglesForMenu(mesh.BakedUIMeshes, ccInput.EditToolbar)
 		gl.End()
@@ -127,6 +131,33 @@ func All (currTime f32, deltaTime f32) () {
 
 	// hero 
 	//Circle(entity.Ents[0])
+}
+
+
+func maybeDragBox() () {
+	if ccInput.Dragging &&
+		app.EditMode != app.EDITMODE_TRIANGLES {
+		
+		if pickedNodesAreBright {
+			gl.Color3f(0.8, 0.7, minCI)
+		} else {
+			gl.Color3f(darkCI, darkCI, darkCI) // gray 
+		}
+		
+		// horizontal lines 
+		gl.Vertex2f(ccInput.DragStart.X,    ccInput.DragStart.Y)
+		gl.Vertex2f(ccInput.MousePointer.X, ccInput.DragStart.Y)
+		
+		gl.Vertex2f(ccInput.DragStart.X,    ccInput.MousePointer.Y)
+		gl.Vertex2f(ccInput.MousePointer.X, ccInput.MousePointer.Y)
+		
+		// vertical lines 
+		gl.Vertex2f(ccInput.DragStart.X,    ccInput.DragStart.Y)
+		gl.Vertex2f(ccInput.DragStart.X,    ccInput.MousePointer.Y)
+		
+		gl.Vertex2f(ccInput.MousePointer.X, ccInput.DragStart.Y)
+		gl.Vertex2f(ccInput.MousePointer.X, ccInput.MousePointer.Y)
+	}
 }
 
 
@@ -197,10 +228,7 @@ func simpleVertexSequence (colorChanIntensity f32) () {
 
 
 func gridLines () () {
-	// single color channel for Dark Gray 
-	var gray f32
-	gray = 0.2
-	gl.Color3f(gray, gray, gray)
+	gl.Color3f(darkCI, darkCI, darkCI)
 	
 	var l f32
 	l = -1.0
@@ -256,24 +284,19 @@ func Circle (e Entity) () {
 
 
 func editorQuads () () {
-	// color channels for colors that have the same value across all 3 
-	var white f32
-	var gray f32
-	white = 1.0
-	gray = 0.15 // (dark) 
-	
 	var li i32
 	for li = 0; i32.lt(li, len(mesh.EditLayers)); li++ {
 		var cols []Color3
 		cols = mesh.EditLayers[li].Colors
 		
 		for i := 0; i32.lt(i, len(cols)); i++ {
-			gl.Color3f(cols[i].R, cols[i].G, cols[i].B)
+			//gl.Color3f(cols[i].R, cols[i].G, cols[i].B)  TODO: oscillate between this and black?  or just blink to halfway in between? 
+			gl.Color3f(maxCI, maxCI, maxCI)
 
 			if pickedNodesAreBright {
 				for j := 0; j < len(mesh.PickedVerts); j++ {
 					if i == mesh.PickedVerts[j] {
-						gl.Color3f(0.0, 0.0, 1.0) // blue 
+						gl.Color3f(minCI, minCI, maxCI) // blue 
 					}
 				}
 			}
