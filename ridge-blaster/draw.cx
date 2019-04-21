@@ -75,18 +75,20 @@ func All (currTime f32, deltaTime f32) () {
 		gl.Begin(gl.TRIANGLES) //////////////
 			if app.EditMode == app.EDITMODE_COLORS {
 				trianglesForOne(mesh.RawMeshes, mesh.ColorWheel)
+			} else 
+			if app.EditMode == app.EDITMODE_MESH_PICKER {
+				trianglesForMenu(mesh.BakedUIMeshes, i32.sub(len(ccInput.Menus), 1))
 			} else {
 				trianglesForAll(mesh.EditLayers)
 			}
 			
-			trianglesForMenu(mesh.BakedUIMeshes, ccInput.EditToolbar)
 			
-			if app.EditMode == app.EDITMODE_MESH_PICKER {
-				trianglesForMenu(mesh.BakedUIMeshes, i32.sub(len(ccInput.Menus), 1))
-			}
+			trianglesForMenu(mesh.BakedUIMeshes, ccInput.EditToolbar)
 		gl.End()
 
-		if app.EditMode != app.EDITMODE_COLORS {
+		if app.EditMode != app.EDITMODE_COLORS &&
+			app.EditMode != app.EDITMODE_MESH_PICKER {
+			
 			gl.Begin(gl.QUADS) //////////////////
 				editorQuads()
 			gl.End()
