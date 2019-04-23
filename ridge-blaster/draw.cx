@@ -117,21 +117,16 @@ func All (currTime f32, deltaTime f32) () {
 	} else { // playing (& the rest) 
 		gl.Begin(gl.QUADS) //////////////////	
 			Terrain(currTime)
-			Entities()
+			//EntitiesBox()
 		gl.End()
 		
-		if app.Mode == app.APPMODE_GAME_OVER {
-			gl.Begin(gl.TRIANGLES)
+		gl.Begin(gl.TRIANGLES)
+			EntitiesMesh()
+			
+			if app.Mode == app.APPMODE_GAME_OVER {
 				trianglesForOne(mesh.RawMeshes, mesh.GameOver)
-			gl.End()
-		}
-
-		//if /* no game meshes */ i32.lt(len(mesh.SizedMeshes), 1) {
-			//mesh.BakeButtonArray(true)
-		//}
-		//gl.Begin(gl.TRIANGLES) //////////////
-		//trianglesForAll(mesh.SizedMeshes, false)
-		//gl.End()		
+			}
+		gl.End()
 	}
 
 
@@ -216,6 +211,36 @@ func trianglesForOne (meshes []Mesh2D, i i32) () {
 		v = m.Points[pId]
 		
 		gl.Vertex2f(v.X, v.Y)
+	}
+}
+
+
+func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) () {
+	//str.print("trianglesForOneWithPos()")
+	
+	var m Mesh2D
+	m = meshes[i]
+
+	// give feedback when not multiple of 3 
+	var leftover i32
+	leftover = i32.mod(len(m.TriangleIndices), 3)
+	if i32.uneq(0, leftover) {
+		printf("********* ERROR! leftover: %d in triangle () \n", leftover)
+	}
+
+	for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
+		var pId i32 // point id (from tri ids) 
+		pId = m.TriangleIndices[j]
+		
+		var c Color3
+		c = m.Colors[pId]
+		//gl.Color3f(c.R, c.G, c.B)
+		//gl.Color3f(maxCI, maxCI, maxCI)		
+		
+		var v Vec2
+		v = m.Points[pId]
+		
+		gl.Vertex2f(pos.X + v.X,   pos.Y + v.Y)
 	}
 }
 
@@ -333,7 +358,7 @@ func drawRect (pos Vec2, extents Vec2) () {
 }
 
 
-func Entities () () {
+func EntitiesBox () () {
 	for i := 0; i32.lt(i, len(entity.Ents)); i++ {
 		var e Entity
 		e = entity.Ents[i]
@@ -356,6 +381,34 @@ func Entities () () {
 			}
 		
 			drawRect(e.Pos, e.Extents)
+		}
+	}
+}
+
+
+func EntitiesMesh () () {
+	for i := 0; i32.lt(i, len(entity.Ents)); i++ {
+		var e Entity
+		e = entity.Ents[i]
+		
+		//        ______==___________________
+		if i32.eq(e.Mode, entity.ENTMODE_DEAD) {
+			printf("skip DEAD %d     ", i)
+			//continue
+		} else {		
+			// colors 
+			if e.Type == entity.TYPE_HERO {
+				c := 0.4
+				gl.Color3f(c, c, c)
+			}else
+			if e.Type == entity.TYPE_BULLET {
+				gl.Color3f(1.0, 1.0, 0.0)
+			}else
+			if e.Type == entity.TYPE_ROCKET {
+				gl.Color3f(1.0, 0.5, 0.0)
+			}
+		
+			trianglesForOneWithPos(mesh.SizedMeshes, e.Type, e.Pos)
 		}
 	}
 }

@@ -5,6 +5,7 @@ import "glfw"
 import "app"
 import "ccInput"
 import "collision"
+import "entity" // ATM, ONLY NEEDED FOR GAME OBJECT EXTENTS 
 
 
 
@@ -60,9 +61,15 @@ func Setup () () {
 	InitGenerateFuncIconMesh()
 	InitSnapToGridIconMesh()
 	InitWipeCanvasIconMesh()
+	
 	InitPlayerShipMesh()
+	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.HeroExtents)
+	
 	InitMissileMesh()
+	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.BulletExtents)
+	
 	InitRocketMesh()
+	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.RocketExtents)
 
 	GameOver = len(RawMeshes)
 	InitGameOverMesh()
@@ -235,12 +242,12 @@ func BakeButtonArray (menu i32, minimumEdge bool, vertical bool) () {
 
 
 func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32) () {
-	//str.print("bakeUICellFromRaw () (from editor)")
+	//str.print("bakeUICellFromRaw ()")
 			
 	var m Mesh2D
 	m = Mesh2D{ Name: "bakedInstanceFromRaw" }
 
-	// bake colors/verts 
+	// colors/verts 
 	for k := 0; i32.lt(k, len(RawMeshes[rawId].Points)); k++ {
 		var c Color3
 		var p Vec2
@@ -261,7 +268,7 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32) () {
 		m.Points, p)
 	}
 
-	// bake triangles 
+	// triangles 
 	for j := 0; i32.lt(j, len(RawMeshes[rawId].TriangleIndices)); j++ {
 		var id i32
 		id = RawMeshes[rawId].TriangleIndices[j]
@@ -271,6 +278,89 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32) () {
 
 	BakedUIMeshes = append(
 	BakedUIMeshes, m)
+}
+
+
+func sizeGameMeshFromRaw (rawId i32, extents Vec2) () {
+	// changes after copy/paste:
+	// don't receive pos, 
+	// don't add the pos
+	// save to SizedMeshes
+	var minX    f32
+	var maxX    f32
+	var minY    f32
+	var maxY    f32
+	var fracX   f32 // fraction from min to max edges 
+	var fracY   f32
+	var fitWid  f32 // the inner bounding box (shrunk to fit the min/max) 
+	var fitHei  f32
+	var fitExtX f32 // extents of inner bounding box 
+	var fitExtY f32
+
+	minX = 1.0
+	minY = 1.0
+	maxX = -1.0
+	maxY = -1.0
+
+	//str.print("sizeGameMeshFromRaw ()")
+			
+	var m Mesh2D
+	m = Mesh2D{ Name: "sizedGameMeshFromRaw" }
+
+	// colors/verts 
+	for k := 0; i32.lt(k, len(RawMeshes[rawId].Points)); k++ {
+		if minX > RawMeshes[rawId].Points[k].X {
+			minX = RawMeshes[rawId].Points[k].X
+		}
+		if maxX < RawMeshes[rawId].Points[k].X {
+			maxX = RawMeshes[rawId].Points[k].X
+		}
+		if minY > RawMeshes[rawId].Points[k].X {
+			minY = RawMeshes[rawId].Points[k].X
+		}
+		if maxY < RawMeshes[rawId].Points[k].Y {
+			maxY = RawMeshes[rawId].Points[k].Y
+		}
+	}
+
+	fitWid = f32.sub(maxX, minX)
+	fitHei = f32.sub(maxY, minY)
+	fitExtX = f32.div(fitWid, 2.0)
+	fitExtY = f32.div(fitHei, 2.0)
+
+	for k := 0; i32.lt(k, len(RawMeshes[rawId].Points)); k++ {
+		var c Color3
+		var p Vec2
+		c = RawMeshes[rawId].Colors[k]
+		p = RawMeshes[rawId].Points[k]
+		
+		//  
+		//p.X = f32.sub(p.X, fitExtX)
+		//p.Y = f32.sub(p.Y, fitExtY)
+		
+		fracX = f32.div(p.X, fitExtX)
+		fracY = f32.div(p.Y, fitExtY)
+
+		// scale 
+		p.X = f32.mul(fracX, extents.X)
+		p.Y = f32.mul(fracY, extents.Y)
+		
+		m.Colors = append(
+		m.Colors, c)
+		m.Points = append(
+		m.Points, p)
+	}
+
+	// triangles 
+	for j := 0; i32.lt(j, len(RawMeshes[rawId].TriangleIndices)); j++ {
+		var id i32
+		id = RawMeshes[rawId].TriangleIndices[j]
+		m.TriangleIndices = append(
+		m.TriangleIndices, id)
+	}
+
+	SizedMeshes = append(
+	SizedMeshes, m)
 }
 
 

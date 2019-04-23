@@ -10,10 +10,16 @@ import "environs"
 
 
 // TYPES   (FIXME when we have constants) 
-var TYPE_HERO        i32 = 1
-var TYPE_BULLET      i32 = 2
-var TYPE_ROCKET      i32 = 3
-var TYPE_PARTICLE    i32 = 4
+var TYPE_HERO        i32 = 0
+var TYPE_BULLET      i32 = 1
+var TYPE_ROCKET      i32 = 2
+var TYPE_PARTICLE    i32 = 3
+
+// extents
+var HeroExtents   Vec2 = Vec2{ X: 0.08,  Y: 0.04  }
+var BulletExtents Vec2 = Vec2{ X: 0.03,  Y: 0.008 }
+var RocketExtents Vec2 = Vec2{ X: 0.016, Y: 0.05  }
+var NodeExtents   Vec2 = Vec2{ X: 0.02,  Y: 0.02  }
 
 // MODES 
 var ENTMODE_STATIONARY      i32 = 1
@@ -32,12 +38,6 @@ var ENTMODE_MAX             i32 = 8
 var CamPos  app.Vec3
 var CamRot  app.Vec3
 var timeDel f32
-
-// extents
-var HeroExtents   Vec2 = Vec2{ X: 0.08, Y: 0.04  }
-var BulletExtents Vec2 = Vec2{ X: 0.02, Y: 0.004 }
-var RocketExtents Vec2 = Vec2{ X: 0.01, Y: 0.05  }
-var NodeExtents   Vec2 = Vec2{ X: 0.02, Y: 0.02  }
 
 // pools 
 type Entity struct {
