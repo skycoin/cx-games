@@ -61,6 +61,7 @@ func Setup () () {
 	InitSnapToGridIconMesh()
 	InitWipeCanvasIconMesh()
 	InitPlayerShipMesh()
+	InitMissileMesh()
 
 	GameOver = len(RawMeshes)
 	InitGameOverMesh()
