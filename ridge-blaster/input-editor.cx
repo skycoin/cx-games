@@ -90,19 +90,11 @@ func doValidGridSpacePrimary () () {
 	var vertId      i32
 	touchedVert, layerId, vertId = getTouchedVertexNode(MousePointer)
 
-	if app.EditMode == app.EDITMODE_VERTICES {
-		if touchedVert { // drag existing node 
-			draggedLayerId  = layerId
-			draggedVertexId = vertId
-			addPickedMaybe(vertId)
-		} else {
-			wipePickedVerts()
-		}
-	} else
-	if app.EditMode == app.EDITMODE_TRIANGLES {
+	if app.EditMode == app.EDITMODE_VERTICES ||
+		app.EditMode == app.EDITMODE_TRIANGLES {
+		
 		if touchedVert { // BOTH PRIMARY & SECONDARY ACTIONS DO THIS // 
-			printf("EditLayers[%d].Points[%d] \n", layerId, vertId)
-			addPickedMaybe(vertId)
+			setPickedStatus(vertId, true)
 		} else {
 			wipePickedVerts()
 		}
@@ -123,10 +115,9 @@ func doValidGridSpaceSecondary () () {
 	} else
 	if app.EditMode == app.EDITMODE_TRIANGLES {
 		if touchedVert { // BOTH PRIMARY & SECONDARY ACTIONS DO THIS //	
-			printf("EditLayers[%d].Points[%d] \n", layerId, vertId)
-			addPickedMaybe(vertId)
+			setPickedStatus(vertId, true)
 		} else { 
-			addPickedMaybe(len(mesh.EditLayers[mesh.CurrLayer].Points))
+			setPickedStatus(len(mesh.EditLayers[mesh.CurrLayer].Points), false)
 			addNewVertexNode()
 		}
 
@@ -138,7 +129,7 @@ func doValidGridSpaceSecondary () () {
 }
 
 
-func addPickedMaybe (id i32) () {
+func setPickedStatus (id i32, deselectWanted bool) () {
 	var alreadyPicked bool
 	
 	for j := 0; j < len(mesh.PickedVerts); j++ {
@@ -147,14 +138,35 @@ func addPickedMaybe (id i32) () {
 		}
 	}
 
+	printf("setPickedStatus () ") // no \n wanted 
 	if alreadyPicked {
-		printf("ignoring ALREADY PICKED vertex \n")
+		if deselectWanted {
+			deselectVertex(id)
+			printf("deselected id: %d \n", id)
+		} else {
+			printf("ignoring ALREADY PICKED id: %d \n", id)
+		}
 	} else {
 		mesh.PickedVerts = append(
 		mesh.PickedVerts, id)
 		
-		printf("addPickedMaybe() num: %d \n", len(mesh.PickedVerts))
+		printf("selected id: %d \n", id)
 	}
+}
+
+
+func deselectVertex (id i32) () {
+	var newPicks []i32
+	newPicks = []i32{}
+	
+	for j := 0; j < len(mesh.PickedVerts); j++ {
+		if id != mesh.PickedVerts[j] {
+			newPicks = append(
+			newPicks, mesh.PickedVerts[j])
+		}
+	}
+	
+	mesh.PickedVerts = newPicks
 }
 
 
@@ -222,6 +234,6 @@ func pickAllVertsInDragBox () () {
 			continue
 		}
 		
-		addPickedMaybe(j)
+		setPickedStatus(j, false)
 	}
 }
