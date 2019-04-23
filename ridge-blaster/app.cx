@@ -31,8 +31,8 @@ var EDITMODE_COLORS      i32 = 2
 var EDITMODE_MESH_PICKER i32 = 3
 var EDITMODE_MAX         i32 = 4
 
-var Mode           i32 = APPMODE_PLAYING
-var EditMode       i32 = EDITMODE_VERTICES
+var Mode     i32 = APPMODE_PLAYING
+var EditMode i32 = EDITMODE_TRIANGLES
 
 
 

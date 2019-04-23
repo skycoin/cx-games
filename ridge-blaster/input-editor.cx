@@ -15,7 +15,7 @@ func doPrimaryAbility () () {
 	if touchedMenuItem {
 		respondToItem(i)
 	} else {
-		respondToValidGridSpaceClick()
+		doValidGridSpacePrimary()
 	}
 }
 
@@ -81,7 +81,7 @@ func printEditMode () () {
 }
 
 
-func respondToValidGridSpaceClick () () {
+func doValidGridSpacePrimary () () {
 	Dragging = true
 	DragStart = MousePointer
 
@@ -95,12 +95,32 @@ func respondToValidGridSpaceClick () () {
 			draggedLayerId  = layerId
 			draggedVertexId = vertId
 			addPickedMaybe(vertId)
-		} else { 
+		} else {
+			wipePickedVerts()
+		}
+	} else
+	if app.EditMode == app.EDITMODE_TRIANGLES {
+		if touchedVert { // BOTH PRIMARY & SECONDARY ACTIONS DO THIS // 
+			printf("EditLayers[%d].Points[%d] \n", layerId, vertId)
+			addPickedMaybe(vertId)
+		}
+	}
+}
+
+
+func doValidGridSpaceSecondary () () {
+	var touchedVert bool
+	var layerId     i32
+	var vertId      i32
+	touchedVert, layerId, vertId = getTouchedVertexNode(MousePointer)
+
+	if app.EditMode == app.EDITMODE_VERTICES {
+		if !touchedVert {
 			addNewVertexNode()
 		}
 	} else
 	if app.EditMode == app.EDITMODE_TRIANGLES {
-		if touchedVert {			
+		if touchedVert { // BOTH PRIMARY & SECONDARY ACTIONS DO THIS //	
 			printf("EditLayers[%d].Points[%d] \n", layerId, vertId)
 			addPickedMaybe(vertId)
 		} else { 
@@ -137,6 +157,8 @@ func addPickedMaybe (id i32) () {
 
 
 func addNewVertexNode () () {
+	str.print("addNewVertexNode ()")
+
 	if MousePointer.X >= -1.0 && // ...when within grid 
 		MousePointer.X <= 1.0 &&
 		MousePointer.Y >= -1.0 &&
