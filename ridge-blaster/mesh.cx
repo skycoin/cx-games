@@ -420,28 +420,28 @@ func AddNewTriangleInEditor () () { // just tri indices to existing global (ATM)
 }
 
 
-func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
+func DeleteVertexNode (layerId i32, ir i32 /* id to remove */) () {
 	if app.Mode != app.APPMODE_EDITOR {		
 		return
 	}
 	
-	printf("mesh.RemoveVertexNode(%d) \n", ir)
+	printf("mesh.DeleteVertexNode(%d) \n", ir)
 
 	var m Mesh2D
-	m = Mesh2D{ Name: EditLayers[CurrLayer].Name }
+	m = Mesh2D{ Name: EditLayers[layerId].Name }
 	
-	for i := 0; i32.lt(i, len(EditLayers[CurrLayer].Points)); i++ {
+	for i := 0; i32.lt(i, len(EditLayers[layerId].Points)); i++ {
 		if i32.uneq(i, ir) {
 			m.Colors = append(
-			m.Colors, EditLayers[CurrLayer].Colors[i])
+			m.Colors, EditLayers[layerId].Colors[i])
 			m.Points = append(
-			m.Points, EditLayers[CurrLayer].Points[i])
+			m.Points, EditLayers[layerId].Points[i])
 		}
 	}
 
 	// remove tris that point to "ir" 
 	// (handle 3 verts at a time (+=3 increment), "j" being the latest) 
-	for j := 2; i32.lt(j, len(EditLayers[CurrLayer].TriangleIndices)); j = i32.add(j, 3) {
+	for j := 2; i32.lt(j, len(EditLayers[layerId].TriangleIndices)); j = i32.add(j, 3) {
 		var j0 i32
 		var j1 i32
 		var j2 i32
@@ -450,9 +450,9 @@ func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
 		j1 = i32.sub(j, 1)
 		j2 = j
 		
-		j0 = EditLayers[CurrLayer].TriangleIndices[j0]
-		j1 = EditLayers[CurrLayer].TriangleIndices[j1]
-		j2 = EditLayers[CurrLayer].TriangleIndices[j2]
+		j0 = EditLayers[layerId].TriangleIndices[j0]
+		j1 = EditLayers[layerId].TriangleIndices[j1]
+		j2 = EditLayers[layerId].TriangleIndices[j2]
 		
 		// if tri will remain, copy it 
 		if bool.and(bool.and(
@@ -474,12 +474,14 @@ func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
 	}
 
 	// - vert ids that are > "ir" 
-	for l := 0; i32.lt(l, len(EditLayers[CurrLayer].TriangleIndices)); l++ {
-		m.TriangleIndices[l] = getValidId(layerId, ir, l)
+	for l := 0; i32.lt(l, len(m.TriangleIndices)); l++ {
+		var currVert i32
+		currVert = m.TriangleIndices[l]
+		m.TriangleIndices[l] = getValidId(ir, currVert)
 	}
 
 	/*
-	var num i32
+	var num i32 // last index for printing out positions (CRASHES CUZ 0 GIVES -1 INDEX) 
 	num = i32.sub(len(m.Points), 1)
 	printf("---num: %d \n", num)
 	printf("---len(m.Colors): %d \n", len(m.Colors))
@@ -488,24 +490,27 @@ func RemoveVertexNode (layerId i32, ir i32 /* id to remove */) () {
 	printf("---m.Points[num].Y: %f \n", m.Points[num].Y)
 	printf("---len(m.TriangleIndices): %d \n", len(m.TriangleIndices))
 	
-	num = i32.sub(len(EditLayers[CurrLayer].Points), 1)
-	printf("---num: %d \n", num)
-	printf("---len(EditLayers[CurrLayer].Colors): %d \n", len(EditLayers[CurrLayer].Colors))
-	printf("---len(EditLayers[CurrLayer].Points): %d \n", len(EditLayers[CurrLayer].Points))
-	printf("---EditLayers[CurrLayer].Points[num].X: %f \n", EditLayers[CurrLayer].Points[num].X)
-	printf("---EditLayers[CurrLayer].Points[num].Y: %f \n", EditLayers[CurrLayer].Points[num].Y)
-	printf("---len(EditLayers[CurrLayer].TriangleIndices): %d \n", len(EditLayers[CurrLayer].TriangleIndices))
+	num = i32.sub(len(EditLayers[layerId].Points), 1)
+	printf("\n---num: %d \n", num)
+	printf("---len(EditLayers[layerId].Colors): %d \n", len(EditLayers[layerId].Colors))
+	printf("---len(EditLayers[layerId].Points): %d \n", len(EditLayers[layerId].Points))
+	printf("---EditLayers[layerId].Points[num].X: %f \n", EditLayers[layerId].Points[num].X)
+	printf("---EditLayers[layerId].Points[num].Y: %f \n", EditLayers[layerId].Points[num].Y)
+	printf("---len(EditLayers[layerId].TriangleIndices): %d \n", len(EditLayers[layerId].TriangleIndices))
 	*/
 	
-	EditLayers[CurrLayer] = m
+	EditLayers[layerId] = m
 }
 
 
-func getValidId (layer i32, trashVert i32, currVert i32) (id i32) {
-	id = EditLayers[layer].TriangleIndices[currVert]
-
+func getValidId (trashVert i32, currVert i32) (out i32) {
+	printf("getValidId () - trashVert: %d - currVert: %d \n", trashVert, currVert)
+	
 	// decrease vertex id by 1, if it's after removed index 
-	if i32.lt(trashVert, id) {
-		id = i32.sub(id, 1)
+	if i32.lt(trashVert, currVert) {
+		out = i32.sub(currVert, 1)
+		printf("getValidId () - out: %d \n", out)
+	} else {
+		out = currVert
 	}
 }

@@ -131,7 +131,7 @@ func doSecondaryOrTertiaryAction(button i32) () {
 			str.print("MMB press && EDITMODE_VERTICES")
 			
 			if touchedVert {			
-				mesh.RemoveVertexNode(lId, i)
+				mesh.DeleteVertexNode(lId, i)
 			}
 		}
 	}
