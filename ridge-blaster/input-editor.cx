@@ -5,7 +5,9 @@ import "mesh"
 
 
 
-func firePrimaryAbility () () {
+func doPrimaryAbility () () {
+	str.print("doPrimaryAbility ()")
+	
 	var touchedMenuItem bool
 	var i i32
 	touchedMenuItem, i = getTouchedMenuItem(MousePointer)
@@ -82,7 +84,7 @@ func printEditMode () () {
 func respondToValidGridSpaceClick () () {
 	Dragging = true
 	DragStart = MousePointer
-	
+
 	var touchedVert bool
 	var layerId     i32
 	var vertId      i32
@@ -92,7 +94,7 @@ func respondToValidGridSpaceClick () () {
 		if touchedVert { // drag existing node 
 			draggedLayerId  = layerId
 			draggedVertexId = vertId
-			addPicked(vertId)
+			addPickedMaybe(vertId)
 		} else { 
 			addNewVertexNode()
 		}
@@ -100,9 +102,9 @@ func respondToValidGridSpaceClick () () {
 	if app.EditMode == app.EDITMODE_TRIANGLES {
 		if touchedVert {			
 			printf("EditLayers[%d].Points[%d] \n", layerId, vertId)
-			addPicked(vertId)
+			addPickedMaybe(vertId)
 		} else { 
-			addPicked(len(mesh.EditLayers[mesh.CurrLayer].Points))
+			addPickedMaybe(len(mesh.EditLayers[mesh.CurrLayer].Points))
 			addNewVertexNode()
 		}
 
@@ -114,7 +116,7 @@ func respondToValidGridSpaceClick () () {
 }
 
 
-func addPicked (id i32) () {
+func addPickedMaybe (id i32) () {
 	var alreadyPicked bool
 	
 	for j := 0; j < len(mesh.PickedVerts); j++ {
@@ -129,7 +131,7 @@ func addPicked (id i32) () {
 		mesh.PickedVerts = append(
 		mesh.PickedVerts, id)
 		
-		printf("addPicked() num: %d \n", len(mesh.PickedVerts))
+		printf("addPickedMaybe() num: %d \n", len(mesh.PickedVerts))
 	}
 }
 
@@ -157,5 +159,45 @@ func addNewVertexNode () () {
 		m.Points, MousePointer)
 
 		mesh.EditLayers[mesh.CurrLayer] = m
+	}
+}
+
+
+func pickAllVertsInDragBox () () {		
+	var num i32
+	num = len(mesh.EditLayers[mesh.CurrLayer].Points)
+	
+	for j := 0; j < num; j++ {
+		var v Vec2
+		v = mesh.EditLayers[mesh.CurrLayer].Points[j]
+
+		// start & end points of the final box 
+		var sX f32
+		var sY f32
+		var eX f32
+		var eY f32
+
+		sX = f32.sub(DragStart.X,    v.X)
+		sY = f32.sub(DragStart.Y,    v.Y)
+		eX = f32.sub(MousePointer.X, v.X)
+		eY = f32.sub(MousePointer.Y, v.Y)
+	
+		if sX > 0.0 && eX > 0.0 {
+			continue
+		}
+	
+		if sX < 0.0 && eX < 0.0 {
+			continue
+		}
+	
+		if sY > 0.0 && eY > 0.0 {
+			continue
+		}
+	
+		if sY < 0.0 && eY < 0.0 {
+			continue
+		}
+		
+		addPickedMaybe(j)
 	}
 }

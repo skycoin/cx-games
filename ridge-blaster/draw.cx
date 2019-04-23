@@ -15,11 +15,14 @@ var NEG_UNIT_SPAN   f32 // negative...
 var CRUST_THICKNESS f32
 var currX           f32
 var span            f32
+
 // single color channel intensities 
 var currGreen       f32 // component of terrain fill color 
 var minCI           f32 = 0.0
 var darkCI          f32 = 0.2
 var maxCI           f32 = 1.0
+var pickR           f32 = 0.8 // picked/selected red channel 
+var pickG           f32 = 0.7 // picked/selected green channel 
 
 // blink timing 
 var pickedNodesAreBright bool
@@ -139,7 +142,7 @@ func maybeDragBox() () {
 		app.EditMode != app.EDITMODE_TRIANGLES {
 		
 		if pickedNodesAreBright {
-			gl.Color3f(0.8, 0.7, minCI)
+			gl.Color3f(pickR, pickG, minCI)
 		} else {
 			gl.Color3f(darkCI, darkCI, darkCI) // gray 
 		}
@@ -296,7 +299,7 @@ func editorQuads () () {
 			if pickedNodesAreBright {
 				for j := 0; j < len(mesh.PickedVerts); j++ {
 					if i == mesh.PickedVerts[j] {
-						gl.Color3f(minCI, minCI, maxCI) // blue 
+						gl.Color3f(pickR, pickG, minCI)
 					}
 				}
 			}
