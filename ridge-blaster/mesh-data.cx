@@ -2567,130 +2567,130 @@ func InitMeshPickerIconMesh () () {
     m.Colors = append(
     m.Colors, c)
 
-    v = Vec2{ X: -0.5388889 , Y: 0.9055555 }
+    v = Vec2{ X: -0.6111113 , Y: 0.8805555 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.8750000 , Y: 0.2777778 }
+    v = Vec2{ X: -0.9027780 , Y: 0.2472222 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.2944444 , Y: 0.2888889 }
+    v = Vec2{ X: -0.3277780 , Y: 0.2472222 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.9111112 , Y: 0.8972222 }
+    v = Vec2{ X: 0.8749998 , Y: 0.8722222 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.9055556 , Y: 0.2916667 }
+    v = Vec2{ X: 0.8749996 , Y: 0.2555556 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.4972223 , Y: 0.2972222 }
+    v = Vec2{ X: 0.4638888 , Y: 0.2555555 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.5222224 , Y: 0.8611111 }
+    v = Vec2{ X: 0.4638888 , Y: 0.8722222 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.1083333 , Y: 0.9000000 }
+    v = Vec2{ X: 0.0333331 , Y: 0.8833333 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.2194445 , Y: 0.8527778 }
+    v = Vec2{ X: 0.1722220 , Y: 0.8361111 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.3000001 , Y: 0.7500000 }
+    v = Vec2{ X: 0.2638890 , Y: 0.7249999 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.3444444 , Y: 0.5861111 }
+    v = Vec2{ X: 0.3083333 , Y: 0.5638888 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.3222221 , Y: 0.4250000 }
+    v = Vec2{ X: 0.2749997 , Y: 0.4027777 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.2416667 , Y: 0.3111111 }
+    v = Vec2{ X: 0.1805555 , Y: 0.2972223 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.1083333 , Y: 0.2416667 }
+    v = Vec2{ X: 0.0277777 , Y: 0.2444445 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.0583333 , Y: 0.2944444 }
+    v = Vec2{ X: -0.1305555 , Y: 0.2888888 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.1666666 , Y: 0.4138889 }
+    v = Vec2{ X: -0.2222222 , Y: 0.3888889 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.1888889 , Y: 0.5777777 }
+    v = Vec2{ X: -0.2583333 , Y: 0.5638887 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.1138889 , Y: 0.7416667 }
+    v = Vec2{ X: -0.2055555 , Y: 0.7388889 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.0222222 , Y: 0.8583333 }
+    v = Vec2{ X: -0.0972222 , Y: 0.8444444 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.8416666 , Y: -0.2305555 }
+    v = Vec2{ X: -0.7111109 , Y: -0.1694445 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.6527778 , Y: 0.0166667 }
+    v = Vec2{ X: -0.5805554 , Y: 0.0916667 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.4749999 , Y: -0.2250000 }
+    v = Vec2{ X: -0.4555553 , Y: -0.1722222 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.5777777 , Y: -0.2194444 }
+    v = Vec2{ X: -0.5111108 , Y: -0.1472222 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.5972222 , Y: -0.6333333 }
+    v = Vec2{ X: -0.5083332 , Y: -0.4333333 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.4500000 , Y: -0.8000000 }
+    v = Vec2{ X: -0.4222220 , Y: -0.6083335 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.4638889 , Y: -0.9555556 }
+    v = Vec2{ X: -0.4249999 , Y: -0.8777779 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.5833334 , Y: -0.8055556 }
+    v = Vec2{ X: -0.5166665 , Y: -0.6666667 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.6666666 , Y: -0.8750000 }
+    v = Vec2{ X: -0.5944443 , Y: -0.8000000 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.7361112 , Y: -0.7666667 }
+    v = Vec2{ X: -0.6583334 , Y: -0.6611111 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.8750000 , Y: -0.7861111 }
+    v = Vec2{ X: -0.7555555 , Y: -0.6083333 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.9027778 , Y: -0.9305556 }
+    v = Vec2{ X: -0.7638887 , Y: -0.8833334 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.7166667 , Y: -0.2083334 }
+    v = Vec2{ X: -0.6555555 , Y: -0.1472224 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.7361112 , Y: -0.6138889 }
+    v = Vec2{ X: -0.6555555 , Y: -0.4305556 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: -0.0805556 , Y: -0.3750000 }
+    v = Vec2{ X: -0.0361112 , Y: -0.3833333 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.1527778 , Y: -0.0916667 }
+    v = Vec2{ X: 0.0916667 , Y: -0.1055555 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.3944443 , Y: 0.0305555 }
+    v = Vec2{ X: 0.3666661 , Y: 0.0305555 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.6333333 , Y: -0.0972222 }
+    v = Vec2{ X: 0.6472222 , Y: -0.1083333 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.8361112 , Y: -0.4027778 }
+    v = Vec2{ X: 0.7444445 , Y: -0.3833333 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.7416667 , Y: -0.9138889 }
+    v = Vec2{ X: 0.7444443 , Y: -0.8861111 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.5333332 , Y: -0.5666667 }
+    v = Vec2{ X: 0.5444442 , Y: -0.5555556 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.4000000 , Y: -0.9000000 }
+    v = Vec2{ X: 0.3666667 , Y: -0.8888888 }
     m.Points = append(
     m.Points, v)
-    v = Vec2{ X: 0.1777778 , Y: -0.5722222 }
+    v = Vec2{ X: 0.1888888 , Y: -0.5611110 }
     m.Points = append(
     m.Points, v)
     v = Vec2{ X: -0.0361111 , Y: -0.8888888 }
@@ -2895,7 +2895,7 @@ func InitMeshPickerIconMesh () () {
     m.TriangleIndices, 36)
     m.TriangleIndices = append(
     m.TriangleIndices, 39)
-
+    
     makeAndReportOn(m, true)
 }
 
