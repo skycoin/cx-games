@@ -443,3 +443,342 @@ func InitMissileMesh () () {
 
     makeAndReportOn(m, true)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+func InitRocketMesh () () {
+    var m Mesh2D
+    m = Mesh2D{ Name: "Rocket" }
+
+    var c Color3
+    var v Vec2
+
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
+    m.Colors = append(
+    m.Colors, c)
+
+    v = Vec2{ X: 0.0000000 , Y: 0.8972222 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.1277777 , Y: 0.7111111 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.2361108 , Y: 0.4888888 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.2805555 , Y: 0.2777777 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.2805551 , Y: 0.0138888 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.2277778 , Y: -0.2305555 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.1666664 , Y: -0.4833333 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.3277775 , Y: -0.6444444 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.2833332 , Y: -0.9055556 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.1472223 , Y: -0.7833333 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.1416667 , Y: -0.7250000 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.0916667 , Y: -0.7694445 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: 0.0416666 , Y: -0.7916666 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.0055556 , Y: -0.8027778 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.1416667 , Y: 0.7138889 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.2444444 , Y: 0.4916667 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.2861111 , Y: 0.2888889 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.2833333 , Y: 0.0166667 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.2361112 , Y: -0.2333333 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.1805556 , Y: -0.4777777 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.3361111 , Y: -0.6472223 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.2861111 , Y: -0.8972223 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.0555556 , Y: -0.7944444 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.0972220 , Y: -0.7722222 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.1472222 , Y: -0.7222222 }
+    m.Points = append(
+    m.Points, v)
+    v = Vec2{ X: -0.1555555 , Y: -0.7722223 }
+    m.Points = append(
+    m.Points, v)
+
+    m.TriangleIndices = append(
+    m.TriangleIndices, 0)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 1)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 14)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 14)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 1)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 2)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 2)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 3)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 14)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 14)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 3)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 15)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 15)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 3)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 16)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 16)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 3)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 4)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 4)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 17)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 16)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 17)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 4)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 5)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 5)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 18)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 17)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 19)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 18)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 5)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 5)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 19)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 7)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 8)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 8)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 9)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 10)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 21)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 20)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 19)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 25)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 21)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 24)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 10)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 8)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 19)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 24)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 21)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 24)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 19)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 24)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 23)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 23)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 22)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 22)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 13)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 13)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 12)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 12)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 11)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 11)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 6)
+    m.TriangleIndices = append(
+    m.TriangleIndices, 10)
+
+    makeAndReportOn(m, true)
+}
