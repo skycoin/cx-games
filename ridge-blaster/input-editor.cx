@@ -103,6 +103,8 @@ func doValidGridSpacePrimary () () {
 		if touchedVert { // BOTH PRIMARY & SECONDARY ACTIONS DO THIS // 
 			printf("EditLayers[%d].Points[%d] \n", layerId, vertId)
 			addPickedMaybe(vertId)
+		} else {
+			wipePickedVerts()
 		}
 	}
 }
