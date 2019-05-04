@@ -15,10 +15,12 @@ func Setup () () {
 
 
 func Update (ratio f32) () {
-	//str.print("collision.Update()")
+	printf("collision.Update() - ratio: %f \n", ratio)
 
 	ScreenEdgeL = f32.f64(f32.mul(ratio, -1.0))
 	ScreenEdgeR = f32.f64(ratio)
+
+	printf("ScreenEdgeL, ScreenEdgeR: %f, %f \n", ScreenEdgeL, ScreenEdgeR)
 }
 
 
