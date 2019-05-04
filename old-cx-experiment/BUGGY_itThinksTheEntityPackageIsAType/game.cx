@@ -1,6 +1,0 @@
-package game
-
-var Name str = "  S  N  A  K  E  "
-var Width i32 = 1600
-var Height i32 = 900
-
