@@ -1,10 +1,19 @@
-package main
+package draw
 
+/*
 import "gl"
 import "glfw"
 import "gltext"
 import "os"
+*/
 
+/* 
+	Boink-N-Yoink
+	Drilled-2-Build
+	Drill-N-Fill
+*/
+
+/*
 var width i32 = 800
 var height i32 = 600
 var widF f32 = 800.0
@@ -12,7 +21,8 @@ var heiF f32 = 600.0
 var texts []str = []str{ "Beluga", "Terrain Hopper", "Three", "Four", "5" }
 var wids []f32 // widths 
 var heis []f32 // heights 
-var sizes []str = []str{ "Roboto50", "Roboto100", "Roboto50", "Roboto100", "Roboto50" } // bearing? (from origin to top) 
+var sizesInt []f32 = []f32{ 200.0, 32.0, 32.0, 100.0, 50.0 } // bearing? (from origin to top) 
+var sizesStr []str = []str{ "Roboto200", "Roboto32", "Roboto32", "Roboto100", "Roboto50" }
 
 
 
@@ -30,7 +40,7 @@ func main () {
 	for i := 0; i < len(texts); i++ {
 		var w i32
 		var h i32
-		w, h = gltext.Metrics(sizes[i], texts[i])
+		w, h = gltext.Metrics(sizesStr[i], texts[i])
 		wids = append(
 		wids, i32.f32(w))
 		heis = append(
@@ -46,8 +56,9 @@ func main () {
 		var y f32
 		
 		for i := 0; i < len(texts); i++ {
-			gltext.Printf(sizes[i], (widF - wids[i]) / 2.0, y, texts[i])
-			y = f32.add(y, heis[i])
+			gltext.Printf(sizesStr[i], (widF - wids[i]) / 2.0, y, texts[i])
+			//y = f32.add(y, heis[i])
+			y = f32.add(y, sizesInt[i])
 		}
 
 		glfw.PollEvents()
@@ -73,8 +84,10 @@ func loadFonts() {
 	var wd str
 	wd = os.GetWorkingDirectory()
 	f := str.concat(wd, "fonts/roboto-light.ttf")
+	loadFontSized(200, f)
 	loadFontSized(100, f)
 	loadFontSized(50, f)
+	loadFontSized(32, f)
 }
 
 
@@ -86,3 +99,4 @@ func loadFontSized(size i32, fn str) { // filename
 	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
 	os.Close(fn)
 }
+*/
