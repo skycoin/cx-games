@@ -13,7 +13,6 @@ import "os"
 	Drill-N-Fill
 */
 
-/*
 var width i32 = 800
 var height i32 = 600
 var widF f32 = 800.0
@@ -26,6 +25,7 @@ var sizesStr []str = []str{ "Roboto200", "Roboto32", "Roboto32", "Roboto100", "R
 
 
 
+/*
 func main () {
 	initApp()
 	loadFonts()

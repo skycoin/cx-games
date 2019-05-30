@@ -10,6 +10,7 @@ import "collision"
 import "draw"
 import "entity"
 import "environs"
+import "mesh"
 
 
 
@@ -36,12 +37,12 @@ func Init () () {
 	gl.LinkProgram(program)
 
 	app.Setup()
-	doFramebufferStuff()
 	ccInput.Setup()
 	collision.Setup()
 	environs.Setup()
 	entity.Setup()
 	draw.Setup()
+	doFramebufferStuff()
 }
 
 
@@ -107,14 +108,15 @@ func doFramebufferStuff() {
 		mulL = -mulL
 		gl.Ortho(mulL, mulR, -1.0D, 1.0D, 1.0D, -1.0D)
 		//printf("OLD screen edges: %f, %f \n", oldL, oldR)
-		//printf("OLD screen edges: %f, %f (that's the change mul) \n", 
-			mulL, 
-			mulR)
+		//printf("OLD screen edges: %f, %f (that's the change mul) \n", mulL, mulR)
 		oldL = collision.ScreenEdgeL
 		oldR = collision.ScreenEdgeR
 
 		// WAS before gl.MatrixMode(gl.MODELVIEW)
 		gl.Viewport(0, 0, ss.X, ss.Y)
+		
+		mesh.BakeButtonArray(ccInput.EditToolbar, false, true)
+		mesh.BakeMeshPickerButtonGrid()
 	}
 }
 

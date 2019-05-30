@@ -57,12 +57,6 @@ func Setup () () {
 func All (currTime f32, deltaTime f32) () {
 	//str.print("draw.All()")
 	
-	if /* no baked UI meshes */ i32.lt(len(mesh.BakedUIMeshes), 1) {
-		mesh.BakeButtonArray(ccInput.EditToolbar, false, true)
-		//mesh.BakeButtonArray(ccInput.EditToolbar, true, true)
-		mesh.BakeMeshPickerButtonGrid()
-	}
-
 	// blink timing 
 	timeLocalToDraw = f32.add(timeLocalToDraw, deltaTime)	
 	for f32.lteq(nextBlinkFlip, timeLocalToDraw) {

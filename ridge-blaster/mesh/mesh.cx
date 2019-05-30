@@ -180,17 +180,20 @@ func GenerateMeshInitFunc (s str) () {
 }
 
 
-func BakeButtonArray (menu i32, minimumEdge bool, vertical bool) () {
-	str.print("BakeButtonArray ()")
+func BakeButtonArray (menu i32, minimumEdge bool, vertical bool) {
 	
 	var numItems i32
 	numItems = len(ccInput.Menus[menu].Items)
+	
+	printf("BakeButtonArray () - numItems: %d \n", numItems)
 	
 	var extent f32 // of a button 
 	extent = f32.div(ccInput.ButtonSpan, 2.0)
 	
 	var longSpan f32 // span across the longest dimension 
 	longSpan = f32.mul(ccInput.ButtonSpan, i32.f32(numItems))
+
+	printf("BakeButtonArray () - longSpan: %f \n", longSpan)
 
 	var x f32	
 	var y f32
@@ -221,15 +224,24 @@ func BakeButtonArray (menu i32, minimumEdge bool, vertical bool) () {
 	pos = Vec2{ X: x,      Y: y      }
 	ext = Vec2{ X: extent, Y: extent }
 
+	printf("BakeButtonArray () - pos.X: %f \n", pos.X)
+
 	for i := 0; i32.lt(i, numItems); i++ {
 		ccInput.Menus[menu].Items[i].Pos = pos
 		ccInput.Menus[menu].Items[i].Extents = ext
 		ccInput.Menus[menu].Items[i].BakedBackground = len(BakedUIMeshes)
-		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1) // rect background 
+		
+		var id i32 = i32.mul(i, 2)
+		printf("BakeButtonArray () - id: %d \n", id)
+		
+		// rect background 
+		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, id)
+		id = i32.add(id, 1)
+		printf("BakeButtonArray () - id + 1: %d \n", id)
 		
 		if i < len(RawMeshes) {
-			ccInput.Menus[menu].Items[i].BakedIcon = len(BakedUIMeshes)
-			bakeUICellFromRaw(pos, ext, i)
+			ccInput.Menus[menu].Items[i].BakedIcon = id
+			bakeUICellFromRaw(pos, ext, i, id)
 		}
 			
 		if vertical {
@@ -241,7 +253,7 @@ func BakeButtonArray (menu i32, minimumEdge bool, vertical bool) () {
 }
 
 
-func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32) () {
+func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 	//str.print("bakeUICellFromRaw ()")
 			
 	var m Mesh2D
@@ -276,8 +288,13 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32) () {
 		m.TriangleIndices, id)
 	}
 
-	BakedUIMeshes = append(
-	BakedUIMeshes, m)
+	// set or append mesh 
+	if len(BakedUIMeshes) <= bakedId {
+		BakedUIMeshes = append(
+		BakedUIMeshes, m)
+	} else {
+		BakedUIMeshes[bakedId] = m
+	}
 }
 
 

@@ -71,6 +71,9 @@ func BakeMeshPickerButtonGrid () () {
 		ccInput.Menus[menu].Items[i].Pos = pos
 		ccInput.Menus[menu].Items[i].Extents = ext
 		ccInput.Menus[menu].Items[i].BakedIcon = len(BakedUIMeshes)
-		bakeUICellFromRaw(pos, ext, i)
+		
+		// FIXME: assumes this is the 2nd menu 
+		var size0 i32 = len(ccInput.Menus[0])
+		bakeUICellFromRaw(pos, ext, i, i32.add(size0, i)) 
 	}
 }
