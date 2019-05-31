@@ -116,7 +116,7 @@ func doFramebufferStuff() {
 		gl.Viewport(0, 0, ss.X, ss.Y)
 		
 		mesh.BakeButtonArray(ccInput.EditToolbar, false, true)
-		mesh.BakeMeshPickerButtonGrid()
+		//mesh.BakeMeshPickerButtonGrid()
 	}
 }
 

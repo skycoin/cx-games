@@ -229,20 +229,19 @@ func BakeButtonArray (menu i32, minimumEdge bool, vertical bool) {
 	for i := 0; i32.lt(i, numItems); i++ {
 		ccInput.Menus[menu].Items[i].Pos = pos
 		ccInput.Menus[menu].Items[i].Extents = ext
-		ccInput.Menus[menu].Items[i].BakedBackground = len(BakedUIMeshes)
 		
-		var id i32 = i32.mul(i, 2)
+		var /* baked */ id i32 = i32.mul(i, 2)
 		printf("BakeButtonArray () - id: %d \n", id)
 		
 		// rect background 
+		ccInput.Menus[menu].Items[i].BakedBackground = id
 		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, id)
 		id = i32.add(id, 1)
-		printf("BakeButtonArray () - id + 1: %d \n", id)
+		printf("BakeButtonArray () - id: %d (+1) \n", id)
 		
-		if i < len(RawMeshes) {
-			ccInput.Menus[menu].Items[i].BakedIcon = id
-			bakeUICellFromRaw(pos, ext, i, id)
-		}
+		// icon 
+		ccInput.Menus[menu].Items[i].BakedIcon = id
+		bakeUICellFromRaw(pos, ext, i, id)
 			
 		if vertical {
 			pos.Y = f32.sub(pos.Y, ccInput.ButtonSpan)
@@ -290,9 +289,11 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 
 	// set or append mesh 
 	if len(BakedUIMeshes) <= bakedId {
+		str.print("appending NEW to BakedUIMeshes")
 		BakedUIMeshes = append(
 		BakedUIMeshes, m)
 	} else {
+		printf("recalculating BakedUIMeshes[%d] \n", bakedId)
 		BakedUIMeshes[bakedId] = m
 	}
 }
