@@ -115,8 +115,8 @@ func doFramebufferStuff() {
 		// WAS before gl.MatrixMode(gl.MODELVIEW)
 		gl.Viewport(0, 0, ss.X, ss.Y)
 		
-		mesh.BakeButtonArray(ccInput.EditToolbar, false, true)
-		//mesh.BakeMeshPickerButtonGrid()
+		mesh.BakeButtonArray(ccInput.EDIT_TOOLBAR, false, true)
+		mesh.BakeMeshPickerButtonGrid()
 	}
 }
 

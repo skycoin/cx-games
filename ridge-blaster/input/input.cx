@@ -42,7 +42,7 @@ func Setup () () {
 	str.print("input/ccInput.Setup()")
 
 	Menus = []Menu{} // prep all menus 
-	SetupMenu(EditToolbar, 8) // just 1 
+	SetupMenu(EDIT_TOOLBAR, 8) // just 1 
 
 	// callbacks 
 	glfw.SetKeyCallback("window", "onKeyEvent")
@@ -266,7 +266,7 @@ func doPrimaryAction () () {
 
 
 func getTouchedMenuItem (mouse Vec2) (touched bool, id i32) {
-	touched, id = getTouchedMenuItemFrom(EditToolbar, mouse)
+	touched, id = getTouchedMenuItemFrom(EDIT_TOOLBAR, mouse)
 	
 	if app.EditMode == app.EDITMODE_MESH_PICKER {
 		var mpTouched bool

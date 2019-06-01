@@ -21,7 +21,7 @@ func doPrimaryAbility () () {
 
 
 func respondToItem (i i32) () {
-	printf("pressed menu item %s \n", Menus[EditToolbar].Items[i].Name)
+	printf("pressed menu item %s \n", Menus[EDIT_TOOLBAR].Items[i].Name)
 	
 	if i < app.EDITMODE_MAX { // change EditMode
 		app.EditMode = i

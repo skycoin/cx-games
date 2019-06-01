@@ -20,8 +20,10 @@ type Menu struct {
 	Items []MenuItem
 }
 
+var EDIT_TOOLBAR i32 = 0
+var MESH_PICKER  i32 = 1
+
 var Menus       []Menu
-var EditToolbar i32 = 0
 var ButtonSpan  f32 = 0.2
 
 // toolbar 
@@ -35,51 +37,38 @@ var TOOLBAR_MAINMENU     i32 = app.EDITMODE_MAX + 3
 
 
 
-func SetupMenu (cm i32, numItems i32) () { // current menu 
-	var m Menu
-	var mi MenuItem
-
-	m = Menu{}
-	Menus = append(
-	Menus, m)
+func SetupMenu (/* menu */ id i32, numItems i32) () {
+	// append to menus until menu id exists 
+	for id >= len(Menus) {
+		var m Menu
+		m = Menu{}
+		
+		Menus = append(
+		Menus, m)
+	}
 
 
 	
 	// editor toolbar 
-	////// might use .Name as prefix to the hover-text of the edit mode 
+	////// might use .Name as prefix to the hover-text of the button 
 	////// ("edit " + "colors/vertices" for example) 
-	Menus[cm].Name = "Edit" 
+	Menus[id].Name = "Edit" 
 
+	var mi MenuItem
 	for i := 0; i < numItems; i++ {
 		mi = MenuItem{ BakedBackground: app.I32_MAX, Name: "common init string" }
-		Menus[cm].Items = append(
-		Menus[cm].Items, mi)
+		Menus[id].Items = append(
+		Menus[id].Items, mi)
 	}
 
 	/*
-		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Edit Vertices" }
-		Menus[cm].Items = append(
-		Menus[cm].Items, mi)
-		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Edit Triangles" }
-		Menus[cm].Items = append(
-		Menus[cm].Items, mi)
-		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Edit Colors" }
-		Menus[cm].Items = append(
-		Menus[cm].Items, mi)
-		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Mesh Picker" }
-		Menus[cm].Items = append(
-		Menus[cm].Items, mi)
-		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Gen Init Func" }
-		Menus[cm].Items = append(
-		Menus[cm].Items, mi)
-		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Snap-To-Grid" }
-		Menus[cm].Items = append(
-		Menus[cm].Items, mi)
-		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "Wipe Layer" }
-		Menus[cm].Items = append(
-		Menus[cm].Items, mi)
-		mi = MenuItem{ BakedBackground: 2, BakedIcon: 1, Name: "PLAY" }
-		Menus[cm].Items = append(
-		Menus[cm].Items, mi)
+		"Edit Vertices"
+		"Edit Triangles"
+		"Edit Colors"
+		"Mesh Picker"
+		"Gen Init Func"
+		"Snap-To-Grid"
+		"Wipe Layer"
+		"PLAY"
 	*/
 }
