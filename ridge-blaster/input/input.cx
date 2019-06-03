@@ -22,11 +22,6 @@ var	GLFW_KEY_A      i32 = 65
 var	GLFW_KEY_S      i32 = 83
 var	GLFW_KEY_D      i32 = 68
 
-var	GLFW_KEY_RIGHT  i32 = 262
-var	GLFW_KEY_LEFT   i32 = 263
-var	GLFW_KEY_DOWN   i32 = 264
-var	GLFW_KEY_UP     i32 = 265
-
 var GLFW_KEY_SPACE  i32 = 32
 
 //		temp camera control 
