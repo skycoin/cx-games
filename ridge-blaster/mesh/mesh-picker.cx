@@ -60,11 +60,15 @@ func BakeMeshPickerButtonGrid () () {
 		
 		ccInput.Menus[ccInput.MESH_PICKER].Items[i].Pos = pos
 		ccInput.Menus[ccInput.MESH_PICKER].Items[i].Extents = ext
-		ccInput.Menus[ccInput.MESH_PICKER].Items[i].BakedIcon = len(BakedUIMeshes)
 		
-		// FIXME: assumes this is the 2nd menu 
-		var size0 i32 = len(ccInput.Menus[0])
-		bakeUICellFromRaw(pos, ext, i, i32.add(size0, i)) 
+		// FIXME?: assumes this is the 2nd menu 
+		var bakeId i32 
+		bakeId = len(ccInput.Menus[ccInput.EDIT_TOOLBAR].Items)
+		bakeId = i32.mul(2, bakeId) // each has background + icon meshes 
+		bakeId = i32.add(bakeId, i)
+		printf("bakeId: %d \n", bakeId)
+		ccInput.Menus[ccInput.MESH_PICKER].Items[i].BakedIcon = bakeId
+		bakeUICellFromRaw(pos, ext, i, bakeId) 
 	}
 }
 

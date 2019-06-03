@@ -164,7 +164,9 @@ func trianglesForAll (meshes []Mesh2D) () {
 
 
 func trianglesForMenu (meshes []Mesh2D, menuId i32) () {
-	printf("trianglesForMenu() menuId: %d \n", menuId)
+	if menuId != 0 {
+		printf("trianglesForMenu() menuId: %d \n", menuId)
+	}
 	
 	for j := 0; i32.lt(j, len(ccInput.Menus[menuId].Items)); j++ {
 		var bi i32 // baked mesh id 
@@ -183,7 +185,7 @@ func trianglesForMenu (meshes []Mesh2D, menuId i32) () {
 
 
 func trianglesForOne (meshes []Mesh2D, i i32) () {
-	printf("trianglesForOne () id of given []Mesh2D: %d \n", i)
+	//printf("trianglesForOne () id of given []Mesh2D: %d \n", i)
 	
 	var m Mesh2D
 	m = meshes[i]
