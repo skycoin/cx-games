@@ -15,10 +15,14 @@
 			had to declare/define first, THEN could pass it
 		
 	DEF NEEDS TO BE ADDED TO ISSUES
+		-_- 
 		couldn't use indexception ( [[ ]] ) 
 		no friendly errors / warnings trying to use unimported packages 
 		we need math package, or things like i32.maxvalue
 		no nil
+		
+		-_- 
+		when instantiating a new struct (at least slices of structs, with initial data) can't have space tween var name and opening curly brace
 	
 	ADD 
 		bindings for .rand() on types other than i32
@@ -32,6 +36,7 @@
 		
 		(the rest were added to the .PDFs)
 */
+
 
 
 package main

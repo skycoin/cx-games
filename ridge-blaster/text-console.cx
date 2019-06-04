@@ -1,6 +1,8 @@
-package dunnoYet
+package NonWindowsColors
 
-func printAll () {
+
+
+func demonstrateANSICodes () {
   str.print("\u001b[31mHelloWorld")
   str.print("\u001b[30mBlack")
   str.print("\u001b[31mRed")
