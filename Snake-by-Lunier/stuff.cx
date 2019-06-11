@@ -8,13 +8,11 @@ type Position2D struct {
 }
 
 func newPosition2D (xPos f32, yPos f32,rxPos i32, ryPos i32) (position Position2D) {
-    var position Position2D
     position = Position2D {
         x : xPos,
 		y : yPos,
 		realX : rxPos,
 		realY : ryPos}
-    return position
 }
 
 func (p Position2D) setXPosition (new_x f32) {
@@ -32,11 +30,9 @@ type Dimension2D struct {
 }
 
 func newDimension2D (h f32, w f32) (dimension Dimension2D) {
-    var dimension Dimension2D
     dimension = Dimension2D {
         height: h,
 	width: w }
-    return dimension
 }
 
 func (p Dimension2D) setXPosition (new_width f32) {
@@ -58,13 +54,12 @@ type Cell struct {
 	rotation f32
 }
 
-func (c Cell) getPosition (pos Position2D) {
-	return c.position
+func (c Cell) getPosition (pos Position2D) (out Position2D) {
+	out = c.position
 }
 
 
 func newCell (pos Position2D, dim Dimension2D, tex i32) (cell Cell) {
-    var cell Cell
     cell = Cell {
     	position: pos,
 		dimension: dim,
@@ -72,8 +67,6 @@ func newCell (pos Position2D, dim Dimension2D, tex i32) (cell Cell) {
 		direction : 0,
 		lastDirection: 0,
 		rotation : 0.0}
-
-    return cell
 }
 
 type Player struct{
@@ -86,12 +79,9 @@ type Player struct{
 }
 
 func newPlayer () (player Player) {
-    var player Player
     player = Player {
 		size :0,
 		score : 0,
 		alive : true}
-
-    return player
 }
 

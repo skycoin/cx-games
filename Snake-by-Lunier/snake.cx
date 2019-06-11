@@ -130,10 +130,8 @@ func initGamefield()(){
     var i i32
     var j i32
 
-    for i = 0; i < CELLS_Y; i++
-    {
-		for j=0; j < CELLS_X; j++
-		{
+    for i = 0; i < CELLS_Y; i++ {
+		for j = 0; j < CELLS_X; j++ {
 			gamefield[i][j] = initCell(i,j,backgroundTex)
 		}
     }
@@ -153,10 +151,7 @@ func initCell(line i32, column i32, tex i32) (cell stuff.Cell) {
     var dimension stuff.Dimension2D
     dimension = stuff.newDimension2D(CELLS_HEIGHT_PX,CELLS_WIDTH_PX)
 
-    var cell stuff.Cell
     cell = stuff.newCell(pos,dimension,tex)
-
-    return cell
 }
 
 /* Function     : indexToPosition
@@ -168,10 +163,7 @@ func initCell(line i32, column i32, tex i32) (cell stuff.Cell) {
 func indexToPosition (line i32, column i32) (pos stuff.Position2D){
     var x f32 = f32.add(f32.add(-1.0, f32.mul(i32.f32(column),CELLS_WIDTH_SC)),f32.div(CELLS_WIDTH_SC,2.0))
     var y f32 = f32.sub(f32.sub( 1.0, f32.mul(i32.f32(line),CELLS_HEIGHT_SC)), f32.div(CELLS_HEIGHT_SC,2.0))
-    var pos stuff.Position2D
     pos = stuff.newPosition2D(x,y,column,line)
-
-    return pos
 }
 
 /* Function     : drawBoard
@@ -183,10 +175,8 @@ func drawBoard()(){
     var i i32
     var j i32
 
-    for i = 0; i < CELLS_Y; i++
-    {
-		for j=0; j < CELLS_X; j++
-		{
+    for i = 0; i < CELLS_Y; i++ {
+		for j = 0; j < CELLS_X; j++ {
 			drawCell(gamefield[i][j].position, gamefield[i][j].dimension, gamefield[i][j].texture,0.0)
 		}
     }
@@ -223,7 +213,6 @@ func drawCell(pos stuff.Position2D, dim stuff.Dimension2D, tex i32, rotation f32
 
 func scale(numerator f32, denominator i32) (result f32) {
 	result = f32.div(numerator, i32.f32(denominator))
-	return result
 }
 
 /* Function     : createFood
@@ -277,7 +266,6 @@ func onPlayer(x i32, y i32)(answer bool){
 			return answer
 		}
 	}
-	return answer
 }
 
 /* 	Function     : drawFood
@@ -528,7 +516,6 @@ func allowedToMove()(allowed bool){
 		allowed = false
 		return allowed
 	}
-	return allowed
 }
 
 /* 	Function     : checkForFood
