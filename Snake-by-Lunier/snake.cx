@@ -6,7 +6,7 @@ import "glfw"
 import "gltext"
 import "os"
 
-var previousScore i32
+var previousScore i32 = -1 // so 1st death prints in console
 
 //global texture
 var snakeHeadTex i32
@@ -64,14 +64,13 @@ var food stuff.Cell
 
 var player stuff.Player
 
-func initGlfw(window str) () {
-
+func initGlfw(window str) {
     glfw.Init()
     glfw.WindowHint(glfw.Resizable,glfw.False)
     glfw.WindowHint(glfw.ContextVersionMajor, 2)
     glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
-    glfw.CreateWindow(window,WINDOW_WIDTH,WINDOW_HEIGHT,"Snake v1.0")
+    glfw.CreateWindow(window, WINDOW_WIDTH, WINDOW_HEIGHT, "Snake v1.0")
     glfw.MakeContextCurrent(window)
 }
 
@@ -99,22 +98,28 @@ func initTextures() (){
 }
 
 func setupCellSpecs() (){
-    CELLS_WIDTH_PX = f32.div(i32.f32(WINDOW_WIDTH),i32.f32(CELLS_X))
-    CELLS_HEIGHT_PX = f32.div(i32.f32(WINDOW_HEIGHT),i32.f32(CELLS_Y))
+    CELLS_WIDTH_PX = f32.div(i32.f32(WINDOW_WIDTH), i32.f32(CELLS_X))
+    CELLS_HEIGHT_PX = f32.div(i32.f32(WINDOW_HEIGHT), i32.f32(CELLS_Y))
 	CELLS_WIDTH_SC = f32.div(2.0, i32.f32(CELLS_X))
 	CELLS_HEIGHT_SC = f32.div(2.0, i32.f32(CELLS_Y))
 }
 
-/* Function     : initScene
-   Desctription : Initializes the gamefield,Player and Food
+/* Function     : initGlCommands
+   Desctription : Initializes GL state
 */
-func initScene() (){
-    gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
-	gl.Disable(gl.DEPTH_TEST)
+func initGlCommands() {
+	gl.DepthFunc(gl.LESS)	
+	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
+	
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
 	gl.MatrixMode(gl.MODELVIEW)
+}
 
+/* Function     : initScene
+   Desctription : Initializes the Gamefield, Player and Food
+*/
+func initScene() {
 	initGamefield()
 	initPlayer()
 	createFood()
@@ -125,7 +130,7 @@ func initScene() (){
    Output       : 
    Desctription : initializes the global gamefield variable
 */
-func initGamefield()(){
+func initGamefield() {
     var i i32
     var j i32
 
@@ -191,8 +196,14 @@ func drawCell(pos stuff.Position2D, dim stuff.Dimension2D, tex i32, rotation f32
 	gl.BindTexture(gl.TEXTURE_2D, tex)
 
 	gl.Translatef(pos.x, pos.y, 0.0)
-	gl.Scalef(scale(dim.width,WINDOW_WIDTH), scale(dim.height,WINDOW_HEIGHT), 0.0)
+	
+	// scale (0.05 at time of writing)
+	var scX f32 = scale(dim.width, WINDOW_WIDTH)
+	var scY f32 = scale(dim.height, WINDOW_HEIGHT)
+	gl.Scalef(scX, scY, 0.0)
+	
 	gl.Rotatef(rotation, 0.0, 0.0, 1.0);
+	
 	gl.Begin(gl.QUADS)
 
 	gl.TexCoord2d(0.0D, 0.0D);
@@ -534,7 +545,7 @@ func checkForFood()(){
 	}
 }
 
-func setupText()(){
+func initFonts(){
 	var wd str
 	wd = os.GetWorkingDirectory()
 	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
@@ -554,7 +565,7 @@ func setupText()(){
 }
 
 var newGame str = "Press enter to start a new game"
-func printScore()(){
+func printScore(scale f32) {
 	var playerScore str = str.concat("Score: ", i32.str(player.score))
 	
 	if previousScore != player.score {
@@ -563,21 +574,22 @@ func printScore()(){
 		str.print(newGame)
 	}
 	
-	gl.Color4f(0.5, 0.3, 0.8, 1.0)
-//	gl.Color3f(1.0, 0.0, 1.0)
-	gltext.Printf("Roboto50", 0.0, 0.0, playerScore)
-	gltext.Printf("Roboto30", 0.0, 50.0, newGame)
+	gl.Color4f(1.0, 0.0, 0.8, 1.0)
+	gl.Scalef(scale, scale, 0.0)
+	gltext.Printf("Roboto50", 0.0, 50.0, playerScore)
+	gltext.Printf("Roboto30", 0.0, 150.0, newGame)
 }
 
 func main() {
     initGlfw("window")
     initGl()
+	initGlCommands()
+	initTextures()
+	initFonts()
 	
 	new_game:
 	restart = false
-	setupText()
     setupCellSpecs()
-	initTextures()
     initScene()
 
     glfw.SetKeyCallback("window","keyControl")
@@ -587,16 +599,20 @@ func main() {
 		gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
     	
 		if (player.alive == true){
+			gl.Disable(gl.DEPTH_TEST)
 			renderScreen()
 			checkForFood()
+			gl.Enable(gl.DEPTH_TEST)
+			printScore(20.0)
 			
 			//check if the time has passed to move again
-			if f64.lt(SPEED,f64.sub(glfw.GetTime(),timer)){
+			if f64.lt(SPEED, f64.sub(glfw.GetTime(), timer)){
 				movePlayer()
 				timer = glfw.GetTime()
 			}
 		}else {
-			printScore()
+			gl.Enable(gl.DEPTH_TEST)
+			printScore(1.0)
 			if (restart == true){
 				goto new_game
 			}
