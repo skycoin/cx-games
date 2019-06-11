@@ -5,7 +5,7 @@
 PacMan CX is a simple 2D game powered by the CX programming language.
 This game is being developed with the following objectives:
 
-  - Demostrate the capabilities of CX
+  - Demonstrate the capabilities of CX
   - Obtain feedback on the language
   - Increase awareness for the Skycoin Project (developers of CX)
 
@@ -47,7 +47,7 @@ Use the arrows to move the player.
 The code is currently very disorganized due to the fact that this was my first experience with CX and I had to play around some bugs. I will make sure to clean things up as soon as possible.
  - Currently under development:
    - Add teleport blocks (causes a game freezing bug when a ghost steps in there).
-   - Implement differnt ghost movement patterns. (Done)
+   - Implement different ghost movement patterns. (Done)
    - Add the support for multiple levels.
    - Polish movement mechanics.
 
