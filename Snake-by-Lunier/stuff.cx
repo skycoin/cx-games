@@ -1,5 +1,8 @@
 package stuff
 
+import "gltext"
+import "main"
+
 type Position2D struct {
     x f32
     y f32
@@ -69,7 +72,7 @@ func newCell (pos Position2D, dim Dimension2D, tex i32) (cell Cell) {
 		rotation : 0.0}
 }
 
-type Player struct{
+type Player struct {
 	head Cell
     body [99]Cell
     size i32
@@ -87,3 +90,55 @@ func newPlayer () (player Player) {
 		alive: true}
 }
 
+
+// text
+type TextData struct {
+    font str
+    text str
+    x f32
+    y f32
+}
+
+var Texts []TextData
+
+func initTextData () {
+    var td TextData
+    
+    
+    td = TextData{
+        font: "Roboto100",
+        text: "GAME OVER",
+        y: 150.0}
+    
+    td.x = getOffsetX(td.font, td.text)
+    Texts = append(
+    Texts, td)
+
+
+    td = TextData{
+        font: "Roboto50",
+        text: "Press [ENTER] to",
+        y: 350.0}
+
+    td.x = getOffsetX(td.font, td.text)
+    Texts = append(
+    Texts, td)
+
+
+    td = TextData{
+        font: "Roboto50",
+        text: "start a new game",
+        y: 400.0}
+    
+    td.x = getOffsetX(td.font, td.text)
+    Texts = append(
+    Texts, td)
+}
+
+// for centering text, according to it's size
+func getOffsetX (font str, text str) (out f32) {
+    var w i32 // width
+    var h i32 // height
+    w, h = gltext.Metrics(font, text)
+    out = i32.f32(main.WINDOW_WIDTH - w) / 2.0
+}

@@ -570,7 +570,7 @@ func initFonts() {
 
 }
 
-func printOutlinedGraphicalText(scale f32) {
+func drawAllOutlinedGlText(scale f32) {
 	var alpha f32 = 0.25
 	
 	if (player.alive == false) {
@@ -586,14 +586,21 @@ func printOutlinedGraphicalText(scale f32) {
 	printTextWithColor(0.0, 0.0, 1.0, 0.55, 0.0, alpha)
 }
 
+// x & y are offsets 
 func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
 	gl.Color4f(r, g, b, a)
-	gltext.Printf("Roboto50", 0.0 + x, 0.0 + y, player.scoreText)
+	var lm f32 // left margin (gap from left edge of window)
+	lm = stuff.getOffsetX("Roboto50", player.scoreText)
+	gltext.Printf("Roboto50", lm + x, 0.0 + y, player.scoreText)
 
 	if (player.alive == false) {
-		gltext.Printf("Roboto100", 0.0 + x, 100.0 + y, "GAME OVER")	
-		gltext.Printf("Roboto50", 0.0 + x, 300.0 + y, "Press [ENTER] to")
-		gltext.Printf("Roboto50", 0.0 + x, 350.0 + y, "start a new game")
+		for i := 0; i32.lt(i, len(stuff.Texts)); i++ {
+			gltext.Printf(
+				stuff.Texts[i].font, 
+				f32.add(stuff.Texts[i].x, x),
+				f32.add(stuff.Texts[i].y, y),
+				stuff.Texts[i].text)	
+		}
 	}
 }
 
@@ -603,6 +610,7 @@ func main() {
 	initGlCommands()
 	initTextures()
 	initFonts()
+	stuff.initTextData()
 	
 	new_game:
 	restart = false
@@ -617,7 +625,7 @@ func main() {
 		gl.Disable(gl.DEPTH_TEST)
 		renderScreen()
 		gl.Enable(gl.DEPTH_TEST)
-		printOutlinedGraphicalText(20.0)
+		drawAllOutlinedGlText(20.0)
     	
 		if (player.alive == true) {
 			checkForFood()
