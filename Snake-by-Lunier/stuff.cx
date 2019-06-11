@@ -74,14 +74,16 @@ type Player struct{
     body [99]Cell
     size i32
 	score i32
+    scoreText str
 	alive bool
 	angle f32
 }
 
 func newPlayer () (player Player) {
     player = Player {
-		size :0,
-		score : 0,
-		alive : true}
+		size: 0,
+		score: 0,
+        scoreText: "0",
+		alive: true}
 }
 

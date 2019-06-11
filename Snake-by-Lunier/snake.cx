@@ -376,7 +376,7 @@ func renderScreen()(){
 	Output		 : 
    	Desctription : Calls the change direction method or restarts the game
 */
-func keyControl(window str, key i32, scancode i32, action i32, mods i32)(){
+func keyControl(window str, key i32, scancode i32, action i32, mods i32) {
     if bool.and(i32.eq(key, RIGHT_ARROW_KEY), i32.eq(action, 1)) {
 		changeDir(RIGHT)
     }
@@ -389,8 +389,10 @@ func keyControl(window str, key i32, scancode i32, action i32, mods i32)(){
     if bool.and(i32.eq(key, UP_ARROW_KEY), i32.eq(action, 1)) {
 		changeDir(UP)
     }
-	if bool.and(i32.eq(key, ENTER_KEY), i32.eq(action, 1)){
-		restart = true
+	if bool.and(i32.eq(key, ENTER_KEY), i32.eq(action, 1)) {
+		if player.alive == false {
+			restart = true
+		}
 	}
 }
 
@@ -425,12 +427,14 @@ func changeDir(direction i32)(){
 	Output		 : 
    	Desctription : Moves the head and the body parts of the player
 */
-func movePlayer()(){
+func movePlayer() {
     if (bool.eq(allowedToMove(),true)){
 		moveHead()
 		moveBody()
 	} else {
 		player.alive = false
+		player.scoreText = str.concat("Score: ", player.scoreText)
+		str.print(player.scoreText)
 	}
 }
 
@@ -534,18 +538,20 @@ func allowedToMove()(allowed bool){
 	Output		 : 
    	Desctription : Checks if the player is on the same position as the food
 */
-func checkForFood()(){
+func checkForFood() {
 	var foodPos stuff.Position2D = food.position
     var headPlayer stuff.Cell = player.head
 	var headPos stuff.Position2D = headPlayer.position
-	if bool.and(i32.eq(foodPos.realX,headPos.realX),i32.eq(foodPos.realY,headPos.realY)){
+	
+	if bool.and(i32.eq(foodPos.realX, headPos.realX), i32.eq(foodPos.realY, headPos.realY)) {
 		createFood()
 		addElementToBody()
 		player.score = i32.add(player.score,POINTSFORFOOD)
+		player.scoreText = i32.str(player.score)
 	}
 }
 
-func initFonts(){
+func initFonts() {
 	var wd str
 	wd = os.GetWorkingDirectory()
 	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
@@ -564,20 +570,31 @@ func initFonts(){
 
 }
 
-var newGame str = "Press enter to start a new game"
-func printScore(scale f32) {
-	var playerScore str = str.concat("Score: ", i32.str(player.score))
+func printOutlinedGraphicalText(scale f32) {
+	var alpha f32 = 0.25
 	
-	if previousScore != player.score {
-		previousScore = player.score
-		str.print(playerScore)
-		str.print(newGame)
+	if (player.alive == false) {
+		alpha = 1.0
 	}
 	
-	gl.Color4f(1.0, 0.0, 0.8, 1.0)
 	gl.Scalef(scale, scale, 0.0)
-	gltext.Printf("Roboto50", 0.0, 50.0, playerScore)
-	gltext.Printf("Roboto30", 0.0, 150.0, newGame)
+
+	printTextWithColor(1.0, 1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(-1.0, 1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(1.0, -1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(-1.0, -1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(0.0, 0.0, 1.0, 0.55, 0.0, alpha)
+}
+
+func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
+	gl.Color4f(r, g, b, a)
+	gltext.Printf("Roboto50", 0.0 + x, 0.0 + y, player.scoreText)
+
+	if (player.alive == false) {
+		gltext.Printf("Roboto100", 0.0 + x, 100.0 + y, "GAME OVER")	
+		gltext.Printf("Roboto50", 0.0 + x, 300.0 + y, "Press [ENTER] to")
+		gltext.Printf("Roboto50", 0.0 + x, 350.0 + y, "start a new game")
+	}
 }
 
 func main() {
@@ -597,23 +614,21 @@ func main() {
 	var timer f64 = glfw.GetTime()
     for bool.not(glfw.ShouldClose("window")){		
 		gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
+		gl.Disable(gl.DEPTH_TEST)
+		renderScreen()
+		gl.Enable(gl.DEPTH_TEST)
+		printOutlinedGraphicalText(20.0)
     	
-		if (player.alive == true){
-			gl.Disable(gl.DEPTH_TEST)
-			renderScreen()
+		if (player.alive == true) {
 			checkForFood()
-			gl.Enable(gl.DEPTH_TEST)
-			printScore(20.0)
 			
 			//check if the time has passed to move again
 			if f64.lt(SPEED, f64.sub(glfw.GetTime(), timer)){
 				movePlayer()
 				timer = glfw.GetTime()
 			}
-		}else {
-			gl.Enable(gl.DEPTH_TEST)
-			printScore(1.0)
-			if (restart == true){
+		}else{
+			if (restart == true) {
 				goto new_game
 			}
 		}
