@@ -6,8 +6,7 @@ import "glfw"
 import "gltext"
 import "os"
 
-//to print out the printScore method only once
-var once bool
+var previousScore i32
 
 //global texture
 var snakeHeadTex i32
@@ -76,11 +75,11 @@ func initGlfw(window str) () {
     glfw.MakeContextCurrent(window)
 }
 
-func initGl() (program i32) {
+func initGl() {
 	gl.Init()
-    program = gl.CreateProgram()
-    gl.LinkProgram(program)
-	return program
+    var prog i32 
+    prog = gl.CreateProgram()
+    gl.LinkProgram(prog)
 }
 
 /* Function     : initTextures
@@ -355,6 +354,7 @@ func addElementToBody()(){
    	Desctription : Calls the draw functions of the Board,Player,Food
 */
 func renderScreen()(){
+	gl.Color3f(1.0, 1.0, 1.0)
     drawBoard()
     drawPlayer()
     drawFood()
@@ -553,18 +553,25 @@ func setupText()(){
 
 }
 
+var newGame str = "Press enter to start a new game"
 func printScore()(){
 	var playerScore str = str.concat("Score: ", i32.str(player.score))
-	var newGame str 
-	newGame = "Press enter to start a new Game"
-	gltext.Printf("Roboto50",200.0, 250.0, playerScore)
-	gltext.Printf("Roboto30",100.0, 340.0, newGame)
+	
+	if previousScore != player.score {
+		previousScore = player.score
+		str.print(playerScore)
+		str.print(newGame)
+	}
+	
+	gl.Color4f(0.5, 0.3, 0.8, 1.0)
+//	gl.Color3f(1.0, 0.0, 1.0)
+	gltext.Printf("Roboto50", 0.0, 0.0, playerScore)
+	gltext.Printf("Roboto30", 0.0, 50.0, newGame)
 }
 
 func main() {
-
     initGlfw("window")
-    var program i32 = initGl()
+    initGl()
 	
 	new_game:
 	restart = false
@@ -576,14 +583,13 @@ func main() {
     glfw.SetKeyCallback("window","keyControl")
     
 	var timer f64 = glfw.GetTime()
-    for bool.not(glfw.ShouldClose("window")){
-		
+    for bool.not(glfw.ShouldClose("window")){		
 		gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
-    	gl.UseProgram(program)
     	
 		if (player.alive == true){
 			renderScreen()
 			checkForFood()
+			
 			//check if the time has passed to move again
 			if f64.lt(SPEED,f64.sub(glfw.GetTime(),timer)){
 				movePlayer()
@@ -595,6 +601,7 @@ func main() {
 				goto new_game
 			}
 		}
+		
         glfw.PollEvents()
         glfw.SwapBuffers("window")
     }
