@@ -1,0 +1,97 @@
+package stuff
+
+type Position2D struct {
+    x f32
+    y f32
+    realX i32
+    realY i32
+}
+
+func newPosition2D (xPos f32, yPos f32,rxPos i32, ryPos i32) (position Position2D) {
+    var position Position2D
+    position = Position2D {
+        x : xPos,
+		y : yPos,
+		realX : rxPos,
+		realY : ryPos}
+    return position
+}
+
+func (p Position2D) setXPosition (new_x f32) {
+    p.x = new_x
+}
+
+func (p Position2D) setYPosition (new_y f32) {
+    p.y = new_y
+}
+
+
+type Dimension2D struct {
+    height f32
+    width f32
+}
+
+func newDimension2D (h f32, w f32) (dimension Dimension2D) {
+    var dimension Dimension2D
+    dimension = Dimension2D {
+        height: h,
+	width: w }
+    return dimension
+}
+
+func (p Dimension2D) setXPosition (new_width f32) {
+    p.width = new_width
+}
+
+func (p Dimension2D) setYPosition (new_height f32) {
+    p.height = new_height
+}
+
+
+type Cell struct {
+    position Position2D
+	oldPosition Position2D
+    dimension Dimension2D
+    texture i32
+	direction i32
+	lastDirection i32
+	rotation f32
+}
+
+func (c Cell) getPosition (pos Position2D) {
+	return c.position
+}
+
+
+func newCell (pos Position2D, dim Dimension2D, tex i32) (cell Cell) {
+    var cell Cell
+    cell = Cell {
+    	position: pos,
+		dimension: dim,
+		texture: tex,
+		direction : 0,
+		lastDirection: 0,
+		rotation : 0.0}
+
+    return cell
+}
+
+type Player struct{
+	head Cell
+    body [99]Cell
+    size i32
+	score i32
+	alive bool
+	angle f32
+}
+
+func newPlayer () (player Player) {
+    var player Player
+    player = Player {
+		size :0,
+		score : 0,
+		alive : true}
+
+    return player
+}
+
