@@ -87,6 +87,19 @@ func levelUp() {
   }
 }
 
+/* Function     : coords2position
+   Input        : Vertical board position (line i32)
+                : Horizontal board position (collumn i32)
+   Output       : A position in the game screen (position graphical2d.Position2D)
+   Desctription : Maps a (line/collumn) pair into an actual screen coordinates
+*/
+func coords2position(line i32, collumn i32) (position graphical2d.Position2D) {
+  x := f32.add(-1.0, f32.add(f32.mul(i32.f32(collumn), CELL_WIDTH), f32.div(CELL_WIDTH, 2.0)))
+  y := f32.sub(1.0, f32.add(f32.mul(i32.f32(line), CELL_HEIGHT), f32.div(CELL_HEIGHT, 2.0)))
+
+  position = graphical2d.newPosition2D(x, y)
+}
+
 func get_board_line(i i32) (line [28]i32) {
     if i32.eq(i, 1) {
       line = [28]i32{1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1}

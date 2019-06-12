@@ -179,3 +179,64 @@ func randomGhostDirection(ghost Ghost) (direction i32) {
     direction = i32.rand(0, 4)
   }
 }
+
+
+
+/***************************************
+ * Ghost behavior functions.
+***************************************/
+
+func updateGhostMode(ghost Ghost) () {
+  if i32.eq(ghost.status, GHOST_MODE_CHASE) {
+    if isTimerOver(GHOST_CHASE_TIMER, GHOST_CHASE_LIMIT) {
+      ghosts[ghost.gtype].status = GHOST_MODE_SCATTER
+      GHOST_SCATTER_TIMER = glfw.GetTime()
+    }
+  }
+
+  if i32.eq(ghost.status, GHOST_MODE_SCATTER) {
+    if isTimerOver(GHOST_SCATTER_TIMER, GHOST_SCATTER_LIMIT) {
+      ghosts[ghost.gtype].status = GHOST_MODE_CHASE
+      GHOST_CHASE_TIMER = glfw.GetTime()
+    }
+  }
+
+  if i32.eq(ghost.status, GHOST_MODE_FRIGHTENED) {
+    if isTimerOver(GHOST_FRIGHTENED_TIMER, GHOST_FRIGHTENED_LIMIT) {
+      ghosts[ghost.gtype].status = GHOST_MODE_CHASE
+      GHOST_CHASE_TIMER = glfw.GetTime()
+    }
+  }
+}
+
+func releaseGhost() {
+  for i:=0; i<4; i++ {
+    if i32.eq(ghosts[i].status, GHOST_MODE_IN_HOUSE) {
+      ghosts[i].index_x = f32.i32(GHOST_SPAWN_COLLUMN)
+      ghosts[i].index_y = f32.i32(GHOST_SPAWN_LINE)
+      ghosts[i].status = GHOST_MODE_CHASE
+      //return;
+      break
+    }
+  }
+}
+
+/* Function     : reverseDirection
+   Input        : Current direction (direction i32)
+   Output       : Opposite direction (reverse i32)
+   Desctription : Returns the opposite direction of the input.
+*/
+func reverseDirection(direction i32) (reverse i32) {
+  if i32.eq(direction, UP) {
+    reverse = DOWN
+  }
+  if i32.eq(direction, DOWN) {
+    reverse = UP
+  }
+  if i32.eq(direction, LEFT) {
+    reverse = RIGHT
+  }
+  if i32.eq(direction, RIGHT) {
+    reverse = LEFT
+  }
+}

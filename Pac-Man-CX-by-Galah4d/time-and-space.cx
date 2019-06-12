@@ -1,0 +1,33 @@
+package main
+
+
+
+func isTimerOver(timer f64, limit f64) (is_over bool) {
+  if gteq(f64.sub(glfw.GetTime(), timer), limit) {
+    is_over = true
+  }
+}
+
+
+
+// Collision manager functions
+
+func checkPlayerGhostCollision(ghost Ghost) () {
+  if bool.and(i32.eq(player.index_x, ghost.index_x), i32.eq(player.index_y, ghost.index_y)) {
+    if i32.eq(ghost.status, GHOST_MODE_FRIGHTENED) {
+      ghosts[ghost.gtype].index_x = 14
+      ghosts[ghost.gtype].index_y = 13
+      ghosts[ghost.gtype].status = GHOST_MODE_IN_HOUSE
+    }
+
+    if bool.or(i32.eq(ghost.status, GHOST_MODE_CHASE), i32.eq(ghost.status, GHOST_MODE_SCATTER)) {
+      PLAYER_LIVES = i32.sub(PLAYER_LIVES, 1)
+      if i32.lteq(PLAYER_LIVES, 0) {
+        GAME_OVER = true
+        str.print("------ GAME OVER ------") // FIX ME add game over screen
+      } else {
+        player = newPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLLUMN, PLAYER_RADIUS)
+      }
+    }
+  }
+}
