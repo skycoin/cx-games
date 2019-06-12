@@ -42,6 +42,7 @@ var POINT_COLOR_GREEN f32 = 1.0
 var POINT_COLOR_BLUE f32 = 1.0
 
 // Player constants
+var PLAYER_FACING i32 = LEFT
 var PLAYER_COLOR_RED f32 = 1.0
 var PLAYER_COLOR_GREEN f32 = 1.0
 var PLAYER_COLOR_BLUE f32 = 0.0
@@ -311,6 +312,8 @@ func canMove(direction i32, line i32, collumn i32) (can_move bool)  {
    Desctription : Manages the player movement.
 */
 func movePlayer(direction i32) () {
+  PLAYER_FACING = direction
+
   if bool.eq(canMove(direction, player.index_y, player.index_x), true) {
     // Move Up
     if i32.eq(direction, UP) {

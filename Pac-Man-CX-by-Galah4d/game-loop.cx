@@ -45,7 +45,7 @@ func main() {
 
     // Check if should release ghost
     if isTimerOver(GHOST_RELEASE_TIMER, GHOST_CHASE_LIMIT) {
-      // Does not release ghosts during frightned mode
+      // Does not release ghosts during frightened mode
       if isTimerOver(GHOST_FRIGHTENED_TIMER, GHOST_FRIGHTENED_LIMIT) {
         releaseGhost()
       }

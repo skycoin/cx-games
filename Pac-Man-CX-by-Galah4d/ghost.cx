@@ -186,7 +186,7 @@ func randomGhostDirection(ghost Ghost) (direction i32) {
  * Ghost behavior functions.
 ***************************************/
 
-func updateGhostMode(ghost Ghost) () {
+func updateGhostMode(ghost Ghost) {
   if i32.eq(ghost.status, GHOST_MODE_CHASE) {
     if isTimerOver(GHOST_CHASE_TIMER, GHOST_CHASE_LIMIT) {
       ghosts[ghost.gtype].status = GHOST_MODE_SCATTER
@@ -215,7 +215,6 @@ func releaseGhost() {
       ghosts[i].index_x = f32.i32(GHOST_SPAWN_COLLUMN)
       ghosts[i].index_y = f32.i32(GHOST_SPAWN_LINE)
       ghosts[i].status = GHOST_MODE_CHASE
-      //return;
       break
     }
   }
