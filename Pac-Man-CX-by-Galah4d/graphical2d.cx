@@ -160,7 +160,7 @@ func drawCircle (position Position2D, radius f32, color Color) () {
   gl.End()
 }
 
-func drawGhost (position Position2D, radius f32, color Color, frame f32) () {
+func drawGhost (position Position2D, radius f32, color Color, frame f32) {
   var full_angle f32
   full_angle = f32.mul(2.0, 3.141592654)
   var x f32
@@ -185,10 +185,12 @@ func drawGhost (position Position2D, radius f32, color Color, frame f32) () {
     }
     gl.Vertex2f(f32.add(x, f32.mul(4.0, f32.div(radius, 2.0))), f32.sub(y, radius))
   } else {
-    gl.Vertex2f(f32.add(x, f32.mul(0.0, f32.div(radius, 2.0))), f32.sub(y, f32.div(radius, 2.0)))
+    var hr /* half radius */ f32 = f32.div(radius, 2.0)
+    gl.Vertex2f(f32.add(x, f32.mul(0.0, hr)), f32.sub(y, hr))
+    
     for i = 1.0; f32.lteq(i, 4.0); i = f32.add(i, 2.0) {
-      gl.Vertex2f(f32.add(x, f32.mul(i, f32.div(radius, 2.0))), f32.sub(y, radius))
-      gl.Vertex2f(f32.add(x, f32.mul(f32.add(i, 1.0), f32.div(radius, 2.0))), f32.sub(y, f32.div(radius, 2.0)))
+      gl.Vertex2f(f32.add(x, f32.mul(i, hr)), f32.sub(y, radius))
+      gl.Vertex2f(f32.add(x, f32.mul(f32.add(i, 1.0), hr)), f32.sub(y, hr))
     }
   }
 
