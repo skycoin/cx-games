@@ -48,7 +48,16 @@ func renderBoard() () {
 /* Function     : renderPlayer
    Desctription : Renders the player
 */
-func renderPlayer() () {
+func renderPlayer() {
+  graphical2d.drawPlayer2(player.position, player.radius, player.color)
+  return
+
+  // LEAVING THE ORIGINAL CODE, but bypassing it because
+  // now the mouth smoothly closes.  no more need to....
+
+
+  // ....bounce back & forth between just 2 frames
+  // (completely closed, or completely open)
   if isTimerOver(PLAYER_ANIMATION_TIMER, PLAYER_ANIMATION_SEMI_LIMIT) {
     graphical2d.drawPlayer2(player.position, player.radius, player.color)
   } else {

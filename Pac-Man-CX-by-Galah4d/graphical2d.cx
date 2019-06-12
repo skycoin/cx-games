@@ -158,7 +158,7 @@ func drawPlayer2(position Position2D, radius f32, color Color) () {
   var full_angle f32 = f32.mul(2.0, 3.141592654)
   var x f32
   var y f32
-  
+
   // angles in degrees
   var start f32
   var end f32
@@ -177,7 +177,11 @@ func drawPlayer2(position Position2D, radius f32, color Color) () {
   }
   
   end = start + 270.0
-
+  var offs f32 = main.getTimeFraction() // lip offset from a fully open mouth
+  offs = f32.mul(offs, 90.0)
+  start = f32.sub(start, offs)
+  end = f32.add(end, offs)
+  
   gl.Begin(gl.TRIANGLE_FAN)
   
     gl.Color3f(color.red, color.green, color.blue)
@@ -186,9 +190,7 @@ func drawPlayer2(position Position2D, radius f32, color Color) () {
     for f := start; f32.lt(f, end); f = f32.add(f, 20.0) {
       var validAngle f32 = f
       
-      for validAngle >= 360.0 { // keep angle 0-360
-        validAngle = f32.sub(validAngle, 360.0)
-      }
+      validAngle = main.getValueUnderMax(validAngle, 360.0)
       
       validAngle = f32.div(validAngle, 360.0) // convert to fraction of full 360
       validAngle = f32.mul(validAngle, full_angle) // converted to radians
