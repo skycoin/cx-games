@@ -15,10 +15,19 @@
 			had to declare/define first, THEN could pass it
 		
 	DEF NEEDS TO BE ADDED TO ISSUES
-		-_- 
+		-_-
+		error: map.cx:24 identifier '*lcl_215' does not exist (lt.eq())
+		
+		-_-
 		couldn't use indexception ( [[ ]] ) 
+		
+		-_- 
 		no friendly errors / warnings trying to use unimported packages 
+		
+		-_- 
 		we need math package, or things like i32.maxvalue
+		
+		-_- 
 		no nil
 		
 		-_- 
