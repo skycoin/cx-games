@@ -1,0 +1,133 @@
+package main
+
+// Game Object render functions
+
+/* Function     : renderGame
+   Input        : OpenGL program (program i32)
+   Desctription : Responsible for managing the rendering process of all the game
+                  objects.
+*/
+func renderGame(program i32) () {
+  var i i32
+  var j i32
+
+  gl.Clear(gl.COLOR_BUFFER_BIT)
+  gl.Enable(gl.TEXTURE_2D)
+  gl.UseProgram(program)
+
+  renderBoard()  // Render Board
+  renderPlayer()    // Render Player
+
+  // Render Points
+  for i=0; i<points_count; i++ {
+    if bool.eq(points[i].active, true) {
+      renderPoint(points[i])
+    }
+  }
+
+  // Render Ghosts
+  for i=0; i<4; i++ {
+      renderGhost(ghosts[i])
+  }
+
+  renderLives() // Render Lives
+  renderLevel()
+}
+
+/* Function     : renderBoard
+   Desctription : Renders the game board
+*/
+func renderBoard() () {
+  for i:=0; i<y_cells; i++ {
+    for j:=0; j<x_cells; j++ {
+      graphical2d.drawRectangle(cells[i][j].position, cells[i][j].dimensions, cells[i][j].color)
+    }
+  }
+}
+
+/* Function     : renderPlayer
+   Desctription : Renders the player
+*/
+func renderPlayer() () {
+  if isTimerOver(PLAYER_ANIMATION_TIMER, PLAYER_ANIMATION_SEMI_LIMIT) {
+    graphical2d.drawPlayer2(player.position, player.radius, player.color)
+  } else {
+    graphical2d.drawCircle(player.position, player.radius, player.color)
+  }
+
+  if isTimerOver(PLAYER_ANIMATION_TIMER, PLAYER_ANIMATION_LIMIT) {
+    PLAYER_ANIMATION_TIMER = glfw.GetTime()
+  }
+}
+
+/* Function     : renderGhost
+   Desctription : Renders a ghost
+*/
+func renderGhost(ghost Ghost) () {
+  var color graphical2d.Color
+
+  if i32.eq(ghost.status, GHOST_MODE_FRIGHTENED) {
+    if bool.and(isTimerOver(GHOST_ANIMATION_TIMER, GHOST_ANIMATION_SEMI_LIMIT), isTimerOver(GHOST_FRIGHTENED_TIMER, GHOST_FRIGHTENED_SEMI_LIMIT)) {
+      color = graphical2d.newColor(1.0, 1.0, 1.0)
+    } else {
+      color = graphical2d.newColor(0.0, 0.0, 1.0)
+    }
+  } else {
+    color = ghost.color
+  }
+
+  if isTimerOver(GHOST_ANIMATION_TIMER, GHOST_ANIMATION_SEMI_LIMIT) {
+    graphical2d.drawGhost(ghost.position, ghost.radius, color, 0.5) // FIX ME DrawGhost()
+  } else {
+    graphical2d.drawGhost(ghost.position, ghost.radius, color, 1.5) // FIX ME DrawGhost2()
+  }
+
+  if isTimerOver(GHOST_ANIMATION_TIMER, GHOST_ANIMATION_LIMIT) {
+    GHOST_ANIMATION_TIMER = glfw.GetTime()
+  }
+}
+
+/* Function     : renderPoint
+   Desctription : Renders a point
+*/
+func renderPoint(point Point) () {
+  if isTimerOver(POINT_ANIMATION_TIMER, POINT_ANIMATION_SEMI_LIMIT) {
+    if i32.eq(point.ptype, PATH_CELL_WITH_SUPER_POINT) {
+      graphical2d.drawCircle(point.position, f32.add(point.radius, 0.005), point.color)
+    }
+    if i32.eq(point.ptype, PATH_CELL_WITH_SIMPLE_POINT) {
+      graphical2d.drawCircle(point.position, point.radius, point.color)
+    }
+  } else {
+    graphical2d.drawCircle(point.position, point.radius, point.color)
+  }
+
+  if isTimerOver(POINT_ANIMATION_TIMER, POINT_ANIMATION_LIMIT) {
+    POINT_ANIMATION_TIMER = glfw.GetTime()
+  }
+}
+
+/* Function     : renderLives
+   Desctription : Renders the player lives
+*/
+func renderLives() () {
+  var color Color
+  color = graphical2d.newColor(LIFE_COLOR_RED, LIFE_COLOR_GREEN, LIFE_COLOR_BLUE)
+
+  var position graphical2d.Position2D
+  for i:=0; i<PLAYER_LIVES; i++ {
+    position = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLLUMN, i))
+    graphical2d.drawLife(position, LIFE_RADIUS, color)
+  }
+}
+
+func renderLevel() {
+  var color Color
+  color = graphical2d.newColor(0.0, 0.0, 1.0)
+
+  var position graphical2d.Position2D
+  for i:=0; i<GAME_LEVEL; i++ {
+    position = coords2position(30, i32.add(1, i))
+    graphical2d.drawSkycoin(position, 0.025, 0.0125, color)
+  }
+}

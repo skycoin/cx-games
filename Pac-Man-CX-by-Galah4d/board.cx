@@ -1,5 +1,73 @@
 package main
 
+/* Function     : initScene
+   Desctription : Initializes all game objects including the board cells, the
+                  points, the ghosts and the player.
+*/
+func initScene() () {
+  // Initialize game board items
+  var line [28]i32
+  
+  for i:=0; i<y_cells; i++ {
+    line = get_board_line(i32.add(i, 1))
+    
+    for j:=0; j<x_cells; j++ {
+      initializeItem(i, j, line[j])
+    }
+  }
+
+  // Initialize player
+  player = newPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLLUMN, PLAYER_RADIUS)
+
+  // Initialize ghosts
+  ghosts[0] = newGhost(11, 13, 0, GHOST_MODE_CHASE)     // Shadow Ghost
+  ghosts[1] = newGhost(14, 11, 1, GHOST_MODE_IN_HOUSE)  // Speedy Ghost
+  ghosts[2] = newGhost(14, 13, 2, GHOST_MODE_IN_HOUSE)  // Bashful Ghost
+  ghosts[3] = newGhost(14, 15, 3, GHOST_MODE_IN_HOUSE)  // Pokey Ghost
+}
+
+func initializeItem(line i32, col i32, item_type i32) () {
+  //x := f32.add(-1.0, f32.add(f32.mul(i32.f32(col), CELL_WIDTH), f32.div(CELL_WIDTH, 2.0)))
+  //y := f32.sub(1.0, f32.add(f32.mul(i32.f32(line), CELL_HEIGHT), f32.div(CELL_HEIGHT, 2.0)))
+  if i32.eq(item_type, WALL_CELL) {
+    cells[line][col] = newCell(line, col, WALL_CELL)
+  }
+  if i32.eq(item_type, PATH_CELL) {
+    cells[line][col] = newCell(line, col, PATH_CELL)
+  }
+  if i32.eq(item_type, PATH_CELL_WITH_SIMPLE_POINT) {
+    points[points_count] = newPoint(line, col, PATH_CELL_WITH_SIMPLE_POINT)
+    points_count = i32.add(points_count, 1)
+    cells[line][col] = newCell(line, col, PATH_CELL)
+  }
+  if i32.eq(item_type, PATH_CELL_WITH_SUPER_POINT) {
+    points[points_count] = newPoint(line, col, PATH_CELL_WITH_SUPER_POINT)
+    points_count = i32.add(points_count, 1)
+    cells[line][col] = newCell(line, col, PATH_CELL)
+  }
+  if i32.eq(item_type, TELEPORT_CELL) { // FIX ME merge multiple cases together
+    cells[line][col] = newCell(line, col, TELEPORT_CELL)
+  }
+  if i32.eq(item_type, GATE_CELL) {
+    cells[line][col] = newCell(line, col, GATE_CELL)
+  }
+}
+
+/* Function     : isLevelCompleted
+   Output       : true if the level is completed, false otherwise.
+   Desctription : Checks if all the points on the board were caught allowing the
+                  player to progress to the next level if this condition is met.
+*/
+func isLevelCompleted() (is_completed bool) {
+  is_completed = true
+  
+  for i:=0; i<points_count; i++ {
+    if points[i].active {
+      is_completed = false
+    }
+  }
+}
+
 // FIX ME change game settings
 // Checks if all the points on the board were caught allowing the
 // player to progress to the next level if this condition is met.
