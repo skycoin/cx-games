@@ -1,0 +1,61 @@
+package graphical2d
+
+func drawGhost (position Position2D, radius f32, color Color, frame f32) {
+  var full_angle f32
+  full_angle = f32.mul(2.0, 3.141592654)
+  
+  var x f32
+  var y f32
+
+  gl.Begin(gl.POLYGON)
+  
+  gl.Color3f(color.red, color.green, color.blue)
+
+  // head 
+  var i f32
+  for i = 0.0; f32.lteq(i, 10.0); i = f32.add(i, 1.0) {
+    x = f32.add(position.x, f32.mul(radius, f32.cos(f32.div(f32.mul(i, full_angle), 20.0))))
+    y = f32.add(position.y, f32.mul(radius, f32.sin(f32.div(f32.mul(i, full_angle), 20.0))))
+
+    gl.Vertex2f(x, y)
+  }
+
+  // body
+  if f32.lteq(frame, 1.0) {
+  	drawBody1(x, y, radius)
+  } else {
+  	drawBody2(x, y, radius)
+  }
+
+  gl.End()
+
+  drawEyes(position, radius)
+}
+
+func drawBody1 (x f32, y f32, radius f32) {
+    for i := 0.0; f32.lt(i, 4.0); i = f32.add(i, 2.0) {
+      gl.Vertex2f(f32.add(x, f32.mul(i, f32.div(radius, 2.0))), f32.sub(y, radius))
+      gl.Vertex2f(f32.add(x, f32.mul(f32.add(i, 1.0), f32.div(radius, 2.0))), f32.sub(y, f32.div(radius, 2.0)))
+    }
+    
+    gl.Vertex2f(f32.add(x, f32.mul(4.0, f32.div(radius, 2.0))), f32.sub(y, radius))
+}
+
+func drawBody2 (x f32, y f32, radius f32) {
+	gl.Vertex2f(f32.add(x, f32.mul(0.0, f32.div(radius, 2.0))), f32.sub(y, f32.div(radius, 2.0)))
+
+	for i := 1.0; f32.lteq(i, 4.0); i = f32.add(i, 2.0) {
+	  gl.Vertex2f(f32.add(x, f32.mul(i, f32.div(radius, 2.0))), f32.sub(y, radius))
+	  gl.Vertex2f(f32.add(x, f32.mul(f32.add(i, 1.0), f32.div(radius, 2.0))), f32.sub(y, f32.div(radius, 2.0)))
+	}
+}
+
+func drawEyes (position Position2D, radius f32) {
+  // left 
+  drawCircle(newPosition2D(f32.sub(position.x, f32.div(radius, 2.0)), f32.add(position.y, f32.div(radius, 2.0))), 0.0075, newColor(1.0, 1.0, 1.0))
+  drawCircle(newPosition2D(f32.sub(position.x, f32.div(radius, 2.0)), f32.add(position.y, f32.div(radius, 2.0))), 0.005, newColor(0.0, 0.0, 0.0))
+
+  // right 
+  drawCircle(newPosition2D(f32.add(position.x, f32.div(radius, 2.0)), f32.add(position.y, f32.div(radius, 2.0))), 0.0075, newColor(1.0, 1.0, 1.0))
+  drawCircle(newPosition2D(f32.add(position.x, f32.div(radius, 2.0)), f32.add(position.y, f32.div(radius, 2.0))), 0.005, newColor(0.0, 0.0, 0.0))
+}

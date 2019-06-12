@@ -1,5 +1,7 @@
 package main
 
+import "graphical2d"
+
 /* Function     : initScene
    Desctription : Initializes all game objects including the board cells, the
                   points, the ghosts and the player.
