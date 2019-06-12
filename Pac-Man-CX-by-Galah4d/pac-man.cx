@@ -191,12 +191,11 @@ var points_count i32 = 0
 */
 func newPlayer (line i32, collumn i32, rad f32) (pl Player) {
   var pos graphical2d.Position2D
-  pos := coords2position(line, collumn)
+  pos = coords2position(line, collumn)
 
   var col graphical2d.Color
   col = graphical2d.newColor(PLAYER_COLOR_RED, PLAYER_COLOR_GREEN, PLAYER_COLOR_BLUE)
 
-  var pl Player
   pl = Player{
     position: pos,
     color: col,
@@ -204,7 +203,6 @@ func newPlayer (line i32, collumn i32, rad f32) (pl Player) {
     direction: RIGHT,
     index_x: collumn,
     index_y: line}
-  return pl
 }
 
 /* Function     : newCell
@@ -221,7 +219,6 @@ func newCell (line i32, collumn i32, ct i32) (cell Cell) {
   var dim graphical2d.Dimensions2D
   dim = graphical2d.newDimensions2D(CELL_HEIGHT, CELL_WIDTH)
 
-  var cell Cell
   cell = Cell{
     position: pos,
     dimensions: dim,
@@ -229,7 +226,6 @@ func newCell (line i32, collumn i32, ct i32) (cell Cell) {
     index_x: collumn,
     index_y: line,
     ctype: ct}
-  return block
 }
 
 /* Function     : newGhost
@@ -240,14 +236,13 @@ func newCell (line i32, collumn i32, ct i32) (cell Cell) {
    Output       : ghost (ghost Ghost)
    Desctription : Constructor for the Ghost struct.
 */
-func newGhost(line i32, collumn i32, gt i32, ghost_mode i32) (ghost Ghost){
+func newGhost(line i32, collumn i32, gt i32, ghost_mode i32) (ghost Ghost) {
   var pos graphical2d.Position2D
   pos = coords2position(line, collumn)
 
   var col graphical2d.Color
   col = getGhostColor(gt)
 
-  var ghost Ghost
   ghost = Ghost{
     position: pos,
     color: col,
@@ -258,7 +253,6 @@ func newGhost(line i32, collumn i32, gt i32, ghost_mode i32) (ghost Ghost){
     gtype: gt,
     status: ghost_mode,
     last_event_time: 0.0D}
-  return ghost
 }
 
 /* Function     : newPoint
@@ -283,7 +277,6 @@ func newPoint (line i32, collumn i32, pt i32) (point Point) {
     rad = SUPER_POINT_RADIUS
   }
 
-  var point Point
   point = Point {
     position: pos,
     color: col,
@@ -292,7 +285,6 @@ func newPoint (line i32, collumn i32, pt i32) (point Point) {
     index_x: collumn,
     index_y: line,
     active: true}
-  return point
 }
 
 
@@ -306,8 +298,6 @@ func newPoint (line i32, collumn i32, pt i32) (point Point) {
    Desctription : Returns the color corresponding to the cell type.
 */
 func getCellColor (ctype i32) (color graphical2d.Color) {
-  var color graphical2d.Color
-
   if i32.eq(ctype, PATH_CELL) {
     color = graphical2d.newColor(0.0, 0.0, 0.0)
   }
@@ -320,8 +310,6 @@ func getCellColor (ctype i32) (color graphical2d.Color) {
   if i32.eq(ctype, GATE_CELL) {
     color = graphical2d.newColor(1.0, 0.5, 0.0)
   }
-
-  return color
 }
 
 /* Function     : getGhostColor
@@ -330,8 +318,6 @@ func getCellColor (ctype i32) (color graphical2d.Color) {
    Desctription : Returns the color corresponding to the ghost type.
 */
 func getGhostColor (gtype i32) (color graphical2d.Color) {
-  var color graphical2d.Color
-
   if i32.eq(gtype, SHADOW_GHOST) {
     color = graphical2d.newColor(1.0, 0.0, 0.0) // Red color
   }
@@ -344,8 +330,6 @@ func getGhostColor (gtype i32) (color graphical2d.Color) {
   if i32.eq(gtype, POKEY_GHOST) {
     color = graphical2d.newColor(1.0, 0.5, 0.25) // Orange color
   }
-
-  return color
 }
 
 
@@ -361,7 +345,6 @@ func getGhostColor (gtype i32) (color graphical2d.Color) {
    Desctription : Checks if a game object located at (line/collumn) can move in the input (direction).
 */
 func canMove(direction i32, line i32, collumn i32) (can_move bool)  {
-  var can_move bool = false
   if bool.and(i32.eq(direction, UP), i32.eq(cells[i32.sub(line, 1)][collumn].ctype, PATH_CELL)) {
     can_move = true
   }
@@ -374,7 +357,6 @@ func canMove(direction i32, line i32, collumn i32) (can_move bool)  {
   if bool.and(i32.eq(direction, RIGHT), i32.eq(cells[line][i32.add(collumn, 1)].ctype, PATH_CELL)) {
     can_move = true
   }
-  return can_move
 }
 
 /* Function     : movePlayer
@@ -456,7 +438,6 @@ func moveGhost(ghost Ghost) () {
                   and the target board position.
 */
 func calculateGhostDirection(ghost Ghost, target_line i32, target_collumn i32) (direction i32) { // FIX ME no spaghetti code
-  var direction i32
   var min_distance i32 = 100 // Infinite
 
   var distance_left i32
@@ -494,8 +475,6 @@ func calculateGhostDirection(ghost Ghost, target_line i32, target_collumn i32) (
       direction = DOWN
     }
   }
-
-  return direction
 }
 
 /* Function     : calculateGhostDirection
@@ -505,9 +484,7 @@ func calculateGhostDirection(ghost Ghost, target_line i32, target_collumn i32) (
                   and the player.
 */
 func ghostChaseDirection(ghost Ghost) (direction i32) {
-  var direction i32
   direction = calculateGhostDirection(ghost, player.index_y, player.index_x)
-  return direction
 }
 
 /* Function     : calculateGhostDirection
@@ -517,8 +494,6 @@ func ghostChaseDirection(ghost Ghost) (direction i32) {
                   and the corresponding scatter board position.
 */
 func ghostScatterDirection(ghost Ghost) (direction i32) {
-  var direction i32
-
   if i32.eq(ghost.gtype, SHADOW_GHOST) {
     direction = calculateGhostDirection(ghost, SHADOW_SCATTER_LINE, SHADOW_SCATTER_COLLUMN)
   }
@@ -531,8 +506,6 @@ func ghostScatterDirection(ghost Ghost) (direction i32) {
   if i32.eq(ghost.gtype, POKEY_GHOST) {
     direction = calculateGhostDirection(ghost, POKEY_SCATTER_LINE, POKEY_SCATTER_COLLUMN)
   }
-
-  return direction
 }
 
 /* Function     : randomGhostDirection
@@ -541,14 +514,11 @@ func ghostScatterDirection(ghost Ghost) (direction i32) {
    Desctription : Returns a random possible direction for the ghost.
 */
 func randomGhostDirection(ghost Ghost) (direction i32) {
-  var direction i32
   direction = i32.rand(0, 4)
 
   for bool.not(bool.and(bool.not(i32.eq(direction, reverseDirection(ghost.direction))), canMove(direction, ghost.index_y, ghost.index_x))) {
     direction = i32.rand(0, 4)
   }
-
-  return direction
 }
 
 /* Function     : reverseDirection
@@ -557,8 +527,6 @@ func randomGhostDirection(ghost Ghost) (direction i32) {
    Desctription : Returns the opposite direction of the input.
 */
 func reverseDirection(direction i32) (reverse i32) {
-  var reverse i32
-
   if i32.eq(direction, UP) {
     reverse = DOWN
   }
@@ -571,8 +539,6 @@ func reverseDirection(direction i32) (reverse i32) {
   if i32.eq(direction, RIGHT) {
     reverse = LEFT
   }
-
-  return reverse
 }
 
 /* Function     : coords2position
@@ -585,9 +551,7 @@ func coords2position(line i32, collumn i32) (position graphical2d.Position2D) {
   x := f32.add(-1.0, f32.add(f32.mul(i32.f32(collumn), CELL_WIDTH), f32.div(CELL_WIDTH, 2.0)))
   y := f32.sub(1.0, f32.add(f32.mul(i32.f32(line), CELL_HEIGHT), f32.div(CELL_HEIGHT, 2.0)))
 
-  position := graphical2d.newPosition2D(x, y)
-
-  return position
+  position = graphical2d.newPosition2D(x, y)
 }
 
 
@@ -618,23 +582,22 @@ func updateGhostMode(ghost Ghost) () {
   }
 }
 
-func releaseGhost() () {
+func releaseGhost() {
   for i:=0; i<4; i++ {
     if i32.eq(ghosts[i].status, GHOST_MODE_IN_HOUSE) {
       ghosts[i].index_x = f32.i32(GHOST_SPAWN_COLLUMN)
       ghosts[i].index_y = f32.i32(GHOST_SPAWN_LINE)
       ghosts[i].status = GHOST_MODE_CHASE
-      return;
+      //return;
+      break
     }
   }
 }
 
 func isTimerOver(timer f64, limit f64) (is_over bool) {
-  var is_over bool = false
   if gteq(f64.sub(glfw.GetTime(), timer), limit) {
     is_over = true
   }
-  return is_over
 }
 
 
@@ -782,7 +745,7 @@ func renderLives() () {
   }
 }
 
-func renderLevel() () {
+func renderLevel() {
   var color Color
   color = graphical2d.newColor(0.0, 0.0, 1.0)
 
@@ -794,7 +757,6 @@ func renderLevel() () {
 }
 
 func get_board_line(i i32) (line [28]i32) {
-    var line [28]i32
     if i32.eq(i, 1) {
       line = [28]i32{1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1}
     }
@@ -888,7 +850,6 @@ func get_board_line(i i32) (line [28]i32) {
     if i32.eq(i, 31) {
       line = [28]i32{1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1}
     }
-    return line
 }
 
 /***************************************
@@ -916,10 +877,8 @@ func initGLFW() () {
    Desctription : Initializes the OpenGL program.
 */
 func initOpenGL() (program i32) {
-  var program i32
 	program = gl.CreateProgram()
   gl.LinkProgram(program)
-  return program
 }
 
 /* Function     : initScene
@@ -982,13 +941,13 @@ func initializeItem(line i32, col i32, item_type i32) () {
                   player to progress to the next level if this condition is met.
 */
 func isLevelCompleted() (is_completed bool) {
-  var is_completed bool = true
+  is_completed = true
+  
   for i:=0; i<points_count; i++ {
     if points[i].active {
       is_completed = false
     }
   }
-  return is_completed
 }
 
 /* Function     : keyboardManager
@@ -1020,7 +979,7 @@ func keyboardManager(window str, key i32, scancode i32, action i32, mods i32) ()
    Desctription : Checks if all the points on the board were caught allowing the
                   player to progress to the next level if this condition is met.
 */
-func levelUp() (){
+func levelUp() {
   if lt.eq(GAME_LEVEL, GAME_MAX_LEVEL) {
     GAME_LEVEL = i32.add(GAME_LEVEL, 1)
 
