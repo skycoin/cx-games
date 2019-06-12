@@ -1,5 +1,24 @@
 package main
 
+// FIX ME change game settings
+// Checks if all the points on the board were caught allowing the
+// player to progress to the next level if this condition is met.
+func levelUp() {
+  if i32.lteq(GAME_LEVEL, GAME_MAX_LEVEL) {
+    GAME_LEVEL = i32.add(GAME_LEVEL, 1)
+
+    GHOST_RELEASE_LIMIT = f64.sub(GHOST_RELEASE_LIMIT, GHOST_RELESE_MODIFIER)
+
+    GHOST_MOVEMENT_LIMIT = f64.sub(GHOST_MOVEMENT_LIMIT, GHOST_MOVEMENT_MODIFIER)
+
+    GHOST_FRIGHTENED_LIMIT = f64.sub(GHOST_FRIGHTENED_LIMIT, GHOST_FRIGHTENED_MODIFIER)
+    GHOST_FRIGHTENED_SEMI_LIMIT = f64.sub(GHOST_FRIGHTENED_SEMI_LIMIT, GHOST_FRIGHTENED_SEMI_MODIFIER)
+
+    GHOST_CHASE_LIMIT = f64.add(GHOST_CHASE_LIMIT, GHOST_CHASE_MODIFIER)
+    GHOST_SCATTER_LIMIT = f64.sub(GHOST_SCATTER_LIMIT, GHOST_SCATTER_MODIFIER)
+  }
+}
+
 func get_board_line(i i32) (line [28]i32) {
     if i32.eq(i, 1) {
       line = [28]i32{1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1}

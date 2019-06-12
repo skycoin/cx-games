@@ -271,15 +271,13 @@ func initOpenGL() (program i32) {
                   points, the ghosts and the player.
 */
 func initScene() () {
-  var i i32
-  var j i32
-
   // Initialize game board items
   var line [28]i32
-  for i=0; i<y_cells; i++ {
+  
+  for i:=0; i<y_cells; i++ {
     line = get_board_line(i32.add(i, 1))
     
-    for j=0; j<x_cells; j++ {
+    for j:=0; j<x_cells; j++ {
       initializeItem(i, j, line[j])
     }
   }
