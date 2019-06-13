@@ -1,0 +1,55 @@
+package main
+
+func checkBrickCollisions() {
+    var collision bool
+    var brick Sprite
+
+    for i:=0; i<len(bricks); i=i+1 {
+        brick = bricks[i]
+
+        if brick.brickHit == false {
+            collision = checkCollision(brick, yarnBall)
+
+            if collision == true {
+                if spriteTop(brick) < yarnBall.position.y {
+                    yarnBall.position.y = f32.add(spriteTop(brick), f32.div(yarnBall.height, 2.0))
+                    yarnBall.velocity.y = f32.mul(yarnBall.velocity.y, 1.0)
+                } else if spriteBottom(brick) > yarnBall.position.y {
+                    yarnBall.position.y = f32.sub(spriteBottom(brick), f32.div(yarnBall.height, 2.0))
+                    yarnBall.velocity.y = f32.mul(yarnBall.velocity.y, 1.0)
+                } else if brick.position.x < yarnBall.position.x {
+                    yarnBall.position.x = f32.add(spriteRight(brick), f32.div(yarnBall.width, 2.0))
+                    yarnBall.velocity.x = f32.mul(yarnBall.velocity.x, 1.0)
+                } else if brick.position.x > yarnBall.position.x {
+                    yarnBall.position.x = f32.sub(spriteLeft(brick), f32.div(yarnBall.width, 2.0))
+                    yarnBall.velocity.x = f32.mul(yarnBall.velocity.x, 1.0)
+                }
+
+                brick.brickHit = true
+
+                bricks[i] = brick
+            }
+        }
+    }
+}
+
+func checkCollision(spriteA Sprite, spriteB Sprite) (collision bool) {
+    var d1x f32
+    var d1y f32
+    var d2x f32
+    var d2y f32
+
+    collision = true
+
+    d1x = spriteLeft(spriteB) - spriteRight(spriteA)
+    d1y = spriteBottom(spriteB) - spriteTop(spriteA)
+    d2x = spriteLeft(spriteA) - spriteRight(spriteB)
+    d2y = spriteBottom(spriteA) - spriteTop(spriteB)
+
+    if d1x >= 0.0 || d1y >= 0.0{
+        collision = false
+    }
+    if d2x >= 0.0 || d2y >= 0.0 {
+        collision = false
+    }
+}
