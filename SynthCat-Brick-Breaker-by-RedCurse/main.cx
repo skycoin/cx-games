@@ -1,0 +1,431 @@
+package main
+import "glfw"
+import "gl"
+import "os"
+
+import "LoopLimiter"
+import "LoopTracker"
+
+type Vector2D struct {
+    x f32
+    y f32
+}
+
+// *************************************
+// Start - Sprites
+// *************************************
+type Sprite struct {
+    position Vector2D
+    lastPosition Vector2D
+    velocity Vector2D
+    acceleration f32
+    maxVelocity f32
+    width f32
+    height f32
+    frames []i32
+    currentFrame i32
+    brickHit bool
+}
+
+func getTexture(textureFileName str)(texture i32) {
+    var workingDirectory str = os.GetWorkingDirectory()
+
+    texture = gl.NewTexture(str.concat(workingDirectory, textureFileName))
+}
+
+func spriteTop(sprite Sprite)(out f32) {
+    out = sprite.position.y + sprite.height / 2.0
+}
+
+func spriteBottom(sprite Sprite)(out f32) {
+    out = sprite.position.y - sprite.height / 2.0
+}
+
+func spriteRight(sprite Sprite)(out f32) {
+    out = sprite.position.x + sprite.width / 2.0
+}
+
+func spriteLeft(sprite Sprite)(out f32) {
+    out = sprite.position.x - sprite.width / 2.0
+}
+
+func spriteLastTop(sprite Sprite)(out f32) {
+    out = sprite.lastPosition.y + sprite.height / 2.0
+}
+
+func spriteLastBottom(sprite Sprite)(out f32) {
+    out = sprite.lastPosition.y - sprite.height / 2.0
+}
+
+func spriteLastRight(sprite Sprite)(out f32) {
+    out = sprite.lastPosition.x + sprite.width / 2.0
+}
+
+func spriteLastLeft(sprite Sprite)(out f32) {
+    out = sprite.lastPosition.x - sprite.width / 2.0
+}
+
+func createBackgroundSprite()(background Sprite) {
+    background.width = 1600.0 / 1024.0
+    background.height = 1600.0 / 768.0
+
+    background.frames = append(background.frames, getTexture("textures/background.png"))
+}
+
+func createYarnBallSprite()(yarnBall Sprite) {
+    yarnBall.acceleration = 1.0
+    yarnBall.maxVelocity = 1.0
+    yarnBall.width = 64.0 / 1024.0
+    yarnBall.height = 64.0 / 768.0
+
+    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall0.png"))
+    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall1.png"))
+    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall2.png"))
+    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall3.png"))
+}
+
+func createSynthCatSprite()(synthCat Sprite) {
+    synthCat.acceleration = 1.0
+    synthCat.maxVelocity = 1.0
+    synthCat.width = 200.0 / 1024.0
+    synthCat.height = 200.0 / 768.0
+
+    synthCat.frames = append(synthCat.frames, getTexture("textures/synth_cat.png"))
+}
+
+func createBrickSprite(position Vector2D)(brick Sprite) {
+    brick.position = position
+    brick.width = 128.0 / 1024.0
+    brick.height = 64.0 / 768.0
+
+    brick.frames = append(brick.frames, getTexture("textures/brick.png"))
+}
+// *************************************
+// End - Sprites
+// *************************************
+
+// *************************************
+// Start - Game
+// *************************************
+var currentTime f64
+var loopLimiter LoopLimiter.LoopLimiter = LoopLimiter.create(60, true)
+var animationLimiter LoopLimiter.LoopLimiter = LoopLimiter.create(5, true)
+var loopTracker LoopTracker.LoopTracker = LoopTracker.create(1.0D, "Main")
+
+var background Sprite
+var synthCat Sprite
+var yarnBall Sprite
+var bricks []Sprite
+
+var upPressed bool
+var downPressed bool
+var leftPressed bool
+var rightPressed bool
+
+type Window struct {
+    Height i32
+    Width i32
+}
+
+func initGlfw(window Window) {
+    glfw.Init()
+    glfw.WindowHint(glfw.Resizable, glfw.False)
+    glfw.CreateWindow("window", window.Width, window.Height, "SynthCat Brick Breaker")
+    glfw.MakeContextCurrent("window")
+
+    glfw.SetKeyCallback("window", "callback")
+}
+
+func callback(window str, key i32, scancode i32, action i32, mods i32) {
+    // Up
+    if key == 265 && action == 1 {
+		upPressed = true
+	} else if key == 265 && action == 0 {
+		upPressed = false
+    }
+    
+    // Down
+    if key == 264 && action == 1 {
+		downPressed = true
+	} else if key == 264 && action == 0 {
+		downPressed = false
+    }
+
+    // Left
+    if key == 263 && action == 1 {
+		leftPressed = true
+	} else if key == 263 && action == 0 {
+		leftPressed = false
+    }
+
+    // Right
+    if key == 262 && action == 1 {
+		rightPressed = true
+	} else if key == 262 && action == 0 {
+		rightPressed = false
+    }
+}
+
+func startGame() {
+    mainGameLoop()
+}
+
+func mainGameLoop()() {
+    var program i32 = gl.CreateProgram()
+    initSprites()
+    synthCat.position.y = 0.8
+    yarnBall.position.x = 0.0
+    yarnBall.position.y = -0.8
+    yarnBall.velocity.y = 0.3
+    yarnBall.velocity.x = 0.6
+
+    for bool.not(glfw.ShouldClose("window")) {
+        currentTime = glfw.GetTime()
+        loopLimiter = LoopLimiter.update(loopLimiter, currentTime)
+        animationLimiter = LoopLimiter.update(animationLimiter, currentTime)
+        loopTracker = LoopTracker.update(loopTracker, currentTime)
+
+        synthCat = updatePlayer(synthCat)
+        yarnBall = updateBall(yarnBall)
+        checkBrickCollisions()
+
+        synthCat = updateSprite(synthCat)
+        yarnBall = updateSprite(yarnBall)
+
+        if loopLimiter.limitReached {
+            gl.UseProgram(program)
+            gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
+            gl.Enable(gl.TEXTURE_2D)
+            gl.Disable(gl.DITHER)
+            gl.Disable(gl.POINT_SMOOTH)
+            gl.Disable(gl.LINE_SMOOTH)
+            gl.Disable(gl.POLYGON_SMOOTH)
+            gl.Hint(gl.POINT_SMOOTH, gl.DONT_CARE)
+            gl.Hint(gl.LINE_SMOOTH, gl.DONT_CARE)
+            gl.Hint(gl.POLYGON_SMOOTH_HINT, gl.DONT_CARE)
+            gl.Disable(gl.MULTISAMPLE_ARB)
+            
+            gl.TexEnvi(gl.TEXTURE_ENV, gl.TEXTURE_ENV_MODE, gl.MODULATE)
+            gl.Disable(gl.DEPTH_TEST)
+
+            gl.ClearColor(1.0, 1.0, 1.0, 1.0)
+            gl.ClearDepth(1.0D)
+            gl.DepthFunc(gl.LEQUAL)
+            
+            gl.Enable(gl.BLEND)
+            gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+            gl.DepthMask(true)
+
+            gl.MatrixMode(gl.PROJECTION)
+            gl.LoadIdentity()
+
+            gl.MatrixMode(gl.MODELVIEW)
+            gl.LoadIdentity()
+
+            drawSprite(background)
+            drawSprite(synthCat)
+            drawSprite(yarnBall)
+
+            var brick Sprite
+
+            for i:=0; i<len(bricks); i=i+1{
+                brick = bricks[i]
+                if brick.brickHit == false {
+                    drawSprite(brick)
+                }
+            }
+                        
+            glfw.PollEvents()
+            glfw.SwapBuffers("window")
+        }
+    }
+}
+
+func initSprites() {
+    background = createBackgroundSprite()
+    synthCat  = createSynthCatSprite()
+    yarnBall = createYarnBallSprite()
+
+    initBricks()
+}
+
+func initBricks() {
+    var startPos Vector2D
+    var increment f32
+    increment = 128.0 / 1024.0
+    startPos.x = -0.55
+    startPos.y = -0.6
+
+    for i:=0; i<8; i=i+1 {
+        startPos.x = startPos.x + increment
+        bricks = append(bricks, createBrickSprite(startPos))
+    }
+}
+
+func updatePlayer(player Sprite)(out Sprite) {
+    if rightPressed == true {
+        player.velocity.x = player.maxVelocity
+    } 
+    if leftPressed == true {
+        player.velocity.x = -1.0*player.maxVelocity
+    } 
+    if rightPressed == false && leftPressed == false {
+        player.velocity.x = 0.0
+    }
+    player.lastPosition = player.position
+    out = player
+}
+
+func updateBall(ball Sprite)(out Sprite) {
+    if ball.position.x >= 0.9 || ball.position.x <= -0.9 {
+        ball.velocity.x = ball.velocity.x*-1.0
+        if ball.position.x > 0.9 {
+            ball.position.x = 0.9
+        } else {
+            ball.position.x = -0.9
+        }
+    }
+    
+    if ball.position.y >= 0.9 || ball.position.y <= -0.9 {
+        ball.velocity.y = ball.velocity.y*-1.0
+        if ball.position.y > 0.9 {
+            ball.position.y = 0.9
+        } else {
+            ball.position.y = -0.9
+        }
+    }
+
+    if spriteTop(ball) > spriteBottom(synthCat) && spriteLastTop(ball) < spriteLastBottom(synthCat) {
+        if spriteRight(ball) >= spriteLeft(synthCat) && spriteLeft(ball) <= spriteRight(synthCat) {
+            ball.position.y = spriteBottom(synthCat) - ball.height / 2.0
+            ball.velocity.y = ball.velocity.y*-1.0
+        }
+    }
+
+    ball.lastPosition = ball.position
+    out = ball
+}
+
+func checkBrickCollisions() {
+    var collision bool
+    var brick Sprite
+
+    for i:=0; i<len(bricks); i=i+1 {
+        brick = bricks[i]
+
+        if brick.brickHit == false {
+            collision = checkCollision(brick, yarnBall)
+
+            if collision == true {
+                if spriteTop(brick) < yarnBall.position.y {
+                    yarnBall.position.y = spriteTop(brick) + yarnBall.height/2.0
+                    yarnBall.velocity.y = yarnBall.velocity.y*-1.0
+                } else if spriteBottom(brick) > yarnBall.position.y {
+                    yarnBall.position.y = spriteBottom(brick) - yarnBall.height/2.0
+                    yarnBall.velocity.y = yarnBall.velocity.y*-1.0
+                } else if brick.position.x < yarnBall.position.x {
+                    yarnBall.position.x = spriteRight(brick) + yarnBall.width/2.0
+                    yarnBall.velocity.x = yarnBall.velocity.x*-1.0
+                } else if brick.position.x > yarnBall.position.x {
+                    yarnBall.position.x = spriteLeft(brick) - yarnBall.width/2.0
+                    yarnBall.velocity.x = yarnBall.velocity.x*-1.0
+                }
+
+                brick.brickHit = true
+
+                bricks[i] = brick
+            }
+        }
+    }
+}
+
+func checkCollision(spriteA Sprite, spriteB Sprite)(collision bool) {
+    var d1x f32
+    var d1y f32
+    var d2x f32
+    var d2y f32
+
+    collision = true
+
+    d1x = spriteLeft(spriteB) - spriteRight(spriteA)
+    d1y = spriteBottom(spriteB) - spriteTop(spriteA)
+    d2x = spriteLeft(spriteA) - spriteRight(spriteB)
+    d2y = spriteBottom(spriteA) - spriteTop(spriteB)
+
+    if d1x >= 0.0 || d1y >= 0.0{
+        collision = false
+    }
+    if d2x >= 0.0 || d2y >= 0.0 {
+        collision = false
+    }
+}
+
+func updateSprite(sprite Sprite)(out Sprite) {
+    var xSpeed f32
+    var ySpeed f32
+    
+    sprite.position.x = sprite.position.x + sprite.velocity.x * f64.f32(loopTracker.deltaTime)
+    sprite.position.y = sprite.position.y + sprite.velocity.y * f64.f32(loopTracker.deltaTime)
+    out = sprite
+}
+
+func drawSprites(sprites []Sprite) {for i := 0; i < len(sprites); i = i + 1 {
+        drawSprite(sprites[i])
+    }
+}
+
+func drawSprite(sprite Sprite) {
+    var width f32
+    var height f32
+    var frame i32
+
+    width = sprite.width
+    height = sprite.height
+    
+    if animationLimiter.limitReached {
+        if sprite.currentFrame < len(sprite.frames) - 1 {
+            sprite.currentFrame = sprite.currentFrame + 1
+        } else {
+            sprite.currentFrame = 0
+        }
+    }
+
+    frame = sprite.frames[sprite.currentFrame]
+
+    draw(sprite.position.x, sprite.position.y, width, height, frame)
+}
+
+func draw(xCoord f32, yCoord f32, width f32, height f32, texture i32) {
+	gl.MatrixMode(gl.MODELVIEW)
+	gl.LoadIdentity()
+    gl.Translatef(xCoord, yCoord, 0.0)
+    gl.Rotatef(0.0, 0.0, 0.0, 1.0) // I'm not sure what this does...
+    gl.BindTexture(gl.TEXTURE_2D, texture)
+    gl.Scalef(width/2.0, height/2.0, 0.0) // Am I doing this right???
+	gl.Color4f(1.0, 1.0, 1.0, 1.0)
+
+    gl.Begin(gl.QUADS)
+	gl.Normal3f(0.0, 0.0, 0.0)
+    gl.TexCoord2d(0.0D, 0.0D)
+    gl.Vertex2f(-1.0, 1.0)
+    gl.TexCoord2d(1.0D, 0.0D)
+    gl.Vertex2f(1.0, 1.0)
+    gl.TexCoord2d(1.0D, 1.0D)
+    gl.Vertex2f(1.0, -1.0)
+    gl.TexCoord2d(0.0D, 1.0D)
+    gl.Vertex2f(-1.0, -1.0)
+    gl.End()
+}
+
+func main() {
+    var window Window
+    window = Window {Width: 1024, Height: 768}
+
+    initGlfw(window)
+    gl.Init()
+
+    startGame()
+}
+// *************************************
+// End - Game
+// *************************************

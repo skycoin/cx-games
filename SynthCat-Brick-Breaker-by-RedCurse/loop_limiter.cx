@@ -1,0 +1,35 @@
+package LoopLimiter
+
+type LoopLimiter struct {
+    previousTime f64
+    delta f64
+    limit i32
+    limitReached bool
+    enabled bool
+}
+
+func create(limit i32, enabled bool)(loopLimiter LoopLimiter) {
+    var limiter LoopLimiter
+    limiter.limit = limit
+    limiter.enabled = enabled
+    loopLimiter = limiter
+}
+
+func update(limiter LoopLimiter, currentTime f64)(loopLimiter LoopLimiter) {
+    if limiter.enabled {
+        var fractionOfSecond f64 = 1.0D / i32.f64(limiter.limit)
+        limiter.delta = limiter.delta + (currentTime - limiter.previousTime) / fractionOfSecond
+        limiter.previousTime = currentTime
+
+        if limiter.delta >= 1.0D {
+            limiter.limitReached = true
+            limiter.delta = limiter.delta - 1.0D
+        } else {
+            limiter.limitReached = false
+        }
+    } else {
+        limiter.limitReached = true
+    }
+
+    loopLimiter = limiter
+}

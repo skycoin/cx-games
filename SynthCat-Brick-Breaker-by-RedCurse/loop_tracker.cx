@@ -1,0 +1,41 @@
+package LoopTracker
+
+type LoopTracker struct {
+    name str
+    deltaTime f64
+    previousTime f64
+    timer f64
+    ticker f64
+    loopCounter i32
+    currentLoopsPerSecond i32
+    showLoopsPerSecond bool
+}
+
+func create(ticker f64, name str)(loopTracker LoopTracker) {
+    var tracker LoopTracker
+    tracker.name = name
+    tracker.timer = 0.0D
+    tracker.ticker = ticker
+    tracker.loopCounter = 0
+    tracker.currentLoopsPerSecond = 0
+    tracker.showLoopsPerSecond = true
+
+    loopTracker = tracker
+}
+
+func update(tracker LoopTracker, currentTime f64)(loopTracker LoopTracker) {
+    tracker.deltaTime = currentTime - tracker.previousTime
+    tracker.previousTime = currentTime
+    tracker.loopCounter = tracker.loopCounter + 1
+
+    if currentTime - tracker.timer > tracker.ticker {
+        tracker.timer = tracker.timer + tracker.ticker
+        tracker.currentLoopsPerSecond = f64.i32(i32.f64(tracker.loopCounter) / tracker.ticker)
+        if tracker.showLoopsPerSecond {
+            printf("%s loops per second: %d \n", tracker.name, tracker.currentLoopsPerSecond)
+        }
+        tracker.loopCounter = 0
+    }
+
+    loopTracker = tracker
+}
