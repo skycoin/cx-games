@@ -1,108 +1,26 @@
 package main
+
 import "glfw"
 import "gl"
 import "os"
 
 import "LoopLimiter"
-import "LoopTracker"
+//import "LoopTracker"
+
+var upPressed bool
+var downPressed bool
+var leftPressed bool
+var rightPressed bool
 
 type Vector2D struct {
     x f32
     y f32
 }
 
-// *************************************
-// Start - Sprites
-// *************************************
-type Sprite struct {
-    position Vector2D
-    lastPosition Vector2D
-    velocity Vector2D
-    acceleration f32
-    maxVelocity f32
-    width f32
-    height f32
-    frames []i32
-    currentFrame i32
-    brickHit bool
+type Window struct {
+    Height i32
+    Width i32
 }
-
-func getTexture(textureFileName str)(texture i32) {
-    var workingDirectory str = os.GetWorkingDirectory()
-
-    texture = gl.NewTexture(str.concat(workingDirectory, textureFileName))
-}
-
-func spriteTop(sprite Sprite)(out f32) {
-    out = sprite.position.y + sprite.height / 2.0
-}
-
-func spriteBottom(sprite Sprite)(out f32) {
-    out = sprite.position.y - sprite.height / 2.0
-}
-
-func spriteRight(sprite Sprite)(out f32) {
-    out = sprite.position.x + sprite.width / 2.0
-}
-
-func spriteLeft(sprite Sprite)(out f32) {
-    out = sprite.position.x - sprite.width / 2.0
-}
-
-func spriteLastTop(sprite Sprite)(out f32) {
-    out = sprite.lastPosition.y + sprite.height / 2.0
-}
-
-func spriteLastBottom(sprite Sprite)(out f32) {
-    out = sprite.lastPosition.y - sprite.height / 2.0
-}
-
-func spriteLastRight(sprite Sprite)(out f32) {
-    out = sprite.lastPosition.x + sprite.width / 2.0
-}
-
-func spriteLastLeft(sprite Sprite)(out f32) {
-    out = sprite.lastPosition.x - sprite.width / 2.0
-}
-
-func createBackgroundSprite()(background Sprite) {
-    background.width = 1600.0 / 1024.0
-    background.height = 1600.0 / 768.0
-
-    background.frames = append(background.frames, getTexture("textures/background.png"))
-}
-
-func createYarnBallSprite()(yarnBall Sprite) {
-    yarnBall.acceleration = 1.0
-    yarnBall.maxVelocity = 1.0
-    yarnBall.width = 64.0 / 1024.0
-    yarnBall.height = 64.0 / 768.0
-
-    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall0.png"))
-    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall1.png"))
-    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall2.png"))
-    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall3.png"))
-}
-
-func createSynthCatSprite()(synthCat Sprite) {
-    synthCat.acceleration = 1.0
-    synthCat.maxVelocity = 1.0
-    synthCat.width = 200.0 / 1024.0
-    synthCat.height = 200.0 / 768.0
-
-    synthCat.frames = append(synthCat.frames, getTexture("textures/synth_cat.png"))
-}
-
-func createBrickSprite(position Vector2D)(brick Sprite) {
-    brick.position = position
-    brick.width = 128.0 / 1024.0
-    brick.height = 64.0 / 768.0
-
-    brick.frames = append(brick.frames, getTexture("textures/brick.png"))
-}
-// *************************************
-// End - Sprites
-// *************************************
 
 // *************************************
 // Start - Game
@@ -110,32 +28,20 @@ func createBrickSprite(position Vector2D)(brick Sprite) {
 var currentTime f64
 var loopLimiter LoopLimiter.LoopLimiter = LoopLimiter.create(60, true)
 var animationLimiter LoopLimiter.LoopLimiter = LoopLimiter.create(5, true)
-var loopTracker LoopTracker.LoopTracker = LoopTracker.create(1.0D, "Main")
-
-var background Sprite
-var synthCat Sprite
-var yarnBall Sprite
-var bricks []Sprite
-
-var upPressed bool
-var downPressed bool
-var leftPressed bool
-var rightPressed bool
-
-type Window struct {
-    Height i32
-    Width i32
-}
+//var loopTracker LoopTracker.LoopTracker = LoopTracker.create(1.0D, "Main")
 
 func initGlfw(window Window) {
+/*
     glfw.Init()
     glfw.WindowHint(glfw.Resizable, glfw.False)
     glfw.CreateWindow("window", window.Width, window.Height, "SynthCat Brick Breaker")
     glfw.MakeContextCurrent("window")
 
     glfw.SetKeyCallback("window", "callback")
+*/
 }
 
+/*
 func callback(window str, key i32, scancode i32, action i32, mods i32) {
     // Up
     if key == 265 && action == 1 {
@@ -165,12 +71,14 @@ func callback(window str, key i32, scancode i32, action i32, mods i32) {
 		rightPressed = false
     }
 }
+*/
 
 func startGame() {
     mainGameLoop()
 }
 
 func mainGameLoop()() {
+/*
     var program i32 = gl.CreateProgram()
     initSprites()
     synthCat.position.y = 0.8
@@ -178,7 +86,6 @@ func mainGameLoop()() {
     yarnBall.position.y = -0.8
     yarnBall.velocity.y = 0.3
     yarnBall.velocity.x = 0.6
-
     for bool.not(glfw.ShouldClose("window")) {
         currentTime = glfw.GetTime()
         loopLimiter = LoopLimiter.update(loopLimiter, currentTime)
@@ -239,29 +146,10 @@ func mainGameLoop()() {
             glfw.SwapBuffers("window")
         }
     }
+*/
 }
 
-func initSprites() {
-    background = createBackgroundSprite()
-    synthCat  = createSynthCatSprite()
-    yarnBall = createYarnBallSprite()
-
-    initBricks()
-}
-
-func initBricks() {
-    var startPos Vector2D
-    var increment f32
-    increment = 128.0 / 1024.0
-    startPos.x = -0.55
-    startPos.y = -0.6
-
-    for i:=0; i<8; i=i+1 {
-        startPos.x = startPos.x + increment
-        bricks = append(bricks, createBrickSprite(startPos))
-    }
-}
-
+/*
 func updatePlayer(player Sprite)(out Sprite) {
     if rightPressed == true {
         player.velocity.x = player.maxVelocity
@@ -369,7 +257,8 @@ func updateSprite(sprite Sprite)(out Sprite) {
     out = sprite
 }
 
-func drawSprites(sprites []Sprite) {for i := 0; i < len(sprites); i = i + 1 {
+func drawSprites(sprites []Sprite) {
+    for i := 0; i < len(sprites); i = i + 1 {
         drawSprite(sprites[i])
     }
 }
@@ -416,15 +305,16 @@ func draw(xCoord f32, yCoord f32, width f32, height f32, texture i32) {
     gl.Vertex2f(-1.0, -1.0)
     gl.End()
 }
+*/
 
 func main() {
-    var window Window
-    window = Window {Width: 1024, Height: 768}
+    //var window Window
+    //window = Window{ Width: 1024, Height: 768 }
 
-    initGlfw(window)
-    gl.Init()
+    //initGlfw(window)
+    //gl.Init()
 
-    startGame()
+    //startGame()
 }
 // *************************************
 // End - Game

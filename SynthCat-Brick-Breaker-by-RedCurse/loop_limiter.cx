@@ -9,6 +9,7 @@ type LoopLimiter struct {
 }
 
 func create(limit i32, enabled bool)(loopLimiter LoopLimiter) {
+str.print("cccccreate")
     var limiter LoopLimiter
     limiter.limit = limit
     limiter.enabled = enabled
@@ -16,6 +17,8 @@ func create(limit i32, enabled bool)(loopLimiter LoopLimiter) {
 }
 
 func update(limiter LoopLimiter, currentTime f64)(loopLimiter LoopLimiter) {
+str.print("update(limiter LoopLimiter")
+/*
     if limiter.enabled {
         var fractionOfSecond f64 = 1.0D / i32.f64(limiter.limit)
         limiter.delta = limiter.delta + (currentTime - limiter.previousTime) / fractionOfSecond
@@ -32,4 +35,5 @@ func update(limiter LoopLimiter, currentTime f64)(loopLimiter LoopLimiter) {
     }
 
     loopLimiter = limiter
+*/
 }
