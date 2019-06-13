@@ -18,6 +18,7 @@ var synthCat Sprite
 var yarnBall Sprite
 var bricks []Sprite
 
+/*
 func initSprites() {
     background = createBackgroundSprite()
     synthCat  = createSynthCatSprite()
@@ -113,3 +114,4 @@ func createBrickSprite(position Vector2D)(brick Sprite) {
     brick.frames = append(brick.frames, getTexture("textures/brick.png"))
 }
 
+*/

@@ -5,7 +5,7 @@ import "gl"
 import "os"
 
 import "LoopLimiter"
-//import "LoopTracker"
+import "LoopTracker"
 
 var upPressed bool
 var downPressed bool
@@ -28,7 +28,7 @@ type Window struct {
 var currentTime f64
 var loopLimiter LoopLimiter.LoopLimiter = LoopLimiter.create(60, true)
 var animationLimiter LoopLimiter.LoopLimiter = LoopLimiter.create(5, true)
-//var loopTracker LoopTracker.LoopTracker = LoopTracker.create(1.0D, "Main")
+var loopTracker LoopTracker.LoopTracker = LoopTracker.create(1.0D, "Main")
 
 func initGlfw(window Window) {
 /*
