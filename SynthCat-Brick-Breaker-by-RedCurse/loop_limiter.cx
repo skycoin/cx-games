@@ -8,25 +8,31 @@ type LoopLimiter struct {
     enabled bool
 }
 
-func create(limit i32, enabled bool)(loopLimiter LoopLimiter) {
-str.print("cccccreate")
-    var limiter LoopLimiter
+func create(limit i32, enabled bool) (limiter LoopLimiter) {
+    str.print("LoopLimiter.create")
+    
     limiter.limit = limit
     limiter.enabled = enabled
-    loopLimiter = limiter
 }
 
-func update(limiter LoopLimiter, currentTime f64)(loopLimiter LoopLimiter) {
-str.print("update(limiter LoopLimiter")
-/*
+func update(limiter LoopLimiter, currentTime f64) (loopLimiter LoopLimiter) {
+    
+    str.print("LoopLimiter.update")
+    
     if limiter.enabled {
-        var fractionOfSecond f64 = 1.0D / i32.f64(limiter.limit)
-        limiter.delta = limiter.delta + (currentTime - limiter.previousTime) / fractionOfSecond
+        var fractionOfSecond f64 = f64.div(1.0D, i32.f64(limiter.limit))
+        
+        var td f64 // temp delta
+        td = f64.sub(currentTime, limiter.previousTime)
+        td = f64.div(td, fractionOfSecond)
+        td = f64.add(td, limiter.delta)
+        
+        limiter.delta = td
         limiter.previousTime = currentTime
 
         if limiter.delta >= 1.0D {
             limiter.limitReached = true
-            limiter.delta = limiter.delta - 1.0D
+            limiter.delta = f64.sub(limiter.delta, 1.0D)
         } else {
             limiter.limitReached = false
         }
@@ -35,5 +41,4 @@ str.print("update(limiter LoopLimiter")
     }
 
     loopLimiter = limiter
-*/
 }
