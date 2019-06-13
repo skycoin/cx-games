@@ -11,8 +11,8 @@ type LoopTracker struct {
     showLoopsPerSecond bool
 }
 
-func create(ticker f64, name str)(loopTracker LoopTracker) {
-    str.print("LoopTracker.create")
+func create(ticker f64, name str) (loopTracker LoopTracker) {
+    str.print("LoopTracker.create()")
     
     var tracker LoopTracker
     tracker.name = name
@@ -25,9 +25,7 @@ func create(ticker f64, name str)(loopTracker LoopTracker) {
     loopTracker = tracker
 }
 
-func update(tracker LoopTracker, currentTime f64)(loopTracker LoopTracker) {
-    str.print("LoopTracker.update")
-    
+func update(tracker LoopTracker, currentTime f64) (loopTracker LoopTracker) {
     tracker.deltaTime = currentTime - tracker.previousTime
     tracker.previousTime = currentTime
     tracker.loopCounter = tracker.loopCounter + 1

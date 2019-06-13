@@ -36,11 +36,10 @@ func initGlfw(window Window) {
     glfw.CreateWindow("window", window.Width, window.Height, "SynthCat Brick Breaker")
     glfw.MakeContextCurrent("window")
 
-    glfw.SetKeyCallback("window", "callback")
+    glfw.SetKeyCallback("window", "keyEventCallback")
 }
 
-/*
-func callback(window str, key i32, scancode i32, action i32, mods i32) {
+func keyEventCallback(window str, key i32, scancode i32, action i32, mods i32) {
     // Up
     if key == 265 && action == 1 {
 		upPressed = true
@@ -69,7 +68,6 @@ func callback(window str, key i32, scancode i32, action i32, mods i32) {
 		rightPressed = false
     }
 }
-*/
 
 func startGame() {
     mainGameLoop()

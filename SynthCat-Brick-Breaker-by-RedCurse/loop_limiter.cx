@@ -9,16 +9,13 @@ type LoopLimiter struct {
 }
 
 func create(limit i32, enabled bool) (limiter LoopLimiter) {
-    str.print("LoopLimiter.create")
+    str.print("LoopLimiter.create()")
     
     limiter.limit = limit
     limiter.enabled = enabled
 }
 
 func update(limiter LoopLimiter, currentTime f64) (loopLimiter LoopLimiter) {
-    
-    str.print("LoopLimiter.update")
-    
     if limiter.enabled {
         var fractionOfSecond f64 = f64.div(1.0D, i32.f64(limiter.limit))
         
