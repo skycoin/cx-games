@@ -18,7 +18,6 @@ var synthCat Sprite
 var yarnBall Sprite
 var bricks []Sprite
 
-/*
 func initSprites() {
     background = createBackgroundSprite()
     synthCat  = createSynthCatSprite()
@@ -46,36 +45,36 @@ func getTexture(textureFileName str)(texture i32) {
     texture = gl.NewTexture(str.concat(workingDirectory, textureFileName))
 }
 
-func spriteTop(sprite Sprite)(out f32) {
-    out = sprite.position.y + sprite.height / 2.0
+func spriteTop(sprite Sprite) (out f32) {
+    out = f32.add(sprite.position.y, f32.div(sprite.height, 2.0))
 }
 
 func spriteBottom(sprite Sprite)(out f32) {
-    out = sprite.position.y - sprite.height / 2.0
+    out = f32.sub(sprite.position.y, f32.div(sprite.height, 2.0))
 }
 
 func spriteRight(sprite Sprite)(out f32) {
-    out = sprite.position.x + sprite.width / 2.0
+    out = f32.add(sprite.position.x, f32.div(sprite.width, 2.0))
 }
 
 func spriteLeft(sprite Sprite)(out f32) {
-    out = sprite.position.x - sprite.width / 2.0
+    out = f32.sub(sprite.position.x, f32.div(sprite.width, 2.0))
 }
 
 func spriteLastTop(sprite Sprite)(out f32) {
-    out = sprite.lastPosition.y + sprite.height / 2.0
+    out = f32.add(sprite.lastPosition.y, f32.div(sprite.height, 2.0))
 }
 
 func spriteLastBottom(sprite Sprite)(out f32) {
-    out = sprite.lastPosition.y - sprite.height / 2.0
+    out = f32.sub(sprite.lastPosition.y, f32.div(sprite.height, 2.0))
 }
 
 func spriteLastRight(sprite Sprite)(out f32) {
-    out = sprite.lastPosition.x + sprite.width / 2.0
+    out = f32.add(sprite.lastPosition.x, f32.div(sprite.width, 2.0))
 }
 
 func spriteLastLeft(sprite Sprite)(out f32) {
-    out = sprite.lastPosition.x - sprite.width / 2.0
+    out = f32.sub(sprite.lastPosition.x, f32.div(sprite.width, 2.0))
 }
 
 func createBackgroundSprite()(background Sprite) {
@@ -114,4 +113,3 @@ func createBrickSprite(position Vector2D)(brick Sprite) {
     brick.frames = append(brick.frames, getTexture("textures/brick.png"))
 }
 
-*/
