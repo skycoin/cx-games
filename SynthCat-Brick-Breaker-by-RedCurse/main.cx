@@ -31,14 +31,12 @@ var animationLimiter LoopLimiter.LoopLimiter = LoopLimiter.create(5, true)
 var loopTracker LoopTracker.LoopTracker = LoopTracker.create(1.0D, "Main")
 
 func initGlfw(window Window) {
-/*
     glfw.Init()
     glfw.WindowHint(glfw.Resizable, glfw.False)
     glfw.CreateWindow("window", window.Width, window.Height, "SynthCat Brick Breaker")
     glfw.MakeContextCurrent("window")
 
     glfw.SetKeyCallback("window", "callback")
-*/
 }
 
 /*
@@ -78,7 +76,6 @@ func startGame() {
 }
 
 func mainGameLoop()() {
-/*
     var program i32 = gl.CreateProgram()
     initSprites()
     synthCat.position.y = 0.8
@@ -86,6 +83,7 @@ func mainGameLoop()() {
     yarnBall.position.y = -0.8
     yarnBall.velocity.y = 0.3
     yarnBall.velocity.x = 0.6
+
     for bool.not(glfw.ShouldClose("window")) {
         currentTime = glfw.GetTime()
         loopLimiter = LoopLimiter.update(loopLimiter, currentTime)
@@ -146,10 +144,8 @@ func mainGameLoop()() {
             glfw.SwapBuffers("window")
         }
     }
-*/
 }
 
-/*
 func updatePlayer(player Sprite)(out Sprite) {
     if rightPressed == true {
         player.velocity.x = player.maxVelocity
@@ -206,17 +202,17 @@ func checkBrickCollisions() {
 
             if collision == true {
                 if spriteTop(brick) < yarnBall.position.y {
-                    yarnBall.position.y = spriteTop(brick) + yarnBall.height/2.0
-                    yarnBall.velocity.y = yarnBall.velocity.y*-1.0
+                    yarnBall.position.y = f32.add(spriteTop(brick), f32.div(yarnBall.height, 2.0))
+                    yarnBall.velocity.y = -yarnBall.velocity.y
                 } else if spriteBottom(brick) > yarnBall.position.y {
-                    yarnBall.position.y = spriteBottom(brick) - yarnBall.height/2.0
-                    yarnBall.velocity.y = yarnBall.velocity.y*-1.0
+                    yarnBall.position.y = f32.sub(spriteBottom(brick), f32.div(yarnBall.height, 2.0))
+                    yarnBall.velocity.y = -yarnBall.velocity.y
                 } else if brick.position.x < yarnBall.position.x {
-                    yarnBall.position.x = spriteRight(brick) + yarnBall.width/2.0
-                    yarnBall.velocity.x = yarnBall.velocity.x*-1.0
+                    yarnBall.position.x = f32.add(spriteRight(brick), f32.div(yarnBall.width, 2.0))
+                    yarnBall.velocity.x = -yarnBall.velocity.x
                 } else if brick.position.x > yarnBall.position.x {
-                    yarnBall.position.x = spriteLeft(brick) - yarnBall.width/2.0
-                    yarnBall.velocity.x = yarnBall.velocity.x*-1.0
+                    yarnBall.position.x = f32.sub(spriteLeft(brick), f32.div(yarnBall.width, 2.0))
+                    yarnBall.velocity.x = -yarnBall.velocity.x
                 }
 
                 brick.brickHit = true
@@ -227,7 +223,8 @@ func checkBrickCollisions() {
     }
 }
 
-func checkCollision(spriteA Sprite, spriteB Sprite)(collision bool) {
+/*
+func checkCollision(spriteA Sprite, spriteB Sprite) (collision bool) {
     var d1x f32
     var d1y f32
     var d2x f32
@@ -246,42 +243,6 @@ func checkCollision(spriteA Sprite, spriteB Sprite)(collision bool) {
     if d2x >= 0.0 || d2y >= 0.0 {
         collision = false
     }
-}
-
-func updateSprite(sprite Sprite)(out Sprite) {
-    var xSpeed f32
-    var ySpeed f32
-    
-    sprite.position.x = sprite.position.x + sprite.velocity.x * f64.f32(loopTracker.deltaTime)
-    sprite.position.y = sprite.position.y + sprite.velocity.y * f64.f32(loopTracker.deltaTime)
-    out = sprite
-}
-
-func drawSprites(sprites []Sprite) {
-    for i := 0; i < len(sprites); i = i + 1 {
-        drawSprite(sprites[i])
-    }
-}
-
-func drawSprite(sprite Sprite) {
-    var width f32
-    var height f32
-    var frame i32
-
-    width = sprite.width
-    height = sprite.height
-    
-    if animationLimiter.limitReached {
-        if sprite.currentFrame < len(sprite.frames) - 1 {
-            sprite.currentFrame = sprite.currentFrame + 1
-        } else {
-            sprite.currentFrame = 0
-        }
-    }
-
-    frame = sprite.frames[sprite.currentFrame]
-
-    draw(sprite.position.x, sprite.position.y, width, height, frame)
 }
 
 func draw(xCoord f32, yCoord f32, width f32, height f32, texture i32) {
@@ -308,14 +269,15 @@ func draw(xCoord f32, yCoord f32, width f32, height f32, texture i32) {
 */
 
 func main() {
-    //var window Window
-    //window = Window{ Width: 1024, Height: 768 }
+    var window Window
+    window = Window{ Width: 1024, Height: 768 }
 
-    //initGlfw(window)
-    //gl.Init()
+    initGlfw(window)
+    gl.Init()
 
-    //startGame()
+    startGame()
 }
+
 // *************************************
 // End - Game
 // *************************************

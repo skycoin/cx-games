@@ -113,3 +113,41 @@ func createBrickSprite(position Vector2D)(brick Sprite) {
     brick.frames = append(brick.frames, getTexture("textures/brick.png"))
 }
 
+/*
+func updateSprite(sprite Sprite)(out Sprite) {
+    var xSpeed f32
+    var ySpeed f32
+    
+    sprite.position.x = sprite.position.x + sprite.velocity.x * f64.f32(loopTracker.deltaTime)
+    sprite.position.y = sprite.position.y + sprite.velocity.y * f64.f32(loopTracker.deltaTime)
+    out = sprite
+}
+
+func drawSprites(sprites []Sprite) {
+    for i := 0; i < len(sprites); i = i + 1 {
+        drawSprite(sprites[i])
+    }
+}
+
+func drawSprite(sprite Sprite) {
+    var width f32
+    var height f32
+    var frame i32
+
+    width = sprite.width
+    height = sprite.height
+    
+    if animationLimiter.limitReached {
+        if sprite.currentFrame < len(sprite.frames) - 1 {
+            sprite.currentFrame = sprite.currentFrame + 1
+        } else {
+            sprite.currentFrame = 0
+        }
+    }
+
+    frame = sprite.frames[sprite.currentFrame]
+
+    draw(sprite.position.x, sprite.position.y, width, height, frame)
+}
+
+*/
