@@ -113,16 +113,17 @@ func createBrickSprite(position Vector2D)(brick Sprite) {
     brick.frames = append(brick.frames, getTexture("textures/brick.png"))
 }
 
-/*
-func updateSprite(sprite Sprite)(out Sprite) {
-    var xSpeed f32
-    var ySpeed f32
+func updateSprite(sprite Sprite) (out Sprite) {
+    // move deltas
+    var dX f32 = f32.mul(sprite.velocity.x, f64.f32(loopTracker.deltaTime))
+    var dY f32 = f32.mul(sprite.velocity.y, f64.f32(loopTracker.deltaTime))
     
-    sprite.position.x = sprite.position.x + sprite.velocity.x * f64.f32(loopTracker.deltaTime)
-    sprite.position.y = sprite.position.y + sprite.velocity.y * f64.f32(loopTracker.deltaTime)
+    sprite.position.x = sprite.position.x + dX
+    sprite.position.y = sprite.position.y + dY
     out = sprite
 }
 
+/*
 func drawSprites(sprites []Sprite) {
     for i := 0; i < len(sprites); i = i + 1 {
         drawSprite(sprites[i])
