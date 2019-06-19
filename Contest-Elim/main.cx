@@ -1,19 +1,20 @@
 package main
 
 var SMALLEST_CHOOSABLE_NUMBER i32 = 1
-var LARGEST_CHOOSABLE_NUMBER i32 = 3 //50
+var LARGEST_CHOOSABLE_NUMBER i32 = 9 //50
 
 var currentContestant i32 = 1
 var prompt str = "Press [ENTER] to ROLL DICE"
 var inputNumber str
+var randNum i32 
 
-// contestant lists 
-var eligibles   []i32
-var eliminateds []i32
+// lists 
+var eligibles []i32
+var rolls     []i32
 
 func main () {
-	eligibles   = []i32{}
-	eliminateds = []i32{}
+	eligibles = []i32{}
+	rolls     = []i32{}
 	
 	printTopText()
 	printf("| |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  | | \n")
@@ -42,10 +43,15 @@ func main () {
 	for len(eligibles) > 1 {
 		str.print(prompt)
 		var s str = read()
-		var randNum i32 = i32.rand(
-			SMALLEST_CHOOSABLE_NUMBER, 
-			LARGEST_CHOOSABLE_NUMBER + 1)
+		
+		randNum = getRand()		
+		for numberHasAlreadyBeenRolled(randNum) {
+			randNum = getRand()
+		}
+		
 		printf("\n\n                                ROLLED a %d \n", randNum)
+		rolls = append(
+		rolls, randNum)
 		
 		for i := i32.sub(len(eligibles), 1); i >= 0; i-- {
 			if eligibles[i] == randNum {
@@ -62,11 +68,28 @@ func main () {
 		}
 	}
 	
-	for i := 0; i < 3; i++ {
-		printTopText()
-		printf("| |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  | | \n")
+	// show winner 
+	str.print("")
+	
+	for i := 0; i < 6; i++ {
 		printf("                                WINNER chose # %d !!! \n", eligibles[0])
-		printBottomText()
+	}
+}
+
+
+func getRand () (out i32) {
+	out = i32.rand(
+		SMALLEST_CHOOSABLE_NUMBER, 
+		LARGEST_CHOOSABLE_NUMBER + 1)
+}
+
+
+func numberHasAlreadyBeenRolled (roll i32) (out bool) {
+	for i := 0; i < len(rolls); i++ {
+		if roll == rolls[i] {
+			out = true
+			break
+		}
 	}
 }
 
