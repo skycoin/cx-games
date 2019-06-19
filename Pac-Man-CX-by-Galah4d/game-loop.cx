@@ -36,10 +36,17 @@ func main() {
     }
 
     if isTimerOver(GHOST_MOVEMENT_TIMER, GHOST_MOVEMENT_LIMIT) {
+      // move all ghosts
       for i=0; i<4; i++ {
         moveGhost(ghosts[i])
         checkPlayerGhostCollision(ghosts[i])
       }
+      
+      // move player if direction key held (but not pressed recently)
+      if isTimerOver(latestPlayerMoveEvent, GHOST_MOVEMENT_HALF_OF_LIMIT) {
+        maybeMovePlayer()
+      }
+      
       GHOST_MOVEMENT_TIMER = glfw.GetTime()
     }
 
@@ -49,6 +56,7 @@ func main() {
       if isTimerOver(GHOST_FRIGHTENED_TIMER, GHOST_FRIGHTENED_LIMIT) {
         releaseGhost()
       }
+      
       GHOST_RELEASE_TIMER = glfw.GetTime()
     }
 
@@ -57,7 +65,6 @@ func main() {
       goto newlevel_label
     }
 
-    // Render game
     renderGame(program)
 
 		glfw.PollEvents()

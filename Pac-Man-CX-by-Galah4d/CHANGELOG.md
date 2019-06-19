@@ -29,7 +29,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugs
 - The addition of a time based system introduced a bug where sometimes catching
-  a Super Point does not trigger the Frightned Mode on the ghosts.
+  a Super Point does not trigger the Frightened Mode on the ghosts.
 
 ## [0.0.1] - 2018-08-24
 ### Added

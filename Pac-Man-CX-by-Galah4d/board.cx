@@ -3,7 +3,7 @@ package main
 import "graphical2d"
 
 /* Function     : initScene
-   Desctription : Initializes all game objects including the board cells, the
+   Description  : Initializes all game objects including the board cells, the
                   points, the ghosts and the player.
 */
 func initScene() () {
@@ -57,7 +57,7 @@ func initializeItem(line i32, col i32, item_type i32) () {
 
 /* Function     : isLevelCompleted
    Output       : true if the level is completed, false otherwise.
-   Desctription : Checks if all the points on the board were caught allowing the
+   Description  : Checks if all the points on the board were caught allowing the
                   player to progress to the next level if this condition is met.
 */
 func isLevelCompleted() (is_completed bool) {
@@ -93,7 +93,7 @@ func levelUp() {
    Input        : Vertical board position (line i32)
                 : Horizontal board position (collumn i32)
    Output       : A position in the game screen (position graphical2d.Position2D)
-   Desctription : Maps a (line/collumn) pair into an actual screen coordinates
+   Description  : Maps a (line/collumn) pair into an actual screen coordinates
 */
 func coords2position(line i32, collumn i32) (position graphical2d.Position2D) {
   x := f32.add(-1.0, f32.add(f32.mul(i32.f32(collumn), CELL_WIDTH), f32.div(CELL_WIDTH, 2.0)))

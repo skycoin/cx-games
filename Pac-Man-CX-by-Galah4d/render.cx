@@ -4,7 +4,7 @@ package main
 
 /* Function     : renderGame
    Input        : OpenGL program (program i32)
-   Desctription : Responsible for managing the rendering process of all the game
+   Description  : Responsible for managing the rendering process of all the game
                   objects.
 */
 func renderGame(program i32) () {
@@ -35,7 +35,7 @@ func renderGame(program i32) () {
 }
 
 /* Function     : renderBoard
-   Desctription : Renders the game board
+   Description  : Renders the game board
 */
 func renderBoard() () {
   for i:=0; i<y_cells; i++ {
@@ -46,7 +46,7 @@ func renderBoard() () {
 }
 
 /* Function     : renderPlayer
-   Desctription : Renders the player
+   Description  : Renders the player
 */
 func renderPlayer() {
   graphical2d.drawPlayer2(player.position, player.radius, player.color)
@@ -70,7 +70,7 @@ func renderPlayer() {
 }
 
 /* Function     : renderGhost
-   Desctription : Renders a ghost
+   Description  : Renders a ghost
 */
 func renderGhost(ghost Ghost) () {
   var color graphical2d.Color
@@ -97,7 +97,7 @@ func renderGhost(ghost Ghost) () {
 }
 
 /* Function     : renderPoint
-   Desctription : Renders a point
+   Description  : Renders a point
 */
 func renderPoint(point Point) () {
   if isTimerOver(POINT_ANIMATION_TIMER, POINT_ANIMATION_SEMI_LIMIT) {
@@ -117,7 +117,7 @@ func renderPoint(point Point) () {
 }
 
 /* Function     : renderLives
-   Desctription : Renders the player lives
+   Description  : Renders the player lives
 */
 func renderLives() () {
   var color Color

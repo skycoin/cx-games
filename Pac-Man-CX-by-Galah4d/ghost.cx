@@ -42,7 +42,8 @@ var GHOST_RELEASE_TIMER f64 = 0.0D
 var GHOST_RELEASE_LIMIT f64 = 5.0D
 
 var GHOST_MOVEMENT_TIMER f64 = 0.0D
-var GHOST_MOVEMENT_LIMIT f64 = 0.5D
+var GHOST_MOVEMENT_LIMIT f64 = 0.3D
+var GHOST_MOVEMENT_HALF_OF_LIMIT f64 = GHOST_MOVEMENT_LIMIT / 2.0D
 
 // Timer modifiers
 var GHOST_RELESE_MODIFIER f64 = 0.5D
@@ -55,7 +56,7 @@ var GHOST_SCATTER_MODIFIER f64 = 0.5D
 
 /* Function     : canMove
    Input        : Ghost to move (ghost Ghost)
-   Desctription : Manages the player movement.
+   Description  : Manages the player movement.
 */
 func moveGhost(ghost Ghost) () {
   var direction i32
@@ -93,7 +94,7 @@ func moveGhost(ghost Ghost) () {
                 : Target line for the ghost (target_line i32)
                 : Target collumn for the ghost (target_collumn i32)
    Output       : Best direction (direction i32)
-   Desctription : Returns the direction of the shortest path between the ghost
+   Description  : Returns the direction of the shortest path between the ghost
                   and the target board position.
 */
 func calculateGhostDirection(ghost Ghost, target_line i32, target_collumn i32) (direction i32) { // FIX ME no spaghetti code
@@ -139,7 +140,7 @@ func calculateGhostDirection(ghost Ghost, target_line i32, target_collumn i32) (
 /* Function     : calculateGhostDirection
    Input        : Ghost in chase mode (ghost Ghost)
    Output       : Best direction (direction i32)
-   Desctription : Returns the direction of the shortest path between the ghost
+   Description  : Returns the direction of the shortest path between the ghost
                   and the player.
 */
 func ghostChaseDirection(ghost Ghost) (direction i32) {
@@ -149,7 +150,7 @@ func ghostChaseDirection(ghost Ghost) (direction i32) {
 /* Function     : calculateGhostDirection
    Input        : Ghost in scatter mode (ghost Ghost)
    Output       : Best direction (direction i32)
-   Desctription : Returns the direction of the shortest path between the ghost
+   Description  : Returns the direction of the shortest path between the ghost
                   and the corresponding scatter board position.
 */
 func ghostScatterDirection(ghost Ghost) (direction i32) {
@@ -170,7 +171,7 @@ func ghostScatterDirection(ghost Ghost) (direction i32) {
 /* Function     : randomGhostDirection
    Input        : Ghost in frightened or caged (ghost Ghost)
    Output       : Random direction (direction i32)
-   Desctription : Returns a random possible direction for the ghost.
+   Description  : Returns a random possible direction for the ghost.
 */
 func randomGhostDirection(ghost Ghost) (direction i32) {
   direction = i32.rand(0, 4)
@@ -223,7 +224,7 @@ func releaseGhost() {
 /* Function     : reverseDirection
    Input        : Current direction (direction i32)
    Output       : Opposite direction (reverse i32)
-   Desctription : Returns the opposite direction of the input.
+   Description  : Returns the opposite direction of the input.
 */
 func reverseDirection(direction i32) (reverse i32) {
   if i32.eq(direction, UP) {

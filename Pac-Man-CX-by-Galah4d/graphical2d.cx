@@ -177,7 +177,7 @@ func drawPlayer2(position Position2D, radius f32, color Color) () {
   }
   
   end = start + 315.0
-  var offs f32 = main.getTimeFraction() // lip offset from a fully open mouth
+  var offs f32 = main.getTimeBasedOffset() // lip offset from a fully open mouth
   offs = f32.mul(offs, 90.0)
   start = f32.add(start, offs)
   end = f32.sub(end, offs)

@@ -1,6 +1,6 @@
 package main
 
-func getTimeFraction () (out f32) { // in the range of 0.0 to 0.5
+func getTimeBasedOffset () (out f32) { // in the range of 0.0 to 0.5
   out = f64.f32(glfw.GetTime())
   out = getValueUnderMax(out, 0.5)
   

@@ -19,6 +19,10 @@ var RIGHT_ARROW_KEY i32 = 262
 var LEFT_ARROW_KEY i32 = 263
 var DOWN_ARROW_KEY i32 = 264
 var UP_ARROW_KEY i32 = 265
+var GLFW_KEY_W i32 = 87
+var GLFW_KEY_A i32 = 65
+var GLFW_KEY_S i32 = 83
+var GLFW_KEY_D i32 = 68
 
 // Game flags
 var GAME_LEVEL i32 = 1
@@ -47,8 +51,6 @@ var DOWN i32 = 1
 var LEFT i32 = 2
 var RIGHT i32 = 3
 
-var SCORE i32 = 0
-
 // Player constants
 var PLAYER_FACING i32 = LEFT
 var PLAYER_COLOR_RED f32 = 1.0
@@ -57,6 +59,10 @@ var PLAYER_COLOR_BLUE f32 = 0.0
 var PLAYER_RADIUS f32 = 0.025
 var PLAYER_SPAWN_LINE i32 = 23
 var PLAYER_SPAWN_COLLUMN i32 = 13
+
+// Player vars 
+var SCORE i32 = 0
+var latestPlayerMoveEvent f64
 
 // Animation timers
 var PLAYER_ANIMATION_TIMER f64 = 0.0D
@@ -109,7 +115,6 @@ type Ghost struct {
   direction i32
   gtype i32
   status i32
-  last_event_time f64
 }
 var ghosts [4]Ghost
 
@@ -135,7 +140,7 @@ var points_count i32 = 0
                 : Spawn collumn (collumn i32)
                 : Radius (rad f32)
    Output       : player (pl Player)
-   Desctription : Constructor for the Player struct.
+   Description  : Constructor for the Player struct.
 */
 func newPlayer (line i32, collumn i32, rad f32) (pl Player) {
   var pos graphical2d.Position2D
@@ -158,7 +163,7 @@ func newPlayer (line i32, collumn i32, rad f32) (pl Player) {
                 : Spawn collumn (collumn i32)
                 : Cell type (ct i32)
    Output       : cell (cell Cell)
-   Desctription : Constructor for the Cell struct.
+   Description  : Constructor for the Cell struct.
 */
 func newCell (line i32, collumn i32, ct i32) (cell Cell) {
   var pos graphical2d.Position2D
@@ -182,7 +187,7 @@ func newCell (line i32, collumn i32, ct i32) (cell Cell) {
                 : Ghost type (gt i32)
                 : Ghost movement mode (ghost_mode i32)
    Output       : ghost (ghost Ghost)
-   Desctription : Constructor for the Ghost struct.
+   Description  : Constructor for the Ghost struct.
 */
 func newGhost(line i32, collumn i32, gt i32, ghost_mode i32) (ghost Ghost) {
   var pos graphical2d.Position2D
@@ -199,8 +204,7 @@ func newGhost(line i32, collumn i32, gt i32, ghost_mode i32) (ghost Ghost) {
     index_y: line,
     direction: UP,
     gtype: gt,
-    status: ghost_mode,
-    last_event_time: 0.0D}
+    status: ghost_mode}
 }
 
 /* Function     : newPoint
@@ -208,7 +212,7 @@ func newGhost(line i32, collumn i32, gt i32, ghost_mode i32) (ghost Ghost) {
                 : Spawn collumn (collumn i32)
                 : Point type (pt i32)
    Output       : point (point Point)
-   Desctription : Constructor for the Point struct.
+   Description  : Constructor for the Point struct.
 */
 func newPoint (line i32, collumn i32, pt i32) (point Point) {
   var pos graphical2d.Position2D
@@ -243,7 +247,7 @@ func newPoint (line i32, collumn i32, pt i32) (point Point) {
 /* Function     : getCellColor
    Input        : Cell type (ctype i32)
    Output       : The cell color (color graphical2d.Color)
-   Desctription : Returns the color corresponding to the cell type.
+   Description  : Returns the color corresponding to the cell type.
 */
 func getCellColor (ctype i32) (color graphical2d.Color) {
   if i32.eq(ctype, PATH_CELL) {
@@ -263,7 +267,7 @@ func getCellColor (ctype i32) (color graphical2d.Color) {
 /* Function     : getGhostColor
    Input        : Ghost type (gtype i32)
    Output       : The ghost color (color graphical2d.Color)
-   Desctription : Returns the color corresponding to the ghost type.
+   Description  : Returns the color corresponding to the ghost type.
 */
 func getGhostColor (gtype i32) (color graphical2d.Color) {
   if i32.eq(gtype, SHADOW_GHOST) {
@@ -290,7 +294,7 @@ func getGhostColor (gtype i32) (color graphical2d.Color) {
                 : vertical board position (line i32)
                 : horizontal board position (collumn i32)
    Output       : true (if movement is possible), false (otherwise)
-   Desctription : Checks if a game object located at (line/collumn) can move in the input (direction).
+   Description  : Checks if a game object located at (line/collumn) can move in the input (direction).
 */
 func canMove(direction i32, line i32, collumn i32) (can_move bool)  {
   if bool.and(i32.eq(direction, UP), i32.eq(cells[i32.sub(line, 1)][collumn].ctype, PATH_CELL)) {
@@ -309,9 +313,10 @@ func canMove(direction i32, line i32, collumn i32) (can_move bool)  {
 
 /* Function     : movePlayer
    Input        : Direction in which the player should move (direction i32)
-   Desctription : Manages the player movement.
+   Description  : Manages the player movement.
 */
 func movePlayer(direction i32) () {
+  latestPlayerMoveEvent = glfw.GetTime()
   PLAYER_FACING = direction
 
   if bool.eq(canMove(direction, player.index_y, player.index_x), true) {
