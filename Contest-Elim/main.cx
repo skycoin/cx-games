@@ -1,0 +1,67 @@
+package main
+
+var SMALLEST_CHOOSABLE_NUMBER i32 = 1
+var LARGEST_CHOOSABLE_NUMBER i32 = 3 //50
+
+var currentContestant i32 = 1
+var prompt str = "Press [ENTER] to ROLL DICE"
+var inputNumber str
+
+// contestant lists 
+var eligibles   []i32
+var eliminateds []i32
+
+func main () {
+	eligibles   = []i32{}
+	eliminateds = []i32{}
+	
+	str.print("|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|")
+	str.print("| |^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| |")
+	str.print("| |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  | |")
+	str.print("| |  ____________________________ Contest Elim __________________________  | |")
+	str.print("| |________________________________________________________________________| |")
+	str.print("|____________________________________________________________________________|")
+
+
+	for done() == false {
+		
+		printf("Contestant %d's chosen number? (or 'DONE') ", currentContestant)
+		inputNumber = read()
+		
+		if done() == false {
+			var num i32 = str.i32(inputNumber)
+			
+			eligibles = append(
+			eligibles, num)
+		}
+		
+		currentContestant++
+	}
+
+
+
+
+
+	// start elimination rounds 
+	str.print("\n\n\n\n ELIMINATION OF CONTESTANTS NOW BEGINS !!! \n\n")
+	
+	for len(eligibles) > 1 {
+		str.print(prompt)
+		var s str = read()
+		var randNum i32 = i32.rand(
+			SMALLEST_CHOOSABLE_NUMBER, 
+			LARGEST_CHOOSABLE_NUMBER + 1)
+		printf("----------------------------- ROLLED a %d \n", randNum)
+		eligibles = remove(eligibles, 0)
+		printf("----------------------------- (%d contestants remain) \n", len(eligibles))
+	}	
+}
+
+
+func done() (out bool) {
+	if inputNumber == "done" || 
+		inputNumber == "DONE" {
+		
+		out = true
+	}	
+}
