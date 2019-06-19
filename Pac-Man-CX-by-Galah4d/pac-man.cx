@@ -9,6 +9,7 @@ var y_cells i32 = 31
 
 var CELL_WIDTH f32 = 0.07143
 var CELL_HEIGHT f32 = 0.0645
+var CELL_HALF_HEIGHT f32 = CELL_HEIGHT / 2.0
 
 // Game constatnts
 var WIDTH_WINDOW i32 = 840
@@ -58,7 +59,7 @@ var PLAYER_COLOR_GREEN f32 = 1.0
 var PLAYER_COLOR_BLUE f32 = 0.0
 var PLAYER_RADIUS f32 = 0.025
 var PLAYER_SPAWN_LINE i32 = 23
-var PLAYER_SPAWN_COLLUMN i32 = 13
+var PLAYER_SPAWN_COLUMN i32 = 13
 
 // Player vars 
 var SCORE i32 = 0
@@ -79,7 +80,7 @@ var POINT_ANIMATION_LIMIT f64 = 0.4D
 
 // Lives Variables
 var LIFE_SPAWN_LINE i32 = 30
-var LIFE_SPAWN_COLLUMN i32 = 26
+var LIFE_SPAWN_COLUMN i32 = 26
 var LIFE_COLOR_RED f32 = 1.0
 var LIFE_COLOR_GREEN f32 = 0.0
 var LIFE_COLOR_BLUE f32 = 0.0
@@ -137,14 +138,14 @@ var points_count i32 = 0
 
 /* Function     : newPlayer
    Input        : Spawn line (line i32)
-                : Spawn collumn (collumn i32)
+                : Spawn column (column i32)
                 : Radius (rad f32)
    Output       : player (pl Player)
    Description  : Constructor for the Player struct.
 */
-func newPlayer (line i32, collumn i32, rad f32) (pl Player) {
+func newPlayer (line i32, column i32, rad f32) (pl Player) {
   var pos graphical2d.Position2D
-  pos = coords2position(line, collumn)
+  pos = coords2position(line, column)
 
   var col graphical2d.Color
   col = graphical2d.newColor(PLAYER_COLOR_RED, PLAYER_COLOR_GREEN, PLAYER_COLOR_BLUE)
@@ -154,20 +155,20 @@ func newPlayer (line i32, collumn i32, rad f32) (pl Player) {
     color: col,
     radius: rad,
     direction: RIGHT,
-    index_x: collumn,
+    index_x: column,
     index_y: line}
 }
 
 /* Function     : newCell
    Input        : Spawn line (line i32)
-                : Spawn collumn (collumn i32)
+                : Spawn column (column i32)
                 : Cell type (ct i32)
    Output       : cell (cell Cell)
    Description  : Constructor for the Cell struct.
 */
-func newCell (line i32, collumn i32, ct i32) (cell Cell) {
+func newCell (line i32, column i32, ct i32) (cell Cell) {
   var pos graphical2d.Position2D
-  pos = coords2position(line, collumn)
+  pos = coords2position(line, column)
 
   var dim graphical2d.Dimensions2D
   dim = graphical2d.newDimensions2D(CELL_HEIGHT, CELL_WIDTH)
@@ -176,22 +177,22 @@ func newCell (line i32, collumn i32, ct i32) (cell Cell) {
     position: pos,
     dimensions: dim,
     color: getCellColor(ct),
-    index_x: collumn,
+    index_x: column,
     index_y: line,
     ctype: ct}
 }
 
 /* Function     : newGhost
    Input        : Spawn line (line i32)
-                : Spawn collumn (collumn i32)
+                : Spawn column (column i32)
                 : Ghost type (gt i32)
                 : Ghost movement mode (ghost_mode i32)
    Output       : ghost (ghost Ghost)
    Description  : Constructor for the Ghost struct.
 */
-func newGhost(line i32, collumn i32, gt i32, ghost_mode i32) (ghost Ghost) {
+func newGhost(line i32, column i32, gt i32, ghost_mode i32) (ghost Ghost) {
   var pos graphical2d.Position2D
-  pos = coords2position(line, collumn)
+  pos = coords2position(line, column)
 
   var col graphical2d.Color
   col = getGhostColor(gt)
@@ -200,7 +201,7 @@ func newGhost(line i32, collumn i32, gt i32, ghost_mode i32) (ghost Ghost) {
     position: pos,
     color: col,
     radius: GHOST_RADIUS,
-    index_x: collumn,
+    index_x: column,
     index_y: line,
     direction: UP,
     gtype: gt,
@@ -209,14 +210,14 @@ func newGhost(line i32, collumn i32, gt i32, ghost_mode i32) (ghost Ghost) {
 
 /* Function     : newPoint
    Input        : Spawn line (line i32)
-                : Spawn collumn (collumn i32)
+                : Spawn column (column i32)
                 : Point type (pt i32)
    Output       : point (point Point)
    Description  : Constructor for the Point struct.
 */
-func newPoint (line i32, collumn i32, pt i32) (point Point) {
+func newPoint (line i32, column i32, pt i32) (point Point) {
   var pos graphical2d.Position2D
-  pos = coords2position(line, collumn)
+  pos = coords2position(line, column)
 
   var col graphical2d.Color
   col = graphical2d.newColor(POINT_COLOR_RED, POINT_COLOR_GREEN, POINT_COLOR_BLUE)
@@ -234,7 +235,7 @@ func newPoint (line i32, collumn i32, pt i32) (point Point) {
     color: col,
     radius: rad,
     ptype: pt,
-    index_x: collumn,
+    index_x: column,
     index_y: line,
     active: true}
 }
@@ -292,21 +293,21 @@ func getGhostColor (gtype i32) (color graphical2d.Color) {
 /* Function     : canMove
    Input        : movement direction (direction i32)
                 : vertical board position (line i32)
-                : horizontal board position (collumn i32)
+                : horizontal board position (column i32)
    Output       : true (if movement is possible), false (otherwise)
-   Description  : Checks if a game object located at (line/collumn) can move in the input (direction).
+   Description  : Checks if a game object located at (line/column) can move in the input (direction).
 */
-func canMove(direction i32, line i32, collumn i32) (can_move bool)  {
-  if bool.and(i32.eq(direction, UP), i32.eq(cells[i32.sub(line, 1)][collumn].ctype, PATH_CELL)) {
+func canMove(direction i32, line i32, column i32) (can_move bool)  {
+  if bool.and(i32.eq(direction, UP), i32.eq(cells[i32.sub(line, 1)][column].ctype, PATH_CELL)) {
     can_move = true
   }
-  if bool.and(i32.eq(direction, DOWN), i32.eq(cells[i32.add(line, 1)][collumn].ctype, PATH_CELL)) {
+  if bool.and(i32.eq(direction, DOWN), i32.eq(cells[i32.add(line, 1)][column].ctype, PATH_CELL)) {
     can_move = true
   }
-  if bool.and(i32.eq(direction, LEFT), i32.eq(cells[line][i32.sub(collumn, 1)].ctype, PATH_CELL)) {
+  if bool.and(i32.eq(direction, LEFT), i32.eq(cells[line][i32.sub(column, 1)].ctype, PATH_CELL)) {
     can_move = true
   }
-  if bool.and(i32.eq(direction, RIGHT), i32.eq(cells[line][i32.add(collumn, 1)].ctype, PATH_CELL)) {
+  if bool.and(i32.eq(direction, RIGHT), i32.eq(cells[line][i32.add(column, 1)].ctype, PATH_CELL)) {
     can_move = true
   }
 }

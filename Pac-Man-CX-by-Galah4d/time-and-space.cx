@@ -43,7 +43,7 @@ func checkPlayerGhostCollision(ghost Ghost) () {
         GAME_OVER = true
         str.print("------ GAME OVER ------") // FIX ME add game over screen
       } else {
-        player = newPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLLUMN, PLAYER_RADIUS)
+        player = newPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLUMN, PLAYER_RADIUS)
       }
     }
   }

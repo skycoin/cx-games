@@ -19,18 +19,19 @@ func initScene() () {
   }
 
   // Initialize player
-  player = newPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLLUMN, PLAYER_RADIUS)
+  player = newPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLUMN, PLAYER_RADIUS)
 
   // Initialize ghosts
-  ghosts[0] = newGhost(11, 13, 0, GHOST_MODE_CHASE)     // Shadow Ghost
-  ghosts[1] = newGhost(14, 11, 1, GHOST_MODE_IN_HOUSE)  // Speedy Ghost
-  ghosts[2] = newGhost(14, 13, 2, GHOST_MODE_IN_HOUSE)  // Bashful Ghost
-  ghosts[3] = newGhost(14, 15, 3, GHOST_MODE_IN_HOUSE)  // Pokey Ghost
+  ghosts[0] = newGhost(11, 13, 0, GHOST_MODE_CHASE)     // Shadow
+  ghosts[1] = newGhost(14, 11, 1, GHOST_MODE_IN_HOUSE)  // Speedy
+  ghosts[2] = newGhost(14, 13, 2, GHOST_MODE_IN_HOUSE)  // Bashful
+  ghosts[3] = newGhost(14, 15, 3, GHOST_MODE_IN_HOUSE)  // Pokey
 }
 
 func initializeItem(line i32, col i32, item_type i32) () {
   //x := f32.add(-1.0, f32.add(f32.mul(i32.f32(col), CELL_WIDTH), f32.div(CELL_WIDTH, 2.0)))
   //y := f32.sub(1.0, f32.add(f32.mul(i32.f32(line), CELL_HEIGHT), f32.div(CELL_HEIGHT, 2.0)))
+  
   if i32.eq(item_type, WALL_CELL) {
     cells[line][col] = newCell(line, col, WALL_CELL)
   }
@@ -91,12 +92,12 @@ func levelUp() {
 
 /* Function     : coords2position
    Input        : Vertical board position (line i32)
-                : Horizontal board position (collumn i32)
+                : Horizontal board position (column i32)
    Output       : A position in the game screen (position graphical2d.Position2D)
-   Description  : Maps a (line/collumn) pair into an actual screen coordinates
+   Description  : Maps a (line/column) pair into an actual screen coordinates
 */
-func coords2position(line i32, collumn i32) (position graphical2d.Position2D) {
-  x := f32.add(-1.0, f32.add(f32.mul(i32.f32(collumn), CELL_WIDTH), f32.div(CELL_WIDTH, 2.0)))
+func coords2position(line i32, column i32) (position graphical2d.Position2D) {
+  x := f32.add(-1.0, f32.add(f32.mul(i32.f32(column), CELL_WIDTH), f32.div(CELL_WIDTH, 2.0)))
   y := f32.sub(1.0, f32.add(f32.mul(i32.f32(line), CELL_HEIGHT), f32.div(CELL_HEIGHT, 2.0)))
 
   position = graphical2d.newPosition2D(x, y)

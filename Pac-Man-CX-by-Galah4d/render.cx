@@ -32,12 +32,43 @@ func renderGame(program i32) () {
 
   renderLives() // Render Lives
   renderLevel()
+  renderGhostEaterMeter()
+}
+
+/* Function     : renderGhostEaterMeter
+   Description  : makes it clear how much time you have to eat ghosts
+*/
+func renderGhostEaterMeter() {
+  var f f64 = f64.sub(glfw.GetTime(), GHOST_FRIGHTENED_TIMER)
+  f = f64.div(f, GHOST_FRIGHTENED_LIMIT)
+  var fraction f32 = f64.f32(f)
+  
+  if bool.not(isTimerOver(
+    GHOST_FRIGHTENED_TIMER, 
+    GHOST_FRIGHTENED_LIMIT)) {
+    
+    printf("frightened %f \n", fraction)
+    
+    var pos graphical2d.Position2D
+    pos = graphical2d.Position2D{ x: 0.0, y: f32.sub(1.0, CELL_HALF_HEIGHT) }
+    
+    var dim graphical2d.Dimensions2D
+    dim = graphical2d.Dimensions2D{ 
+      width: fraction * 2.0, 
+      height: CELL_HALF_HEIGHT }
+  
+    var col graphical2d.Color
+    col = graphical2d.Color{ red: 1.0, green: 1.0, blue: 0.0 }
+
+    
+    graphical2d.drawRectangle(pos, dim, col)
+  }
 }
 
 /* Function     : renderBoard
    Description  : Renders the game board
 */
-func renderBoard() () {
+func renderBoard() {
   for i:=0; i<y_cells; i++ {
     for j:=0; j<x_cells; j++ {
       graphical2d.drawRectangle(cells[i][j].position, cells[i][j].dimensions, cells[i][j].color)
@@ -125,7 +156,7 @@ func renderLives() () {
 
   var position graphical2d.Position2D
   for i:=0; i<PLAYER_LIVES; i++ {
-    position = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLLUMN, i))
+    position = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, i))
     graphical2d.drawLife(position, LIFE_RADIUS, color)
   }
 }
