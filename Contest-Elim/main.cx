@@ -15,13 +15,10 @@ func main () {
 	eligibles   = []i32{}
 	eliminateds = []i32{}
 	
-	str.print("|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|")
-	str.print("| |^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| |")
-	str.print("| |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  | |")
-	str.print("| |  ____________________________ Contest Elim __________________________  | |")
-	str.print("| |________________________________________________________________________| |")
-	str.print("|____________________________________________________________________________|")
-
+	printTopText()
+	printf("| |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  | | \n")
+	printf("| |  ____________________________ Contest Elim __________________________  | | \n")
+	printBottomText()
 
 	for done() == false {
 		
@@ -39,9 +36,6 @@ func main () {
 	}
 
 
-
-
-
 	// start elimination rounds 
 	str.print("\n\n\n\n ELIMINATION OF CONTESTANTS NOW BEGINS !!! \n\n")
 	
@@ -51,14 +45,46 @@ func main () {
 		var randNum i32 = i32.rand(
 			SMALLEST_CHOOSABLE_NUMBER, 
 			LARGEST_CHOOSABLE_NUMBER + 1)
-		printf("----------------------------- ROLLED a %d \n", randNum)
-		eligibles = remove(eligibles, 0)
-		printf("----------------------------- (%d contestants remain) \n", len(eligibles))
-	}	
+		printf("\n\n                                ROLLED a %d \n", randNum)
+		
+		for i := i32.sub(len(eligibles), 1); i >= 0; i-- {
+			if eligibles[i] == randNum {
+				printTopText()
+				printf("                                ELIMINATED CONTESTANT! \n")
+				printBottomText()
+				
+				eligibles = remove(eligibles, i)
+			}
+		}
+		
+		if len(eligibles) > 1 {
+			printf("------------------------------- (%d contestants remain) \n", len(eligibles))
+		}
+	}
+	
+	for i := 0; i < 3; i++ {
+		printTopText()
+		printf("| |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  | | \n")
+		printf("                                WINNER chose # %d !!! \n", eligibles[0])
+		printBottomText()
+	}
 }
 
 
-func done() (out bool) {
+func printTopText () {
+	str.print("")
+	str.print("|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|")
+	str.print("| |^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| |")
+}
+
+
+func printBottomText () {
+	str.print("| |________________________________________________________________________| |")
+	str.print("|____________________________________________________________________________|")
+}
+
+
+func done () (out bool) {
 	if inputNumber == "done" || 
 		inputNumber == "DONE" {
 		
