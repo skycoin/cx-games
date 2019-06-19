@@ -3,6 +3,10 @@ package main
 func getTimeFraction () (out f32) { // in the range of 0.0 to 0.5
   out = f64.f32(glfw.GetTime())
   out = getValueUnderMax(out, 0.5)
+  
+  if out > 0.25 {
+    out = f32.sub(0.25, out) // get oscillating range from -0.25 to +0.25
+  }
 }
 
 func getValueUnderMax(in f32, max f32) (out f32) {

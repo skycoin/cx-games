@@ -164,23 +164,23 @@ func drawPlayer2(position Position2D, radius f32, color Color) () {
   var end f32
   
   if main.PLAYER_FACING == main.UP {
-    start = 45.0
+    start = 22.5
   }else
   if main.PLAYER_FACING == main.RIGHT {
-    start = 135.0
+    start = 112.5
   }else
   if main.PLAYER_FACING == main.DOWN {
-    start = 225.0
+    start = 202.5
   }else
   if main.PLAYER_FACING == main.LEFT {
-    start = 315.0
+    start = 292.5
   }
   
-  end = start + 270.0
+  end = start + 315.0
   var offs f32 = main.getTimeFraction() // lip offset from a fully open mouth
   offs = f32.mul(offs, 90.0)
-  start = f32.sub(start, offs)
-  end = f32.add(end, offs)
+  start = f32.add(start, offs)
+  end = f32.sub(end, offs)
   
   gl.Begin(gl.TRIANGLE_FAN)
   
