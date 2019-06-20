@@ -1,5 +1,14 @@
 package main
 
+func blinkStatusOn () (out bool) {
+  var t f32 = f64.f32(glfw.GetTime())
+  t = getValueUnderMax(t, 0.15)
+  
+  if t < 0.075 {
+    out = true
+  }
+}
+
 func getTimeBasedOffset () (out f32) { // in the range of 0.0 to 0.5
   out = f64.f32(glfw.GetTime())
   out = getValueUnderMax(out, 0.5)
