@@ -1,15 +1,15 @@
 package main
-//import "gl"
+
 import "glfw"
 
 func main() {
   initGLFW()
-  maybeMoveGhosts()
-  maybeReleaseGhost()
+  foo()
+  bar()
 }
 
 
-func maybeMoveGhosts() {
+func foo() {
   if isTimerOver(0.0D, 999.9D) {
     // move all ghosts
     for i:=0; i<4; i++ {
@@ -24,9 +24,8 @@ func maybeMoveGhosts() {
     
     //GHOST_MOVEMENT_TIMER = glfw.GetTime()
   }
-}
-
-func maybeReleaseGhost() {
+  
+  
   if isTimerOver(0.0D, 999.9D) {
     // Does not release ghosts during frightened mode
     if isTimerOver(0.0D, 999.9D) {
@@ -35,6 +34,9 @@ func maybeReleaseGhost() {
     
     //GHOST_RELEASE_TIMER = glfw.GetTime()
   }
+}
+
+func bar() {
 }
 
 func isTimerOver(timer f64, limit f64) (is_over bool) {
@@ -48,10 +50,4 @@ func initGLFW() () {
 
   glfw.CreateWindow("window", 640, 480, "TESTAPPPPPP")
   glfw.MakeContextCurrent("window")
-
-  //gl.Init()
-  //gl.Enable(gl.BLEND)
-  //gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-
-  glfw.SetKeyCallback("window", "keyboardEvent")
 }
