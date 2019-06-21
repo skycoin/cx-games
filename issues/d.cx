@@ -10,21 +10,20 @@ func main() {
   var f f32
   var radius f32
 
-  cat(newPosition2D(f32.sub(f, f32.div(radius, 2.0)), f32.add(f, f32.div(radius, 2.0))), 0.0075, newColor(1.0, 1.0, 1.0))
-  cat(newPosition2D(f32.sub(f, f32.div(radius, 2.0)), f32.add(f, f32.div(radius, 2.0))), 0.005, newColor(0.0, 0.0, 0.0))
+  cat(getF(f32.sub(f, f32.div(radius, 2.0)), f32.add(f, f32.div(radius, 2.0))), 0.0075, newColor(1.0, 1.0, 1.0))
+  cat(getF(f32.sub(f, f32.div(radius, 2.0)), f32.add(f, f32.div(radius, 2.0))), 0.005, newColor(0.0, 0.0, 0.0))
 
   return
   
-  //cat(newPosition2D(f32.add(position.x, f32.div(radius, 2.0)), f32.add(position.y, f32.div(radius, 2.0))), 0.0075, newColor(1.0, 1.0, 1.0))
-  //cat(newPosition2D(f32.add(position.x, f32.div(radius, 2.0)), f32.add(position.y, f32.div(radius, 2.0))), 0.005, newColor(0.0, 0.0, 0.0))
+  //cat(getF(f32.add(position.x, f32.div(radius, 2.0)), f32.add(position.y, f32.div(radius, 2.0))), 0.0075, newColor(1.0, 1.0, 1.0))
+  //cat(getF(f32.add(position.x, f32.div(radius, 2.0)), f32.add(position.y, f32.div(radius, 2.0))), 0.005, newColor(0.0, 0.0, 0.0))
 }
 
 func cat() {
   
 }
 
-func newPosition2D (x1 f32, y1 f32) (f f32) {
-  //position = Position2D{ x: x1, y: y1 }
+func getF (x1 f32, y1 f32) (f f32) {
 }
 
 func newColor (r f32, g f32, b f32) (color Color) {
