@@ -11,28 +11,17 @@ func main() {
 
 func foo() {
   if isTimerOver(0.0D, 999.9D) {
-    // move all ghosts
     for i:=0; i<4; i++ {
-      //moveGhost(ghosts[i])
-      //checkPlayerGhostCollision(ghosts[i])
     }
     
-    // move player if direction key held (but not pressed recently)
     if isTimerOver(0.0D, 999.9D) {
-      //movePlayerByHeldKeys()
     }
-    
-    //GHOST_MOVEMENT_TIMER = glfw.GetTime()
   }
   
   
   if isTimerOver(0.0D, 999.9D) {
-    // Does not release ghosts during frightened mode
     if isTimerOver(0.0D, 999.9D) {
-      //releaseGhost()
     }
-    
-    //GHOST_RELEASE_TIMER = glfw.GetTime()
   }
 }
 
