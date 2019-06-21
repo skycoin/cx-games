@@ -55,18 +55,20 @@ var GLFW_KEY_D i32 = 68
    Description  : fired per keyboard event
 */
 func keyboardEvent(window str, key i32, scancode i32, action i32, mods i32) {
-  if action == 1 {
-    if eventingRight(key) {
-      movePlayer(RIGHT)
-    }
-    if eventingLeft(key) {
-      movePlayer(LEFT)
-    }
-    if eventingDown(key) {
-      movePlayer(DOWN)
-    }
-    if eventingUp(key) {
-      movePlayer(UP)
+  if gameMode == GAMEMODE_PLAYING {
+    if action == 1 {
+      if eventingRight(key) {
+        movePlayer(RIGHT)
+      }
+      if eventingLeft(key) {
+        movePlayer(LEFT)
+      }
+      if eventingDown(key) {
+        movePlayer(DOWN)
+      }
+      if eventingUp(key) {
+        movePlayer(UP)
+      }
     }
   }
 }
@@ -77,14 +79,13 @@ func keyboardEvent(window str, key i32, scancode i32, action i32, mods i32) {
 func movePlayerByHeldKeys() {
   if heldKeyforRight() {
     movePlayer(RIGHT)
-  }else
+  } else
   if heldKeyforLeft() {
     movePlayer(LEFT)
-  }
-  
+  } else
   if heldKeyforDown() {
     movePlayer(DOWN)
-  }else
+  } else
   if heldKeyforUp() {
     movePlayer(UP)
   }

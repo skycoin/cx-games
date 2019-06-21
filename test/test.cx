@@ -1,0 +1,57 @@
+package main
+//import "gl"
+import "glfw"
+
+func main() {
+  initGLFW()
+  maybeMoveGhosts()
+  maybeReleaseGhost()
+}
+
+
+func maybeMoveGhosts() {
+  if isTimerOver(0.0D, 999.9D) {
+    // move all ghosts
+    for i:=0; i<4; i++ {
+      //moveGhost(ghosts[i])
+      //checkPlayerGhostCollision(ghosts[i])
+    }
+    
+    // move player if direction key held (but not pressed recently)
+    if isTimerOver(0.0D, 999.9D) {
+      //movePlayerByHeldKeys()
+    }
+    
+    //GHOST_MOVEMENT_TIMER = glfw.GetTime()
+  }
+}
+
+func maybeReleaseGhost() {
+  if isTimerOver(0.0D, 999.9D) {
+    // Does not release ghosts during frightened mode
+    if isTimerOver(0.0D, 999.9D) {
+      //releaseGhost()
+    }
+    
+    //GHOST_RELEASE_TIMER = glfw.GetTime()
+  }
+}
+
+func isTimerOver(timer f64, limit f64) (is_over bool) {
+  //if gteq(f64.sub(glfw.GetTime(), timer), limit) {
+    is_over = true
+  //}
+}
+
+func initGLFW() () {
+  glfw.Init()
+
+  glfw.CreateWindow("window", 640, 480, "TESTAPPPPPP")
+  glfw.MakeContextCurrent("window")
+
+  //gl.Init()
+  //gl.Enable(gl.BLEND)
+  //gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
+  glfw.SetKeyCallback("window", "keyboardEvent")
+}

@@ -55,6 +55,7 @@ var PLAYER_SPAWN_COLUMN i32 = 13
 // Player vars 
 var SCORE i32 = 0
 var latestPlayerMoveEvent f64
+var nextLifePos graphical2d.Position2D
 
 // Animation timers
 var PLAYER_ANIMATION_TIMER f64 = 0.0D

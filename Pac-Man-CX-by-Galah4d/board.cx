@@ -20,6 +20,7 @@ func initScene() () {
 
   // Initialize player
   player = newPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLUMN, PLAYER_RADIUS)
+  nextLifePos = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, PLAYER_LIVES - 1))
 
   // Initialize ghosts
   ghosts[0] = newGhost(11, 13, 0, GHOST_MODE_CHASE)     // Shadow

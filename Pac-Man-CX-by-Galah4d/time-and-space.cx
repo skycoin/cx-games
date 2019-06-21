@@ -47,6 +47,9 @@ func checkPlayerGhostCollision(ghost Ghost) () {
     if bool.or(i32.eq(ghost.status, GHOST_MODE_CHASE), i32.eq(ghost.status, GHOST_MODE_SCATTER)) {
       PLAYER_LIVES = i32.sub(PLAYER_LIVES, 1)
       PLAYER_FACING = LEFT
+      nextLifePos = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, PLAYER_LIVES - 1))
+      GETREADY_TIMER = glfw.GetTime()
+      gameMode = GAMEMODE_GETREADY
       
       if i32.lteq(PLAYER_LIVES, 0) {
         GAME_OVER = true

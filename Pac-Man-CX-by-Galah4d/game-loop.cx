@@ -1,9 +1,13 @@
 package main
 
+var GETREADY_LIMIT f64 = 2.0D
+var GETREADY_TIMER f64
+
 var GAMEMODE_GETREADY i32
 var GAMEMODE_PLAYING  i32 = 1
-var GAMEMODE_DYING    i32 = 2
-var GAMEMODE_GAMEOVER i32 = 3
+var GAMEMODE_WONBOARD i32 = 2
+var GAMEMODE_DYING    i32 = 3
+var GAMEMODE_GAMEOVER i32 = 4
 var gameMode i32
 
 func main() {
@@ -18,7 +22,14 @@ func main() {
 
   // Game loop
   for bool.and(bool.not(glfw.ShouldClose("window")), bool.not(GAME_OVER)) {
-    updateGamePlay()
+    if gameMode == GAMEMODE_GETREADY {
+      if isTimerOver(GETREADY_TIMER, GETREADY_LIMIT) {
+        gameMode = GAMEMODE_PLAYING
+      }
+    } else
+    if gameMode == GAMEMODE_PLAYING {
+      updateGamePlay()
+    }
 
     renderGame(program)
 
