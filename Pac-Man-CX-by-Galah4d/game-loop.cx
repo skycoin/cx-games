@@ -7,73 +7,82 @@ var GAMEMODE_GAMEOVER i32 = 3
 var gameMode i32
 
 func main() {
-  var program i32
   initGLFW()
-	program = initOpenGL()
+  var program i32 = 
+  initOpenGL()
 
   newlevel_label:
 
   // Initializes all game objects
   initScene()
 
-  var i i32
-  var j i32
-
   // Game loop
   for bool.and(bool.not(glfw.ShouldClose("window")), bool.not(GAME_OVER)) {
-    for i=0; i<4; i++ {
-      updateGhostMode(ghosts[i])
-    }
-
-    // Check if point was caught
-    for i=0; i<points_count; i++ {
-      if bool.and(bool.and(i32.eq(points[i].index_x, player.index_x), i32.eq(points[i].index_y, player.index_y)), points[i].active) {
-        points[i].active = false
-        if i32.eq(points[i].ptype, PATH_CELL_WITH_SUPER_POINT) {
-          for j=0; j<4; j++ {
-            if bool.not(i32.eq(ghosts[j].status, GHOST_MODE_IN_HOUSE)) {
-              ghosts[j].status = GHOST_MODE_FRIGHTENED
-              ghosts[j].direction = reverseDirection(ghosts[j].direction)
-              GHOST_FRIGHTENED_TIMER = glfw.GetTime()
-            }
-          }
-        }
-      }
-    }
-
-    if isTimerOver(GHOST_MOVEMENT_TIMER, GHOST_MOVEMENT_LIMIT) {
-      // move all ghosts
-      for i=0; i<4; i++ {
-        moveGhost(ghosts[i])
-        checkPlayerGhostCollision(ghosts[i])
-      }
-      
-      // move player if direction key held (but not pressed recently)
-      if isTimerOver(latestPlayerMoveEvent, GHOST_MOVEMENT_HALF_OF_LIMIT) {
-        movePlayerByHeldKeys()
-      }
-      
-      GHOST_MOVEMENT_TIMER = glfw.GetTime()
-    }
-
-    // Check if should release ghost
-    if isTimerOver(GHOST_RELEASE_TIMER, GHOST_CHASE_LIMIT) {
-      // Does not release ghosts during frightened mode
-      if isTimerOver(GHOST_FRIGHTENED_TIMER, GHOST_FRIGHTENED_LIMIT) {
-        releaseGhost()
-      }
-      
-      GHOST_RELEASE_TIMER = glfw.GetTime()
-    }
-
-    if isLevelCompleted() {
-      levelUp()
-      goto newlevel_label
-    }
+    updateGamePlay()
 
     renderGame(program)
 
 		glfw.PollEvents()
     glfw.SwapBuffers("window")
+  }
+}
+
+func updateGamePlay() {
+  for i:=0; i<4; i++ {
+    updateGhostMode(ghosts[i])
+  }
+
+  manageAnyDotEating()
+  maybeMoveGhosts()
+  maybeReleaseGhost()
+
+  if isLevelCompleted() {
+    levelUp()
+    goto newlevel_label
+  }
+}
+
+func manageAnyDotEating() {
+  for i:=0; i<points_count; i++ {
+    if bool.and(bool.and(i32.eq(points[i].index_x, player.index_x), i32.eq(points[i].index_y, player.index_y)), points[i].active) {
+      points[i].active = false
+      if i32.eq(points[i].ptype, PATH_CELL_WITH_SUPER_POINT) {
+        for j:=0; j<4; j++ {
+          if bool.not(i32.eq(ghosts[j].status, GHOST_MODE_IN_HOUSE)) {
+            ghosts[j].status = GHOST_MODE_FRIGHTENED
+            ghosts[j].direction = reverseDirection(ghosts[j].direction)
+            GHOST_FRIGHTENED_TIMER = glfw.GetTime()
+          }
+        }
+      }
+    }
+  }
+}
+
+func maybeMoveGhosts() {
+  if isTimerOver(GHOST_MOVEMENT_TIMER, GHOST_MOVEMENT_LIMIT) {
+    // move all ghosts
+    for i:=0; i<4; i++ {
+      moveGhost(ghosts[i])
+      checkPlayerGhostCollision(ghosts[i])
+    }
+    
+    // move player if direction key held (but not pressed recently)
+    if isTimerOver(latestPlayerMoveEvent, GHOST_MOVEMENT_HALF_OF_LIMIT) {
+      movePlayerByHeldKeys()
+    }
+    
+    GHOST_MOVEMENT_TIMER = glfw.GetTime()
+  }
+}
+
+func maybeReleaseGhost() {
+  if isTimerOver(GHOST_RELEASE_TIMER, GHOST_CHASE_LIMIT) {
+    // Does not release ghosts during frightened mode
+    if isTimerOver(GHOST_FRIGHTENED_TIMER, GHOST_FRIGHTENED_LIMIT) {
+      releaseGhost()
+    }
+    
+    GHOST_RELEASE_TIMER = glfw.GetTime()
   }
 }
