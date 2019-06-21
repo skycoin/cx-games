@@ -1,0 +1,25 @@
+package main
+
+func main() {
+  foo()
+  bar()
+}
+
+func foo() {
+  if cat() {
+    for i := 0; i < 4; i++ {
+    }
+    
+    if cat() {
+    }
+  }
+  
+  if cat() {
+  }
+}
+
+func bar() {
+}
+
+func cat() (b bool) {
+}
