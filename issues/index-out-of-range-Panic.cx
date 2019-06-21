@@ -1,42 +1,29 @@
 package main
 
-import "glfw"
 
 func main() {
-  initGLFW()
   foo()
   bar()
 }
 
 
 func foo() {
-  if isTimerOver(0.0D, 999.9D) {
+  if cat(0.0D, 999.9D) {
     for i:=0; i<4; i++ {
     }
     
-    if isTimerOver(0.0D, 999.9D) {
+    if cat(0.0D, 999.9D) {
     }
   }
   
   
-  if isTimerOver(0.0D, 999.9D) {
-    if isTimerOver(0.0D, 999.9D) {
-    }
+  if cat(0.0D, 999.9D) {
   }
 }
 
 func bar() {
 }
 
-func isTimerOver(timer f64, limit f64) (is_over bool) {
-  //if gteq(f64.sub(glfw.GetTime(), timer), limit) {
+func cat(timer f64, limit f64) (is_over bool) {
     is_over = true
-  //}
-}
-
-func initGLFW() () {
-  glfw.Init()
-
-  glfw.CreateWindow("window", 640, 480, "TESTAPPPPPP")
-  glfw.MakeContextCurrent("window")
 }
