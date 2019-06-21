@@ -1,3 +1,7 @@
+pac-man issue
+var color Color  needs newColor
+
+
 package main
 
 import "glfw"

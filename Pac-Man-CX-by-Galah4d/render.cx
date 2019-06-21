@@ -99,7 +99,7 @@ func renderBoard() {
    Description  : Renders the player
 */
 func renderPlayer() {
-  graphical2d.drawPlayer2(player.position, player.radius, player.color)
+  graphical2d.drawPacMan(player.position, player.radius, player.color, false)
   return
 
   // LEAVING THE ORIGINAL CODE, but bypassing it because
@@ -110,7 +110,7 @@ func renderPlayer() {
   // ....bounce back & forth between just 2 frames
   // (completely closed, or completely open)
   if isTimerOver(PLAYER_ANIMATION_TIMER, PLAYER_ANIMATION_SEMI_LIMIT) {
-    graphical2d.drawPlayer2(player.position, player.radius, player.color)
+    graphical2d.drawPacMan(player.position, player.radius, player.color, false)
   } else {
     graphical2d.drawCircle(player.position, player.radius, player.color)
   }
@@ -170,14 +170,23 @@ func renderPoint(point Point) () {
 /* Function     : renderLives
    Description  : Renders the player lives
 */
-func renderLives() () {
-  var color Color
-  color = graphical2d.newColor(LIFE_COLOR_RED, LIFE_COLOR_GREEN, LIFE_COLOR_BLUE)
-
+func renderLives() {
   var position graphical2d.Position2D
-  for i:=0; i<PLAYER_LIVES; i++ {
+  var heartCol Color
+  var pacCol Color
+  var numHearts i32 = PLAYER_LIVES
+  
+  if gameMode != GAMEMODE_GETREADY {
+    numHearts--
+  }
+  
+  heartCol = graphical2d.newColor(LIFE_COLOR_RED, LIFE_COLOR_GREEN, LIFE_COLOR_BLUE)
+  pacCol = graphical2d.newColor(1.0, 1.0, 0.0)
+
+  for i:=0; i<numHearts; i++ {
     position = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, i))
-    graphical2d.drawLife(position, LIFE_RADIUS, color)
+    graphical2d.drawPacMan(position, CELL_HALF_WIDTH - 0.01, pacCol, true)
+    graphical2d.drawLife(position, LIFE_RADIUS, heartCol)
   }
 }
 

@@ -32,8 +32,19 @@ func initOpenGL() (program i32) {
 
 
 /***************************************
- * Keyboard input functions.
+ * Keyboard input.
 ***************************************/
+
+// Keys
+var RIGHT_ARROW_KEY i32 = 262
+var LEFT_ARROW_KEY i32 = 263
+var DOWN_ARROW_KEY i32 = 264
+var UP_ARROW_KEY i32 = 265
+
+var GLFW_KEY_W i32 = 87
+var GLFW_KEY_A i32 = 65
+var GLFW_KEY_S i32 = 83
+var GLFW_KEY_D i32 = 68
 
 /* Function     : keyboardEvent
    Input        : active window (window str)
@@ -60,20 +71,21 @@ func keyboardEvent(window str, key i32, scancode i32, action i32, mods i32) {
   }
 }
 
-/* Function     : maybeMovePlayer
+/* Function     : movePlayerByHeldKeys
    Description  : after moving all ghosts, poll for held down keys
 */
-func maybeMovePlayer() {
-  if pollingRight() {
+func movePlayerByHeldKeys() {
+  if heldKeyforRight() {
     movePlayer(RIGHT)
-  }
-  if pollingLeft() {
+  }else
+  if heldKeyforLeft() {
     movePlayer(LEFT)
   }
-  if pollingDown() {
+  
+  if heldKeyforDown() {
     movePlayer(DOWN)
-  }
-  if pollingUp() {
+  }else
+  if heldKeyforUp() {
     movePlayer(UP)
   }
 }
@@ -113,31 +125,31 @@ func eventingUp(key i32) (out bool) {
 
 
 
-/* Functions    : polling[Direction]
+/* Functions    : heldKeyfor[Direction]
    Description  : Checks 2 sets of keys for player's HELD direction
 */
-func pollingLeft() (out bool) {
+func heldKeyforLeft() (out bool) {
   if i32.eq(glfw.GetKey("window", GLFW_KEY_A), 1) ||
     i32.eq(glfw.GetKey("window", LEFT_ARROW_KEY), 1) {
     out = true
   }
 }
 
-func pollingRight() (out bool) {
+func heldKeyforRight() (out bool) {
   if i32.eq(glfw.GetKey("window", GLFW_KEY_D), 1) ||
     i32.eq(glfw.GetKey("window", RIGHT_ARROW_KEY), 1) {
     out = true
   }
 }
 
-func pollingDown() (out bool) {
+func heldKeyforDown() (out bool) {
   if i32.eq(glfw.GetKey("window", GLFW_KEY_S), 1) ||
     i32.eq(glfw.GetKey("window", DOWN_ARROW_KEY), 1) {
     out = true
   }
 }
 
-func pollingUp() (out bool) {
+func heldKeyforUp() (out bool) {
   if i32.eq(glfw.GetKey("window", GLFW_KEY_W), 1) ||
     i32.eq(glfw.GetKey("window", UP_ARROW_KEY), 1) {
     out = true

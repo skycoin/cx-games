@@ -1,5 +1,11 @@
 package main
 
+var GAMEMODE_GETREADY i32
+var GAMEMODE_PLAYING  i32 = 1
+var GAMEMODE_DYING    i32 = 2
+var GAMEMODE_GAMEOVER i32 = 3
+var gameMode i32
+
 func main() {
   var program i32
   initGLFW()
@@ -44,7 +50,7 @@ func main() {
       
       // move player if direction key held (but not pressed recently)
       if isTimerOver(latestPlayerMoveEvent, GHOST_MOVEMENT_HALF_OF_LIMIT) {
-        maybeMovePlayer()
+        movePlayerByHeldKeys()
       }
       
       GHOST_MOVEMENT_TIMER = glfw.GetTime()

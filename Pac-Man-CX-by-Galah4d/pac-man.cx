@@ -9,21 +9,12 @@ var y_cells i32 = 31
 
 var CELL_WIDTH f32 = 0.07143
 var CELL_HEIGHT f32 = 0.0645
+var CELL_HALF_WIDTH f32 = CELL_WIDTH / 2.0
 var CELL_HALF_HEIGHT f32 = CELL_HEIGHT / 2.0
 
-// Game constatnts
+// Game "constants"
 var WIDTH_WINDOW i32 = 840
 var HEIGHT_WINDOW i32 = 930
-
-// Keyboard Keys
-var RIGHT_ARROW_KEY i32 = 262
-var LEFT_ARROW_KEY i32 = 263
-var DOWN_ARROW_KEY i32 = 264
-var UP_ARROW_KEY i32 = 265
-var GLFW_KEY_W i32 = 87
-var GLFW_KEY_A i32 = 65
-var GLFW_KEY_S i32 = 83
-var GLFW_KEY_D i32 = 68
 
 // Game flags
 var GAME_LEVEL i32 = 1
