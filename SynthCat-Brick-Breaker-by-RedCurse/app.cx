@@ -1,0 +1,13 @@
+package app
+
+
+
+type Vector2D struct {
+    x f32
+    y f32
+}
+
+type Window struct {
+    Height i32
+    Width i32
+}

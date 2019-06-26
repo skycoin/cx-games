@@ -1,30 +1,15 @@
-pac-man issue
-var color Color  needs newColor
-
-
 package main
 
 import "glfw"
 import "gl"
 import "os"
 
+import "app"
+import "inputs"
 import "LoopLimiter"
 import "LoopTracker"
 
-var upPressed bool
-var downPressed bool
-var leftPressed bool
-var rightPressed bool
 
-type Vector2D struct {
-    x f32
-    y f32
-}
-
-type Window struct {
-    Height i32
-    Width i32
-}
 
 // *************************************
 // Start - Game
@@ -39,43 +24,14 @@ func initGlfw(window Window) {
     glfw.WindowHint(glfw.Resizable, glfw.False)
     glfw.CreateWindow("window", window.Width, window.Height, "SynthCat Brick Breaker")
     glfw.MakeContextCurrent("window")
-
-    glfw.SetKeyCallback("window", "keyEventCallback")
+    inputs.SetupCallbacks()
 }
 
-func keyEventCallback(window str, key i32, scancode i32, action i32, mods i32) {
-    // Up
-    if key == 265 && action == 1 {
-		upPressed = true
-	} else if key == 265 && action == 0 {
-		upPressed = false
-    }
-    
-    // Down
-    if key == 264 && action == 1 {
-		downPressed = true
-	} else if key == 264 && action == 0 {
-		downPressed = false
-    }
-
-    // Left
-    if key == 263 && action == 1 {
-		leftPressed = true
-	} else if key == 263 && action == 0 {
-		leftPressed = false
-    }
-
-    // Right
-    if key == 262 && action == 1 {
-		rightPressed = true
-	} else if key == 262 && action == 0 {
-		rightPressed = false
-    }
-}
 
 func startGame() {
     mainGameLoop()
 }
+
 
 func mainGameLoop()() {
     var program i32 = gl.CreateProgram()
@@ -92,7 +48,7 @@ func mainGameLoop()() {
         animationLimiter = LoopLimiter.update(animationLimiter, currentTime)
         loopTracker = LoopTracker.update(loopTracker, currentTime)
 
-        synthCat = updatePlayer(synthCat)
+        synthCat = inputs.updatePlayer(synthCat)
         yarnBall = updateBall(yarnBall)
         checkBrickCollisions()
 
@@ -148,19 +104,7 @@ func mainGameLoop()() {
     }
 }
 
-func updatePlayer(player Sprite)(out Sprite) {
-    if rightPressed == true {
-        player.velocity.x = player.maxVelocity
-    } 
-    if leftPressed == true {
-        player.velocity.x = -1.0*player.maxVelocity
-    } 
-    if rightPressed == false && leftPressed == false {
-        player.velocity.x = 0.0
-    }
-    player.lastPosition = player.position
-    out = player
-}
+
 
 func updateBall(ball Sprite)(out Sprite) {
     if ball.position.x >= 0.9 || ball.position.x <= -0.9 {
