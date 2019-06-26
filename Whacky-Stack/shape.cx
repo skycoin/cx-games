@@ -1,0 +1,28 @@
+package shape
+
+
+
+var NUM_SHAPES i32 = 7 // (4 of them are mirrored) 
+
+var SHAPE_BEAM i32
+var SHAPE_L i32
+var SHAPE_L_MIRROR i32
+var SHAPE_ZIGZAG i32
+var SHAPE_ZAGZIG i32
+var SHAPE_MIDTINE i32
+var SHAPE_BLOCK i32
+
+/*
+type Shape struct {
+	Row0 []i32
+}
+
+var CurrentShape Shape
+CurrentShape.Row0 = []i32{ 0, 0, 0, 0, 0 }
+*/
+
+var CurrShape0 [5]i32 = [5]i32{ 0, 0, 0, 0, 0 }
+var CurrShape1 [5]i32 = [5]i32{ 0, 0, 0, 0, 0 }
+var CurrShape2 [5]i32 = [5]i32{ 0, 1, 1, 1, 0 }
+var CurrShape3 [5]i32 = [5]i32{ 0, 0, 1, 0, 0 }
+var CurrShape4 [5]i32 = [5]i32{ 0, 0, 0, 0, 0 }
