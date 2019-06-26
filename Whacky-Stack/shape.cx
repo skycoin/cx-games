@@ -21,8 +21,8 @@ var CurrentShape Shape
 CurrentShape.Row0 = []i32{ 0, 0, 0, 0, 0 }
 */
 
-var CurrShape0 [5]i32 = [5]i32{ 0, 0, 0, 0, 0 }
-var CurrShape1 [5]i32 = [5]i32{ 0, 0, 0, 0, 0 }
-var CurrShape2 [5]i32 = [5]i32{ 0, 1, 1, 1, 0 }
-var CurrShape3 [5]i32 = [5]i32{ 0, 0, 1, 0, 0 }
-var CurrShape4 [5]i32 = [5]i32{ 0, 0, 0, 0, 0 }
+var Curr0 [5]i32 = [5]i32{ 0, 0, 0, 0, 0 }
+var Curr1 [5]i32 = [5]i32{ 0, 0, 0, 0, 0 }
+var Curr2 [5]i32 = [5]i32{ 0, 1, 1, 1, 0 }
+var Curr3 [5]i32 = [5]i32{ 0, 0, 1, 0, 0 }
+var Curr4 [5]i32 = [5]i32{ 0, 0, 0, 0, 0 }
