@@ -60,16 +60,16 @@ func MapColumn () {
 	var f f32 = 0.17
 	gl.Color3f(f, f, f)
 	
-	var fY f32 = -0.95 + map.CellWidthHalf
-	for y := 0; y < map.NUM_CELLS_Y - 6; y++ {
+	var fY f32 = -0.95 + map.CellHeightHalf
+	for y := 0; y < map.NUM_CELLS_Y; y++ {
 		var fX f32 = map.LEdge + map.CellWidthHalf
 		for x := 0; x < map.NUM_CELLS_X; x++ {
-			PicAtScale(Block_TEXTURE, fX, fY, map.CellWidthHalf, map.CellWidthHalf)
+			PicAtScale(Block_TEXTURE, fX, fY, map.CellWidthHalf, map.CellHeightHalf)
 			
 			fX = f32.add(fX, map.CellWidth)
 		}
 		
-		fY = f32.add(fY, map.CellWidth)
+		fY = f32.add(fY, map.CellHeight)
 	}
 }
 
@@ -82,12 +82,12 @@ func PlayerPiece () {
 		var fX f32 = f32.add(-0.65, shape.PlayerPos.X)
 		for x := 0; x < 5; x++ {
 			if shape.Cells[y][x] {
-				PicAtScale(Block_TEXTURE, fX, fY, map.CellWidthHalf, map.CellWidthHalf)
+				PicAtScale(Block_TEXTURE, fX, fY, map.CellWidthHalf, map.CellHeightHalf)
 			}
 			
 			fX = f32.add(fX, map.CellWidth)
 		}
 		
-		fY = f32.sub(fY, map.CellWidth)
+		fY = f32.sub(fY, map.CellHeight)
 	}
 }
