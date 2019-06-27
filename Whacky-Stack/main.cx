@@ -24,6 +24,7 @@ func keyPress (window str, key i32, scancode i32, action i32, mods i32) {
 		glfw.SetShouldClose("window", true)
 	} else
 	if key == 77 && action == 1 { // M
+		shape.Rotate()
 	}
 }
 
@@ -46,6 +47,8 @@ func mouseButton (window str, key i32, action i32, mods i32) {
 
 
 func init () {
+	shape.Setup()
+
 	wd := os.GetWorkingDirectory()
 	Block_TEXTURE = gl.NewTexture(str.concat(wd, "assets/textures/tile.png"))
 	STAR_TEXTURE  = gl.NewTexture(str.concat(wd, "assets/textures/star.png"))
@@ -94,40 +97,22 @@ func main () {
 		gl.Enable(gl.TEXTURE_2D)
 		draw.PicAtScale(BG_TEXTURE,    0.0, 0.0, 1.0, 1.0)
 		
-		var x f32 = -1.0
-		for i := 0; i < len(shape.Curr0); i++ {
-			var y f32 = 0.0
-			
-			if shape.Curr0[i] == 1 {
-				draw.PicAtScale(Block_TEXTURE, x, y, 0.1, 0.1)
-			}
-			y = f32.sub(y, 0.2)
-			
-			if shape.Curr1[i] == 1 {
-				draw.PicAtScale(Block_TEXTURE, x, y, 0.1, 0.1)
-			}
-			y = f32.sub(y, 0.2)
-			
-			if shape.Curr2[i] == 1 {
-				draw.PicAtScale(Block_TEXTURE, x, y, 0.1, 0.1)
-			}
-			y = f32.sub(y, 0.2)
-			
-			if shape.Curr3[i] == 1 {
-				draw.PicAtScale(Block_TEXTURE, x, y, 0.1, 0.1)
-			}
-			y = f32.sub(y, 0.2)
-			
-			if shape.Curr4[i] == 1 {
-				draw.PicAtScale(Block_TEXTURE, x, y, 0.1, 0.1)
+		var fY f32 = 0.0
+		for y := 0; y < 5; y++ {
+			var fX f32 = -1.0
+			for x := 0; x < 5; x++ {
+				if shape.Cells[y][x] {
+					draw.PicAtScale(Block_TEXTURE, fX, fY, 0.1, 0.1)
+				}
+				
+				fX = f32.add(fX, 0.2)
 			}
 			
-			x = f32.add(x, 0.2)
+			fY = f32.sub(fY, 0.2)
 		}
-		
+
 		//gltext.Printf("Roboto50", 0.0, 0.0, "whacky stack")
 		
-
 		glfw.PollEvents()
 		glfw.SwapBuffers("window")
 	}
