@@ -3,6 +3,7 @@ package inputs
 import "glfw"
 
 import "app"
+import "shape"
 import "space"
 
 
@@ -127,18 +128,18 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 		if action == 1 { // (press) 
 			//str.print("-------------------------------------PRESS (not a repeat)")
 
-			//if key == 50 { // GLFW_KEY_2 
-			//} else
-			//if key == 51 { // GLFW_KEY_3 
-			//} else
-			if Back(key) {
-			} else
 			if key == 53 { // GLFW_KEY_5 
 				// close 
 				str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 				glfw.SetShouldClose("window", true)
 			} else
-			if key == GLFW_KEY_SPACE {
+			if eventingLeft(key) {
+				shape.Rotate()
+				shape.Rotate()
+				shape.Rotate()
+			} else
+			if eventingRight(key) {
+				shape.Rotate()
 			}
 
 			//maybeToggleMousePointer(key)
@@ -167,4 +168,33 @@ func maybeToggleMousePointer (key i32) () {
 			glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
 		}
 	}
+}
+
+
+func eventingLeft(key i32) (out bool) {
+  if i32.eq(key, GLFW_KEY_A) ||
+    i32.eq(key, GLFW_KEY_LEFT) {
+    out = true
+  }
+}
+
+func eventingRight(key i32) (out bool) {
+  if i32.eq(key, GLFW_KEY_D) ||
+    i32.eq(key, GLFW_KEY_RIGHT) {
+    out = true
+  }
+}
+
+func eventingDown(key i32) (out bool) {
+  if i32.eq(key, GLFW_KEY_S) ||
+    i32.eq(key, GLFW_KEY_DOWN) {
+    out = true
+  }
+}
+
+func eventingUp(key i32) (out bool) {
+  if i32.eq(key, GLFW_KEY_W) ||
+    i32.eq(key, GLFW_KEY_UP) {
+    out = true
+  }
 }

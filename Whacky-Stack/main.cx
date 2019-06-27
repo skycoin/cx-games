@@ -3,30 +3,11 @@ package main
 import "app"
 import "gl"
 import "glfw"
-import "gltext"
-import "os"
 
 import "draw"
+import "inputs"
 import "shape"
 
-
-
-var Block_TEXTURE i32
-var STAR_TEXTURE i32
-var BG_TEXTURE i32
-
-
-
-func keyPress (window str, key i32, scancode i32, action i32, mods i32) {
-	if key == 53 { // GLFW_KEY_5 
-		// close 
-		str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-		glfw.SetShouldClose("window", true)
-	} else
-	if key == 77 && action == 1 { // M
-		shape.Rotate()
-	}
-}
 
 
 func mouseButton (window str, key i32, action i32, mods i32) {
@@ -48,11 +29,8 @@ func mouseButton (window str, key i32, action i32, mods i32) {
 
 func init () {
 	shape.Setup()
-
-	wd := os.GetWorkingDirectory()
-	Block_TEXTURE = gl.NewTexture(str.concat(wd, "assets/textures/tile.png"))
-	STAR_TEXTURE  = gl.NewTexture(str.concat(wd, "assets/textures/star.png"))
-	BG_TEXTURE    = gl.NewTexture(str.concat(wd, "assets/textures/background.jpg"))
+	draw.Init()
+	inputs.Setup()
 }
 
 
@@ -66,16 +44,8 @@ func main () {
 	program := gl.CreateProgram()
 	gl.LinkProgram(program)
 
-	wd := os.GetWorkingDirectory()
-	fontFile := str.concat(wd, "assets/fonts/roboto-light.ttf")
-
-	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
-	os.Close(fontFile)
-
 	init()
 
-	glfw.SetKeyCallback("window", "keyPress")
 	glfw.SetMouseButtonCallback("window", "mouseButton")
 
 
@@ -95,22 +65,9 @@ func main () {
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
 		gl.Enable(gl.TEXTURE_2D)
-		draw.PicAtScale(BG_TEXTURE,    0.0, 0.0, 1.0, 1.0)
+		draw.PicAtScale(draw.BG_TEXTURE, 0.0, 0.0, 1.0, 1.0)
+		draw.PlayerPiece()
 		
-		var fY f32 = 0.0
-		for y := 0; y < 5; y++ {
-			var fX f32 = -1.0
-			for x := 0; x < 5; x++ {
-				if shape.Cells[y][x] {
-					draw.PicAtScale(Block_TEXTURE, fX, fY, 0.1, 0.1)
-				}
-				
-				fX = f32.add(fX, 0.2)
-			}
-			
-			fY = f32.sub(fY, 0.2)
-		}
-
 		//gltext.Printf("Roboto50", 0.0, 0.0, "whacky stack")
 		
 		glfw.PollEvents()

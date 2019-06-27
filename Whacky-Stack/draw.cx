@@ -1,7 +1,33 @@
 package draw
 
 import "gl"
+import "gltext"
+import "os"
 
+import "shape"
+
+
+
+var Block_TEXTURE i32
+var STAR_TEXTURE i32
+var BG_TEXTURE i32
+
+
+
+func Init () {
+	wd := os.GetWorkingDirectory()
+	
+	// pics 
+	Block_TEXTURE = gl.NewTexture(str.concat(wd, "assets/textures/tile.png"))
+	STAR_TEXTURE  = gl.NewTexture(str.concat(wd, "assets/textures/star.png"))
+	BG_TEXTURE    = gl.NewTexture(str.concat(wd, "assets/textures/background.jpg"))
+
+	// font 
+	fontFile := str.concat(wd, "assets/fonts/roboto-light.ttf")
+	os.Open(fontFile)
+	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+}
 
 
 func PicAtScale (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
@@ -23,4 +49,21 @@ func PicAtScale (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 		gl.TexCoord2d(0.0D, 1.0D)
 		gl.Vertex3f(-1.0, -1.0, 0.0)
 	gl.End()
+}
+
+
+func PlayerPiece() {
+	var fY f32 = 0.0
+	for y := 0; y < 5; y++ {
+		var fX f32 = -1.0
+		for x := 0; x < 5; x++ {
+			if shape.Cells[y][x] {
+				PicAtScale(Block_TEXTURE, fX, fY, 0.1, 0.1)
+			}
+			
+			fX = f32.add(fX, 0.2)
+		}
+		
+		fY = f32.sub(fY, 0.2)
+	}
 }
