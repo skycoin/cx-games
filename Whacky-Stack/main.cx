@@ -66,6 +66,7 @@ func main () {
 
 		gl.Enable(gl.TEXTURE_2D)
 		draw.PicAtScale(draw.BG_TEXTURE, 0.0, 0.0, 1.0, 1.0)
+		draw.MapColumn()
 		draw.PlayerPiece()
 		
 		//gltext.Printf("Roboto50", 0.0, 0.0, "whacky stack")

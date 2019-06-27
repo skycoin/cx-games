@@ -4,6 +4,7 @@ import "gl"
 import "gltext"
 import "os"
 
+import "map"
 import "shape"
 
 
@@ -42,28 +43,51 @@ func PicAtScale (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 	gl.Begin(gl.QUADS)
 		gl.TexCoord2d(0.0D, 0.0D)
 		gl.Vertex3f(-1.0, 1.0, 0.0)
+		
 		gl.TexCoord2d(1.0D, 0.0D)
 		gl.Vertex3f(1.0, 1.0, 0.0)
+		
 		gl.TexCoord2d(1.0D, 1.0D)
 		gl.Vertex3f(1.0, -1.0, 0.0)
+		
 		gl.TexCoord2d(0.0D, 1.0D)
 		gl.Vertex3f(-1.0, -1.0, 0.0)
 	gl.End()
 }
 
 
-func PlayerPiece() {
-	var fY f32 = 0.0
-	for y := 0; y < 5; y++ {
-		var fX f32 = -1.0
-		for x := 0; x < 5; x++ {
-			if shape.Cells[y][x] {
-				PicAtScale(Block_TEXTURE, fX, fY, 0.1, 0.1)
-			}
+func MapColumn () {
+	var f f32 = 0.17
+	gl.Color3f(f, f, f)
+	
+	var fY f32 = -0.95 + map.CellWidthHalf
+	for y := 0; y < map.NUM_CELLS_Y - 6; y++ {
+		var fX f32 = map.LEdge + map.CellWidthHalf
+		for x := 0; x < map.NUM_CELLS_X; x++ {
+			PicAtScale(Block_TEXTURE, fX, fY, map.CellWidthHalf, map.CellWidthHalf)
 			
-			fX = f32.add(fX, 0.2)
+			fX = f32.add(fX, map.CellWidth)
 		}
 		
-		fY = f32.sub(fY, 0.2)
+		fY = f32.add(fY, map.CellWidth)
+	}
+}
+
+
+func PlayerPiece () {
+	gl.Color3f(1.0, 1.0, 1.0)
+	
+	var fY f32 = 0.75
+	for y := 0; y < 5; y++ {
+		var fX f32 = -0.65
+		for x := 0; x < 5; x++ {
+			if shape.Cells[y][x] {
+				PicAtScale(Block_TEXTURE, fX, fY, map.CellWidthHalf, map.CellWidthHalf)
+			}
+			
+			fX = f32.add(fX, map.CellWidth)
+		}
+		
+		fY = f32.sub(fY, map.CellWidth)
 	}
 }
