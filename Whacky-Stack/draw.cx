@@ -77,9 +77,9 @@ func MapColumn () {
 func PlayerPiece () {
 	gl.Color3f(1.0, 1.0, 1.0)
 	
-	var fY f32 = 0.75
+	var fY f32 = f32.add(0.75, shape.PlayerPos.Y)
 	for y := 0; y < 5; y++ {
-		var fX f32 = -0.65
+		var fX f32 = f32.add(-0.65, shape.PlayerPos.X)
 		for x := 0; x < 5; x++ {
 			if shape.Cells[y][x] {
 				PicAtScale(Block_TEXTURE, fX, fY, map.CellWidthHalf, map.CellWidthHalf)

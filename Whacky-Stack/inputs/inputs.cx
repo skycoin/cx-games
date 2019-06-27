@@ -3,6 +3,7 @@ package inputs
 import "glfw"
 
 import "app"
+import "map"
 import "shape"
 import "space"
 
@@ -140,6 +141,12 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 			} else
 			if eventingRight(key) {
 				shape.Rotate()
+			} else
+			if eventingUp(key) {
+				shape.PlayerPos.Y = f32.add(shape.PlayerPos.Y, map.CellWidth)
+			} else
+			if eventingDown(key) {
+				shape.PlayerPos.Y = f32.sub(shape.PlayerPos.Y, map.CellWidth)
 			}
 
 			//maybeToggleMousePointer(key)
