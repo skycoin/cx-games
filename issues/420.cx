@@ -1,0 +1,5 @@
+package main
+
+func main() {
+  var i [2][2]i32 = [2][2]i32{ {1, 2}, {3, 4} }
+}

@@ -3,10 +3,4 @@ package main
 func main() {
   var s []str = []str{}
 }
-
-func cat(s [3]str) {
-  for i := 0; i < len(s); i++ {
-    printf("item: %s \n", s[i])
-  }
-}
   
