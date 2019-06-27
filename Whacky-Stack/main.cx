@@ -1,5 +1,6 @@
 package main
 
+import "app"
 import "gl"
 import "glfw"
 import "gltext"
@@ -9,24 +10,10 @@ import "draw"
 import "shape"
 
 
-var NUM_CELLS_X i32 = 9
-var NUM_CELLS_Y i32 = 17
-
-var width i32 = 590
-var height i32 = 960
 
 var Block_TEXTURE i32
 var STAR_TEXTURE i32
 var BG_TEXTURE i32
-
-
-
-type Bg struct {
-	x f32
-	y f32
-}
-
-var bg Bg
 
 
 
@@ -62,14 +49,14 @@ func init () {
 	wd := os.GetWorkingDirectory()
 	Block_TEXTURE = gl.NewTexture(str.concat(wd, "assets/textures/tile.png"))
 	STAR_TEXTURE  = gl.NewTexture(str.concat(wd, "assets/textures/star.png"))
-	BG_TEXTURE    = gl.NewTexture(str.concat(wd, "assets/textures/backgrounds/background.jpg"))
+	BG_TEXTURE    = gl.NewTexture(str.concat(wd, "assets/textures/background.jpg"))
 }
 
 
 func main () {
 	glfw.Init()
 
-	glfw.CreateWindow("window", width, height, "Tetris 1.0")
+	glfw.CreateWindow("window", app.Width, app.Height, app.Name)
 	glfw.MakeContextCurrent("window")
 
 	gl.Init()
