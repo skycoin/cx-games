@@ -1,0 +1,9 @@
+package main
+
+func main() {
+  var s [3]str = [3]str{ 
+    "a", 
+    "b", 
+    "c"
+  }
+}
