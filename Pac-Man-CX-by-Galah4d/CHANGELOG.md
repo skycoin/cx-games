@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 - The maximum level is now capped at level 10.
 
 ### Removed
-- The bug causing inconsistecy while triggering Frightened Mode is now fixed.
+- The bug causing inconsistency while triggering Frightened Mode is now fixed.
 
 ## [0.0.2] - 2018-08-25
 ### Added
