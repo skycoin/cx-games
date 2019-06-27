@@ -2,7 +2,54 @@ package app
 
 
 
-var Name   str = "W h a c k y   S t a c k"
-var Width  i32 = 590
-var Height i32 = 960
+var NAME   str = "W h a c k y   S t a c k"
+var WIDTH  i32 = 590
+var HEIGHT i32 = 960
+
+var ScreenSizeInPixels Vec2I
+var I32_MAX            i32 = 2147483647
+var TAU                f32
+
+// movement 
+var MAX_HERO_SPEED     f32 = 0.02
+
+// modes 
+// 		FIXME to consts, when they exist in CX 
+
+var APPMODE_PLAYING      i32 = 3
+var APPMODE_GAME_OVER    i32 = 4
+var APPMODE_MAX          i32 = 6
+
+var Mode i32 = APPMODE_PLAYING
+
+
+
+type Vec2I struct {
+	X i32
+	Y i32
+}
+
+type Vec2 struct {
+	X f32
+	Y f32
+}
+
+type Vec3 struct {
+	X f32
+	Y f32
+	Z f32
+}
+
+type Color3 struct {
+	R f32
+	G f32
+	B f32
+}
+
+
+
+func Setup () () {
+	str.print("app.Setup()")
+	TAU = f32.mul(2.0, 3.141592654)
+}
 
