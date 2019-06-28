@@ -29,6 +29,11 @@ type Vec2I struct {
 	Y i32
 }
 
+type Vec2F64 struct {
+	X f64
+	Y f64
+}
+
 type Vec2 struct {
 	X f32
 	Y f32

@@ -28,6 +28,8 @@ var GLFW_KEY_SPACE i32 = 32
 func Setup () {
 	str.print("inputs.Setup()")
 
+	glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
+
 	// callbacks 
 	glfw.SetKeyCallback("window", "onKeyEvent")
 	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
@@ -93,20 +95,18 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 
 
 // mouse position 
-var oldX f32
-var oldY f32
-var oldX64 f64
-var oldY64 f64
+var oldV Vec2
+var old64 Vec2F64
 var deltaX f32
 var deltaY f32
 var deltaX64 f64
 var deltaY64 f64
-var hdsl f64 // horizontal distance since latest piece movement 
+var dist Vec2F64 // distance since latest piece movement 
 func onCursorPosEvent (window str, x f64, y f64) {
-	oldX = MousePointer.X
-	oldY = MousePointer.Y
-	oldX64 = MousePointerX64
-	oldY64 = MousePointerY64
+	oldV.X = MousePointer.X
+	oldV.Y = MousePointer.Y
+	old64.X = MousePointerX64
+	old64.Y = MousePointerY64
 	
 
 	MousePointerX64 = x
@@ -123,20 +123,32 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	MousePointer.Y = f32.sub(1.0, mY)
 	
 
-	deltaX = f32.sub(MousePointer.X, oldX)
-	deltaY = f32.sub(MousePointer.Y, oldY)
-	deltaX64 = f64.sub(x, oldX64)
-	deltaY64 = f64.sub(y, oldY64)
+	deltaX = f32.sub(MousePointer.X, oldV.X)
+	deltaY = f32.sub(MousePointer.Y, oldV.Y)
+	deltaX64 = f64.sub(x, old64.X)
+	deltaY64 = f64.sub(y, old64.Y)
 
-	hdsl = f64.add(hdsl, deltaX64)
+
+	// blocky mouse movement 
+	dist.X = f64.add(dist.X, deltaX64)
+	dist.Y = f64.add(dist.Y, deltaY64)
 	
-	if hdsl > mouseMoveThreshold {
-		shape.PlayerPos.X = i32.add(shape.PlayerPos.X, 1)
-		hdsl = 0.0D
+	if dist.X > mouseMoveThreshold {
+		shape.MovePieceByJumps(1, 0)
+		dist.X = 0.0D
 	} else 
-	if hdsl < -mouseMoveThreshold {
-		shape.PlayerPos.X = i32.sub(shape.PlayerPos.X, 1)
-		hdsl = 0.0D
+	if dist.X < -mouseMoveThreshold {
+		shape.MovePieceByJumps(-1, 0)
+		dist.X = 0.0D
+	}	
+
+	if dist.Y > mouseMoveThreshold {
+		shape.MovePieceByJumps(0, -1)
+		dist.Y = 0.0D
+	} else
+	if dist.Y < -mouseMoveThreshold {
+		shape.MovePieceByJumps(0, 1)
+		dist.Y = 0.0D
 	}	
 	
 	//printf("onCursorPosEvent %f, %f \n", deltaX64, deltaY64)
