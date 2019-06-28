@@ -53,9 +53,18 @@ func MovePieceBy (x i32, y i32) {
 	
 	// flesh out MovePieceBy(), to do each tween of jump 
 	
-	PlayerPos.X = i32.add(PlayerPos.X, x)
 	
-	//DownExtent
+	if /* going left */ x < 0 &&
+		PlayerPos.X > 0 + LeftExtent {
+		
+		PlayerPos.X = i32.add(PlayerPos.X, x)
+	} else
+	if /* going right */ x > 0 &&
+		PlayerPos.X < map.NUM_CELLS_X - 1 - RightExtent {
+		
+		PlayerPos.X = i32.add(PlayerPos.X, x)
+	}
+	
 	if /* going down */ y < 0 &&
 		PlayerPos.Y > 0 + DownExtent {
 		
