@@ -25,8 +25,6 @@ var rp    [5][5]bool // rotated piece (temp scratchpad)
 
 // FIXME:  
 //		do pos initialization each time new piece starts at top
-//		DON'T set PlayerPos directly, as fitting rules need application 
-// 		flesh out MovePiece()
 var PlayerPos Vec2I = Vec2I{ X: 2, Y: map.NUM_CELLS_Y - 5 }
 
 
@@ -41,9 +39,15 @@ func Setup () {
 }
 
 
-func MovePiece (v Vec2I) {
+func MovePieceByJumps (x i32, y i32) {
+	// FIXME: 
 	// ensure within side edges
 	// LOCK (and spawn new piece) when touching bottom, or other blocks) 
+	
+	// flesh out MovePieceByJumps(), to do each tween of jump 
+	
+	PlayerPos.X = i32.add(PlayerPos.X, x)
+	PlayerPos.Y = i32.add(PlayerPos.Y, y)
 }
 
 

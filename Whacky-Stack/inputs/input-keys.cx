@@ -48,9 +48,15 @@ var GLFW_KEY_B   66
 var GLFW_KEY_C   67
  
 var GLFW_KEY_D   68
+*/
  
-var GLFW_KEY_E   69
  
+ 
+var GLFW_KEY_E i32 = 69
+ 
+ 
+ 
+/* 
 var GLFW_KEY_F   70
  
 var GLFW_KEY_G   71
@@ -72,9 +78,15 @@ var GLFW_KEY_N   78
 var GLFW_KEY_O   79
  
 var GLFW_KEY_P   80
+*/
  
-var GLFW_KEY_Q   81
  
+ 
+var GLFW_KEY_Q i32 = 81
+ 
+ 
+ 
+/* 
 var GLFW_KEY_R   82
  
 var GLFW_KEY_S   83
@@ -233,24 +245,26 @@ var GLFW_KEY_KP_ADD   334
 var GLFW_KEY_KP_ENTER   335
  
 var GLFW_KEY_KP_EQUAL   336
- 
-var GLFW_KEY_LEFT_SHIFT   340
- 
-var GLFW_KEY_LEFT_CONTROL   341
- 
-var GLFW_KEY_LEFT_ALT   342
- 
-var GLFW_KEY_LEFT_SUPER   343
- 
-var GLFW_KEY_RIGHT_SHIFT   344
- 
-var GLFW_KEY_RIGHT_CONTROL   345
- 
-var GLFW_KEY_RIGHT_ALT   346
- 
-var GLFW_KEY_RIGHT_SUPER   347
- 
-var GLFW_KEY_MENU   348
- 
-var GLFW_KEY_LAST   GLFW_KEY_MENU
 */
+ 
+ 
+ 
+var GLFW_KEY_LEFT_SHIFT i32 = 340
+ 
+var GLFW_KEY_LEFT_CONTROL i32 = 341
+ 
+var GLFW_KEY_LEFT_ALT i32 = 342
+ 
+var GLFW_KEY_LEFT_SUPER i32 = 343
+ 
+var GLFW_KEY_RIGHT_SHIFT i32 = 344
+ 
+var GLFW_KEY_RIGHT_CONTROL i32 = 345
+ 
+var GLFW_KEY_RIGHT_ALT i32 = 346
+ 
+var GLFW_KEY_RIGHT_SUPER i32 = 347
+ 
+var GLFW_KEY_MENU i32 = 348
+ 
+var GLFW_KEY_LAST i32 = GLFW_KEY_MENU
