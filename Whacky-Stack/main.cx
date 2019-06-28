@@ -1,3 +1,10 @@
+/* TODO:
+
+when rotating at edge of screen, handle cases where you'd have to push the player piece away from the edge to confine it to playfield (if room for it).  ATM, i don't think there's any reason to do this for the bottom edge.  can't let block move up?  rotating wrongly in a way that would exceed the bottom bounds should freeze the piece
+
+*/
+
+
 package main
 
 import "app"
