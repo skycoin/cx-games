@@ -73,7 +73,7 @@ func main () {
 		gl.Color3f(1.0, 1.0, 1.0)
 
 		draw.PicAtScale(draw.BG_TEXTURE, 0.0, 0.0, 1.0, 1.0)
-		draw.MapColumn()
+		draw.PlayField()
 		draw.PlayerPiece()
 		
 		//gltext.Printf("Roboto50", 0.0, 0.0, "whacky stack")

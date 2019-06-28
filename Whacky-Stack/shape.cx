@@ -65,16 +65,31 @@ func MovePieceBy (x i32, y i32) {
 		PlayerPos.X = i32.add(PlayerPos.X, x)
 	}
 	
-	if /* going down */ y < 0 &&
-		PlayerPos.Y > 0 + DownExtent {
-		
-		PlayerPos.Y = i32.add(PlayerPos.Y, y)
+	if /* going down */ y < 0 {
+		if PlayerPos.Y > 0 + DownExtent {		
+			PlayerPos.Y = i32.add(PlayerPos.Y, y)
+		} else {
+			freezePieceSpawnNew()
+		}
 	} else
 	if /* going up */ y > 0 &&
 		PlayerPos.Y < map.NUM_CELLS_Y - 1 - UpExtent {
 		
 		PlayerPos.Y = i32.add(PlayerPos.Y, y)
 	}
+}
+
+
+func freezePieceSpawnNew () {
+	for y := 0; y < 5; y++ {
+		for x := 0; x < 5; x++ {
+			if Cells[y][x] {
+				map.Cells[PlayerPos.Y - 2 + y][PlayerPos.X - 2 + x] = 1
+			}
+		}
+	}
+	
+	PlayerPos = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - 1 }
 }
 
 

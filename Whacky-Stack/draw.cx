@@ -4,6 +4,7 @@ import "gl"
 import "gltext"
 import "os"
 
+import "app"
 import "map"
 import "shape"
 
@@ -13,6 +14,7 @@ var Block_TEXTURE i32
 var STAR_TEXTURE i32
 var BG_TEXTURE i32
 
+var colors []Color3 = []Color3{Color3{R: 1.0, G: 1.0, B: 1.0}, Color3{R: 1.0, G: 0.0, B: 1.0}, Color3{R: 0.0, G: 1.0, B: 0.0}}
 
 
 func Init () {
@@ -56,15 +58,22 @@ func PicAtScale (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 }
 
 
-func MapColumn () {
+func PlayField () {
 	var f f32 = 0.17
-	gl.Color3f(f, f, f)
+	var ff f32 = 0.6
 	
 	var fX f32 = map.LEdge + map.CellWidthHalf
 	var fY f32 = -0.95 + map.CellHeightHalf
 
 	for y := 0; y < map.NUM_CELLS_Y; y++ {
 		for x := 0; x < map.NUM_CELLS_X; x++ {
+			if map.Cells[y][x] == 0 {
+				gl.Color3f(f, f, f)
+			} else {
+				gl.Color3f(ff, ff, ff)
+				//gl.Color3f(colors[2].R, colors[2].G, colors[2].B)			
+			}
+			
 			PicAtScale(
 				Block_TEXTURE, 
 				f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
