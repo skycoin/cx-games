@@ -19,6 +19,13 @@ type Shape struct {
 	Cells [5][5]bool
 }
 
+// shapes occupy a 5x5 grid of cells 
+// 0,0 is the bottom left corner, same as map/playfield cells 
+// extents are how many cells go out from the center (2,2) 
+var UpExtent    i32 = 2
+var RightExtent i32 = 2
+var DownExtent  i32 = 2
+var LeftExtent  i32 = 2
 var Cells [5][5]bool
 var rp    [5][5]bool // rotated piece (temp scratchpad) 
 //var Curr Shape
@@ -51,8 +58,21 @@ func MovePieceByJumps (x i32, y i32) {
 }
 
 
-func getBool (i i32) (out bool) {
-	if i != 0 {
+func getBoolSetExtents (y i32, x i32, i i32) (out bool) {
+	if i == 0 {
+		if LeftExtent > x {
+			LeftExtent = x
+		}
+		if RightExtent < x {
+			RightExtent = x
+		}
+		if DownExtent > y {
+			DownExtent = y
+		}
+		if UpExtent < y {
+			UpExtent = y
+		}
+	} else {
 		out = true
 	}
 }
@@ -67,41 +87,47 @@ func init (//foo Shape,
 	
 	str.print("shape.init ()")
 	
-
+	Cells[0][0] = getBoolSetExtents(0, 0, u)
+	Cells[0][1] = getBoolSetExtents(0, 1, v)
+	Cells[0][2] = getBoolSetExtents(0, 2, w)
+	Cells[0][3] = getBoolSetExtents(0, 3, x)
+	Cells[0][4] = getBoolSetExtents(0, 4, y)
 	
-	Cells[0][0] = getBool(a)
-	Cells[0][1] = getBool(b)
-	Cells[0][2] = getBool(c)
-	Cells[0][3] = getBool(d)
-	Cells[0][4] = getBool(e)
-
-	Cells[1][0] = getBool(f)
-	Cells[1][1] = getBool(g)
-	Cells[1][2] = getBool(h)
-	Cells[1][3] = getBool(i)
-	Cells[1][4] = getBool(j)
-
-	Cells[2][0] = getBool(k)
-	Cells[2][1] = getBool(l)
-	Cells[2][2] = getBool(m)
-	Cells[2][3] = getBool(n)
-	Cells[2][4] = getBool(o)
-
-	Cells[3][0] = getBool(p)
-	Cells[3][1] = getBool(q)
-	Cells[3][2] = getBool(r)
-	Cells[3][3] = getBool(s)
-	Cells[3][4] = getBool(t)
-
-	Cells[4][0] = getBool(u)
-	Cells[4][1] = getBool(v)
-	Cells[4][2] = getBool(w)
-	Cells[4][3] = getBool(x)
-	Cells[4][4] = getBool(y)
+	Cells[1][0] = getBoolSetExtents(1, 0, p)
+	Cells[1][1] = getBoolSetExtents(1, 1, q)
+	Cells[1][2] = getBoolSetExtents(1, 2, r)
+	Cells[1][3] = getBoolSetExtents(1, 3, s)
+	Cells[1][4] = getBoolSetExtents(1, 4, t)
+	
+	Cells[2][0] = getBoolSetExtents(2, 0, k)
+	Cells[2][1] = getBoolSetExtents(2, 1, l)
+	Cells[2][2] = getBoolSetExtents(2, 2, m)
+	Cells[2][3] = getBoolSetExtents(2, 3, n)
+	Cells[2][4] = getBoolSetExtents(2, 4, o)
+	
+	Cells[3][0] = getBoolSetExtents(3, 0, f)
+	Cells[3][1] = getBoolSetExtents(3, 1, g)
+	Cells[3][2] = getBoolSetExtents(3, 2, h)
+	Cells[3][3] = getBoolSetExtents(3, 3, i)
+	Cells[3][4] = getBoolSetExtents(3, 4, j)
+	
+	Cells[4][0] = getBoolSetExtents(4, 0, a)
+	Cells[4][1] = getBoolSetExtents(4, 1, b)
+	Cells[4][2] = getBoolSetExtents(4, 2, c)
+	Cells[4][3] = getBoolSetExtents(4, 3, d)
+	Cells[4][4] = getBoolSetExtents(4, 4, e)
 }
 
 
+// this rotates the top towards the left (CCW) 
 func Rotate () { // j = the y in rp 
+	var up i32 = UpExtent
+	
+	UpExtent = RightExtent
+	RightExtent = DownExtent
+	DownExtent = LeftExtent
+	LeftExtent = up
+
 	j := 4
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
