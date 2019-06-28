@@ -55,12 +55,14 @@ func MovePieceBy (x i32, y i32) {
 	
 	
 	if /* going left */ x < 0 &&
-		PlayerPos.X > 0 + LeftExtent {
+		PlayerPos.X > 0 + LeftExtent && 
+		enoughCellsOpenFornextPosition(x, y) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
 	} else
 	if /* going right */ x > 0 &&
-		PlayerPos.X < map.NUM_CELLS_X - 1 - RightExtent {
+		PlayerPos.X < map.NUM_CELLS_X - 1 - RightExtent &&
+		enoughCellsOpenFornextPosition(x, y) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
 	}
