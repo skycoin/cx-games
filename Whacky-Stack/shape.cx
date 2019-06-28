@@ -66,8 +66,12 @@ func MovePieceBy (x i32, y i32) {
 	}
 	
 	if /* going down */ y < 0 {
-		if PlayerPos.Y > 0 + DownExtent {		
-			PlayerPos.Y = i32.add(PlayerPos.Y, y)
+		if PlayerPos.Y > 0 + DownExtent {
+			if enoughCellsOpenFornextPosition(x, y) {
+				PlayerPos.Y = i32.add(PlayerPos.Y, y)
+			}else{
+				freezePieceSpawnNew()
+			}
 		} else {
 			freezePieceSpawnNew()
 		}
@@ -76,6 +80,21 @@ func MovePieceBy (x i32, y i32) {
 		PlayerPos.Y < map.NUM_CELLS_Y - 1 - UpExtent {
 		
 		PlayerPos.Y = i32.add(PlayerPos.Y, y)
+	}
+}
+
+
+func enoughCellsOpenFornextPosition (xOff i32, yOff i32) (out bool) {
+	out = true
+	
+	for y := 0; y < 5; y++ {
+		for x := 0; x < 5; x++ {
+			if Cells[y][x] {
+				if map.Cells[PlayerPos.Y - 2 + y + yOff][PlayerPos.X - 2 + x + xOff] != 0 {
+					out = false
+				}
+			}
+		}
 	}
 }
 
