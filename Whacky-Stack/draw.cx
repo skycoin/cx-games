@@ -87,8 +87,8 @@ func PlayerPiece () {
 			if shape.Cells[y][x] {
 				PicAtScale(
 					Block_TEXTURE, 
-					f32.add(fX, f32.mul(i32.f32(x + shape.PlayerPos.X), map.CellWidth)),
-					f32.add(fY, f32.mul(i32.f32(y + shape.PlayerPos.Y), map.CellHeight)), 
+					f32.add(fX, f32.mul(i32.f32(x - 2 + shape.PlayerPos.X), map.CellWidth)),
+					f32.add(fY, f32.mul(i32.f32(y - 2 + shape.PlayerPos.Y), map.CellHeight)), 
 					map.CellWidthHalf, 
 					map.CellHeightHalf)
 			}

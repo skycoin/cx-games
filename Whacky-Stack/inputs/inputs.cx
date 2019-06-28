@@ -134,20 +134,20 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	dist.Y = f64.add(dist.Y, deltaY64)
 	
 	if dist.X > mouseMoveThreshold {
-		shape.MovePieceByJumps(1, 0)
+		shape.MovePieceBy(1, 0)
 		dist.X = 0.0D
 	} else 
 	if dist.X < -mouseMoveThreshold {
-		shape.MovePieceByJumps(-1, 0)
+		shape.MovePieceBy(-1, 0)
 		dist.X = 0.0D
 	}	
 
 	if dist.Y > mouseMoveThreshold {
-		shape.MovePieceByJumps(0, -1)
+		shape.MovePieceBy(0, -1)
 		dist.Y = 0.0D
 	} else
 	if dist.Y < -mouseMoveThreshold {
-		shape.MovePieceByJumps(0, 1)
+		shape.MovePieceBy(0, 1)
 		dist.Y = 0.0D
 	}	
 	
@@ -172,16 +172,16 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 				glfw.SetShouldClose("window", true)
 			} else
 			if eventingLeft(key) {
-				shape.MovePieceByJumps(-1, 0)
+				shape.MovePieceBy(-1, 0)
 			} else
 			if eventingRight(key) {
-				shape.MovePieceByJumps(1, 0)
+				shape.MovePieceBy(1, 0)
 			} else
 			if eventingUp(key) {
-				shape.MovePieceByJumps(0, 1)
+				shape.MovePieceBy(0, 1)
 			} else
 			if eventingDown(key) {
-				shape.MovePieceByJumps(0, -1)
+				shape.MovePieceBy(0, -1)
 			} else
 			if eventingRotateLeft(key) {
 				shape.Rotate()

@@ -22,17 +22,17 @@ type Shape struct {
 // shapes occupy a 5x5 grid of cells 
 // 0,0 is the bottom left corner, same as map/playfield cells 
 // extents are how many cells go out from the center (2,2) 
-var UpExtent    i32 = 2
-var RightExtent i32 = 2
-var DownExtent  i32 = 2
-var LeftExtent  i32 = 2
+var UpExtent    i32
+var RightExtent i32
+var DownExtent  i32
+var LeftExtent  i32
 var Cells [5][5]bool
 var rp    [5][5]bool // rotated piece (temp scratchpad) 
 //var Curr Shape
 
 // FIXME:  
 //		do pos initialization each time new piece starts at top
-var PlayerPos Vec2I = Vec2I{ X: 2, Y: map.NUM_CELLS_Y - 5 }
+var PlayerPos Vec2I = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - 1 }
 
 
 func Setup () {
@@ -46,34 +46,65 @@ func Setup () {
 }
 
 
-func MovePieceByJumps (x i32, y i32) {
+func MovePieceBy (x i32, y i32) {
 	// FIXME: 
 	// ensure within side edges
 	// LOCK (and spawn new piece) when touching bottom, or other blocks) 
 	
-	// flesh out MovePieceByJumps(), to do each tween of jump 
+	// flesh out MovePieceBy(), to do each tween of jump 
 	
 	PlayerPos.X = i32.add(PlayerPos.X, x)
-	PlayerPos.Y = i32.add(PlayerPos.Y, y)
+	
+	//DownExtent
+	if /* going down */ y < 0 &&
+		PlayerPos.Y > 0 + DownExtent {
+		
+		PlayerPos.Y = i32.add(PlayerPos.Y, y)
+	} else
+	if /* going up */ y > 0 &&
+		PlayerPos.Y < map.NUM_CELLS_Y - 1 - UpExtent {
+		
+		PlayerPos.Y = i32.add(PlayerPos.Y, y)
+	}
 }
 
 
+// i wanted to input the values of pieces in a visual way 
+// (via a grid of 0s & 1s)
+// even tho in the end i wanted bool values.  
+// this converts i32 to bool 
 func getBoolSetExtents (y i32, x i32, i i32) (out bool) {
-	if i == 0 {
-		if LeftExtent > x {
-			LeftExtent = x
-		}
-		if RightExtent < x {
-			RightExtent = x
-		}
-		if DownExtent > y {
-			DownExtent = y
-		}
-		if UpExtent < y {
-			UpExtent = y
-		}
-	} else {
+	if i != 0 {
 		out = true
+	
+		x = i32.sub(x, 2)
+		y = i32.sub(y, 2)
+		
+		if x < 0 {
+			x = i32.abs(x)
+
+			if LeftExtent < x {
+				LeftExtent = x
+			}
+		} else
+		if x > 0 {
+			if RightExtent < x {
+				RightExtent = x
+			}
+		}
+		
+		if y < 0 {
+			y = i32.abs(y)
+			
+			if DownExtent < y {
+				DownExtent = y
+			}
+		} else
+		if y > 0 {
+			if UpExtent < y {
+				UpExtent = y
+			}
+		}
 	}
 }
 
@@ -116,6 +147,8 @@ func init (//foo Shape,
 	Cells[4][2] = getBoolSetExtents(4, 2, c)
 	Cells[4][3] = getBoolSetExtents(4, 3, d)
 	Cells[4][4] = getBoolSetExtents(4, 4, e)
+	
+	showEdges()
 }
 
 
@@ -138,4 +171,14 @@ func Rotate () { // j = the y in rp
 	}
 	
 	Cells = rp
+	showEdges()
+}
+
+
+func showEdges () {
+	str.print("-----------------------------------------------")
+	printf("UpExtent   : %d \n", UpExtent)
+	printf("RightExtent: %d \n", RightExtent)
+	printf("DownExtent : %d \n", DownExtent)
+	printf("LeftExtent : %d \n", LeftExtent)
 }
