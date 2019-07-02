@@ -1,0 +1,11 @@
+package main
+
+type Shape struct {
+	Cells [5][5]bool
+}
+
+var Curr Shape
+
+func main() {
+	Curr.Cells[0][0] = true
+}
