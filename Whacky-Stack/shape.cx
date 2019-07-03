@@ -21,17 +21,15 @@ var FACING_LEFT  i32 = 3
 var FACING_MAX   i32 = 4
 
 //type Shape struct { FIXME: ATM CX can't do multidimensional arrays/slices inside a struct 
-	var Cells [7][4][5][5]bool // player piece    FIXME?: ATM CX can't handle "constants" as array sizes 
-	var rp    [7][4][5][5]bool
-	// shapes occupy a 5x5 grid of cells 
+	// shapes/pieces occupy a 5x5 grid of cells 
 	// 1st 2 indexes are SHAPE_MAX, then FACING_MAX, so we can store all rotations of all pieces 
-	// 0,0 (last 2 indexes) is the bottom left corner, same as map/playfield cells 
+	// 0,0 (in the last 2 indexes) is the bottom left corner, same as map/playfield cells 
+	var Cells [7][4][5][5]bool // player piece    FIXME?: ATM CX can't handle "constants" as array sizes 
 	// extents are how many cells go out from the center (2,2) 
-	var Extents [7][4]i32
+	var Extents [7][4][4]i32
 //}
 
-// FIXME: do pos initialization each time new piece starts at top
-var PlayerPos    Vec2I = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - 1 }
+var PlayerPos    Vec2I
 var PlayerFacing i32
 var PlayerShape  i32 = SHAPE_MIDTINE
 
@@ -45,6 +43,10 @@ func Setup () {
 		0, 1, 1, 1, 0,
 		0, 0, 1, 0, 0,
 		0, 0, 0, 0, 0)
+
+	// FIXME: do pos initialization each time new piece starts at top
+	var i i32 = Extents[PlayerShape][PlayerFacing][FACING_UP]
+	PlayerPos = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
 }
 
 
@@ -67,20 +69,20 @@ func MovePieceBy (x i32, y i32) {
 	
 	
 	if /* going left */ x < 0 &&
-		PlayerPos.X > 0 + Extents[PlayerShape][FACING_LEFT] && 
+		PlayerPos.X > 0 + Extents[PlayerShape][PlayerFacing][FACING_LEFT] && 
 		enoughCellsOpenFornextPosition(x, y) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
 	} else
 	if /* going right */ x > 0 &&
-		PlayerPos.X < map.NUM_CELLS_X - 1 - Extents[PlayerShape][FACING_RIGHT] &&
+		PlayerPos.X < map.NUM_CELLS_X - 1 - Extents[PlayerShape][PlayerFacing][FACING_RIGHT] &&
 		enoughCellsOpenFornextPosition(x, y) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
 	}
 	
 	if /* going down */ y < 0 {
-		if PlayerPos.Y > 0 + Extents[PlayerShape][FACING_DOWN] {
+		if PlayerPos.Y > 0 + Extents[PlayerShape][PlayerFacing][FACING_DOWN] {
 			if enoughCellsOpenFornextPosition(x, y) {
 				PlayerPos.Y = i32.add(PlayerPos.Y, y)
 			}else{
@@ -91,7 +93,7 @@ func MovePieceBy (x i32, y i32) {
 		}
 	} else
 	if /* going up */ y > 0 &&
-		PlayerPos.Y < map.NUM_CELLS_Y - 1 - Extents[PlayerShape][FACING_UP] {
+		PlayerPos.Y < map.NUM_CELLS_Y - 1 - Extents[PlayerShape][PlayerFacing][FACING_UP] {
 		
 		PlayerPos.Y = i32.add(PlayerPos.Y, y)
 	}
@@ -140,26 +142,26 @@ func getBoolSetExtents (y i32, x i32, i i32, shape i32) (out bool) {
 		if x < 0 {
 			x = i32.abs(x)
 
-			if Extents[shape][FACING_LEFT] < x {
-				Extents[shape][FACING_LEFT] = x
+			if Extents[shape][0][FACING_LEFT] < x {
+				Extents[shape][0][FACING_LEFT] = x
 			}
 		} else
 		if x > 0 {
-			if Extents[shape][FACING_RIGHT] < x {
-				Extents[shape][FACING_RIGHT] = x
+			if Extents[shape][0][FACING_RIGHT] < x {
+				Extents[shape][0][FACING_RIGHT] = x
 			}
 		}
 		
 		if y < 0 {
 			y = i32.abs(y)
 			
-			if Extents[shape][FACING_DOWN] < y {
-				Extents[shape][FACING_DOWN] = y
+			if Extents[shape][0][FACING_DOWN] < y {
+				Extents[shape][0][FACING_DOWN] = y
 			}
 		} else
 		if y > 0 {
-			if Extents[shape][FACING_UP] < y {
-				Extents[shape][FACING_UP] = y
+			if Extents[shape][0][FACING_UP] < y {
+				Extents[shape][0][FACING_UP] = y
 			}
 		}
 	}
@@ -205,11 +207,11 @@ func init (shape i32,
 	Cells[shape][0][4][3] = getBoolSetExtents(4, 3, d, shape)
 	Cells[shape][0][4][4] = getBoolSetExtents(4, 4, e, shape)
 	
+	showEdges(FACING_UP)
+	
 	rotate(shape, FACING_LEFT)
 	rotate(shape, FACING_DOWN)
 	rotate(shape, FACING_RIGHT)
-	
-	showEdges()
 }
 
 
@@ -221,12 +223,10 @@ func rotate (shape i32, newFacing i32) {
 		oldFacing = FACING_UP
 	}
 	
-	var up i32 = Extents[shape][FACING_UP]
-	
-	Extents[shape][FACING_UP] = Extents[shape][FACING_RIGHT]
-	Extents[shape][FACING_RIGHT] = Extents[shape][FACING_DOWN]
-	Extents[shape][FACING_DOWN] = Extents[shape][FACING_LEFT]
-	Extents[shape][FACING_LEFT] = up
+	Extents[shape][newFacing][FACING_UP] = Extents[shape][oldFacing][FACING_RIGHT]
+	Extents[shape][newFacing][FACING_RIGHT] = Extents[shape][oldFacing][FACING_DOWN]
+	Extents[shape][newFacing][FACING_DOWN] = Extents[shape][oldFacing][FACING_LEFT]
+	Extents[shape][newFacing][FACING_LEFT] = Extents[shape][oldFacing][FACING_UP]
 
 	j := 4 // the y in new grid 
 	for y := 0; y < 5; y++ {
@@ -238,14 +238,14 @@ func rotate (shape i32, newFacing i32) {
 		j--	
 	}
 	
-	showEdges()
+	showEdges(newFacing)
 }
 
 
-func showEdges () {
-	str.print("-----------------------------------------------")
-	printf("PlayerShapeUpExtent   : %d \n", Extents[PlayerShape][FACING_UP])
-	printf("PlayerShapeRightExtent: %d \n", Extents[PlayerShape][FACING_RIGHT])
-	printf("PlayerShapeDownExtent : %d \n", Extents[PlayerShape][FACING_DOWN])
-	printf("PlayerShapeLeftExtent : %d \n", Extents[PlayerShape][FACING_LEFT])
+func showEdges (facing i32) {
+	str.print("------------------------show extents-----------------------")
+	printf("UpExtent   : %d \n", Extents[PlayerShape][facing][FACING_UP])
+	printf("RightExtent: %d \n", Extents[PlayerShape][facing][FACING_RIGHT])
+	printf("DownExtent : %d \n", Extents[PlayerShape][facing][FACING_DOWN])
+	printf("LeftExtent : %d \n", Extents[PlayerShape][facing][FACING_LEFT])
 }
