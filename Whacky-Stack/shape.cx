@@ -31,11 +31,46 @@ var FACING_MAX   i32 = 4
 
 var PlayerPos    Vec2I
 var PlayerFacing i32
-var PlayerShape  i32 = SHAPE_MIDTINE
+var PlayerShape  i32
 
 
 func Setup () {
 	str.print("shape.Setup ()")
+	
+	init(SHAPE_BEAM,
+		0, 0, 1, 0, 0,
+		0, 0, 1, 0, 0,
+		0, 0, 1, 0, 0,
+		0, 0, 1, 0, 0,
+		0, 0, 1, 0, 0)
+	
+	init(SHAPE_L,
+		0, 0, 0, 0, 0,
+		0, 1, 0, 0, 0,
+		0, 1, 0, 0, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 0, 0, 0)
+	
+	init(SHAPE_L_MIRROR,
+		0, 0, 0, 0, 0,
+		0, 0, 0, 1, 0,
+		0, 0, 0, 1, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 0, 0, 0)
+	
+	init(SHAPE_ZIGZAG,
+		0, 0, 0, 0, 0,
+		0, 1, 0, 0, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 0, 1, 0,
+		0, 0, 0, 0, 0)
+	
+	init(SHAPE_ZAGZIG,
+		0, 0, 0, 0, 0,
+		0, 0, 0, 1, 0,
+		0, 1, 1, 1, 0,
+		0, 1, 0, 0, 0,
+		0, 0, 0, 0, 0)
 	
 	init(SHAPE_MIDTINE,
 		0, 0, 0, 0, 0,
@@ -43,10 +78,15 @@ func Setup () {
 		0, 1, 1, 1, 0,
 		0, 0, 1, 0, 0,
 		0, 0, 0, 0, 0)
-
-	// FIXME: do pos initialization each time new piece starts at top
-	var i i32 = Extents[PlayerShape][PlayerFacing][FACING_UP]
-	PlayerPos = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
+	
+	init(SHAPE_CUBE,
+		0, 0, 0, 0, 0,
+		0, 1, 1, 1, 0,
+		0, 1, 1, 1, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 0, 0, 0)
+		
+	spawnNew()
 }
 
 
@@ -86,10 +126,10 @@ func MovePieceBy (x i32, y i32) {
 			if enoughCellsOpenFornextPosition(x, y) {
 				PlayerPos.Y = i32.add(PlayerPos.Y, y)
 			}else{
-				freezePieceSpawnNew()
+				freezePiece()
 			}
 		} else {
-			freezePieceSpawnNew()
+			freezePiece()
 		}
 	} else
 	if /* going up */ y > 0 &&
@@ -115,7 +155,7 @@ func enoughCellsOpenFornextPosition (xOff i32, yOff i32) (out bool) {
 }
 
 
-func freezePieceSpawnNew () {
+func freezePiece () {
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
 			if Cells[PlayerShape][PlayerFacing][y][x] {
@@ -124,7 +164,15 @@ func freezePieceSpawnNew () {
 		}
 	}
 	
-	PlayerPos = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - 1 }
+	spawnNew()
+}
+
+
+func spawnNew () {
+	PlayerFacing = 0
+	PlayerShape = i32.rand(0, SHAPE_MAX)
+	var i i32 = Extents[PlayerShape][PlayerFacing][FACING_UP] + 1
+	PlayerPos = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
 }
 
 
