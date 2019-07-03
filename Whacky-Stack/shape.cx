@@ -32,6 +32,7 @@ var FACING_MAX   i32 = 4
 var PlayerPos    Vec2I
 var PlayerFacing i32
 var PlayerShape  i32
+var PlayerScore  i32
 
 
 func Setup () {
@@ -160,6 +161,36 @@ func freezePiece () {
 		for x := 0; x < 5; x++ {
 			if Cells[PlayerShape][PlayerFacing][y][x] {
 				map.Cells[PlayerPos.Y - 2 + y][PlayerPos.X - 2 + x] = PlayerShape + 1
+			}
+		}
+	}
+	
+	// collapse full rows & change score 
+	var start i32 = i32.sub(PlayerPos.Y, Extents[PlayerShape][PlayerFacing][FACING_DOWN])
+	var end   i32 = i32.add(PlayerPos.Y, Extents[PlayerShape][PlayerFacing][FACING_UP])
+	for y := start; y <= end; y++ {
+		var rowFull bool = true
+			
+		for x := 0; x < map.NUM_CELLS_X; x++ {
+			if map.Cells[y][x] == 0 {
+				rowFull = false
+				break
+			}
+		}
+		
+		if rowFull {
+			PlayerScore = i32.add(PlayerScore, 1)
+			printf("Score: %d \n", PlayerScore)
+		
+			// shift all-rows-above down by one 
+			for j := y + 1; j < map.NUM_CELLS_Y; j++ {
+				for i := start; i < map.NUM_CELLS_X; i++ {
+					map.Cells[j-1][i] =	map.Cells[j][i]
+				
+					if /* on the top row */ j == map.NUM_CELLS_Y - 1 {
+						map.Cells[j][i] = 0 // clear row 
+					}
+				}
 			}
 		}
 	}
