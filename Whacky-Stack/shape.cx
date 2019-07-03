@@ -5,19 +5,20 @@ import "map"
 
 
 
-var NUM_SHAPES i32 = 7 // (4 of them are mirrored) 
+var SHAPE_BEAM     i32
+var SHAPE_L        i32 = 1
+var SHAPE_L_MIRROR i32 = 2
+var SHAPE_ZIGZAG   i32 = 3
+var SHAPE_ZAGZIG   i32 = 4
+var SHAPE_MIDTINE  i32 = 5
+var SHAPE_CUBE     i32 = 6
+var SHAPE_MAX      i32 = 7
 
-var SHAPE_BEAM i32
-var SHAPE_L i32
-var SHAPE_L_MIRROR i32
-var SHAPE_ZIGZAG i32
-var SHAPE_ZAGZIG i32
-var SHAPE_MIDTINE i32
-var SHAPE_BLOCK i32
-
-type Shape struct {
-	Cells [5][5]bool
-}
+var FACING_UP    i32
+var FACING_RIGHT i32 = 1
+var FACING_DOWN  i32 = 2
+var FACING_LEFT  i32 = 3
+var FACING_MAX   i32 = 4
 
 // shapes occupy a 5x5 grid of cells 
 // 0,0 is the bottom left corner, same as map/playfield cells 
@@ -26,13 +27,16 @@ var UpExtent    i32
 var RightExtent i32
 var DownExtent  i32
 var LeftExtent  i32
-var Cells [5][5]bool
-var rp    [5][5]bool // rotated piece (temp scratchpad) 
-//var Curr Shape
 
-// FIXME:  
-//		do pos initialization each time new piece starts at top
-var PlayerPos Vec2I = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - 1 }
+//type Shape struct { FIXME: ATM CX can't do multidimensional arrays/slices inside a struct 
+	var Cells [5][5]bool // player piece    FIXME?: ATM CX can't handle "constants" as array sizes 
+	var rp [5][5]bool
+//}
+
+// FIXME: do pos initialization each time new piece starts at top
+var PlayerPos    Vec2I = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - 1 }
+var PlayerFacing i32
+var PlayerShape  i32
 
 
 func Setup () {
