@@ -87,7 +87,7 @@ func Back (key i32) (out bool) {
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 	if /* release */ action == 0 {
 	} else if /* press */ action == 1 {
-		printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
+		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
 		if button == 0 { // LMB 
 			shape.PlayerRotate(-1)

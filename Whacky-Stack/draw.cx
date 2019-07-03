@@ -10,26 +10,47 @@ import "shape"
 
 
 
-var Block_TEXTURE i32
-var STAR_TEXTURE i32
-var BG_TEXTURE i32
+var PicBackground i32
+var PicStar       i32
+var PicShapeTile  i32
 
-var colors []Color3 = []Color3{Color3{R: 1.0, G: 1.0, B: 1.0}, Color3{R: 1.0, G: 0.0, B: 1.0}, Color3{R: 0.0, G: 1.0, B: 0.0}}
+var colors []Color3
+
 
 
 func Init () {
+	str.print("draw.Init ()")
+	
 	wd := os.GetWorkingDirectory()
 	
 	// pics 
-	Block_TEXTURE = gl.NewTexture(str.concat(wd, "assets/textures/tile.png"))
-	STAR_TEXTURE  = gl.NewTexture(str.concat(wd, "assets/textures/star.png"))
-	BG_TEXTURE    = gl.NewTexture(str.concat(wd, "assets/textures/background.jpg"))
+	PicBackground = gl.NewTexture(str.concat(wd, "assets/textures/background.jpg"))
+	PicStar       = gl.NewTexture(str.concat(wd, "assets/textures/star.png"))
+	PicShapeTile  = gl.NewTexture(str.concat(wd, "assets/textures/tile.png"))
 
 	// font 
 	fontFile := str.concat(wd, "assets/fonts/roboto-light.ttf")
 	os.Open(fontFile)
 	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
 	os.Close(fontFile)
+	
+	// colors 
+	var f f32 = 0.17
+	addColor(f, f, f)       // dark gray 
+	addColor(1.0, 0.0, 0.0) // red 
+	addColor(0.0, 1.0, 0.0) // blue 
+	addColor(0.0, 0.0, 1.0) // green 
+	addColor(1.0, 0.0, 1.0) // magenta 
+	addColor(1.0, 1.0, 0.0) // yellow 
+	addColor(1.0, 0.6, 0.0) // orange 
+	addColor(1.0, 1.0, 1.0) // white 
+}
+
+
+func addColor (r f32, g f32, b f32) {
+	var col Color3
+	col = Color3{R: r, G: g, B: b}
+	colors = append(colors, col)
 }
 
 
@@ -59,23 +80,20 @@ func PicAtScale (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 
 
 func PlayField () {
-	var f f32 = 0.17
-	var ff f32 = 0.6
-	
 	var fX f32 = map.LEdge + map.CellWidthHalf
 	var fY f32 = -0.95 + map.CellHeightHalf
 
 	for y := 0; y < map.NUM_CELLS_Y; y++ {
 		for x := 0; x < map.NUM_CELLS_X; x++ {
-			if map.Cells[y][x] == 0 {
-				gl.Color3f(f, f, f)
-			} else {
-				gl.Color3f(ff, ff, ff)
-				//gl.Color3f(colors[2].R, colors[2].G, colors[2].B)			
-			}
+			var c i32 = map.Cells[y][x]
+			
+			gl.Color3f(
+				colors[c].R, 
+				colors[c].G, 
+				colors[c].B)
 			
 			PicAtScale(
-				Block_TEXTURE, 
+				PicShapeTile, 
 				f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
 				f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)), 
 				map.CellWidthHalf, 
@@ -86,7 +104,11 @@ func PlayField () {
 
 
 func PlayerPiece () {
-	gl.Color3f(1.0, 0.0, 1.0)
+	var i i32 = i32.add(shape.PlayerShape, 1)
+	gl.Color3f(
+		colors[i].R, 
+		colors[i].G, 
+		colors[i].B)
 	
 	var fX f32 = map.LEdge + map.CellWidthHalf
 	var fY f32 = -0.95 + map.CellHeightHalf
@@ -95,7 +117,7 @@ func PlayerPiece () {
 		for x := 0; x < 5; x++ {
 			if shape.Cells[shape.PlayerShape][shape.PlayerFacing][y][x] {
 				PicAtScale(
-					Block_TEXTURE, 
+					PicShapeTile, 
 					f32.add(fX, f32.mul(i32.f32(x - 2 + shape.PlayerPos.X), map.CellWidth)),
 					f32.add(fY, f32.mul(i32.f32(y - 2 + shape.PlayerPos.Y), map.CellHeight)), 
 					map.CellWidthHalf, 
