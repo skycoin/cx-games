@@ -93,7 +93,7 @@ func PlayerPiece () {
 
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
-			if shape.Cells[y][x] {
+			if shape.Cells[shape.PlayerShape][shape.PlayerFacing][y][x] {
 				PicAtScale(
 					Block_TEXTURE, 
 					f32.add(fX, f32.mul(i32.f32(x - 2 + shape.PlayerPos.X), map.CellWidth)),
