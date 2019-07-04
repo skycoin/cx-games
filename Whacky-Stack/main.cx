@@ -1,6 +1,21 @@
-/* TODO:
+/* WISHLIST:
+   (not necessary, but would be nice) 
 
-when rotating at edge of screen, handle cases where you'd have to push the player piece away from the edge to confine it to playfield (if room for it).  ATM, i don't think there's any reason to do this for the bottom edge.  can't let block move up?  rotating wrongly in a way that would exceed the bottom bounds should freeze the piece
+* Smooth motion interpolations (prioritized) 
+	* row collapsing
+	* player moves
+	* player rotations (problem: making the piece's movement look more like physical reality would make some valid moves look crazy.  But while smoothly turning, the piece could be drawn as a transparent white'ish ghost, which would go a long way towards making the "gear teeth"-passing-through-each-other look sensible)
+	
+* animate exploding the row blocks 
+
+* score delta text (with "X3" modifiers ) pops up near the exploding rows.  possibly travelling
+up to the total score printout
+
+* animate clearing old playfield and setting up the new one, between games.  maybe they all shoot out of a point on the screen (maybe logo) and fly/rotate to the final positions.  like dealing out cards 
+
+* when player tries an invalid rotation, auto-push the player piece away from collisions if possible.  would make the game feel a lot more fluid.  so that player doesn't have to scramble to move to valid position and then press rotate AGAIN.  which could easily result in the user pressing rotate at least 3 more times, ON TOP OF the movements in between.  like when controlling SHAPE_BEAM
+
+* error text when player tries invalid moves & rotations (probably JUST rotations, because invalid moves are too obvious).  maybe stifle any text popups that would be triggered by key repeat events
 
 */
 
