@@ -13,7 +13,7 @@ import "space"
 var MousePointer       Vec2
 var MousePointerX64    f64
 var MousePointerY64    f64
-var mouseMoveThreshold f64 = 75.0D // for Whacky Stack's blocky movement 
+var mouseMoveThreshold f64 = 85.0D // for Whacky Stack's blocky movement 
 
 // keys 
 var	GLFW_KEY_W     i32 = 87
@@ -142,18 +142,22 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	if dist.X > mouseMoveThreshold {
 		shape.MovePieceBy(1, 0)
 		dist.X = 0.0D
+		dist.Y = 0.0D
 	} else 
 	if dist.X < -mouseMoveThreshold {
 		shape.MovePieceBy(-1, 0)
 		dist.X = 0.0D
+		dist.Y = 0.0D
 	}	
 
 	if dist.Y > mouseMoveThreshold {
 		shape.MovePieceBy(0, -1)
+		dist.X = 0.0D
 		dist.Y = 0.0D
 	} else
 	if dist.Y < -mouseMoveThreshold {
 		shape.MovePieceBy(0, 1)
+		dist.X = 0.0D
 		dist.Y = 0.0D
 	}	
 	
