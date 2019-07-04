@@ -1,4 +1,34 @@
-/* WISHLIST:
+package main
+
+import "app"
+import "gl"
+import "glfw"
+
+import "draw"
+import "inputs"
+import "shape"
+import "time"
+
+
+
+
+
+
+
+/* 
+
+TODO:
+REQUIRED FEATURES:
+
+* game over state & overlay 
+* menu
+	* toggle showing of next piece
+	* toggle random pre-cluttered playfield
+	* slider? for how many rows of clutter
+
+
+
+WISHLIST:
    (not necessary, but would be nice) 
 
 * Smooth motion interpolations (prioritized) 
@@ -17,18 +47,17 @@ up to the total score printout
 
 * error text when player tries invalid moves & rotations (probably JUST rotations, because invalid moves are too obvious).  maybe stifle any text popups that would be triggered by key repeat events
 
+* animated startup/menu screen
+		would be cool to show big versions of all the shapes/pieces, circularly rotating around the menu
+		
+* high scores list
+		animation for when you break records 
+
 */
 
 
-package main
 
-import "app"
-import "gl"
-import "glfw"
 
-import "draw"
-import "inputs"
-import "shape"
 
 
 
@@ -80,6 +109,8 @@ func main () {
 	gl.DepthMask(true)
 
 	for bool.not(glfw.ShouldClose("window")) {
+		time.Update()
+		
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 

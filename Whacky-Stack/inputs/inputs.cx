@@ -156,7 +156,7 @@ func onCursorPosEvent (window str, x f64, y f64) {
 		dist.Y = 0.0D
 	} else
 	if dist.Y < -mouseMoveThreshold {
-		shape.MovePieceBy(0, 1)
+		//shape.MovePieceBy(0, 1)
 		dist.X = 0.0D
 		dist.Y = 0.0D
 	}	
@@ -188,7 +188,7 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) {
 				shape.MovePieceBy(1, 0)
 			} else
 			if eventUp(key) {
-				shape.MovePieceBy(0, 1)
+				//shape.MovePieceBy(0, 1)
 			} else
 			if eventDown(key) {
 				shape.MovePieceBy(0, -1)

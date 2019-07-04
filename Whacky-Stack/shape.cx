@@ -230,7 +230,7 @@ func enoughCellsOpenForNextPosition (xOff i32, yOff i32, facing i32) (out bool) 
 				var mY i32 = PlayerPos.Y - 2 + y + yOff
 				var mX i32 = PlayerPos.X - 2 + x + xOff
 				
-				printf("mX, mY: %d, %d \n", mX, mY)
+				//printf("mX, mY: %d, %d \n", mX, mY)
 				
 				if mX < 0 ||
 					mX >= map.NUM_CELLS_X ||

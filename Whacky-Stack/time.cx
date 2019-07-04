@@ -1,0 +1,21 @@
+package time
+
+import "glfw"
+import "shape"
+
+
+
+var dropRate   f64 = 1.5D
+var timeToDrop f64 = dropRate * 2.0D
+
+
+
+func Update () {
+	var t f64 = glfw.GetTime()
+	
+	if t >= timeToDrop {
+		timeToDrop = t + dropRate
+		str.print("drop")
+		shape.MovePieceBy(0, -1)
+	}	
+}
