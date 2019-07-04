@@ -146,24 +146,37 @@ func PlayerRotate(change i32) {
 		PlayerShape == SHAPE_ZAGZIG {
 		
 		if PlayerFacing == FACING_UP {
-			PlayerFacing = FACING_RIGHT
+			if enoughCellsOpenForNextPosition(0, 0, FACING_RIGHT) {
+				PlayerFacing = FACING_RIGHT
+			}
+			
 			return		
-		} else
-		if PlayerFacing == FACING_RIGHT {
-			PlayerFacing = FACING_UP
+		} else if PlayerFacing == FACING_RIGHT {
+			if enoughCellsOpenForNextPosition(0, 0, FACING_UP) {
+				PlayerFacing = FACING_UP
+			}
+			
 			return		
 		}
 	}
 	
 
-	PlayerFacing = i32.add(PlayerFacing, change)
+	var wantedFacing i32 = i32.add(PlayerFacing, change)
 	
-	if PlayerFacing >= FACING_MAX {
-		PlayerFacing = FACING_UP
+	if wantedFacing >= FACING_MAX {
+		wantedFacing = FACING_UP
 	}
 	
-	if PlayerFacing < FACING_UP {
-		PlayerFacing = FACING_LEFT
+	if wantedFacing < FACING_UP {
+		wantedFacing = FACING_LEFT
+	}
+
+	if enoughCellsOpenForNextPosition(0, 0, wantedFacing) {
+		PlayerFacing = wantedFacing
+	} else {
+		// TODO: 
+		// WOULD BE NICE TO BE ABLE TO PLAY A BZZZZT / ERROR SOUND HERE
+		// but we could print red text saying something 
 	}
 }
 
@@ -171,24 +184,27 @@ func PlayerRotate(change i32) {
 func MovePieceBy (x i32, y i32) {
 	// FIXME: 
 	// flesh out MovePieceBy(), to do each tween of jump? 
-	
+	// if we add shortcut to instazoom down to the bottom 
+	// (triggering that could call this with an x,y 
+	// change/offset greater than 1) it needs to check
+	// for collision for each +/- 1 step 	
 	
 	if /* going left */ x < 0 &&
 		PlayerPos.X > 0 + Extents[PlayerShape][PlayerFacing][FACING_LEFT] && 
-		enoughCellsOpenFornextPosition(x, y) {
+		enoughCellsOpenForNextPosition(x, y, PlayerFacing) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
 	} else
 	if /* going right */ x > 0 &&
 		PlayerPos.X < map.NUM_CELLS_X - 1 - Extents[PlayerShape][PlayerFacing][FACING_RIGHT] &&
-		enoughCellsOpenFornextPosition(x, y) {
+		enoughCellsOpenForNextPosition(x, y, PlayerFacing) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
 	}
 	
 	if /* going down */ y < 0 {
 		if PlayerPos.Y > 0 + Extents[PlayerShape][PlayerFacing][FACING_DOWN] {
-			if enoughCellsOpenFornextPosition(x, y) {
+			if enoughCellsOpenForNextPosition(x, y, PlayerFacing) {
 				PlayerPos.Y = i32.add(PlayerPos.Y, y)
 			}else{
 				freezePiece()
@@ -205,13 +221,27 @@ func MovePieceBy (x i32, y i32) {
 }
 
 
-func enoughCellsOpenFornextPosition (xOff i32, yOff i32) (out bool) {
+func enoughCellsOpenForNextPosition (xOff i32, yOff i32, facing i32) (out bool) {
 	out = true
 	
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
-			if Cells[PlayerShape][PlayerFacing][y][x] {
-				if map.Cells[PlayerPos.Y - 2 + y + yOff][PlayerPos.X - 2 + x + xOff] != 0 {
+			if Cells[PlayerShape][facing][y][x] {
+				var mY i32 = PlayerPos.Y - 2 + y + yOff
+				var mX i32 = PlayerPos.X - 2 + x + xOff
+				
+				printf("mX, mY: %d, %d \n", mX, mY)
+				
+				if mX < 0 ||
+					mX >= map.NUM_CELLS_X ||
+					mY < 0 ||
+					mY >= map.NUM_CELLS_Y {
+					
+					out = false
+					return
+				}
+				
+				if map.Cells[mY][mX] != 0 {
 					out = false
 				}
 			}
@@ -273,8 +303,26 @@ func freezePiece () {
 	
 	if numRowsFilled > 0 {
 		// TODO work out combo multipliers 
-		PlayerScore = i32.add(PlayerScore, 1)
-		printf("Score: %d \n", PlayerScore)
+		
+		/*
+		if numRowsFilled >= 4 {
+		
+		} else
+		if numRowsFilled >= 4 {
+		
+		} else
+		if numRowsFilled >= 4 {
+		
+		} else
+		if numRowsFilled >= 4 {
+		
+		} else
+		*/
+		
+		var delta i32 = i32.pow(numRowsFilled, numRowsFilled)
+		
+		PlayerScore = i32.add(PlayerScore, delta)
+		printf("+ %d    SCORE: %d \n", delta, PlayerScore)
 	}
 	
 	spawnNew()
