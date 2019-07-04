@@ -15,7 +15,6 @@ func Update () {
 	
 	if t >= timeToDrop {
 		timeToDrop = t + dropRate
-		str.print("drop")
 		shape.MovePieceBy(0, -1)
 	}	
 }
