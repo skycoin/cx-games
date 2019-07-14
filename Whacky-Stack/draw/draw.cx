@@ -120,7 +120,7 @@ func NextShape () {
 		app.Colors[i].B)
 	
 	// setup sizes to fit box 
-	var num i32 = getLargestNumCellsAcross()
+	var num i32 = shape.GetLargestNumCellsAcross()
 	
 	var spanX  f32 = map.CellWidth
 	var spanY  f32 = map.CellHeight
@@ -145,28 +145,4 @@ func NextShape () {
 			//}
 		//}
 	//}
-}
-
-
-
-func getLargestNumCellsAcross () (out i32) {
-	var ex i32 
-	
-	ex = shape.Extents[shape.Next][shape.FACING_UP][shape.FACING_UP] +
-		 shape.Extents[shape.Next][shape.FACING_UP][shape.FACING_DOWN]
-		 
-	if out < ex {
-		out = ex
-	}
-
-	ex = shape.Extents[shape.Next][shape.FACING_UP][shape.FACING_LEFT] +
-		 shape.Extents[shape.Next][shape.FACING_UP][shape.FACING_RIGHT]
-		 
-	if out < ex {
-		out = ex
-	}
-	
-	out = i32.add(out, 1)
-	//str.print("__________________________________________________")
-	//i32.print(out)
 }

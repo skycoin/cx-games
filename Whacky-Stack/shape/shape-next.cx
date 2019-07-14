@@ -1,0 +1,32 @@
+package shape
+
+//import "app"
+//import "map"
+
+
+
+var Next i32
+
+
+
+func GetLargestNumCellsAcross () (out i32) {
+	var ex i32 
+	
+	ex = Extents[Next][FACING_UP][FACING_UP] +
+		 Extents[Next][FACING_UP][FACING_DOWN]
+		 
+	if out < ex {
+		out = ex
+	}
+
+	ex = Extents[Next][FACING_UP][FACING_LEFT] +
+		 Extents[Next][FACING_UP][FACING_RIGHT]
+		 
+	if out < ex {
+		out = ex
+	}
+	
+	out = i32.add(out, 1)
+	//str.print("__________________________________________________")
+	//i32.print(out)
+}
