@@ -4,6 +4,8 @@ import "app"
 
 
 
+var EMPTY_CELL i32 = app.I32_MAX
+
 // 0,0 is the bottom left corner, of map/playfield cells 
 var NUM_CELLS_X i32 = 9
 var NUM_CELLS_Y i32 = 17
@@ -18,13 +20,21 @@ var CellWidthHalf  f32 = f32.div(CellWidth, 2.0)
 var CellHeightHalf f32 = f32.div(CellHeight, 2.0)
 var Cells [17][9]i32
 
-// corner pixel positions of map cells column (of total game surface) 
+// corner pixel positions of map cells column (of total playfield surface) 
 // b      l:             18, 940
 // bottom right corner: 418, 940
 
 
 
-
+func EmptyPlayfield () {
+	str.print("map.EmptyPlayfield ()")
+	
+	for y := 0; y < NUM_CELLS_Y; y++ {
+	for x := 0; x < NUM_CELLS_X; x++ {
+		Cells[y][x] = EMPTY_CELL
+	}
+	}
+}
 
 
 

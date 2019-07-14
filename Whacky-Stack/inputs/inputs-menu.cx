@@ -2,5 +2,5 @@ package inputs
 
 
 
-var IsShowingNextShape      bool = true
-var IsPrefillingMapWithJunk bool = true
+var ShowingNextShape   bool = true
+var PrefillMapWithJunk bool = true

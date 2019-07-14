@@ -14,8 +14,6 @@ var PicBackground i32
 var PicStar       i32
 var PicShapeTile  i32
 
-var colors []Color3
-
 
 
 func Init () {
@@ -33,24 +31,6 @@ func Init () {
 	os.Open(fontFile)
 	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
 	os.Close(fontFile)
-	
-	// colors 
-	var f f32 = 0.2
-	addColor(f, f, f)       // dark gray 
-	addColor(0.9, 0.0, 0.0) // red 
-	addColor(0.3, 0.3, 0.9) // blue 
-	addColor(0.3, 0.9, 0.3) // green 
-	addColor(0.7, 0.0, 0.8) // purple  
-	addColor(1.0, 0.9, 0.0) // yellow 
-	addColor(1.0, 0.5, 0.0) // orange 
-	addColor(1.0, 1.0, 1.0) // white 
-}
-
-
-func addColor (r f32, g f32, b f32) {
-	var col Color3
-	col = Color3{R: r, G: g, B: b}
-	colors = append(colors, col)
 }
 
 
@@ -86,11 +66,15 @@ func PlayField () {
 	for y := 0; y < map.NUM_CELLS_Y; y++ {
 		for x := 0; x < map.NUM_CELLS_X; x++ {
 			var c i32 = map.Cells[y][x]
+
+			if c == map.EMPTY_CELL {
+				c = 0
+			}
 			
 			gl.Color3f(
-				colors[c].R, 
-				colors[c].G, 
-				colors[c].B)
+				app.Colors[c].R, 
+				app.Colors[c].G, 
+				app.Colors[c].B)
 			
 			PicAtScale(
 				PicShapeTile, 
@@ -106,9 +90,9 @@ func PlayField () {
 func PlayerPiece () {
 	var i i32 = i32.add(shape.PlayerShape, 1)
 	gl.Color3f(
-		colors[i].R, 
-		colors[i].G, 
-		colors[i].B)
+		app.Colors[i].R, 
+		app.Colors[i].G, 
+		app.Colors[i].B)
 	
 	var fX f32 = map.LEdge + map.CellWidthHalf
 	var fY f32 = -0.95 + map.CellHeightHalf
@@ -125,4 +109,64 @@ func PlayerPiece () {
 			}
 		}
 	}
+}
+
+
+func NextShape () {
+	var i i32 = i32.add(shape.Next, 1)
+	gl.Color3f(
+		app.Colors[i].R, 
+		app.Colors[i].G, 
+		app.Colors[i].B)
+	
+	// setup sizes to fit box 
+	var num i32 = getLargestNumCellsAcross()
+	
+	var spanX  f32 = map.CellWidth
+	var spanY  f32 = map.CellHeight
+	var scaleX f32 = f32.div(map.CellWidth,  i32.f32(num))
+	var scaleY f32 = f32.div(map.CellHeight, i32.f32(num))
+
+	// center of next-shape box 0.71, 0.51 
+	var fX f32 = 0.71
+	var fY f32 = 0.51
+	
+	//for y := 0; y < 5; y++ {
+		//for x := 0; x < 5; x++ {
+			
+		
+			//if shape.Cells[shape.Next][shape.FACING_UP][y][x] {
+				PicAtScale(
+					PicShapeTile, 
+					fX, //f32.add(fX, f32.mul(i32.f32(x), spanX)),
+					fY, //f32.add(fY, f32.mul(i32.f32(y), spanY)), 
+					scaleX, 
+					scaleY)
+			//}
+		//}
+	//}
+}
+
+
+
+func getLargestNumCellsAcross () (out i32) {
+	var ex i32 
+	
+	ex = shape.Extents[shape.Next][shape.FACING_UP][shape.FACING_UP] +
+		 shape.Extents[shape.Next][shape.FACING_UP][shape.FACING_DOWN]
+		 
+	if out < ex {
+		out = ex
+	}
+
+	ex = shape.Extents[shape.Next][shape.FACING_UP][shape.FACING_LEFT] +
+		 shape.Extents[shape.Next][shape.FACING_UP][shape.FACING_RIGHT]
+		 
+	if out < ex {
+		out = ex
+	}
+	
+	out = i32.add(out, 1)
+	//str.print("__________________________________________________")
+	//i32.print(out)
 }

@@ -10,8 +10,7 @@ var ScreenSizeInPixels Vec2I
 var I32_MAX            i32 = 2147483647
 var TAU                f32
 
-// movement 
-var MAX_HERO_SPEED     f32 = 0.02
+var Colors []Color3
 
 // modes 
 // 		FIXME to consts, when they exist in CX 
@@ -53,8 +52,25 @@ type Color3 struct {
 
 
 
-func Setup () () {
-	str.print("app.Setup()")
+func Init () {
+	str.print("app.Init ()")
 	TAU = f32.mul(2.0, 3.141592654)
+	
+	// colors 
+	var f f32 = 0.2
+	addColor(f, f, f)       // dark gray 
+	addColor(0.9, 0.0, 0.0) // red 
+	addColor(0.3, 0.3, 0.9) // blue 
+	addColor(0.3, 0.9, 0.3) // green 
+	addColor(0.7, 0.0, 0.8) // purple  
+	addColor(1.0, 0.9, 0.0) // yellow 
+	addColor(1.0, 0.5, 0.0) // orange 
+	addColor(1.0, 1.0, 1.0) // white 
 }
 
+
+func addColor (r f32, g f32, b f32) {
+	var col Color3
+	col = Color3{R: r, G: g, B: b}
+	Colors = append(Colors, col)
+}

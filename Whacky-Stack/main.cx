@@ -31,6 +31,8 @@ REQUIRED FEATURES:
 WISHLIST:
    (not necessary, but would be nice) 
 
+* guide lines down to landing 
+* instadrop action 
 * Smooth motion interpolations (prioritized) 
 	* row collapsing
 	* player moves
@@ -79,9 +81,10 @@ func mouseButton (window str, key i32, action i32, mods i32) {
 
 
 func init () {
-	shape.Setup()
+	app.Init()
+	shape.Init()
 	draw.Init()
-	inputs.Setup()
+	inputs.Init()
 }
 
 
@@ -121,6 +124,10 @@ func main () {
 		draw.PicAtScale(draw.PicBackground, 0.0, 0.0, 1.0, 1.0)
 		draw.PlayField()
 		draw.PlayerPiece()
+		
+		if inputs.ShowingNextShape {
+			draw.NextShape()
+		}
 		
 		//gltext.Printf("Roboto50", 0.0, 0.0, "whacky stack")
 		
