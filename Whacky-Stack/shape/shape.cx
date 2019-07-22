@@ -348,7 +348,14 @@ func freezePiece () {
 func spawnNew () {
 	PlayerFacing = 0
 	PlayerShape  = Next
-	Next         = i32.rand(0, SHAPE_MAX)
+	//Next         = i32.rand(0, SHAPE_MAX)
+	Next         = Next++
+	if Next >= SHAPE_MAX {
+		Next = 0
+	}
+	setupSizesAndOffsetsForNext()
+
+	
 	var i i32    = Extents[PlayerShape][PlayerFacing][FACING_UP] + 1
 	PlayerPos    = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
 }

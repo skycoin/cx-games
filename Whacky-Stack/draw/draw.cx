@@ -119,30 +119,16 @@ func NextShape () {
 		app.Colors[i].G, 
 		app.Colors[i].B)
 	
-	// setup sizes to fit box 
-	var num i32 = shape.GetLargestNumCellsAcross()
-	
-	var spanX  f32 = map.CellWidth
-	var spanY  f32 = map.CellHeight
-	var scaleX f32 = f32.div(map.CellWidth,  i32.f32(num))
-	var scaleY f32 = f32.div(map.CellHeight, i32.f32(num))
-
-	// center of next-shape box 0.71, 0.51 
-	var fX f32 = 0.71
-	var fY f32 = 0.51
-	
-	//for y := 0; y < 5; y++ {
-		//for x := 0; x < 5; x++ {
-			
-		
-			//if shape.Cells[shape.Next][shape.FACING_UP][y][x] {
-				PicAtScale(
-					PicShapeTile, 
-					fX, //f32.add(fX, f32.mul(i32.f32(x), spanX)),
-					fY, //f32.add(fY, f32.mul(i32.f32(y), spanY)), 
-					scaleX, 
-					scaleY)
-			//}
-		//}
-	//}
+	for y := shape.StartY; y < 5; y++ {
+	for x := shape.StartX; x < 5; x++ {
+		if shape.Cells[shape.Next][shape.FACING_UP][y][x] {
+			PicAtScale(
+				PicShapeTile, 
+				f32.add(shape.StartPosX, f32.mul(i32.f32(x), shape.NextCellSpanX)),
+				f32.add(shape.StartPosY, f32.mul(i32.f32(y), shape.NextCellSpanY)), 
+				shape.NextCellScaleX, 
+				shape.NextCellScaleY)
+		}
+	}
+	}
 }
