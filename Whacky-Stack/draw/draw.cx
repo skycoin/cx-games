@@ -68,7 +68,7 @@ func PlayField () {
 			var c i32 = map.Cells[y][x]
 
 			if c == map.EMPTY_CELL {
-				c = 0
+				c = shape.SHAPE_MAX
 			}
 			
 			gl.Color3f(
@@ -88,11 +88,10 @@ func PlayField () {
 
 
 func PlayerPiece () {
-	var i i32 = i32.add(shape.PlayerShape, 1)
 	gl.Color3f(
-		app.Colors[i].R, 
-		app.Colors[i].G, 
-		app.Colors[i].B)
+		app.Colors[shape.PlayerShape].R, 
+		app.Colors[shape.PlayerShape].G, 
+		app.Colors[shape.PlayerShape].B)
 	
 	var fX f32 = map.LEdge + map.CellWidthHalf
 	var fY f32 = -0.95 + map.CellHeightHalf
@@ -113,11 +112,10 @@ func PlayerPiece () {
 
 
 func NextShape () {
-	var i i32 = i32.add(shape.Next, 1)
 	gl.Color3f(
-		app.Colors[i].R, 
-		app.Colors[i].G, 
-		app.Colors[i].B)
+		app.Colors[shape.Next].R, 
+		app.Colors[shape.Next].G, 
+		app.Colors[shape.Next].B)
 	
 	for y := shape.StartY; y < 5; y++ {
 	for x := shape.StartX; x < 5; x++ {

@@ -138,9 +138,7 @@ func Init () {
 	for y := 0; y < map.NUM_CELLS_Y - 8; y++ {
 		for x := 0; x < map.NUM_CELLS_X; x++ {
 			if i32.rand(0, 2) == 0 {
-				// skip 1st, which is blank/empty cell color 
-				var rnd i32 = i32.rand(1, len(app.Colors))
-				map.Cells[y][x] = rnd
+				map.Cells[y][x] = i32.rand(0, SHAPE_MAX)
 			}
 		}
 	}
@@ -221,10 +219,10 @@ func MovePieceBy (x i32, y i32) {
 			if enoughCellsOpenForNextPosition(x, y, PlayerFacing) {
 				PlayerPos.Y = i32.add(PlayerPos.Y, y)
 			}else{
-				freezePiece()
+				freezeShape()
 			}
 		} else {
-			freezePiece()
+			freezeShape()
 		}
 	} else
 	if /* going up */ y > 0 &&
@@ -264,14 +262,13 @@ func enoughCellsOpenForNextPosition (xOff i32, yOff i32, facing i32) (out bool) 
 }
 
 
-func freezePiece () {
-	str.print("-----------------------------freezePiece()")
+func freezeShape () {
+	str.print("-----------------------------freezeShape()")
 	
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
 			if Cells[PlayerShape][PlayerFacing][y][x] {
-				// the mapping of the Colors slice to shape "constants" is offset by 1 
-				map.Cells[PlayerPos.Y - 2 + y][PlayerPos.X - 2 + x] = PlayerShape + 1
+				map.Cells[PlayerPos.Y - 2 + y][PlayerPos.X - 2 + x] = PlayerShape
 			}
 		}
 	}
