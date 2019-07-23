@@ -37,9 +37,26 @@ var PlayerShape  i32
 var PlayerScore  i32
 
 
-func Init () {
+func Init () {		
 	str.print("shape.Init ()")
+	setupAllShapes()	
+	map.EmptyPlayfield()
 	
+	// fill playfield with random blocks 
+	for y := 0; y < map.NUM_CELLS_Y - 8; y++ {
+		for x := 0; x < map.NUM_CELLS_X; x++ {
+			if i32.rand(0, 2) == 0 {
+				map.Cells[y][x] = i32.rand(0, SHAPE_MAX)
+			}
+		}
+	}
+			 
+	Next = i32.rand(0, SHAPE_MAX)
+ 	spawnNew()
+}
+
+
+func setupAllShapes () {
 	setupAllPossibleRotations(
 		SHAPE_BEAM,
 		0, 0, 0, 0, 0,
@@ -130,21 +147,6 @@ func Init () {
 		0, 1, 1, 1, 0,
 		0, 0, 0, 0, 0)
 		*/
-		
-	
-	map.EmptyPlayfield()
-	
-	// fill playfield with random blocks 
-	for y := 0; y < map.NUM_CELLS_Y - 8; y++ {
-		for x := 0; x < map.NUM_CELLS_X; x++ {
-			if i32.rand(0, 2) == 0 {
-				map.Cells[y][x] = i32.rand(0, SHAPE_MAX)
-			}
-		}
-	}
-			 
-	Next = i32.rand(0, SHAPE_MAX)
- 	spawnNew()
 }
 
 
@@ -353,16 +355,16 @@ func spawnNew () {
 	setupSizesAndOffsetsForNext()
 
 	
-	var i i32    = Extents[PlayerShape][PlayerFacing][FACING_UP] + 1
-	PlayerPos    = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
+	var i i32 = Extents[PlayerShape][PlayerFacing][FACING_UP] + 1
+	PlayerPos = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
 }
 
 
 // i wanted to input the values of pieces in a visual way 
 // (via a grid of 0s & 1s)
-// even tho in the end i wanted bool values.  
+// even tho in the end they will be bool values.  
 // this converts i32 to bool 
-func getBoolSetExtents (y i32, x i32, i i32, shape i32) (out bool) {
+func getBoolAndSetExtents (y i32, x i32, i i32, shape i32) (out bool) {
 	if i != 0 {
 		out = true
 	
@@ -405,35 +407,35 @@ func setupAllPossibleRotations (shape i32,
 	p i32, q i32, r i32, s i32, t i32,
 	u i32, v i32, w i32, x i32, y i32) {
 	
-	Cells[shape][0][0][0] = getBoolSetExtents(0, 0, u, shape)
-	Cells[shape][0][0][1] = getBoolSetExtents(0, 1, v, shape)
-	Cells[shape][0][0][2] = getBoolSetExtents(0, 2, w, shape)
-	Cells[shape][0][0][3] = getBoolSetExtents(0, 3, x, shape)
-	Cells[shape][0][0][4] = getBoolSetExtents(0, 4, y, shape)
+	Cells[shape][0][0][0] = getBoolAndSetExtents(0, 0, u, shape)
+	Cells[shape][0][0][1] = getBoolAndSetExtents(0, 1, v, shape)
+	Cells[shape][0][0][2] = getBoolAndSetExtents(0, 2, w, shape)
+	Cells[shape][0][0][3] = getBoolAndSetExtents(0, 3, x, shape)
+	Cells[shape][0][0][4] = getBoolAndSetExtents(0, 4, y, shape)
 	
-	Cells[shape][0][1][0] = getBoolSetExtents(1, 0, p, shape)
-	Cells[shape][0][1][1] = getBoolSetExtents(1, 1, q, shape)
-	Cells[shape][0][1][2] = getBoolSetExtents(1, 2, r, shape)
-	Cells[shape][0][1][3] = getBoolSetExtents(1, 3, s, shape)
-	Cells[shape][0][1][4] = getBoolSetExtents(1, 4, t, shape)
+	Cells[shape][0][1][0] = getBoolAndSetExtents(1, 0, p, shape)
+	Cells[shape][0][1][1] = getBoolAndSetExtents(1, 1, q, shape)
+	Cells[shape][0][1][2] = getBoolAndSetExtents(1, 2, r, shape)
+	Cells[shape][0][1][3] = getBoolAndSetExtents(1, 3, s, shape)
+	Cells[shape][0][1][4] = getBoolAndSetExtents(1, 4, t, shape)
 	
-	Cells[shape][0][2][0] = getBoolSetExtents(2, 0, k, shape)
-	Cells[shape][0][2][1] = getBoolSetExtents(2, 1, l, shape)
-	Cells[shape][0][2][2] = getBoolSetExtents(2, 2, m, shape)
-	Cells[shape][0][2][3] = getBoolSetExtents(2, 3, n, shape)
-	Cells[shape][0][2][4] = getBoolSetExtents(2, 4, o, shape)
+	Cells[shape][0][2][0] = getBoolAndSetExtents(2, 0, k, shape)
+	Cells[shape][0][2][1] = getBoolAndSetExtents(2, 1, l, shape)
+	Cells[shape][0][2][2] = getBoolAndSetExtents(2, 2, m, shape)
+	Cells[shape][0][2][3] = getBoolAndSetExtents(2, 3, n, shape)
+	Cells[shape][0][2][4] = getBoolAndSetExtents(2, 4, o, shape)
 	
-	Cells[shape][0][3][0] = getBoolSetExtents(3, 0, f, shape)
-	Cells[shape][0][3][1] = getBoolSetExtents(3, 1, g, shape)
-	Cells[shape][0][3][2] = getBoolSetExtents(3, 2, h, shape)
-	Cells[shape][0][3][3] = getBoolSetExtents(3, 3, i, shape)
-	Cells[shape][0][3][4] = getBoolSetExtents(3, 4, j, shape)
+	Cells[shape][0][3][0] = getBoolAndSetExtents(3, 0, f, shape)
+	Cells[shape][0][3][1] = getBoolAndSetExtents(3, 1, g, shape)
+	Cells[shape][0][3][2] = getBoolAndSetExtents(3, 2, h, shape)
+	Cells[shape][0][3][3] = getBoolAndSetExtents(3, 3, i, shape)
+	Cells[shape][0][3][4] = getBoolAndSetExtents(3, 4, j, shape)
 	
-	Cells[shape][0][4][0] = getBoolSetExtents(4, 0, a, shape)
-	Cells[shape][0][4][1] = getBoolSetExtents(4, 1, b, shape)
-	Cells[shape][0][4][2] = getBoolSetExtents(4, 2, c, shape)
-	Cells[shape][0][4][3] = getBoolSetExtents(4, 3, d, shape)
-	Cells[shape][0][4][4] = getBoolSetExtents(4, 4, e, shape)
+	Cells[shape][0][4][0] = getBoolAndSetExtents(4, 0, a, shape)
+	Cells[shape][0][4][1] = getBoolAndSetExtents(4, 1, b, shape)
+	Cells[shape][0][4][2] = getBoolAndSetExtents(4, 2, c, shape)
+	Cells[shape][0][4][3] = getBoolAndSetExtents(4, 3, d, shape)
+	Cells[shape][0][4][4] = getBoolAndSetExtents(4, 4, e, shape)
 	
 	//showExtents(FACING_UP)
 	

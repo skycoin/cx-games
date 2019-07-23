@@ -69,9 +69,9 @@ func setupSizesAndOffsetsForNext () {
 	MostCellsInX    = i32.add(MostCellsInX, 1)
 	MostCellsInY    = i32.add(MostCellsInY, 1)
 	
-	StartPosX = CenterOfBoxX - i32.f32(MostCellsInX) * NextCellSpanY / 2.0 + NextCellScaleY
-	StartPosY = CenterOfBoxX - i32.f32(MostCellsInY) * NextCellSpanY / 2.0 + NextCellScaleY
-	
+	StartPosX = CenterOfBoxX - i32.f32(MostCellsInX) * NextCellSpanX / 2.0 + NextCellScaleX
+	StartPosY = CenterOfBoxY - i32.f32(MostCellsInY) * NextCellSpanY / 2.0 + NextCellScaleY
+
 	//str.print("__________________________________________________")
 	i32.print(MostCellsAcross)
 }

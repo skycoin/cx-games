@@ -117,16 +117,24 @@ func NextShape () {
 		app.Colors[shape.Next].G, 
 		app.Colors[shape.Next].B)
 	
+	var fX f32 = shape.StartPosX
+	var fY f32 = shape.StartPosY
+	
 	for y := shape.StartY; y < 5; y++ {
-	for x := shape.StartX; x < 5; x++ {
-		if shape.Cells[shape.Next][shape.FACING_UP][y][x] {
-			PicAtScale(
-				PicShapeTile, 
-				f32.add(shape.StartPosX, f32.mul(i32.f32(x), shape.NextCellSpanX)),
-				f32.add(shape.StartPosY, f32.mul(i32.f32(y), shape.NextCellSpanY)), 
-				shape.NextCellScaleX, 
-				shape.NextCellScaleY)
+		for x := shape.StartX; x < 5; x++ {
+			if shape.Cells[shape.Next][shape.FACING_UP][y][x] {
+				PicAtScale(
+					PicShapeTile, 
+					fX,
+					fY, 
+					shape.NextCellScaleX, 
+					shape.NextCellScaleY)
+			}
+			
+			fX = f32.add(fX, shape.NextCellSpanX)
 		}
-	}
+		
+		fX = shape.StartPosX
+		fY = f32.add(fY, shape.NextCellSpanY)
 	}
 }
