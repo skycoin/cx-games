@@ -1,0 +1,18 @@
+package main
+
+func main() {
+	if true {
+		if true {
+			if true {
+				break
+				printf("after break \n")
+			}
+			
+			str.print("hm")
+		}
+		
+		str.print("hmm")
+	}
+	
+	str.print("hmmm")
+}
