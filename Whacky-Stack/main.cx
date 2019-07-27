@@ -95,8 +95,11 @@ func main () {
 	glfw.MakeContextCurrent("window")
 
 	gl.Init()
-	program := gl.CreateProgram()
-	gl.LinkProgram(program)
+	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
+	
+	// program 
+	var prog i32 = gl.CreateProgram()
+	gl.LinkProgram(prog)
 
 	init()
 
@@ -105,31 +108,29 @@ func main () {
 	//str.print(str.concat("testvalue: ", i32.str(testvalue)))
 
 
-	gl.UseProgram(program)
 
-	gl.Enable(gl.BLEND)
+	//gl.MatrixMode(gl.PROJECTION)
+	//gl.LoadIdentity()
+	//gl.MatrixMode(gl.MODELVIEW)
+
+	//gl.UseProgram(prog)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-	gl.DepthMask(true)
+	gl.Enable(gl.TEXTURE_2D)
+	gl.DepthMask(true) // not needed by "gltext" package 
 
 	for bool.not(glfw.ShouldClose("window")) {
 		time.Update()
 		
-		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
-		gl.Clear(gl.COLOR_BUFFER_BIT)
-
-		gl.Enable(gl.TEXTURE_2D)
-
+		gl.Enable(gl.BLEND)
+//		gl.Clear(gl.COLOR_BUFFER_BIT)
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT) // gltext needs 
 		gl.Color3f(1.0, 1.0, 1.0)
-
-		draw.PicAtScale(draw.PicBackground, 0.0, 0.0, 1.0, 1.0)
-		draw.PlayField()
-		draw.PlayerPiece()
+		
+		draw.All()
 		
 		if inputs.ShowingNextShape {
 			draw.NextShape()
 		}
-		
-		//gltext.Printf("Roboto50", 0.0, 0.0, "whacky stack")
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers("window")

@@ -27,14 +27,11 @@ var StartPosY       f32
 
 
 func setupSizesAndOffsetsForNext () {
-	str.print("setupSizesAndOffsetsForNext ()")
-	printf("NextCellSpanX: %f \n", NextCellSpanX)
 	MostCellsAcross = 0
 	MostCellsInX    = 0
 	MostCellsInY    = 0
 	StartX = 2 - Extents[Next][FACING_UP][FACING_LEFT]
 	StartY = 2 - Extents[Next][FACING_UP][FACING_DOWN]
-	printf("StartX,Y: %d, %d \n", StartX, StartY)
 	var ex i32
 
 
@@ -71,7 +68,4 @@ func setupSizesAndOffsetsForNext () {
 	
 	StartPosX = CenterOfBoxX - i32.f32(MostCellsInX) * NextCellSpanX / 2.0 + NextCellScaleX
 	StartPosY = CenterOfBoxY - i32.f32(MostCellsInY) * NextCellSpanY / 2.0 + NextCellScaleY
-
-	//str.print("__________________________________________________")
-	i32.print(MostCellsAcross)
 }

@@ -2,7 +2,6 @@ package draw
 
 import "gl"
 import "gltext"
-import "os"
 
 import "app"
 import "map"
@@ -13,28 +12,32 @@ import "shape"
 var PicBackground i32
 var PicStar       i32
 var PicShapeTile  i32
-
+var dir           str
 
 
 func Init () {
 	str.print("draw.Init ()")
 	
-	wd := os.GetWorkingDirectory()
-	
-	// pics 
-	PicBackground = gl.NewTexture(str.concat(wd, "assets/textures/background.jpg"))
-	PicStar       = gl.NewTexture(str.concat(wd, "assets/textures/star.png"))
-	PicShapeTile  = gl.NewTexture(str.concat(wd, "assets/textures/tile.png"))
+	dir := os.GetWorkingDirectory()
+	InitFonts()
+	InitMenu()
 
-	// font 
-	fontFile := str.concat(wd, "assets/fonts/roboto-light.ttf")
-	os.Open(fontFile)
-	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
-	os.Close(fontFile)
+	// pics 
+	PicBackground = gl.NewTexture(str.concat(dir, "assets/textures/background.jpg"))
+	PicStar       = gl.NewTexture(str.concat(dir, "assets/textures/star.png"))
+	PicShapeTile  = gl.NewTexture(str.concat(dir, "assets/textures/tile.png"))
 }
 
 
-func PicAtScale (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
+func All () {
+	scaledPic(PicBackground, 0.0, 0.0, 1.0, 1.0)
+	PlayField()
+	PlayerPiece()
+	Texts()
+}
+
+
+func scaledPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 	gl.LoadIdentity()
 	gl.Translatef(x, y, 0.0)
 	
@@ -61,7 +64,7 @@ func PicAtScale (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 
 func PlayField () {
 	var fX f32 = map.LEdge + map.CellWidthHalf
-	var fY f32 = -0.95 + map.CellHeightHalf
+	var fY f32 =     -0.95 + map.CellHeightHalf
 
 	for y := 0; y < map.NUM_CELLS_Y; y++ {
 		for x := 0; x < map.NUM_CELLS_X; x++ {
@@ -76,7 +79,7 @@ func PlayField () {
 				app.Colors[c].G, 
 				app.Colors[c].B)
 			
-			PicAtScale(
+			scaledPic(
 				PicShapeTile, 
 				f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
 				f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)), 
@@ -99,7 +102,7 @@ func PlayerPiece () {
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
 			if shape.Cells[shape.PlayerShape][shape.PlayerFacing][y][x] {
-				PicAtScale(
+				scaledPic(
 					PicShapeTile, 
 					f32.add(fX, f32.mul(i32.f32(x - 2 + shape.PlayerPos.X), map.CellWidth)),
 					f32.add(fY, f32.mul(i32.f32(y - 2 + shape.PlayerPos.Y), map.CellHeight)), 
@@ -123,7 +126,7 @@ func NextShape () {
 	for y := shape.StartY; y < 5; y++ {
 		for x := shape.StartX; x < 5; x++ {
 			if shape.Cells[shape.Next][shape.FACING_UP][y][x] {
-				PicAtScale(
+				scaledPic(
 					PicShapeTile, 
 					fX,
 					fY, 

@@ -6,11 +6,11 @@ var NAME   str = "W h a c k y   S t a c k"
 var WIDTH  i32 = 590
 var HEIGHT i32 = 960
 
-var ScreenSizeInPixels Vec2I
 var I32_MAX            i32 = 2147483647
 var TAU                f32
 
-var Colors []Color3
+var ScreenSizeInPixels Vec2I
+var Colors             []Color3
 
 // modes 
 // 		FIXME to consts, when they exist in CX 
@@ -54,6 +54,7 @@ type Color3 struct {
 
 func Init () {
 	str.print("app.Init ()")
+	
 	TAU = f32.mul(2.0, 3.141592654)
 	
 	// colors 

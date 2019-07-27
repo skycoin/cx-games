@@ -3,21 +3,26 @@ package draw
 /*
 import "gl"
 import "glfw"
+*/
 import "gltext"
 import "os"
-*/
 
-/* 
-	Boink-N-Yoink
-	Drilled-2-Build
-	Drill-N-Fill
-*/
+
+
+type Text struct {
+	Text str
+	Font str
+	Size f32
+	Wid  f32 // caches string measure queries 
+	Hei  f32
+}
 
 var width i32 = 800
 var height i32 = 600
 var widF f32 = 800.0
 var heiF f32 = 600.0
-var texts []str = []str{ "Beluga", "Terrain Hopper", "Three", "Four", "5" }
+
+var texts []str
 var wids []f32 // widths 
 var heis []f32 // heights 
 var sizesInt []f32 = []f32{ 200.0, 32.0, 32.0, 100.0, 50.0 } // bearing? (from origin to top) 
@@ -27,12 +32,34 @@ var sizesStr []str = []str{ "Roboto200", "Roboto32", "Roboto32", "Roboto100", "R
 
 /*
 func main () {
-	initApp()
-	loadFonts()
+	for bool.not(glfw.ShouldClose("window")) {
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	}
+}
+*/
+
+
+func InitFonts() {
+	file := str.concat(dir, "assets/fonts/roboto-light.ttf")
+	loadFontSized(200, file)
+	loadFontSized(100, file)
+	loadFontSized(50,  file)
+	loadFontSized(32,  file)
+}
+
+
+func loadFontSized(size i32, fn str) { // filename 
+	s := str.concat("Roboto", sprintf("%d", size))
 	
-	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)	
-	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
+	os.Open(fn)
+	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
+	os.Close(fn)
+}
+
+
+func InitMenu () {
+ 	texts = []str{ "Beluga", "Terrain Hopper", "Three", "Four", "5" }
+ 	printf("draw.InitMenu (%d) \n", len(texts))
 
 	wids = []i32{}
 	heis = []i32{}
@@ -41,62 +68,53 @@ func main () {
 		var w i32
 		var h i32
 		w, h = gltext.Metrics(sizesStr[i], texts[i])
+		
 		wids = append(
 		wids, i32.f32(w))
+		
 		heis = append(
 		heis, i32.f32(h))
-		printf("`%s` metrics\nWidth: %d\nHeight: %d\n", texts[i], w, h)
-	}
-
-	for bool.not(glfw.ShouldClose("window")) {
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-		gl.Color4f(0.5, 0.3, 0.8, 1.0)
 		
-		var x f32
-		var y f32
-		
-		for i := 0; i < len(texts); i++ {
-			gltext.Printf(sizesStr[i], (widF - wids[i]) / 2.0, y, texts[i])
-			//y = f32.add(y, heis[i])
-			y = f32.add(y, sizesInt[i])
-		}
-
-		glfw.PollEvents()
-		glfw.SwapBuffers("window")
+		printf("%s ---- %d,%d ---- '%s' \n", sizesStr[i], w, h, texts[i])
 	}
 }
 
 
-func initApp() {
-	glfw.Init()
+func Texts () {
+	//gl.Disable(gl.BLEND)
+	gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.LESS)
+	gl.Color4f(0.5, 0.3, 0.8, 1.0)
 
-	glfw.CreateWindow("window", width, height, "ing Text")
-	glfw.MakeContextCurrent("window")
-	
-	gl.Init()
-	var program i32
-	program = gl.CreateProgram()
-	gl.LinkProgram(program)	
+	var x f32 // = (widF - wids[i]) / 2.0
+	var y f32
+
+	drawAllOutlinedGlText(5.0)
+		//gltext.Printf("Roboto100", 0.0, 0.0, "goorsh")
+	for i := 0; i < len(texts); i++ {
+		//gltext.Printf(sizesStr[i], x, y, texts[i])
+		//y = f32.add(y, heis[i])
+		y = f32.add(y, sizesInt[i])
+	}
+
+	gl.Disable(gl.DEPTH_TEST)
 }
 
 
-func loadFonts() {
-	var wd str
-	wd = os.GetWorkingDirectory()
-	f := str.concat(wd, "fonts/roboto-light.ttf")
-	loadFontSized(200, f)
-	loadFontSized(100, f)
-	loadFontSized(50, f)
-	loadFontSized(32, f)
+func drawAllOutlinedGlText(scale f32) {
+	var alpha f32 = 1.0
+	gl.Scalef(scale, scale, 0.0)
+
+	printTextWithColor(1.0, 1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(-1.0, 1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(1.0, -1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(-1.0, -1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(0.0, 0.0, 1.0, 0.55, 0.0, alpha)
 }
 
 
-func loadFontSized(size i32, fn str) { // filename 
-	var s str
-	s = str.concat("Roboto", sprintf("%d", size))
-	
-	os.Open(fn)
-	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
-	os.Close(fn)
+// x & y are offsets 
+func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
+	gl.Color4f(r, g, b, a)
+	gltext.Printf("Roboto50", x, y, "testeeek")
 }
-*/
