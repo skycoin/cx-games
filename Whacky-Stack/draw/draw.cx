@@ -2,6 +2,7 @@ package draw
 
 import "gl"
 import "gltext"
+import "os"
 
 import "app"
 import "map"
@@ -103,7 +104,7 @@ func PlayerPiece () {
 		app.Colors[shape.PlayerShape].B)
 	
 	var fX f32 = map.LEdge + map.CellWidthHalf
-	var fY f32 = -0.95 + map.CellHeightHalf
+	var fY f32 =     -0.95 + map.CellHeightHalf
 
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {

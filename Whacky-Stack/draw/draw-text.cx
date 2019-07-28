@@ -5,7 +5,6 @@ import "gl"
 import "glfw"
 */
 import "gltext"
-import "os"
 
 
 
@@ -28,15 +27,6 @@ var heis []f32 // heights
 var sizesInt []f32 = []f32{ 200.0, 32.0, 32.0, 100.0, 50.0 } // bearing? (from origin to top) 
 var sizesStr []str = []str{ "Roboto200", "Roboto32", "Roboto32", "Roboto100", "Roboto50" }
 
-
-
-/*
-func main () {
-	for bool.not(glfw.ShouldClose("window")) {
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	}
-}
-*/
 
 
 func InitFonts() {
