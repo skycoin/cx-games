@@ -8,24 +8,17 @@ import "gltext"
 
 
 
-type Text struct {
+type TextInfo struct {
 	Text str
 	Font str
 	Size f32
 	Wid  f32 // caches string measure queries 
 	Hei  f32
 }
+var texts []TextInfo
 
-var width i32 = 800
-var height i32 = 600
-var widF f32 = 800.0
-var heiF f32 = 600.0
-
-var texts []str
-var wids []f32 // widths 
-var heis []f32 // heights 
-var sizesInt []f32 = []f32{ 200.0, 32.0, 32.0, 100.0, 50.0 } // bearing? (from origin to top) 
-var sizesStr []str = []str{ "Roboto200", "Roboto32", "Roboto32", "Roboto100", "Roboto50" }
+var widF f32
+var heiF f32
 
 
 
@@ -48,43 +41,54 @@ func loadFontSized(size i32, fn str) { // filename
 
 
 func InitMenu () {
- 	texts = []str{ "Beluga", "Terrain Hopper", "Three", "Four", "5" }
- 	printf("draw.InitMenu (%d) \n", len(texts))
+ 	printf("draw.InitMenu () \n")
+	gl.DepthFunc(gl.LESS)
+	widF = i32.f32(app.WIDTH)
+	heiF = i32.f32(app.HEIGHT)
 
-	wids = []i32{}
-	heis = []i32{}
-	
+ 	menuItem(200.0, "Play")
+ 	menuItem(100.0, "Sessions")
+ 	menuItem(50.0,  "Options")
+ 	menuItem(32.0,  "Quit")
+
 	for i := 0; i < len(texts); i++ {
+		font := str.concat("Roboto", sprintf("%d", f32.i32(texts[i].Size)))
+		texts[i].Font = font
+		
 		var w i32
 		var h i32
-		w, h = gltext.Metrics(sizesStr[i], texts[i])
+		w, h = gltext.Metrics(font, texts[i].Text)
+		texts[i].Wid = i32.f32(w)
+		texts[i].Hei = i32.f32(h)
 		
-		wids = append(
-		wids, i32.f32(w))
-		
-		heis = append(
-		heis, i32.f32(h))
-		
-		printf("%s ---- %d,%d ---- '%s' \n", sizesStr[i], w, h, texts[i])
+		printf("%s ---- %d,%d ---- '%s' \n", font, w, h, texts[i].Text)
 	}
 }
 
 
+func menuItem(size f32, text str) {
+ 	var ti TextInfo 
+ 	
+ 	ti = TextInfo{ Size: size, Text: text }
+ 	texts = append(
+	texts, ti)
+}
+
+
 func Texts () {
-	//gl.Disable(gl.BLEND)
 	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
+	gl.Scalef(9.0, 9.0, 0.0)
 	gl.Color4f(0.5, 0.3, 0.8, 1.0)
 
-	var x f32 // = (widF - wids[i]) / 2.0
+	var x f32
 	var y f32
 
-	drawAllOutlinedGlText(5.0)
-		//gltext.Printf("Roboto100", 0.0, 0.0, "goorsh")
+	//drawAllOutlinedGlText(5.0)
+
 	for i := 0; i < len(texts); i++ {
-		//gltext.Printf(sizesStr[i], x, y, texts[i])
-		//y = f32.add(y, heis[i])
-		y = f32.add(y, sizesInt[i])
+		x = (widF - texts[i].Wid) / 2.0
+		gltext.Printf(texts[i].Font, x, y, texts[i].Text)
+		y = f32.sub(y, texts[i].Size)
 	}
 
 	gl.Disable(gl.DEPTH_TEST)
