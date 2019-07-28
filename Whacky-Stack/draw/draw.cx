@@ -30,6 +30,12 @@ func Init () {
 
 
 func All () {
+	//gl.UseProgram(prog)
+	
+	//gl.MatrixMode(gl.PROJECTION)
+	//gl.LoadIdentity()
+	//gl.MatrixMode(gl.MODELVIEW)
+
 	scaledPic(PicBackground, 0.0, 0.0, 1.0, 1.0)
 	PlayField()
 	PlayerPiece()

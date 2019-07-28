@@ -9,12 +9,6 @@ import "inputs"
 import "shape"
 import "time"
 
-
-
-
-
-
-
 /* 
 
 TODO:
@@ -31,6 +25,7 @@ REQUIRED FEATURES:
 WISHLIST:
    (not necessary, but would be nice) 
 
+* when pressing unfulfilled rotate key/button, indicate center block 
 * guide lines down to landing 
 * instadrop action 
 * Smooth motion interpolations (prioritized) 
@@ -57,75 +52,16 @@ up to the total score printout
 
 */
 
-
-
-
-
-
-
-func mouseButton (window str, key i32, action i32, mods i32) {
-	var x f64
-	var y f64
-	
-	x, y = glfw.GetCursorPos("window")
-	/*if key == glfw.MouseButtonLeft {
-		if action == glfw.Press {
-		}
-	}*/
-
-	/*if key == glfw.MouseButtonRight {
-		if action == glfw.Press {
-		}
-	}*/
-}
-
-
-func init () {
-	app.Init()
-	shape.Init()
-	draw.Init()
-	inputs.Init()
-}
-
-
 func main () {
-	glfw.Init()
-
-	glfw.CreateWindow("window", app.WIDTH, app.HEIGHT, app.NAME)
-	glfw.MakeContextCurrent("window")
-
-	gl.Init()
-	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
-	
-	// program 
-	var prog i32 = gl.CreateProgram()
-	gl.LinkProgram(prog)
-
-	init()
-
-
-	//testvalue= [][]i32.read(dropsArray,0)
-	//str.print(str.concat("testvalue: ", i32.str(testvalue)))
-
-
-
-	//gl.MatrixMode(gl.PROJECTION)
-	//gl.LoadIdentity()
-	//gl.MatrixMode(gl.MODELVIEW)
-
-	//gl.UseProgram(prog)
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-	gl.Enable(gl.TEXTURE_2D)
-	gl.DepthMask(true) // not needed by "gltext" package 
+	initAPIs()
+	initGame()
 
 	for bool.not(glfw.ShouldClose("window")) {
-		time.Update()
-		
-		gl.Enable(gl.BLEND)
 //		gl.Clear(gl.COLOR_BUFFER_BIT)
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT) // gltext needs 
 		gl.Color3f(1.0, 1.0, 1.0)
 		
+		time.Update()
 		draw.All()
 		
 		if inputs.ShowingNextShape {
@@ -135,4 +71,31 @@ func main () {
 		glfw.PollEvents()
 		glfw.SwapBuffers("window")
 	}
+}
+
+
+func initAPIs () {
+	glfw.Init()
+
+	glfw.CreateWindow("window", app.WIDTH, app.HEIGHT, app.NAME)
+	glfw.MakeContextCurrent("window")
+
+	gl.Init()
+	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.TEXTURE_2D)
+	gl.Enable(gl.BLEND)
+	gl.DepthMask(true) // not needed by "gltext" package 
+
+	// program 
+	prog := gl.CreateProgram()
+	gl.LinkProgram(prog)
+}
+
+
+func initGame () {
+	app.Init()
+	shape.Init()
+	draw.Init()
+	inputs.Init()
 }
