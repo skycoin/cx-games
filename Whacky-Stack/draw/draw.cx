@@ -20,8 +20,7 @@ func Init () {
 	str.print("draw.Init ()")
 	
 	dir := os.GetWorkingDirectory()
-	InitFonts()
-	InitMenu()
+	InitFontsAndTextInfo()
 
 	// pics 
 	PicBackground = gl.NewTexture(str.concat(dir, "assets/textures/background.jpg"))
@@ -40,7 +39,10 @@ func All () {
 	scaledPic(PicBackground, 0.0, 0.0, 1.0, 1.0)
 	PlayField()
 	PlayerPiece()
-	Texts()
+	
+	if app.Mode <= app.MODE_PLAYING { // in a menu 
+		Texts()
+	}
 }
 
 

@@ -50,6 +50,15 @@ func Update () {
 }
 
 
+func PointerInYPixelRange (lesser f32, greater f32) (out bool) {
+	if MousePointerY64 < f32.f64(greater) &&
+		MousePointerY64 >= f32.f64(lesser) {
+			
+		out = true
+	}
+}
+
+
 func GoLeft () (out bool) {
 	if i32.eq(glfw.GetKey("window", GLFW_KEY_A), 1) ||
 		i32.eq(glfw.GetKey("window", GLFW_KEY_LEFT), 1) {

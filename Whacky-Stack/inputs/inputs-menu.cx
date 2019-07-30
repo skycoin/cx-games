@@ -1,6 +1,0 @@
-package inputs
-
-
-
-var ShowingNextShape   bool = true
-var PrefillMapWithJunk bool = true

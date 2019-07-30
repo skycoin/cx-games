@@ -18,11 +18,13 @@ var ScreenSizeInPixels Vec2I
 // modes 
 // 		FIXME to consts, when they exist in CX 
 
-var APPMODE_PLAYING      i32 = 3
-var APPMODE_GAME_OVER    i32 = 4
-var APPMODE_MAX          i32 = 6
+var MODE_MENUMAIN    i32
+var MODE_MENUOPTIONS i32 = 1
+var MODE_PLAYING     i32 = 2
+var MODE_GAME_OVER   i32 = 3
+var MODE_MAX         i32 = 4
 
-var Mode i32 = APPMODE_PLAYING
+var Mode i32 = MODE_MENUMAIN
 
 
 

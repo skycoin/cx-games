@@ -1,0 +1,34 @@
+package menu
+
+
+
+type TextInfo struct {
+	Text str
+	Font str
+	Size f32
+	Wid  f32 // caches string measure queries 
+	Hei  f32
+}
+var texts []TextInfo
+
+var ShowingNextShape   bool = true
+var PrefillMapWithJunk bool = true
+
+
+
+func Init () {
+ 	printf("menu.Init () \n")
+
+ 	menuItem(150.0, "Play")
+ 	menuItem(150.0, "Options")
+ 	menuItem(150.0, "Quit")
+}
+
+
+func menuItem(size f32, text str) {
+ 	var ti TextInfo 
+ 	
+ 	ti = TextInfo{ Size: size, Text: text }
+ 	texts = append(
+	texts, ti)
+}

@@ -1,37 +1,46 @@
 package draw
 
-/*
-import "gl"
-import "glfw"
-*/
-import "gltext"
+import "inputs"
+import "menu"
 
 
-
-type TextInfo struct {
-	Text str
-	Font str
-	Size f32
-	Wid  f32 // caches string measure queries 
-	Hei  f32
-}
-var texts []TextInfo
 
 var widF f32
 var heiF f32
 
 
 
-func InitFonts() {
+func InitFontsAndTextInfo() {
+	gl.DepthFunc(gl.LESS)
+	widF = i32.f32(app.WIDTH)
+	heiF = i32.f32(app.HEIGHT)
+
 	file := str.concat(dir, "assets/fonts/roboto-light.ttf")
 	loadFontSized(150, file)
 	//loadFontSized(100, file)
 	//loadFontSized(50,  file)
 	//loadFontSized(32,  file)
+	
+	// menu 
+	menu.Init()
+
+	var n i32 = len(menu.texts)
+	for i := 0; i < n; i++ {
+		font := str.concat("Roboto", sprintf("%d", f32.i32(menu.texts[i].Size)))
+		menu.texts[i].Font = font
+		
+		var w i32
+		var h i32
+		w, h = gltext.Metrics(font, menu.texts[i].Text)
+		menu.texts[i].Wid = i32.f32(w)
+		menu.texts[i].Hei = i32.f32(h)
+		
+		printf("%s ---- %d,%d ---- '%s' \n", font, w, h, menu.texts[i].Text)
+	}
 }
 
 
-func loadFontSized(size i32, fn str) { // filename 
+func loadFontSized (size i32, fn str) { // filename 
 	s := str.concat("Roboto", sprintf("%d", size))
 	
 	os.Open(fn)
@@ -40,50 +49,18 @@ func loadFontSized(size i32, fn str) { // filename
 }
 
 
-func InitMenu () {
- 	printf("draw.InitMenu () \n")
-	gl.DepthFunc(gl.LESS)
-	widF = i32.f32(app.WIDTH)
-	heiF = i32.f32(app.HEIGHT)
-
- 	menuItem(150.0, "Play")
- 	menuItem(150.0, "Options")
- 	menuItem(150.0, "Quit")
-
-	for i := 0; i < len(texts); i++ {
-		font := str.concat("Roboto", sprintf("%d", f32.i32(texts[i].Size)))
-		texts[i].Font = font
-		
-		var w i32
-		var h i32
-		w, h = gltext.Metrics(font, texts[i].Text)
-		texts[i].Wid = i32.f32(w)
-		texts[i].Hei = i32.f32(h)
-		
-		printf("%s ---- %d,%d ---- '%s' \n", font, w, h, texts[i].Text)
-	}
-}
-
-
-func menuItem(size f32, text str) {
- 	var ti TextInfo 
- 	
- 	ti = TextInfo{ Size: size, Text: text }
- 	texts = append(
-	texts, ti)
-}
-
-
+// background color intensities 
+var light f32 = 0.9
+var mid   f32 = 0.6
+var dark  f32 = 0.3
 func Texts () {
 	// rect backgrounds 
-	var f f32 = 0.3
-	gl.Color4f(f, f, f, 0.92)
-
-	var ySpan f32 = f32.mul(texts[0].Hei, app.PixelHei)
+	gl.Color4f(dark, dark, dark, 0.9)
+	var ySpan f32 = f32.mul(menu.texts[0].Hei, app.PixelHei)
 	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
-	for i := i32.sub(len(texts), 1); i >= 0; i-- {			
-		var scX f32 = f32.mul(texts[i].Wid, app.PixelWid)
+	for i := i32.sub(len(menu.texts), 1); i >= 0; i-- {			
+		var scX f32 = f32.mul(menu.texts[i].Wid, app.PixelWid)
 		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, scX, ySpan)
 		y = f32.add(y, ySpan)
 	}
@@ -91,17 +68,25 @@ func Texts () {
 	// glText 
 	gl.LoadIdentity()
 	gl.Enable(gl.DEPTH_TEST)
-	gl.Color4f(1.0, 1.0, 1.0, 1.0)
 
-	y = i32.f32(app.HEIGHT - 1)
+	// greater y (value) 
+	var gY f32 = i32.f32(app.HEIGHT - 1) 
 
 	//drawAllOutlinedGlText(5.0)
 
-	for i := i32.sub(len(texts), 1); i >= 0; i-- {
+	for i := i32.sub(len(menu.texts), 1); i >= 0; i-- {
 		var x f32
-		x = (widF - texts[i].Wid) / 2.0
-		y = f32.sub(y, texts[i].Hei)
-		gltext.Printf(texts[i].Font, x, y, texts[i].Text)
+		x = (widF - menu.texts[i].Wid) / 2.0
+		y = f32.sub(gY, menu.texts[i].Hei)
+
+		if inputs.PointerInYPixelRange(y, gY) {				
+			gl.Color4f(1.0, 1.0, 1.0, 1.0)
+		}else{
+			gl.Color4f(mid, mid, mid, 1.0)
+		}
+
+		gltext.Printf(menu.texts[i].Font, x, y, menu.texts[i].Text)
+		gY = y
 	}
 
 	gl.Disable(gl.DEPTH_TEST)
