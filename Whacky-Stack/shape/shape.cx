@@ -265,8 +265,6 @@ func enoughCellsOpenForNextPosition (xOff i32, yOff i32, facing i32) (out bool) 
 
 
 func freezeShape () {
-	str.print("-----------------------------freezeShape()")
-	
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
 			if Cells[PlayerShape][PlayerFacing][y][x] {

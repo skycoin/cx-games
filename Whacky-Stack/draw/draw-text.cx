@@ -76,21 +76,22 @@ func menuItem(size f32, text str) {
 
 func Texts () {
 	// rect backgrounds 
+	var f f32 = 0.3
+	gl.Color4f(f, f, f, 0.92)
+
 	var ySpan f32 = f32.mul(texts[0].Hei, app.PixelHei)
 	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
-	//gl.Begin(gl.QUADS)
-		for i := i32.sub(len(texts), 1); i >= 0; i-- {			
-			var scX f32 = f32.mul(texts[i].Wid, app.PixelWid)
-			sizedPicAt(PicShapeTile, 0.0, y, scX, ySpan)
-			y = f32.add(y, ySpan)
-		}
-	//gl.End()
+	for i := i32.sub(len(texts), 1); i >= 0; i-- {			
+		var scX f32 = f32.mul(texts[i].Wid, app.PixelWid)
+		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, scX, ySpan)
+		y = f32.add(y, ySpan)
+	}
 
 	// glText 
 	gl.LoadIdentity()
 	gl.Enable(gl.DEPTH_TEST)
-	gl.Color4f(0.5, 0.3, 0.8, 1.0)
+	gl.Color4f(1.0, 1.0, 1.0, 1.0)
 
 	y = i32.f32(app.HEIGHT - 1)
 

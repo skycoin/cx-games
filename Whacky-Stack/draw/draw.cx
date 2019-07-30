@@ -67,6 +67,64 @@ func sizedPicAt (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 }
 
 
+func sizedNotStretchedPicAt (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
+	var tosy f32 = scaleY / 3.0 // 3rd of scale y 
+	var otsme f32
+	otsme = scaleX - tosy // offset to middle (section) extent 
+	otsme = otsme - tosy
+	otsme = otsme / 2.0
+	otsme = otsme * 0.5
+	
+	gl.LoadIdentity()
+
+	gl.BindTexture(gl.TEXTURE_2D, picId)
+	gl.Translatef(x, y, 0.0)
+	gl.Scalef(scaleX, scaleY, 0.0)
+
+	gl.Begin(gl.QUADS)
+		gl.TexCoord2d(0.0D, 0.0D)
+		gl.Vertex3f(-0.5, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.33D, 0.0D)
+		gl.Vertex3f(-otsme, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.33D, 1.0D)
+		gl.Vertex3f(-otsme, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.0D, 1.0D)
+		gl.Vertex3f(-0.5, -0.5, 0.0)
+
+
+
+		gl.TexCoord2d(0.33D, 0.0D)
+		gl.Vertex3f(-otsme, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.66D, 0.0D)
+		gl.Vertex3f(otsme, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.66D, 1.0D)
+		gl.Vertex3f(otsme, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.33D, 1.0D)
+		gl.Vertex3f(-otsme, -0.5, 0.0)
+
+
+
+		gl.TexCoord2d(0.66D, 0.0D)
+		gl.Vertex3f(otsme, 0.5, 0.0)
+		
+		gl.TexCoord2d(1.0D, 0.0D)
+		gl.Vertex3f(0.5, 0.5, 0.0)
+		
+		gl.TexCoord2d(1.0D, 1.0D)
+		gl.Vertex3f(0.5, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.66D, 1.0D)
+		gl.Vertex3f(otsme, -0.5, 0.0)
+	gl.End()
+}
+
+
 func scaledPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 	gl.LoadIdentity()
 
