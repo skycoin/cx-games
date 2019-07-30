@@ -40,7 +40,7 @@ func All () {
 	PlayField()
 	PlayerPiece()
 	
-	if app.Mode <= app.MODE_PLAYING { // in a menu 
+	if app.Mode <= app.MODE_MENUOPTIONS { // in a menu 
 		Texts()
 	}
 }

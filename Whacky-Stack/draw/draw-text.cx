@@ -61,9 +61,9 @@ func Texts () {
 
 	for i := i32.sub(len(menu.texts), 1); i >= 0; i-- {			
 		if menu.texts[i].Hover {
-			gl.Color4f(mid, mid, mid, 0.9)
+			gl.Color4f(mid, mid, mid, 0.85)
 		}else{
-			gl.Color4f(dark, dark, dark, 0.9)
+			gl.Color4f(dark, dark, dark, 0.85)
 		}
 		
 		var scX f32 = f32.mul(menu.texts[i].Wid, app.PixelWid)
