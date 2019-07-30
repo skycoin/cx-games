@@ -60,6 +60,12 @@ func Texts () {
 	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
 	for i := i32.sub(len(menu.texts), 1); i >= 0; i-- {			
+		if menu.texts[i].Hover {
+			gl.Color4f(mid, mid, mid, 0.9)
+		}else{
+			gl.Color4f(dark, dark, dark, 0.9)
+		}
+		
 		var scX f32 = f32.mul(menu.texts[i].Wid, app.PixelWid)
 		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, scX, ySpan)
 		y = f32.add(y, ySpan)
@@ -79,9 +85,11 @@ func Texts () {
 		x = (widF - menu.texts[i].Wid) / 2.0
 		y = f32.sub(gY, menu.texts[i].Hei)
 
-		if inputs.PointerInYPixelRange(y, gY) {				
+		if inputs.PointerInYPixelRange(y, gY) {
+			menu.texts[i].Hover = true			
 			gl.Color4f(1.0, 1.0, 1.0, 1.0)
 		}else{
+			menu.texts[i].Hover = false
 			gl.Color4f(mid, mid, mid, 1.0)
 		}
 
