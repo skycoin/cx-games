@@ -151,7 +151,9 @@ func setupAllShapes () {
 
 
 func PlayerRotate(change i32) {
-	if PlayerShape == SHAPE_CUBE {
+	if app.Mode != app.MODE_PLAYING ||
+		PlayerShape == SHAPE_CUBE {
+			
 		return
 	}
 	
@@ -196,6 +198,10 @@ func PlayerRotate(change i32) {
 
 
 func MovePieceBy (x i32, y i32) {
+	if app.Mode != app.MODE_PLAYING {
+		return
+	}
+	
 	// FIXME: 
 	// flesh out MovePieceBy(), to do each tween of jump? 
 	// if we add shortcut to instazoom down to the bottom 

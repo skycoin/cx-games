@@ -28,12 +28,10 @@ var GLFW_KEY_SPACE i32 = 32
 func Init () {
 	str.print("inputs.Init ()")
 
-	glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
-
 	// callbacks 
-	glfw.SetKeyCallback("window", "onKeyEvent")
+	glfw.SetKeyCallback        ("window", "onKeyEvent")
 	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
-	glfw.SetCursorPosCallback("window", "onCursorPosEvent")
+	glfw.SetCursorPosCallback  ("window", "onCursorPosEvent")
 }
 
 
