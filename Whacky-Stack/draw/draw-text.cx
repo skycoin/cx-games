@@ -76,31 +76,17 @@ func menuItem(size f32, text str) {
 
 func Texts () {
 	// rect backgrounds 
-	var x f32 = -1.0
-	var y f32 = -1.0
+	var ySpan f32 = f32.mul(texts[0].Hei, app.PixelHei)
+	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
-	gl.Begin(gl.QUADS)
-		for i := i32.sub(len(texts), 1); i >= 0; i-- {
-			var bottomY f32 = y
-			x = (widF - texts[i].Wid) / 2.0
-			y = f32.sub(y, texts[i].Hei)
-			
-			gl.TexCoord2d(0.0D, 0.0D)
-			gl.Vertex2f(x, y)
-			
-			gl.TexCoord2d(1.0D, 0.0D)
-			gl.Vertex2f(x + texts[i].Wid, y)
-			
-			gl.TexCoord2d(1.0D, 1.0D)
-			gl.Vertex2f(x + texts[i].Wid, bottomY)
-			
-			gl.TexCoord2d(0.0D, 1.0D)
-			gl.Vertex2f(x, bottomY)
+	//gl.Begin(gl.QUADS)
+		for i := i32.sub(len(texts), 1); i >= 0; i-- {			
+			var scX f32 = f32.mul(texts[i].Wid, app.PixelWid)
+			sizedPicAt(PicShapeTile, 0.0, y, scX, ySpan)
+			y = f32.add(y, ySpan)
 		}
-	gl.End()
+	//gl.End()
 
-	
-	
 	// glText 
 	gl.LoadIdentity()
 	gl.Enable(gl.DEPTH_TEST)
@@ -111,6 +97,7 @@ func Texts () {
 	//drawAllOutlinedGlText(5.0)
 
 	for i := i32.sub(len(texts), 1); i >= 0; i-- {
+		var x f32
 		x = (widF - texts[i].Wid) / 2.0
 		y = f32.sub(y, texts[i].Hei)
 		gltext.Printf(texts[i].Font, x, y, texts[i].Text)
