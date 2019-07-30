@@ -9,8 +9,11 @@ var HEIGHT i32 = 960
 var I32_MAX            i32 = 2147483647
 var TAU                f32
 
-var ScreenSizeInPixels Vec2I
 var Colors             []Color3
+// FIXME: these need to be updated from window events 
+var PixelWid           f32
+var PixelHei           f32
+var ScreenSizeInPixels Vec2I
 
 // modes 
 // 		FIXME to consts, when they exist in CX 
@@ -56,6 +59,8 @@ func Init () {
 	str.print("app.Init ()")
 	
 	TAU = f32.mul(2.0, 3.141592654)
+	PixelWid = 2.0 / i32.f32(WIDTH)
+	PixelHei = 2.0 / i32.f32(HEIGHT)
 	
 	// colors 
 	var f f32 = 0.2

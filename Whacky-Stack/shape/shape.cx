@@ -358,7 +358,8 @@ func spawnNew () {
 // i wanted to input the values of pieces in a visual way 
 // (via a grid of 0s & 1s)
 // even tho in the end they will be bool values.  
-// this converts i32 to bool 
+// this converts i32 to bool, and sets how many blocks the shape
+// extends from its centerpoint (2,2) 
 func getBoolAndSetExtents (y i32, x i32, i i32, shape i32) (out bool) {
 	if i != 0 {
 		out = true
@@ -434,14 +435,14 @@ func setupAllPossibleRotations (shape i32,
 	
 	//showExtents(FACING_UP)
 	
-	rotate(shape, FACING_LEFT)
-	rotate(shape, FACING_DOWN)
-	rotate(shape, FACING_RIGHT)
+	bakeRotation(shape, FACING_LEFT)
+	bakeRotation(shape, FACING_DOWN)
+	bakeRotation(shape, FACING_RIGHT)
 }
 
 
 // this rotates the top towards the left (CCW) 
-func rotate (shape i32, newFacing i32) {
+func bakeRotation (shape i32, newFacing i32) {
 	var oldFacing i32 = newFacing + 1
 	
 	if oldFacing >= FACING_MAX {

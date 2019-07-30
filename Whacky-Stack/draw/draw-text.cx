@@ -24,10 +24,10 @@ var heiF f32
 
 func InitFonts() {
 	file := str.concat(dir, "assets/fonts/roboto-light.ttf")
-	loadFontSized(200, file)
-	loadFontSized(100, file)
-	loadFontSized(50,  file)
-	loadFontSized(32,  file)
+	loadFontSized(150, file)
+	//loadFontSized(100, file)
+	//loadFontSized(50,  file)
+	//loadFontSized(32,  file)
 }
 
 
@@ -46,10 +46,9 @@ func InitMenu () {
 	widF = i32.f32(app.WIDTH)
 	heiF = i32.f32(app.HEIGHT)
 
- 	menuItem(200.0, "Play")
- 	menuItem(100.0, "Sessions")
- 	menuItem(50.0,  "Options")
- 	menuItem(32.0,  "Quit")
+ 	menuItem(150.0, "Play")
+ 	menuItem(150.0, "Options")
+ 	menuItem(150.0, "Quit")
 
 	for i := 0; i < len(texts); i++ {
 		font := str.concat("Roboto", sprintf("%d", f32.i32(texts[i].Size)))
@@ -76,19 +75,45 @@ func menuItem(size f32, text str) {
 
 
 func Texts () {
+	// rect backgrounds 
+	var x f32 = -1.0
+	var y f32 = -1.0
+
+	gl.Begin(gl.QUADS)
+		for i := i32.sub(len(texts), 1); i >= 0; i-- {
+			var bottomY f32 = y
+			x = (widF - texts[i].Wid) / 2.0
+			y = f32.sub(y, texts[i].Hei)
+			
+			gl.TexCoord2d(0.0D, 0.0D)
+			gl.Vertex2f(x, y)
+			
+			gl.TexCoord2d(1.0D, 0.0D)
+			gl.Vertex2f(x + texts[i].Wid, y)
+			
+			gl.TexCoord2d(1.0D, 1.0D)
+			gl.Vertex2f(x + texts[i].Wid, bottomY)
+			
+			gl.TexCoord2d(0.0D, 1.0D)
+			gl.Vertex2f(x, bottomY)
+		}
+	gl.End()
+
+	
+	
+	// glText 
+	gl.LoadIdentity()
 	gl.Enable(gl.DEPTH_TEST)
-	gl.Scalef(9.0, 9.0, 0.0)
 	gl.Color4f(0.5, 0.3, 0.8, 1.0)
 
-	var x f32
-	var y f32
+	y = i32.f32(app.HEIGHT - 1)
 
 	//drawAllOutlinedGlText(5.0)
 
-	for i := 0; i < len(texts); i++ {
+	for i := i32.sub(len(texts), 1); i >= 0; i-- {
 		x = (widF - texts[i].Wid) / 2.0
+		y = f32.sub(y, texts[i].Hei)
 		gltext.Printf(texts[i].Font, x, y, texts[i].Text)
-		y = f32.sub(y, texts[i].Size)
 	}
 
 	gl.Disable(gl.DEPTH_TEST)
