@@ -27,8 +27,6 @@ var Cells [17][9]i32
 
 
 func EmptyPlayfield () {
-	str.print("map.EmptyPlayfield ()")
-	
 	for y := 0; y < NUM_CELLS_Y; y++ {
 	for x := 0; x < NUM_CELLS_X; x++ {
 		Cells[y][x] = EMPTY_CELL

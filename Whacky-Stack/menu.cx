@@ -10,7 +10,7 @@ type MenuItem struct {
 	Hei   f32
 	Hover bool // pointer is touching/hovering-over measured rect 
 }
-var texts []MenuItem
+var Items []MenuItem
 
 var ShowingNextShape   bool = true
 var PrefillMapWithJunk bool = true
@@ -27,9 +27,9 @@ func Init () {
 
 
 func GetClickedItemName () (out str) {
-	for i := 0; i < len(texts); i++ {			
-		if texts[i].Hover {
-			out = texts[i].Text
+	for i := 0; i < len(Items); i++ {			
+		if Items[i].Hover {
+			out = Items[i].Text
 		}
 	}
 }
@@ -38,6 +38,6 @@ func GetClickedItemName () (out str) {
 func makeMenuItem(size f32, text str) {
  	var mi MenuItem 
  	mi = MenuItem{ Size: size, Text: text }
- 	texts = append(
-	texts, mi)
+ 	Items = append(
+	Items, mi)
 }

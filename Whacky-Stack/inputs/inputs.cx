@@ -241,14 +241,14 @@ func maybeToggleMousePointer (key i32) {
 		toggleMousePointer()
 	}
 }
+
+
 func toggleMousePointer () {
 	wantMousePointer = !wantMousePointer
 
 	if bool.eq(wantMousePointer, true) {
-		str.print("wantMousePointer TRUE")
 		glfw.SetInputMode("window", glfw.Cursor, glfw.CursorNormal)
 	} else {
-		str.print("wantMousePointer FALSE")
 		glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
 	}
 }
