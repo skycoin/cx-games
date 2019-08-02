@@ -68,7 +68,7 @@ func main () {
 		
 		draw.All()
 		
-		if menu.ShowingNextShape {
+		if menu.ShowNextShape {
 			draw.NextShape()
 		}
 		

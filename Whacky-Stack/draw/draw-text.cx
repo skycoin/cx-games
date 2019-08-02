@@ -8,8 +8,8 @@ import "menu"
 var widF f32 // FIXME?  are these really needed anymore? 
 var heiF f32
 // color intensities 
-var light f32 = 0.9
-var mid   f32 = 0.6
+var light f32 = 0.75
+var mid   f32 = 0.5
 var dark  f32 = 0.3
 
 
@@ -21,11 +21,9 @@ func InitFontsAndMenuItems() {
 
 	file := str.concat(dir, "assets/fonts/roboto-light.ttf")
 	loadFontSized(150, file)
-	//loadFontSized(100, file)
-	//loadFontSized(50,  file)
+	loadFontSized(50,  file)
 	loadFontSized(26,  file)
 	
-	// menu 
 	menu.Init()
 
 	var nm i32 = len(menu.Items)    // nm == num menus 
@@ -59,18 +57,19 @@ func loadFontSized (size i32, fn str) { // filename
 func menuItemBackgrounds () {
 	var m i32 = app.Mode
 	gl.Color4f(dark, dark, dark, 0.9)
-	var ySpan f32 = f32.mul(menu.Items[0][0].Hei, app.PixelHei)
+	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, app.PixelHei)
 	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
 	for i := i32.sub(len(menu[m].Items), 1); i >= 0; i-- {			
+		var xSpan f32 = f32.mul(menu.Items[m][i].Wid, app.PixelWid)
+	
 		if menu.Items[m][i].Hover {
 			gl.Color4f(mid, mid, mid, 0.85)
 		}else{
 			gl.Color4f(dark, dark, dark, 0.85)
 		}
 		
-		var scX f32 = f32.mul(menu.Items[m][i].Wid, app.PixelWid)
-		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, scX, ySpan)
+		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, xSpan, ySpan)
 		y = f32.add(y, ySpan)
 	}
 }

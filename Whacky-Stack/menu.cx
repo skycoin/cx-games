@@ -12,8 +12,10 @@ type MenuItem struct {
 }
 var Items [][]MenuItem // 1st is menu id, 2nd is item id 
 
-var ShowingNextShape   bool = true
-var PrefillMapWithJunk bool = true
+var ShowNextShape       bool = true
+var ShowNextShapeText   str  = "Show next shape: "
+var StartWithDebris     bool = true
+var StartWithDebrisText str  = "Start with debris: "
 
 
 
@@ -36,16 +38,19 @@ func Init () {
  	makeMenuItem(0, 150.0, "Options")
  	makeMenuItem(0, 150.0, "Quit")
 	// app.MODE_MENUOPTIONS
- 	makeMenuItem(1, 150.0, "Show next shape: On")
- 	makeMenuItem(1, 150.0, "Start with debris: On")
- 	makeMenuItem(1, 150.0, "Debris height: _")
+ 	makeMenuItem(1, 50.0, ShowNextShapeText   + "YES")
+ 	makeMenuItem(1, 50.0, StartWithDebrisText + "YES")
+ 	makeMenuItem(1, 50.0, "Debris height: _")
+ 	makeMenuItem(1, 50.0, "Play")
+// 	makeMenuItem(1, 50.0, "<- BACK")
 }
 
 
-func GetClickedItemName (menuId i32) (out str) {
+func GetClickedItem (menuId i32) (text str, id i32) {
 	for i := 0; i < len(Items[menuId]); i++ {			
-		if        Items[menuId][i].Hover {
-			out = Items[menuId][i].Text
+		if         Items[menuId][i].Hover {
+			text = Items[menuId][i].Text
+			id   = i
 		}
 	}
 }
