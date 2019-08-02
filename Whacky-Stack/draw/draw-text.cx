@@ -5,8 +5,12 @@ import "menu"
 
 
 
-var widF f32
+var widF f32 // FIXME?  are these really needed anymore? 
 var heiF f32
+// color intensities 
+var light f32 = 0.9
+var mid   f32 = 0.6
+var dark  f32 = 0.3
 
 
 
@@ -19,7 +23,7 @@ func InitFontsAndTextInfo() {
 	loadFontSized(150, file)
 	//loadFontSized(100, file)
 	//loadFontSized(50,  file)
-	//loadFontSized(32,  file)
+	loadFontSized(26,  file)
 	
 	// menu 
 	menu.Init()
@@ -49,12 +53,7 @@ func loadFontSized (size i32, fn str) { // filename
 }
 
 
-// background color intensities 
-var light f32 = 0.9
-var mid   f32 = 0.6
-var dark  f32 = 0.3
-func Texts () {
-	// rect backgrounds 
+func menuItemBackgrounds () {
 	gl.Color4f(dark, dark, dark, 0.9)
 	var ySpan f32 = f32.mul(menu.texts[0].Hei, app.PixelHei)
 	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
@@ -70,10 +69,11 @@ func Texts () {
 		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, scX, ySpan)
 		y = f32.add(y, ySpan)
 	}
+}
 
-	// glText 
+
+func menuTexts () {
 	gl.LoadIdentity()
-	gl.Enable(gl.DEPTH_TEST)
 
 	// greater y (value) 
 	var gY f32 = i32.f32(app.HEIGHT - 1) 
@@ -81,26 +81,35 @@ func Texts () {
 	//drawAllOutlinedGlText(5.0)
 
 	for i := i32.sub(len(menu.texts), 1); i >= 0; i-- {
-		var x f32
-		x = (widF - menu.texts[i].Wid) / 2.0
-		y = f32.sub(gY, menu.texts[i].Hei)
+		var x f32 = (widF - menu.texts[i].Wid) / 2.0
+		var y f32 = f32.sub(gY, menu.texts[i].Hei)
 
 		if inputs.PointerInYPixelRange(y, gY) {
 			menu.texts[i].Hover = true			
-			gl.Color4f(1.0, 1.0, 1.0, 1.0)
+			gl.Color3f(1.0, 1.0, 1.0)
 		}else{
 			menu.texts[i].Hover = false
-			gl.Color4f(mid, mid, mid, 1.0)
+			gl.Color3f(mid, mid, mid)
 		}
 
 		gltext.Printf(menu.texts[i].Font, x, y, menu.texts[i].Text)
 		gY = y
 	}
-
-	gl.Disable(gl.DEPTH_TEST)
 }
 
 
+func scoreText() {	
+	var sX f32 = i32.f32(i32.sub(app.WIDTH, 59))
+	var sY f32 = i32.f32(96) //app.HEIGHT)
+	gl.LoadIdentity()
+	gl.Color3f(1.0, 1.0, 1.0)
+	gltext.Printf("Roboto26", sX, sY, shape.PlayerScoreTxt)
+}
+
+
+// UNUSED for now.  Whacky Stack may never need this, because 
+// we may only be printing on non-noisy backgrounds (or printing
+// fly-up text, which retains clarity by virtue of it's motion) 
 func drawAllOutlinedGlText(scale f32) {
 	var alpha f32 = 1.0
 	gl.Scalef(scale, scale, 0.0)

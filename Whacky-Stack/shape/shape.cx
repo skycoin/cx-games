@@ -2,6 +2,7 @@ package shape
 
 import "app"
 import "map"
+import "menu"
 
 
 
@@ -31,28 +32,37 @@ var Next i32
 	var Extents [7][4][4]i32
 //}
 
-var PlayerPos    Vec2I
-var PlayerFacing i32
-var PlayerShape  i32
-var PlayerScore  i32
+var PlayerPos      Vec2I
+var PlayerFacing   i32
+var PlayerShape    i32
+var PlayerScore    i32
+var PlayerScoreTxt str
 
 
 func Init () {		
 	str.print("shape.Init ()")
 	setupAllShapes()	
+	StartNewGameSession()
+}
+
+
+func StartNewGameSession () {
+	PlayerScore    = 0
+	PlayerScoreTxt = "0"
+	Next = i32.rand(0, SHAPE_MAX)
 	map.EmptyPlayfield()
+ 	spawnNewPlayerShape()
 	
-	// fill playfield with random blocks 
-	for y := 0; y < map.NUM_CELLS_Y - 8; y++ {
-		for x := 0; x < map.NUM_CELLS_X; x++ {
-			if i32.rand(0, 2) == 0 {
-				map.Cells[y][x] = i32.rand(0, SHAPE_MAX)
+	if menu.PrefillMapWithJunk {
+		// fill playfield with random blocks 
+		for y := 0; y < map.NUM_CELLS_Y - 8; y++ {
+			for x := 0; x < map.NUM_CELLS_X; x++ {
+				if i32.rand(0, 2) == 0 {
+					map.Cells[y][x] = i32.rand(0, SHAPE_MAX)
+				}
 			}
 		}
 	}
-			 
-	Next = i32.rand(0, SHAPE_MAX)
- 	spawnNew()
 }
 
 
@@ -227,34 +237,18 @@ func freezeShape () {
 	}
 	
 	if numRowsFilled > 0 {
-		// TODO work out combo multipliers 
-		
-		/*
-		if numRowsFilled >= 4 {
-		
-		} else
-		if numRowsFilled >= 4 {
-		
-		} else
-		if numRowsFilled >= 4 {
-		
-		} else
-		if numRowsFilled >= 4 {
-		
-		} else
-		*/
-		
-		var delta i32 = i32.pow(numRowsFilled, numRowsFilled)
-		
+		var delta i32 = i32.mul(numRowsFilled, numRowsFilled)		
+		//var delta i32 = i32.pow(numRowsFilled, numRowsFilled)		
 		PlayerScore = i32.add(PlayerScore, delta)
-		printf("+ %d    SCORE: %d \n", delta, PlayerScore)
+		PlayerScoreTxt = sprintf("%d", PlayerScore)
+		printf("+ %d    SCORE: %s \n", delta, PlayerScoreTxt)
 	}
 	
-	spawnNew()
+	spawnNewPlayerShape()
 }
 
 
-func spawnNew () {
+func spawnNewPlayerShape () {
 	PlayerFacing = 0
 	PlayerShape  = Next
 	Next         = i32.rand(0, SHAPE_MAX)

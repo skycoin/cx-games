@@ -3,11 +3,11 @@ package menu
 
 
 type TextInfo struct {
-	Text str
-	Font str
-	Size f32
-	Wid  f32 // caches string measure queries 
-	Hei  f32
+	Text  str
+	Font  str
+	Size  f32
+	Wid   f32 // caches string measure queries 
+	Hei   f32
 	Hover bool // pointer is touching/hovering-over measured rect 
 }
 var texts []TextInfo

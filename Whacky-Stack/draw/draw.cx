@@ -41,7 +41,16 @@ func All () {
 	PlayerPiece()
 	
 	if app.Mode <= app.MODE_MENUOPTIONS { // in a menu 
-		Texts()
+		menuItemBackgrounds()
+		
+		gl.Enable(gl.DEPTH_TEST)
+			menuTexts()
+			scoreText()
+		gl.Disable(gl.DEPTH_TEST)
+	}else{
+		gl.Enable(gl.DEPTH_TEST)
+			scoreText()
+		gl.Disable(gl.DEPTH_TEST)
 	}
 }
 
