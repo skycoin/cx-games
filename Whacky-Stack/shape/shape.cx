@@ -47,7 +47,7 @@ func Init () {
 
 
 func StartNewGameSession () {
-	PlayerScore    = 0
+	PlayerScore    =  0
 	PlayerScoreTxt = "0"
 	Next = i32.rand(0, SHAPE_MAX)
 	map.EmptyPlayfield()
