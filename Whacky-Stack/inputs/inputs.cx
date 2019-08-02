@@ -99,7 +99,7 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 
 		if button == 0 { // LMB 
 			if app.Mode <= app.MODE_MENUOPTIONS { // in a menu 
-				var s str = menu.GetClickedItemName()
+				var s str = menu.GetClickedItemName(app.Mode)
 				
 				if s == "Play" {
 					toggleMousePointer()

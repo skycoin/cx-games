@@ -5,12 +5,12 @@ package menu
 type MenuItem struct {
 	Text  str
 	Font  str
-	Size  f32
-	Wid   f32 // caches string measure queries 
-	Hei   f32
+	Size  f32 // used for gltext init of the font 
+	Wid   f32 // w/h caches the resulting string measure queries, 
+	Hei   f32 // 		to get the pixel bounds of the text. 
 	Hover bool // pointer is touching/hovering-over measured rect 
 }
-var Items []MenuItem
+var Items [][]MenuItem // 1st is menu id, 2nd is item id 
 
 var ShowingNextShape   bool = true
 var PrefillMapWithJunk bool = true
@@ -19,25 +19,41 @@ var PrefillMapWithJunk bool = true
 
 func Init () {
  	printf("menu.Init () \n")
+ 	
+ 	
+ 	var mis []MenuItem
+ 	
+ 	mis = []MenuItem{}
+ 	Items = append(
+	Items, mis)
+ 	
+ 	mis = []MenuItem{}
+ 	Items = append(
+	Items, mis)
 
- 	makeMenuItem(150.0, "Play")
- 	makeMenuItem(150.0, "Options")
- 	makeMenuItem(150.0, "Quit")
+ 	// app.MODE_MENUMAIN
+ 	makeMenuItem(0, 150.0, "Play")
+ 	makeMenuItem(0, 150.0, "Options")
+ 	makeMenuItem(0, 150.0, "Quit")
+	// app.MODE_MENUOPTIONS
+ 	makeMenuItem(1, 150.0, "Show next shape: On")
+ 	makeMenuItem(1, 150.0, "Start with debris: On")
+ 	makeMenuItem(1, 150.0, "Debris height: _")
 }
 
 
-func GetClickedItemName () (out str) {
-	for i := 0; i < len(Items); i++ {			
-		if Items[i].Hover {
-			out = Items[i].Text
+func GetClickedItemName (menuId i32) (out str) {
+	for i := 0; i < len(Items[menuId]); i++ {			
+		if        Items[menuId][i].Hover {
+			out = Items[menuId][i].Text
 		}
 	}
 }
 
 
-func makeMenuItem(size f32, text str) {
- 	var mi MenuItem 
- 	mi = MenuItem{ Size: size, Text: text }
- 	Items = append(
-	Items, mi)
+func makeMenuItem(menuId i32, size f32, text str) {
+ 	var mIt MenuItem 
+ 	mIt = MenuItem{ Size: size, Text: text }
+ 	Items[menuId] = append(
+	Items[menuId], mIt)
 }

@@ -1,4 +1,4 @@
-package map
+package map // the cells of the playfield 
 
 import "app"
 
@@ -33,13 +33,3 @@ func EmptyPlayfield () {
 	}
 	}
 }
-
-
-
-
-
-
-
-
-
-//***************** NEED TO FILE REPORT ON C.CX & THEN THIS FILE

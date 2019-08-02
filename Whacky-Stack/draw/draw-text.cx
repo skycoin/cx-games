@@ -28,18 +28,21 @@ func InitFontsAndMenuItems() {
 	// menu 
 	menu.Init()
 
-	var n i32 = len(menu.Items)
-	for i := 0; i < n; i++ {
-		font := str.concat("Roboto", sprintf("%d", f32.i32(menu.Items[i].Size)))
-		menu.Items[i].Font = font
+	var nm i32 = len(menu.Items)    // nm == num menus 
+	for m := 0; m < nm; m++ {       // m  == menu id 
+	var ni i32 = len(menu.Items[m]) // ni == num items 
+	for i := 0; i < ni; i++ {       // i  == item id 
+		font := str.concat("Roboto", sprintf("%d", f32.i32(menu.Items[m][i].Size)))
+		menu.Items[m][i].Font = font
 		
 		var w i32
 		var h i32
-		w, h = gltext.Metrics(font, menu.Items[i].Text)
-		menu.Items[i].Wid = i32.f32(w)
-		menu.Items[i].Hei = i32.f32(h)
+		w, h = gltext.Metrics(font, menu.Items[m][i].Text)
+		menu.Items[m][i].Wid = i32.f32(w)
+		menu.Items[m][i].Hei = i32.f32(h)
 		
-		printf("%s ---- %d,%d ---- '%s' \n", font, w, h, menu.Items[i].Text)
+		printf("%s ---- %d,%d ---- '%s' \n", font, w, h, menu.Items[m][i].Text)
+	}
 	}
 }
 
@@ -54,18 +57,19 @@ func loadFontSized (size i32, fn str) { // filename
 
 
 func menuItemBackgrounds () {
+	var m i32 = app.Mode
 	gl.Color4f(dark, dark, dark, 0.9)
-	var ySpan f32 = f32.mul(menu.Items[0].Hei, app.PixelHei)
+	var ySpan f32 = f32.mul(menu.Items[0][0].Hei, app.PixelHei)
 	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
-	for i := i32.sub(len(menu.Items), 1); i >= 0; i-- {			
-		if menu.Items[i].Hover {
+	for i := i32.sub(len(menu[m].Items), 1); i >= 0; i-- {			
+		if menu.Items[m][i].Hover {
 			gl.Color4f(mid, mid, mid, 0.85)
 		}else{
 			gl.Color4f(dark, dark, dark, 0.85)
 		}
 		
-		var scX f32 = f32.mul(menu.Items[i].Wid, app.PixelWid)
+		var scX f32 = f32.mul(menu.Items[m][i].Wid, app.PixelWid)
 		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, scX, ySpan)
 		y = f32.add(y, ySpan)
 	}
@@ -73,6 +77,7 @@ func menuItemBackgrounds () {
 
 
 func menuTexts () {
+	var m i32 = app.Mode
 	gl.LoadIdentity()
 
 	// greater y (value) 
@@ -80,19 +85,19 @@ func menuTexts () {
 
 	//drawAllOutlinedGlText(5.0)
 
-	for i := i32.sub(len(menu.Items), 1); i >= 0; i-- {
-		var x f32 = (widF - menu.Items[i].Wid) / 2.0
-		var y f32 = f32.sub(gY, menu.Items[i].Hei)
+	for i := i32.sub(len(menu.Items[m]), 1); i >= 0; i-- {
+		var x f32 =     (widF - menu.Items[m][i].Wid) / 2.0
+		var y f32 = f32.sub(gY, menu.Items[m][i].Hei)
 
 		if inputs.PointerInYPixelRange(y, gY) {
-			menu.Items[i].Hover = true			
+			menu.Items[m][i].Hover = true			
 			gl.Color3f(1.0, 1.0, 1.0)
 		}else{
-			menu.Items[i].Hover = false
+			menu.Items[m][i].Hover = false
 			gl.Color3f(mid, mid, mid)
 		}
 
-		gltext.Printf(menu.Items[i].Font, x, y, menu.Items[i].Text)
+		gltext.Printf(menu.Items[m][i].Font, x, y, menu.Items[m][i].Text)
 		gY = y
 	}
 }
