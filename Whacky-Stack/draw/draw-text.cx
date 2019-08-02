@@ -14,7 +14,7 @@ var dark  f32 = 0.3
 
 
 
-func InitFontsAndTextInfo() {
+func InitFontsAndMenuItems() {
 	gl.DepthFunc(gl.LESS)
 	widF = i32.f32(app.WIDTH)
 	heiF = i32.f32(app.HEIGHT)

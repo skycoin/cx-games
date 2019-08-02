@@ -20,7 +20,7 @@ func Init () {
 	str.print("draw.Init ()")
 	
 	dir := os.GetWorkingDirectory()
-	InitFontsAndTextInfo()
+	InitFontsAndMenuItems()
 
 	// pics 
 	PicBackground = gl.NewTexture(str.concat(dir, "assets/textures/background.jpg"))

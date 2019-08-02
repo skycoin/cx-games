@@ -99,13 +99,13 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 
 		if button == 0 { // LMB 
 			if app.Mode <= app.MODE_MENUOPTIONS { // in a menu 
-				var s str = menu.GetClicked()
+				var s str = menu.GetClickedItemName()
+				
 				if s == "Play" {
 					toggleMousePointer()
 					app.Mode = app.MODE_PLAYING
 					shape.StartNewGameSession
-				}
-
+				} else
 				if s == "Quit" {
 					glfw.SetShouldClose("window", true)
 				}

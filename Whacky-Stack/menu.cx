@@ -2,7 +2,7 @@ package menu
 
 
 
-type TextInfo struct {
+type MenuItem struct {
 	Text  str
 	Font  str
 	Size  f32
@@ -10,7 +10,7 @@ type TextInfo struct {
 	Hei   f32
 	Hover bool // pointer is touching/hovering-over measured rect 
 }
-var texts []TextInfo
+var texts []MenuItem
 
 var ShowingNextShape   bool = true
 var PrefillMapWithJunk bool = true
@@ -20,13 +20,13 @@ var PrefillMapWithJunk bool = true
 func Init () {
  	printf("menu.Init () \n")
 
- 	menuItem(150.0, "Play")
- 	menuItem(150.0, "Options")
- 	menuItem(150.0, "Quit")
+ 	makeMenuItem(150.0, "Play")
+ 	makeMenuItem(150.0, "Options")
+ 	makeMenuItem(150.0, "Quit")
 }
 
 
-func GetClicked () (out str) {
+func GetClickedItemName () (out str) {
 	for i := 0; i < len(texts); i++ {			
 		if texts[i].Hover {
 			out = texts[i].Text
@@ -35,10 +35,9 @@ func GetClicked () (out str) {
 }
 
 
-func menuItem(size f32, text str) {
- 	var ti TextInfo 
- 	
- 	ti = TextInfo{ Size: size, Text: text }
+func makeMenuItem(size f32, text str) {
+ 	var mi MenuItem 
+ 	mi = MenuItem{ Size: size, Text: text }
  	texts = append(
-	texts, ti)
+	texts, mi)
 }
