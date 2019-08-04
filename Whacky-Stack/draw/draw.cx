@@ -39,7 +39,11 @@ func All () {
 	scaledPic(PicBackground, 0.0, 0.0, 1.0, 1.0)
 	PlayField()
 	PlayerPiece()
-	
+
+	if menu.ShowNextShape {
+		NextShape()
+	}
+		
 	if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
 		menuRects()
 		

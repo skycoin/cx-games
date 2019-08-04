@@ -14,6 +14,7 @@ import "space"
 var MousePointer       Vec2
 var MousePointerX64    f64
 var MousePointerY64    f64
+var HoldingLeftButton  bool
 var mouseMoveThreshold f64 = 85.0D // for Whacky Stack's blocky movement 
 
 // keys 
@@ -95,11 +96,16 @@ func Back (key i32) (out bool) {
 // mouse buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 	if /* release */ action == 0 {
+		if button == 0 { // LMB 
+			HoldingLeftButton = false
+		}	
 	} else 
 	if /* press   */ action == 1 {
 		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
 		if button == 0 { // LMB 
+			HoldingLeftButton = true
+
 			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
 				respondToMenu()
 			}
@@ -127,11 +133,23 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	oldV.Y = MousePointer.Y
 	old64.X = MousePointerX64
 	old64.Y = MousePointerY64
-	
-
 	MousePointerX64 = x
 	MousePointerY64 = y
 
+	
+	// allow dragging a slider handle 
+	if HoldingLeftButton && app.Mode <= app.MODE_MENU_OPTIONS {
+		var s str
+		var i i32
+		s, i = menu.GetHoveredItem(app.Mode)
+
+		if s == menu.DebrisHeightText {
+			menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(MousePointerX64))
+			shape.StartNewGameSession()
+		}
+	}
+	
+	
 	var mX f32
 	mX = f32.div(f64.f32(x), i32.f32(app.ScreenSizeInPixels.X))
 	mX = f32.mul(mX, f32.mul(f64.f32(space.ScreenEdgeR), 2.0))
@@ -295,7 +313,7 @@ func eventRotateRight (key i32) (out bool) {
 func respondToMenu () {
 	var s str
 	var i i32
-	s, i = menu.GetClickedItem(app.Mode)
+	s, i = menu.GetHoveredItem(app.Mode)
 
 	if s == menu.Play {
 		toggleMousePointer()

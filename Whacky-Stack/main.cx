@@ -6,7 +6,6 @@ import "glfw"
 
 import "draw"
 import "inputs"
-import "menu"
 import "shape"
 import "time"
 
@@ -16,10 +15,11 @@ TODO:
 REQUIRED FEATURES:
 
 * game over state & overlay 
-* menu
-	* toggle showing of next piece
-	* toggle random pre-cluttered playfield
-	* slider? for how many rows of clutter
+* help screen or conditional text/icons showing (all 3?) controls 
+* remap control/alts 
+* sliders 
+	* game speed
+	* mouse sensitivity
 
 
 
@@ -67,10 +67,6 @@ func main () {
 		}
 		
 		draw.All()
-		
-		if menu.ShowNextShape {
-			draw.NextShape()
-		}
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers("window")

@@ -68,7 +68,7 @@ func makeMenuItem(menuId i32, size f32, text str) {
 }
 
 
-func GetClickedItem (menuId i32) (text str, id i32) {
+func GetHoveredItem (menuId i32) (text str, id i32) {
 	for i := 0; i < len(Items[menuId]); i++ {			
 		if         Items[menuId][i].Hover {
 			text = Items[menuId][i].Text
