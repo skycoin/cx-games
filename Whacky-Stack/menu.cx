@@ -12,6 +12,7 @@ type MenuItem struct {
 	Wid   f32  // w/h caches the resulting string measure queries, 
 	Hei   f32  // 		to get the pixel bounds of the text. 
 	Hover bool // pointer is touching/hovering-over measured rect 
+	Value i32  // only for sliders 
 	Max   i32  // (exclusionary) max value for sliders (0 == NOT a slider) 
 }
 var Items [][]MenuItem // 1st is menu id, 2nd is item id 
@@ -55,6 +56,7 @@ func Init () {
 // 	makeMenuItem(1, 50.0, "<- BACK")
 
 	Items[1][1].Max = 11 // for debris height, which makes it a slider 
+	Items[1][1].Value = DebrisHeight
 }
 
 
@@ -76,20 +78,21 @@ func GetClickedItem (menuId i32) (text str, id i32) {
 }
 
 
-func SetDebrisHeight(i i32, mouseX f32) {
+func SetSliderValue (i i32, mouseX f32) (out i32) {
 	var span f32 = 
 		        Items[app.Mode][i].Wid / 
 		i32.f32(Items[app.Mode][i].Max)
 		
 	mouseX = mouseX - Items[app.Mode][i].Left
-	DebrisHeight = f32.i32(mouseX / span)
+	Items[app.Mode][i].Value = f32.i32(mouseX / span)
 	
-	if DebrisHeight < 0 {
-		DebrisHeight = 0
+	if Items[app.Mode][i].Value < 0 {
+		Items[app.Mode][i].Value = 0
 	}
-	if DebrisHeight >= Items[app.Mode][i].Max {
-		DebrisHeight = Items[app.Mode][i].Max - 1
+	if Items[app.Mode][i].Value >= Items[app.Mode][i].Max {
+		Items[app.Mode][i].Value = Items[app.Mode][i].Max - 1
 	}
 	
-	i32.print(DebrisHeight)
+	out = Items[app.Mode][i].Value
+	printf("set slider value to: %d \n", out)
 }

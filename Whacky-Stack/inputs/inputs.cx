@@ -317,6 +317,7 @@ func respondToMenu () {
 		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText + "YES"
 	} else
 	if s == menu.DebrisHeightText {
-		menu.SetDebrisHeight(i, f64.f32(MousePointerX64))
+		menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(MousePointerX64))
+		shape.StartNewGameSession()
 	}
 }

@@ -41,7 +41,7 @@ func All () {
 	PlayerPiece()
 	
 	if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
-		menuItemBackgrounds()
+		menuRects()
 		
 		gl.Enable(gl.DEPTH_TEST)
 			menuTexts()
