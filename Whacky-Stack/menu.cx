@@ -100,5 +100,5 @@ func SetSliderValue (i i32, mouseX f32) (out i32) {
 	}
 	
 	out = Items[app.Mode][i].Value
-	printf("set slider value to: %d \n", out)
+	//printf("set slider value to: %d \n", out)
 }

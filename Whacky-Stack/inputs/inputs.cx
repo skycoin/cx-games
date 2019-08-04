@@ -131,18 +131,7 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	
 	// allow dragging a slider handle 
 	if HoldingLeftButton && app.Mode <= app.MODE_MENU_OPTIONS {
-		var s str
-		var i i32
-		s, i = menu.GetHoveredItem(app.Mode)
-
-		if s == menu.DebrisHeightText {
-			menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(MousePointerX64))
-			shape.StartNewGameSession()
-		} else
-		if s == menu.SpeedText {
-			time.DropSpeed    = menu.SetSliderValue(i, f64.f32(MousePointerX64))
-			time.CalcDropTime()
-		}
+		respondToMenu()
 	}
 	
 	
@@ -179,14 +168,14 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) {
 	if action >= 1 { // (press or repeat) 
 		//str.print("-------------------------------------PRESS (not a repeat)")
 
+		maybeEnableMousePointer(key)
+			
 		if key == 53 { // GLFW_KEY_5 
 			// close 
 			str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 			glfw.SetShouldClose("window", true)
 		} else
 		if app.Mode == app.MODE_PLAYING {
-			maybeEnableMousePointer(key)
-			
 			if eventLeft(key) {
 				shape.MoveByOffset(-1, 0)
 			} else
@@ -321,6 +310,14 @@ func respondToMenu () {
 	var i i32
 	s, i = menu.GetHoveredItem(app.Mode)
 
+	if s == menu.DebrisHeightText {
+		menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(MousePointerX64))
+		shape.StartNewGameSession()
+	} else
+	if s == menu.SpeedText {
+		time.DropSpeed =    menu.SetSliderValue(i, f64.f32(MousePointerX64))
+		time.CalcDropTime()
+	} else
 	if s == menu.Play {
 		setMousePointer(false)
 		shape.StartNewGameSession
@@ -339,13 +336,5 @@ func respondToMenu () {
 	if s == menu.ShowNextShapeText + "NO" {
 		    menu.ShowNextShape = true
 		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText + "YES"
-	} else
-	if s == menu.DebrisHeightText {
-		menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(MousePointerX64))
-		shape.StartNewGameSession()
-	} else
-	if s == menu.SpeedText {
-		time.DropSpeed =    menu.SetSliderValue(i, f64.f32(MousePointerX64))
-		time.CalcDropTime()
 	}
 }
