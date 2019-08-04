@@ -321,6 +321,8 @@ func respondToMenu () {
 	} else
 	if s == menu.Play {
 		setMousePointer(false)
+		shape.PlayerScore    =  0
+		shape.PlayerScoreTxt = "0"
 		shape.StartNewGameSession
 		app.Mode = app.MODE_PLAYING
 	} else

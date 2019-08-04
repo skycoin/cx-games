@@ -35,8 +35,8 @@ var Next i32
 var PlayerPos      Vec2I
 var PlayerFacing   i32
 var PlayerShape    i32
-var PlayerScore    i32
-var PlayerScoreTxt str
+var PlayerScore    i32 =  0
+var PlayerScoreTxt str = "0"
 
 
 func Init () {		
@@ -47,8 +47,6 @@ func Init () {
 
 
 func StartNewGameSession () {
-	PlayerScore    =  0
-	PlayerScoreTxt = "0"
 	Next = i32.rand(0, SHAPE_MAX)
 	map.EmptyPlayfield()
  	spawnNewPlayerShape()
