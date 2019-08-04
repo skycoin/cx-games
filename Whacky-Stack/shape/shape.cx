@@ -53,13 +53,11 @@ func StartNewGameSession () {
 	map.EmptyPlayfield()
  	spawnNewPlayerShape()
 	
-	if menu.DebrisHeight > 0 {
-		// fill playfield with random blocks 
-		for     y := 0; y < menu.DebrisHeight; y++ {
-			for x := 0; x < map.NUM_CELLS_X;   x++ {
-				if i32.rand(0, 2) == 0 {
-					map.Cells[y][x] = i32.rand(0, SHAPE_MAX)
-				}
+	// spawn any wanted random debris blocks 
+	for     y := 0; y < menu.DebrisHeight; y++ {
+		for x := 0; x < map.NUM_CELLS_X;   x++ {
+			if i32.rand(0, 2) == 0 {
+				map.Cells[y][x] = i32.rand(0, SHAPE_MAX)
 			}
 		}
 	}
@@ -119,8 +117,8 @@ func MovePieceBy (x i32, y i32) {
 	}
 	
 	// FIXME: 
-	// flesh out MovePieceBy(), to do each tween of jump? 
-	// if we add shortcut to instazoom down to the bottom 
+	// flesh out MovePieceBy(), to do each tween of jump?... 
+	// ...if we add shortcut to instazoom down to the bottom. 
 	// (triggering that could call this with an x,y 
 	// change/offset greater than 1) it needs to check
 	// for collision for each +/- 1 step 	
@@ -187,10 +185,12 @@ func enoughCellsOpenForNextPosition (xOff i32, yOff i32, facing i32) (out bool) 
 
 
 func freezeShape () {
-	for y := 0; y < 5; y++ {
-		for x := 0; x < 5; x++ {
-			if Cells[PlayerShape][PlayerFacing][y][x] {
-				map.Cells[PlayerPos.Y - 2 + y][PlayerPos.X - 2 + x] = PlayerShape
+	if app.Mode == app.MODE_PLAYING {
+		for y := 0; y < 5; y++ {
+			for x := 0; x < 5; x++ {
+				if Cells[PlayerShape][PlayerFacing][y][x] {
+					map.Cells[PlayerPos.Y - 2 + y][PlayerPos.X - 2 + x] = PlayerShape
+				}
 			}
 		}
 	}
