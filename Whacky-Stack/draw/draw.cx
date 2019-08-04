@@ -244,6 +244,7 @@ func NextShape () {
 }
 
 
+var alpha f32 = 0.8
 func menuRects () {
 	var m i32 = app.Mode
 	gl.Color4f(dark, dark, dark, 0.9)
@@ -254,9 +255,9 @@ func menuRects () {
 		var xSpan f32 = f32.mul(menu.Items[m][i].Wid, app.PixelWid)
 	
 		if menu.Items[m][i].Hover {
-			gl.Color4f(mid, mid, mid, 0.85)
+			gl.Color4f(mid, mid, mid, alpha)
 		}else{
-			gl.Color4f(dark, dark, dark, 0.85)
+			gl.Color4f(dark, dark, dark, alpha)
 		}
 		
 		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, xSpan, ySpan)

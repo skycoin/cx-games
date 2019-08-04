@@ -111,17 +111,12 @@ func PlayerRotate (change i32) {
 }
 
 
-func MovePieceBy (x i32, y i32) {
-	if app.Mode != app.MODE_PLAYING {
-		return
-	}
-	
-	// FIXME: 
-	// flesh out MovePieceBy(), to do each tween of jump?... 
-	// ...if we add shortcut to instazoom down to the bottom. 
-	// (triggering that could call this with an x,y 
-	// change/offset greater than 1) it needs to check
-	// for collision for each +/- 1 step 	
+func MoveByOffset (x i32, y i32) {
+	// FIXME?: 
+	// allow jumps? (to instazoom down to the bottom) 
+	// cuz then we'd call this with an x,y 
+	// change greater than 1?  thereby needing to check 
+	// in between posititions for collision (each +1 step) 
 	
 	if /* going left */ x < 0 &&
 		PlayerPos.X > 0 + Extents[PlayerShape][PlayerFacing][FACING_LEFT] && 

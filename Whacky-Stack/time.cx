@@ -5,16 +5,29 @@ import "shape"
 
 
 
-var dropRate   f64 = 1.5D
-var timeToDrop f64 = dropRate * 2.0D
+var DropSpeed      i32 = 2
+var DROP_SPEED_MAX i32 = 11 // exclusive 
+
+var minSpeed       f64 = 1.5D // minimum/slowest 
+var dropGrain      f64 = minSpeed / i32.f64(DROP_SPEED_MAX)
+var timeToDrop     f64 = minSpeed * 2.0D
+var curr           f64
 
 
 
 func Update () {
-	var t f64 = glfw.GetTime()
+	curr = glfw.GetTime()
 	
-	if t >= timeToDrop {
-		timeToDrop = t + dropRate
-		shape.MovePieceBy(0, -1)
+	if curr >= timeToDrop {
+		CalcDropTime()
+		shape.MoveByOffset(0, -1)
 	}	
+}
+
+
+func CalcDropTime () {
+	var inc f64 
+	inc = f64.mul(i32.f64(DropSpeed), dropGrain)
+	inc = f64.sub(minSpeed, inc)
+	timeToDrop = curr + inc
 }

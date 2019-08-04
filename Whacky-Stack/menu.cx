@@ -1,6 +1,7 @@
 package menu
 
 import "app"
+import "time"
 
 
 
@@ -27,8 +28,9 @@ var Quit                str  = "Quit"
 var OptionsSize         f32  = 58.0
 var ShowNextShape       bool = true
 var ShowNextShapeText   str  = "Show next shape: "
-var DebrisHeight        i32  = 9
+var SpeedText           str  = "Speed"
 var DebrisHeightText    str  = "Debris height"
+var DebrisHeight        i32  = 9
 
 
 
@@ -51,12 +53,16 @@ func Init () {
  	makeMenuItem(0, MainSize, Quit)
 	// app.MODE_MENU_OPTIONS
  	makeMenuItem(1, OptionsSize, ShowNextShapeText + "YES")
+ 	makeMenuItem(1, OptionsSize, SpeedText)
  	makeMenuItem(1, OptionsSize, DebrisHeightText)
  	makeMenuItem(1, OptionsSize, Play)
 // 	makeMenuItem(1, 50.0, "<- BACK")
 
-	Items[1][1].Max = 11 // for debris height, which makes it a slider 
-	Items[1][1].Value = DebrisHeight
+	// sliders (only items that use these fields) 
+	Items[1][1].Max = time.DROP_SPEED_MAX
+	Items[1][1].Value = time.DropSpeed
+	Items[1][2].Max = 11 // for debris height 
+	Items[1][2].Value = DebrisHeight
 }
 
 
