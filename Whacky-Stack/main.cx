@@ -15,6 +15,8 @@ TODO:
 REQUIRED FEATURES:
 
 * game over state & overlay 
+* pad menu item text with marginally bigger backgrounds (or axe curr texture) 
+		if keeping texture, fix the 3-slicing in O
 * help screen or conditional text/icons showing (all 3?) controls 
 * remap control/alts 
 * sliders 

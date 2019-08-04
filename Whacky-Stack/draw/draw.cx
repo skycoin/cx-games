@@ -242,3 +242,36 @@ func NextShape () {
 		fY = f32.add(fY, shape.NextCellSpanY)
 	}
 }
+
+
+func menuRects () {
+	var m i32 = app.Mode
+	gl.Color4f(dark, dark, dark, 0.9)
+	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, app.PixelHei)
+	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
+
+	for i := i32.sub(len(menu[m].Items), 1); i >= 0; i-- {			
+		var xSpan f32 = f32.mul(menu.Items[m][i].Wid, app.PixelWid)
+	
+		if menu.Items[m][i].Hover {
+			gl.Color4f(mid, mid, mid, 0.85)
+		}else{
+			gl.Color4f(dark, dark, dark, 0.85)
+		}
+		
+		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, xSpan, ySpan)
+		
+		if /* it's a slider */ menu.Items[m][i].Max != 0 {
+			gl.Color3f(1.0, 1.0, 1.0)
+			var val f32 = i32.f32(menu.Items[m][i].Value)
+			var max f32 = i32.f32(menu.Items[m][i].Max)
+			var wid f32 = xSpan / max
+			var x   f32 = (val / max * xSpan)
+			x = f32.sub(x, f32.div(xSpan, 2.0))
+			x = f32.add(x, f32.div(wid, 2.0))
+			sizedNotStretchedPicAt(PicShapeTile, x, y, wid, ySpan)
+		}
+		
+		y = f32.add(y, ySpan)
+	}
+}
