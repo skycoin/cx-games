@@ -16,6 +16,14 @@ type MenuItem struct {
 }
 var Items [][]MenuItem // 1st is menu id, 2nd is item id 
 
+// main  
+var MainSize            f32  = 150.0
+var Play                str  = "Play"
+var Options             str  = "Options"
+var Quit                str  = "Quit"
+
+// options 
+var OptionsSize         f32  = 58.0
 var ShowNextShape       bool = true
 var ShowNextShapeText   str  = "Show next shape: "
 var DebrisHeight        i32  = 9
@@ -37,13 +45,13 @@ func Init () {
 	Items, mis)
 
  	// app.MODE_MENU_MAIN
- 	makeMenuItem(0, 150.0, "Play")
- 	makeMenuItem(0, 150.0, "Options")
- 	makeMenuItem(0, 150.0, "Quit")
+ 	makeMenuItem(0, MainSize, Play)
+ 	makeMenuItem(0, MainSize, Options)
+ 	makeMenuItem(0, MainSize, Quit)
 	// app.MODE_MENU_OPTIONS
- 	makeMenuItem(1, 50.0, ShowNextShapeText   + "YES")
- 	makeMenuItem(1, 50.0, DebrisHeightText)
- 	makeMenuItem(1, 50.0, "Play")
+ 	makeMenuItem(1, OptionsSize, ShowNextShapeText + "YES")
+ 	makeMenuItem(1, OptionsSize, DebrisHeightText)
+ 	makeMenuItem(1, OptionsSize, Play)
 // 	makeMenuItem(1, 50.0, "<- BACK")
 
 	Items[1][1].Max = 11 // for debris height, which makes it a slider 

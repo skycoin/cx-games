@@ -5,7 +5,7 @@ import "menu"
 
 
 
-// color intensities 
+// color channel intensities 
 var light f32 = 0.75
 var mid   f32 = 0.5
 var dark  f32 = 0.3
@@ -16,9 +16,9 @@ func InitFontsAndMenuItems() {
 	gl.DepthFunc(gl.LESS)
 
 	file := str.concat(dir, "assets/fonts/roboto-light.ttf")
-	loadFontSized(150, file)
-	loadFontSized(50,  file)
-	loadFontSized(28,  file)
+	loadFontSized(file, f32.i32(menu.MainSize))
+	loadFontSized(file, f32.i32(menu.OptionsSize))
+	loadFontSized(file, 28)
 	
 	menu.Init()
 
@@ -28,10 +28,10 @@ func InitFontsAndMenuItems() {
 	for i := 0; i < ni; i++ {       // i  == item id 
 		font := str.concat("Roboto", sprintf("%d", f32.i32(menu.Items[m][i].Size)))
 		menu.Items[m][i].Font = font		
-		
 		var w i32
 		var h i32
-		w, h = gltext.Metrics(font, menu.Items[m][i].Text)
+		w, h = gltext.Metrics(font, 
+		menu.Items[m][i].Text)
 		menu.Items[m][i].Wid = i32.f32(w)
 		menu.Items[m][i].Hei = i32.f32(h)
 		menu.Items[m][i].Left = (i32.f32(app.WIDTH) - menu.Items[m][i].Wid) / 2.0
@@ -42,7 +42,7 @@ func InitFontsAndMenuItems() {
 }
 
 
-func loadFontSized (size i32, fn str) { // filename 
+func loadFontSized (fn str, size i32) { // filename 
 	s := str.concat("Roboto", sprintf("%d", size))
 	
 	os.Open(fn)

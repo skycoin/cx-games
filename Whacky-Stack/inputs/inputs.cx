@@ -297,24 +297,24 @@ func respondToMenu () {
 	var i i32
 	s, i = menu.GetClickedItem(app.Mode)
 
-	if s == "Play" {
+	if s == menu.Play {
 		toggleMousePointer()
 		shape.StartNewGameSession
 		app.Mode = app.MODE_PLAYING
 	} else
-	if s == "Options" {
+	if s == menu.Options {
 		app.Mode = app.MODE_MENU_OPTIONS
 	} else
-	if s == "Quit" {
+	if s == menu.Quit {
 		glfw.SetShouldClose("window", true)
 	} else
-	if s == menu.ShowNextShapeText   + "YES" {
+	if s == menu.ShowNextShapeText + "YES" {
 		    menu.ShowNextShape = false
-		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText   + "NO"
+		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText + "NO"
 	} else
-	if s == menu.ShowNextShapeText   + "NO" {
+	if s == menu.ShowNextShapeText + "NO" {
 		    menu.ShowNextShape = true
-		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText   + "YES"
+		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText + "YES"
 	} else
 	if s == menu.DebrisHeightText {
 		menu.SetDebrisHeight(i, f64.f32(MousePointerX64))
