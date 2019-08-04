@@ -10,7 +10,8 @@ var I32_MAX            i32 = 2147483647
 var TAU                f32
 
 var Colors             []Color3
-// FIXME: these need to be updated from window events 
+// FIXME: these should be updated from window change events 
+// (but no need for this particular game)
 var PixelWid           f32
 var PixelHei           f32
 var ScreenSizeInPixels Vec2I
@@ -18,13 +19,13 @@ var ScreenSizeInPixels Vec2I
 // modes 
 // 		FIXME to consts, when they exist in CX 
 
-var MODE_MENUMAIN    i32
-var MODE_MENUOPTIONS i32 = 1
-var MODE_PLAYING     i32 = 2
-var MODE_GAME_OVER   i32 = 3
-var MODE_MAX         i32 = 4
+var MODE_MENU_MAIN    i32
+var MODE_MENU_OPTIONS i32 = 1
+var MODE_PLAYING      i32 = 2
+var MODE_GAME_OVER    i32 = 3
+var MODE_MAX          i32 = 4
 
-var Mode i32 = MODE_MENUMAIN
+var Mode i32 = MODE_MENU_MAIN
 
 
 

@@ -98,7 +98,7 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
 		if button == 0 { // LMB 
-			if app.Mode <= app.MODE_MENUOPTIONS { // in a menu 
+			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
 				var s str
 				var i i32
 				s, i = menu.GetClickedItem(app.Mode)
@@ -109,7 +109,7 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 					shape.StartNewGameSession
 				} else
 				if s == "Options" {
-					app.Mode = app.MODE_MENUOPTIONS
+					app.Mode = app.MODE_MENU_OPTIONS
 				} else
 				if s == "Quit" {
 					glfw.SetShouldClose("window", true)
@@ -257,7 +257,7 @@ func maybeToggleMousePointer (key i32) {
 		key == 258 || // GLFW_KEY_TAB 
 		key == 259 { // GLFW_KEY_BACKSPACE 
 
-		app.Mode = app.MODE_MENUMAIN
+		app.Mode = app.MODE_MENU_MAIN
 		wantMousePointer = false
 		toggleMousePointer()
 	}

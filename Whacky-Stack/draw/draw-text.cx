@@ -22,7 +22,7 @@ func InitFontsAndMenuItems() {
 	file := str.concat(dir, "assets/fonts/roboto-light.ttf")
 	loadFontSized(150, file)
 	loadFontSized(50,  file)
-	loadFontSized(26,  file)
+	loadFontSized(28,  file)
 	
 	menu.Init()
 
@@ -104,10 +104,10 @@ func menuTexts () {
 
 func scoreText() {	
 	var sX f32 = i32.f32(i32.sub(app.WIDTH, 59))
-	var sY f32 = i32.f32(96) //app.HEIGHT)
+	var sY f32 = i32.f32(93) //app.HEIGHT)
 	gl.LoadIdentity()
 	gl.Color3f(1.0, 1.0, 1.0)
-	gltext.Printf("Roboto26", sX, sY, shape.PlayerScoreTxt)
+	gltext.Printf("Roboto28", sX, sY, shape.PlayerScoreTxt)
 }
 
 

@@ -40,7 +40,7 @@ func All () {
 	PlayField()
 	PlayerPiece()
 	
-	if app.Mode <= app.MODE_MENUOPTIONS { // in a menu 
+	if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
 		menuItemBackgrounds()
 		
 		gl.Enable(gl.DEPTH_TEST)
