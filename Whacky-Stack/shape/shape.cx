@@ -244,6 +244,12 @@ func freezeShape () {
 
 
 func spawnNewPlayerShape () {
+	if app.Mode == app.MODE_GAME_OVER {
+		return
+	}
+	
+	
+
 	PlayerFacing = 0
 	PlayerShape  = Next
 	Next         = i32.rand(0, SHAPE_MAX)
@@ -251,4 +257,8 @@ func spawnNewPlayerShape () {
 	
 	var i i32 = Extents[PlayerShape][PlayerFacing][FACING_UP] + 1
 	PlayerPos = Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
+	
+	if bool.not(enoughCellsOpenForNextPosition(0, 0, PlayerFacing)) {
+		app.Mode = app.MODE_GAME_OVER
+	}
 }

@@ -207,6 +207,7 @@ func maybeEnableMousePointer (key i32) {
 
 		app.Mode = app.MODE_MENU_MAIN
 		setMousePointer(true)
+		shape.StartNewGameSession()
 	}
 }
 

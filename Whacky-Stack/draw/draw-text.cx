@@ -19,6 +19,7 @@ func InitFontsAndMenuItems() {
 	loadFontSized(file, f32.i32(menu.MainSize))
 	loadFontSized(file, f32.i32(menu.OptionsSize))
 	loadFontSized(file, 28)
+	loadFontSized(file, 100)
 	
 	menu.Init()
 
@@ -48,6 +49,26 @@ func loadFontSized (fn str, size i32) { // filename
 	os.Open(fn)
 	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
 	os.Close(fn)
+}
+
+
+func allText () {
+	if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
+		menuRects()
+		
+		gl.Enable(gl.DEPTH_TEST)
+			menuTexts()
+			scoreText()
+		gl.Disable(gl.DEPTH_TEST)
+	}else{
+		gl.Enable(gl.DEPTH_TEST)
+			scoreText()
+			
+			if app.Mode == app.MODE_GAME_OVER {
+				drawAllOutlinedGlText(18.0, i32.f32(app.WIDTH / 2), 1.0)
+			}
+		gl.Disable(gl.DEPTH_TEST)
+	}
 }
 
 
@@ -94,20 +115,22 @@ func scoreText() {
 // UNUSED for now.  Whacky Stack may never need this, because 
 // we may only be printing on non-noisy backgrounds (or printing
 // fly-up text, which retains clarity by virtue of it's motion) 
-func drawAllOutlinedGlText(scale f32) {
+func drawAllOutlinedGlText(x f32, y f32, scale f32) {
 	var alpha f32 = 1.0
 	gl.Scalef(scale, scale, 0.0)
 
-	printTextWithColor(1.0, 1.0, 0.0, 0.0, 0.0, alpha)
-	printTextWithColor(-1.0, 1.0, 0.0, 0.0, 0.0, alpha)
-	printTextWithColor(1.0, -1.0, 0.0, 0.0, 0.0, alpha)
-	printTextWithColor(-1.0, -1.0, 0.0, 0.0, 0.0, alpha)
-	printTextWithColor(0.0, 0.0, 1.0, 0.55, 0.0, alpha)
+	// background shadow 
+	printTextWithColor(x+1.0, y+1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(x-1.0, y+1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(x+1.0, y-1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(x-1.0, y-1.0, 0.0, 0.0, 0.0, alpha)
+	// main filling on top 
+	printTextWithColor(x,     y,     1.0, 0.5, 0.0, alpha)
 }
 
 
 // x & y are offsets 
 func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
 	gl.Color4f(r, g, b, a)
-	gltext.Printf("Roboto50", x, y, "testeeek")
+	gltext.Printf("Roboto100", x, y, "GAME OVER")
 }
