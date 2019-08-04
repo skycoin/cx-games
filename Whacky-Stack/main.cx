@@ -12,22 +12,29 @@ import "time"
 /* 
 
 TODO:
+
 REQUIRED FEATURES:
 
 * game over state & overlay 
+
+
+
+PRIORITY FEATURES:
+
 * pad menu item text with marginally bigger backgrounds (or axe curr texture) 
 		if keeping texture, fix the 3-slicing in O
 * help screen or conditional text/icons showing (all 3?) controls 
 * remap control/alts 
 * sliders 
-	* game speed
 	* mouse sensitivity
 
 
 
-WISHLIST:
+JUICE WISHLIST: 
    (not necessary, but would be nice) 
 
+* when shape spawns & immediately collides, visually explode it
+		(maybe slowly, so it's clear how it collided) 
 * when pressing unfulfilled rotate key/button, indicate center block 
 * guide lines down to landing 
 * instadrop action 
