@@ -53,10 +53,10 @@ func StartNewGameSession () {
 	map.EmptyPlayfield()
  	spawnNewPlayerShape()
 	
-	if menu.StartWithDebris {
+	if menu.DebrisHeight > 0 {
 		// fill playfield with random blocks 
-		for y := 0; y < map.NUM_CELLS_Y - 8; y++ {
-			for x := 0; x < map.NUM_CELLS_X; x++ {
+		for     y := 0; y < menu.DebrisHeight; y++ {
+			for x := 0; x < map.NUM_CELLS_X;   x++ {
 				if i32.rand(0, 2) == 0 {
 					map.Cells[y][x] = i32.rand(0, SHAPE_MAX)
 				}

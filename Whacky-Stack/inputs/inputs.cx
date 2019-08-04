@@ -83,6 +83,7 @@ func GoUp () (out bool) {
 	}
 }
 
+
 func Back (key i32) (out bool) {
 	if i32.eq(glfw.GetKey("window", GLFW_KEY_ESCAPE), 1) ||
 		i32.eq(glfw.GetKey("window", GLFW_KEY_HOME), 1) {
@@ -94,42 +95,13 @@ func Back (key i32) (out bool) {
 // mouse buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 	if /* release */ action == 0 {
-	} else if /* press */ action == 1 {
+	} else 
+	if /* press   */ action == 1 {
 		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
 		if button == 0 { // LMB 
 			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
-				var s str
-				var i i32
-				s, i = menu.GetClickedItem(app.Mode)
-				
-				if s == "Play" {
-					toggleMousePointer()
-					app.Mode = app.MODE_PLAYING
-					shape.StartNewGameSession
-				} else
-				if s == "Options" {
-					app.Mode = app.MODE_MENU_OPTIONS
-				} else
-				if s == "Quit" {
-					glfw.SetShouldClose("window", true)
-				} else
-				if s == menu.ShowNextShapeText   + "YES" {
-					    menu.ShowNextShape = false
-					menu.Items[app.Mode][i].Text = menu.ShowNextShapeText   + "NO"
-				} else
-				if s == menu.ShowNextShapeText   + "NO" {
-					    menu.ShowNextShape = true
-					menu.Items[app.Mode][i].Text = menu.ShowNextShapeText   + "YES"
-				} else
-				if s == menu.StartWithDebrisText + "YES" {
-					    menu.StartWithDebris = false
-					menu.Items[app.Mode][i].Text = menu.StartWithDebrisText + "NO"
-				} else
-				if s == menu.StartWithDebrisText + "NO" {
-					    menu.StartWithDebris = true
-					menu.Items[app.Mode][i].Text = menu.StartWithDebrisText + "YES"
-				}
+				respondToMenu()
 			}
 			
 			shape.PlayerRotate(-1)
@@ -317,4 +289,34 @@ func eventRotateRight (key i32) (out bool) {
     i32.eq(key, GLFW_KEY_RIGHT_CONTROL) {
     out = true
   }
+}
+
+
+func respondToMenu () {
+	var s str
+	var i i32
+	s, i = menu.GetClickedItem(app.Mode)
+
+	if s == "Play" {
+		toggleMousePointer()
+		shape.StartNewGameSession
+		app.Mode = app.MODE_PLAYING
+	} else
+	if s == "Options" {
+		app.Mode = app.MODE_MENU_OPTIONS
+	} else
+	if s == "Quit" {
+		glfw.SetShouldClose("window", true)
+	} else
+	if s == menu.ShowNextShapeText   + "YES" {
+		    menu.ShowNextShape = false
+		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText   + "NO"
+	} else
+	if s == menu.ShowNextShapeText   + "NO" {
+		    menu.ShowNextShape = true
+		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText   + "YES"
+	} else
+	if s == menu.DebrisHeightText {
+		menu.SetDebrisHeight(i, f64.f32(MousePointerX64))
+	}
 }

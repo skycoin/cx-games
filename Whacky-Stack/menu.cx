@@ -1,27 +1,30 @@
 package menu
 
+import "app"
+
 
 
 type MenuItem struct {
 	Text  str
 	Font  str
-	Size  f32 // used for gltext init of the font 
-	Wid   f32 // w/h caches the resulting string measure queries, 
-	Hei   f32 // 		to get the pixel bounds of the text. 
+	Size  f32  // used for gltext init of the font 
+	Left  f32  // in pixels 
+	Wid   f32  // w/h caches the resulting string measure queries, 
+	Hei   f32  // 		to get the pixel bounds of the text. 
 	Hover bool // pointer is touching/hovering-over measured rect 
+	Max   i32  // (exclusionary) max value for sliders (0 == NOT a slider) 
 }
 var Items [][]MenuItem // 1st is menu id, 2nd is item id 
 
 var ShowNextShape       bool = true
 var ShowNextShapeText   str  = "Show next shape: "
-var StartWithDebris     bool = true
-var StartWithDebrisText str  = "Start with debris: "
+var DebrisHeight        i32  = 9
+var DebrisHeightText    str  = "Debris height"
 
 
 
 func Init () {
  	printf("menu.Init () \n")
- 	
  	
  	var mis []MenuItem
  	
@@ -39,10 +42,19 @@ func Init () {
  	makeMenuItem(0, 150.0, "Quit")
 	// app.MODE_MENU_OPTIONS
  	makeMenuItem(1, 50.0, ShowNextShapeText   + "YES")
- 	makeMenuItem(1, 50.0, StartWithDebrisText + "YES")
- 	makeMenuItem(1, 50.0, "Debris height: _")
+ 	makeMenuItem(1, 50.0, DebrisHeightText)
  	makeMenuItem(1, 50.0, "Play")
 // 	makeMenuItem(1, 50.0, "<- BACK")
+
+	Items[1][1].Max = 11 // for debris height, which makes it a slider 
+}
+
+
+func makeMenuItem(menuId i32, size f32, text str) {
+ 	var mIt MenuItem 
+ 	mIt = MenuItem{ Size: size, Text: text }
+ 	Items[menuId] = append(
+	Items[menuId], mIt)
 }
 
 
@@ -56,9 +68,20 @@ func GetClickedItem (menuId i32) (text str, id i32) {
 }
 
 
-func makeMenuItem(menuId i32, size f32, text str) {
- 	var mIt MenuItem 
- 	mIt = MenuItem{ Size: size, Text: text }
- 	Items[menuId] = append(
-	Items[menuId], mIt)
+func SetDebrisHeight(i i32, mouseX f32) {
+	var span f32 = 
+		        Items[app.Mode][i].Wid / 
+		i32.f32(Items[app.Mode][i].Max)
+		
+	mouseX = mouseX - Items[app.Mode][i].Left
+	DebrisHeight = f32.i32(mouseX / span)
+	
+	if DebrisHeight < 0 {
+		DebrisHeight = 0
+	}
+	if DebrisHeight >= Items[app.Mode][i].Max {
+		DebrisHeight = Items[app.Mode][i].Max - 1
+	}
+	
+	i32.print(DebrisHeight)
 }
