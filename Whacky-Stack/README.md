@@ -7,6 +7,8 @@ This assumes you copied the CX.EXE file there, or that you have it in your path 
 
 The version of CX that is most certain to work can be gotten at the bottom of this webpage: https://github.com/skycoin/cx/releases/tag/v0.7.0
 
+(cx-0.7.0-bin-[___your_OS_goes_here___]-x64.zip)
+
 
 # Note
 After deleting the 2 abandoned, non-functional Tetris-clone folders, I went back in the repo history to see what kind of textures the game had.  After looking at the textures, I started thinking about the logic involved in this kind of game, and thought it might be fairly easy to write (from scratch) without taking too much time.
