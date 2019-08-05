@@ -3,7 +3,7 @@
 
 Make sure you have this entire folder on your hard drive.
 Then run it with the command "cx .", from the main folder of the game.
-This assumes you copied the CX.EXE file there, or that you have it in your path (environment variable).  Otherwise you need to supply the path on the command line ("[path]\cx .").
+This assumes you copied the CX.EXE file there, or that you have it in your path (environment variable).  Otherwise you need to supply the path on the command line ("[___your_PATH_goes_here___]\cx .").
 
 The version of CX that is most certain to work can be gotten at the bottom of this webpage: https://github.com/skycoin/cx/releases/tag/v0.7.0
 
