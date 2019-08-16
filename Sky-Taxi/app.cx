@@ -1,0 +1,36 @@
+package app
+
+
+
+var NAME   str = "S K Y   T A X I"
+var Colors []Color3
+
+type Color3 struct {
+	R f32
+	G f32
+	B f32
+}
+
+
+
+func Init () {
+	str.print("app.Init ()")
+	
+	// colors 
+	var f f32 = 0.2
+	addColor(0.9, 0.0, 0.0) // red 
+	addColor(0.3, 0.3, 0.9) // blue 
+	addColor(0.3, 0.9, 0.3) // green 
+	addColor(0.7, 0.0, 0.8) // purple  
+	addColor(1.0, 0.9, 0.0) // yellow 
+	addColor(1.0, 0.5, 0.0) // orange 
+	addColor(0.0, 1.0, 1.0) // cyan  
+	addColor(f, f, f)       // dark gray 
+}
+
+
+func addColor (r f32, g f32, b f32) {
+	var col Color3
+	col = Color3{R: r, G: g, B: b}
+	Colors = append(Colors, col)
+}
