@@ -31,33 +31,44 @@ func Ball (ball main.Ball) () {
 
 
 
-func Rect () () {
-	var x f32 = -1.0
-	var y f32 = -1.0
+var numRoomsAcross i32 = 4
+var roomSpan f32 = 2.0 / i32.f32(numRoomsAcross)
+func Rects () {
+	var x f32
+	var y f32
 
 	gl.Begin(gl.QUADS)
+		var i i32
+		for iY := 0; iY < numRoomsAcross; iY++ {
+		for iX := 0; iX < numRoomsAcross; iX++ {
+			if iX == 0 {
+				x = -1.0
+			}
+			if iY == 0 {
+				y = -1.0
+			}
 
-	for i := 0; i < 10; i++ {
-		// great value edge 
-		var gX f32 = x + 0.1
-		var gY f32 = y + 0.1
-		
-		// color 
-		var l i32 = len(app.Colors)
-		var cc i32 = i % l // chan intensity 
-		gl.Color3f(
-			app.Colors[cc].R,
-			app.Colors[cc].G,
-			app.Colors[cc].B)
-		
-		gl.Vertex2f(x,  gY) // upper left (then clockwise) 
-		gl.Vertex2f(gX, gY)
-		gl.Vertex2f(gX, y)
-		gl.Vertex2f(x,  y)
-		
-		x = x + 0.1
-		y = y + 0.1
-	}
-
+			// great value edge 
+			var gX f32 = x + roomSpan
+			var gY f32 = y + roomSpan
+			
+			// color 
+			var l i32 = len(app.Colors)
+			var c i32 = i % l
+			gl.Color3f(
+				app.Colors[c].R,
+				app.Colors[c].G,
+				app.Colors[c].B)
+			
+			gl.Vertex2f(x,  gY) // upper left...
+			gl.Vertex2f(gX, gY) // ...proceed clockwise...
+			gl.Vertex2f(gX, y)
+			gl.Vertex2f(x,  y)
+			
+			i++
+			x = x + roomSpan
+		}
+			y = y + roomSpan
+		}
 	gl.End()
 }

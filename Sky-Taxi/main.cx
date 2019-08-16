@@ -72,6 +72,7 @@ func main () {
 		gl.Viewport(0, 0, bufferWidth, bufferHeight)
 		gl.MatrixMode(gl.MODELVIEW)
 		draw.Ball(ball)
+		draw.Rects()
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers("window")
