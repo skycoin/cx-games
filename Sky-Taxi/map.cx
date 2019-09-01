@@ -1,0 +1,160 @@
+package map
+
+import "app"
+
+// NOTE: I THINK OF THE Y DIMENSION INCREASING UPWARDS 
+//       SO KEEP THIS IN MIND WITH DIRECTIONS AND THE "Rooms" GRID INDEXING 
+
+
+var DIR_LEFT  i32 = 0
+var DIR_RIGHT i32 = 1
+var DIR_DOWN  i32 = 2
+var DIR_UP    i32 = 3
+
+var NumRoomsAcross i32 = 4
+var RoomSpan f32 = 2.0 / i32.f32(NumRoomsAcross)
+var Rooms [4][4]Room // FIXME: use constants when we can 
+var locs  []Vec2     // used locations of the Rooms grid 
+
+type Room struct {
+	Blank  bool
+	
+	// insets (from room bounds) 
+	/*Top    f32
+	Right  f32
+	Bottom f32
+	Left   f32*/
+	
+	// exits/connections 
+	Possibles []i32
+}
+
+
+
+func Init () {
+	setupRooms()
+	carveOutConnectedRooms()
+}
+
+
+func setupRooms () {
+	for iY := 0; iY < NumRoomsAcross; iY++ {
+	for iX := 0; iX < NumRoomsAcross; iX++ {
+		var r Room = Rooms[iY][iX]
+		r.Blank = true
+		
+		if iX > 0 {
+			r.Possibles = append(
+			r.Possibles, DIR_LEFT)
+		}
+		
+		if iX < i32.sub(NumRoomsAcross, 1) {
+			r.Possibles = append(
+			r.Possibles, DIR_RIGHT)
+		}
+		
+		if iY > 0 {
+			r.Possibles = append(
+			r.Possibles, DIR_DOWN)
+		}
+		
+		if iY < i32.sub(NumRoomsAcross, 1) {
+			r.Possibles = append(
+			r.Possibles, DIR_UP)
+		}
+	}
+	}
+}
+
+
+func carveOutConnectedRooms () {
+	var numBlanks i32 = i32.rand(1, 5)
+	var n i32 = NumRoomsAcross * 2 - numBlanks
+	
+	for i := 0; i < n; i++ {
+		var newLoc Vec2
+		
+		if /* 1st loc */ i == 0 {
+			// make anywhere 
+			newLoc.X = i32.rand(0, NumRoomsAcross)
+			newLoc.Y = i32.rand(0, NumRoomsAcross)
+			locs = append(locs, newLoc)
+		}else{
+			var loc i32 = i32.rand(0, len(locs))
+			var x i32 = locs[loc].X
+			var y i32 = locs[loc].Y
+			
+			/*
+			for len(Rooms[y][x].Possibles) < 1 {
+				loc = i32.rand(0, len(locs))
+			}
+			
+			var ri i32 // random index 
+				= i32.rand(0, len(Rooms[y][x].Possibles))
+			var exit i32 = Rooms[y][x].Possibles[ri]
+			
+			if exit == DIR_LEFT {
+				removeExitFor(x-1, y, DIR_RIGHT)
+			}
+			
+			if exit == DIR_RIGHT {
+				removeExitFor(x+1, y, DIR_LEFT)
+			}
+			
+			if exit == DIR_DOWN {
+				removeExitFor(x, y-1, DIR_UP)
+			}
+			
+			if exit == DIR_UP {
+				removeExitFor(x, y+1, DIR_DOWN)
+			}
+			*/
+		}
+	}
+
+/*	var x f32
+	var y f32
+
+	var i i32
+	for iY := 0; iY < NumRoomsAcross; iY++ {
+	for iX := 0; iX < NumRoomsAcross; iX++ {
+		if iX == 0 {
+			x = -1.0
+		}
+		if iY == 0 {
+			y = -1.0
+		}
+
+		// greater value edge 
+		var gX f32 = x + RoomSpan
+		var gY f32 = y + RoomSpan
+		
+		// color 
+		var l i32 = len(app.Colors)
+		var c i32 = i % l
+		gl.Color3f(
+			app.Colors[c].R,
+			app.Colors[c].G,
+			app.Colors[c].B)
+		
+		gl.Vertex2f(x,  gY) // upper left...
+		gl.Vertex2f(gX, gY) // ...proceed clockwise...
+		gl.Vertex2f(gX, y)
+		gl.Vertex2f(x,  y)
+		
+		i++
+		x = x + RoomSpan
+	}
+		y = y + RoomSpan
+	}
+	*/
+}
+
+
+func removeExitFor (x i32, y i32, dir i32) {
+	for i := i32.sub(len(Rooms[y][x].Possibles), -1); i >= 0; i-- {
+		if Rooms[y][x].Possibles[i] == dir {
+			Rooms[y][x].Possibles = remove(Rooms[y][x].Possibles, i)
+		}
+	}
+}

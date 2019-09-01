@@ -83,7 +83,7 @@ func main () {
 
 
 func init () () {
-	printf("\n %s \n\n Move with the W,A,S,D keys.", app.NAME)
+	printf("\n %s \n\n Move with the W,A,S,D keys.\n\n", app.NAME)
 
 	FORCE = 0.08
 

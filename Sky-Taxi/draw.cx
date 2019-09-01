@@ -4,6 +4,7 @@ import "gl"
 
 import "app"
 import "main"
+import "map"
 
 
 
@@ -31,16 +32,14 @@ func Ball (ball main.Ball) () {
 
 
 
-var numRoomsAcross i32 = 4
-var roomSpan f32 = 2.0 / i32.f32(numRoomsAcross)
 func Rects () {
 	var x f32
 	var y f32
 
 	gl.Begin(gl.QUADS)
 		var i i32
-		for iY := 0; iY < numRoomsAcross; iY++ {
-		for iX := 0; iX < numRoomsAcross; iX++ {
+		for iY := 0; iY < map.NumRoomsAcross; iY++ {
+		for iX := 0; iX < map.NumRoomsAcross; iX++ {
 			if iX == 0 {
 				x = -1.0
 			}
@@ -48,9 +47,9 @@ func Rects () {
 				y = -1.0
 			}
 
-			// great value edge 
-			var gX f32 = x + roomSpan
-			var gY f32 = y + roomSpan
+			// greater value edge 
+			var gX f32 = x + map.RoomSpan
+			var gY f32 = y + map.RoomSpan
 			
 			// color 
 			var l i32 = len(app.Colors)
@@ -66,9 +65,9 @@ func Rects () {
 			gl.Vertex2f(x,  y)
 			
 			i++
-			x = x + roomSpan
+			x = x + map.RoomSpan
 		}
-			y = y + roomSpan
+			y = y + map.RoomSpan
 		}
 	gl.End()
 }
