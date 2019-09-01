@@ -6,6 +6,7 @@ import "glfw"
 import "app"
 import "draw"
 import "inputs"
+import "map"
 
 
 
@@ -105,6 +106,7 @@ func init () () {
 	
 	app.Init()
 	inputs.Init()
+	map.Init()
 }
 
 
