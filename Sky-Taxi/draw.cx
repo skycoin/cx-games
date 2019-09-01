@@ -59,10 +59,13 @@ func Rects () {
 				app.Colors[c].G,
 				app.Colors[c].B)
 			
-			gl.Vertex2f(x,  gY) // upper left...
-			gl.Vertex2f(gX, gY) // ...proceed clockwise...
-			gl.Vertex2f(gX, y)
-			gl.Vertex2f(x,  y)
+			var r Room = map.Rooms[iY][iX]
+			if bool.not(r.Blank) {
+				gl.Vertex2f(x,  gY) // upper left...
+				gl.Vertex2f(gX, gY) // ...proceed clockwise...
+				gl.Vertex2f(gX, y)
+				gl.Vertex2f(x,  y)
+			}
 			
 			i++
 			x = x + map.RoomSpan
