@@ -17,7 +17,7 @@ var Rooms [4][4]Room // FIXME: use constants when we can
 var locs  []app.Vec2     // used locations of the Rooms grid 
 
 type Room struct {
-	Active bool // inactive == unused, Active space 
+	Active bool // inactive == unused, blank space 
 	
 	// insets (from room bounds) 
 	/*Top    f32

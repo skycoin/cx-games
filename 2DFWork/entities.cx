@@ -1,0 +1,13 @@
+package entities
+
+
+
+
+type Ball struct {
+	x f32
+	y f32
+	vx f32
+	vy f32
+	gravity f32
+	radius f32
+}

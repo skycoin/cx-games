@@ -5,6 +5,7 @@ import "glfw"
 
 import "app"
 import "draw"
+import "entities"
 import "inputs"
 import "map"
 
@@ -27,16 +28,7 @@ var prevTime f32 // previous
 var currTime f32 // current 
 var timeDelta f32
 
-type Ball struct {
-	x f32
-	y f32
-	vx f32
-	vy f32
-	gravity f32
-	radius f32
-}
-
-var ball Ball
+var ball entities.Ball
 
 
 
@@ -83,12 +75,12 @@ func main () {
 
 
 
-func init () () {
+func init () {
 	printf("\n %s \n\n Move with the W,A,S,D keys.\n\n", app.NAME)
 
 	FORCE = 0.08
 
-	ball = Ball{
+	ball = entities.Ball{
 		radius: 0.05,
 		x: 0.0,
 		y: 0.0,

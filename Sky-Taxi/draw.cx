@@ -3,7 +3,7 @@ package draw
 import "gl"
 
 import "app"
-import "main"
+import "entities"
 import "map"
 
 
@@ -12,7 +12,7 @@ var TAU f32 = f32.mul(2.0, 3.141592654)
 
 
 
-func Ball (ball main.Ball) {
+func Ball (ball entities.Ball) {
 	var x f32
 	var y f32
 
