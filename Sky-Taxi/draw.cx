@@ -12,7 +12,8 @@ var TAU f32 = f32.mul(2.0, 3.141592654)
 
 
 
-func Ball (ball main.Ball) () {
+func Ball (ball main.Ball) {
+	/*
 	var x f32
 	var y f32
 
@@ -28,6 +29,7 @@ func Ball (ball main.Ball) () {
 	}
 
 	gl.End()
+	*/
 }
 
 
@@ -59,8 +61,10 @@ func Rects () {
 				app.Colors[c].G,
 				app.Colors[c].B)
 			
-			var r Room = map.Rooms[iY][iX]
-			if bool.not(r.Blank) {
+			/*var r Room
+			r = map.Rooms[iY][iX]
+			bool.print(r.Blank)*/
+			if i32.rand(0, 2) == 0 {
 				gl.Vertex2f(x,  gY) // upper left...
 				gl.Vertex2f(gX, gY) // ...proceed clockwise...
 				gl.Vertex2f(gX, y)
@@ -73,4 +77,8 @@ func Rects () {
 			y = y + map.RoomSpan
 		}
 	gl.End()
+	
+	
+	
+	//map.showBlankStatii()
 }
