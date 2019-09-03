@@ -13,7 +13,6 @@ var TAU f32 = f32.mul(2.0, 3.141592654)
 
 
 func Ball (ball main.Ball) {
-	/*
 	var x f32
 	var y f32
 
@@ -29,7 +28,6 @@ func Ball (ball main.Ball) {
 	}
 
 	gl.End()
-	*/
 }
 
 
