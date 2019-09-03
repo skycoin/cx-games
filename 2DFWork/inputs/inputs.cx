@@ -25,7 +25,7 @@ var	GLFW_KEY_D i32
 
 func Init () {
 	str.print("inputs.Init ()")
-	glfw.SetKeyCallback("window", "onKeyEvent")
+	glfw.SetKeyCallback(app.Name, "onKeyEvent")
 }
 
 
@@ -35,26 +35,26 @@ func Update () {
 }
 
 func HoldingGoLeft () (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_A), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_LEFT), 1) {
+	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_A), 1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_LEFT), 1) {
 		out = true
 	}
 }
 func HoldingGoRight () (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_D), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_RIGHT), 1) {
+	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_D), 1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_RIGHT), 1) {
 		out = true
 	}
 }
 func HoldingGoDown () (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_S), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_DOWN), 1) {
+	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_S), 1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_DOWN), 1) {
 		out = true
 	}
 }
 func HoldingGoUp () (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_W), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_UP), 1) {
+	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_W), 1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_UP), 1) {
 		out = true
 	}
 }
@@ -74,7 +74,7 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) {
 		if key == 53 { // GLFW_KEY_5 
 			// close 
 			str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-			glfw.SetShouldClose("window", true)
+			glfw.SetShouldClose(app.Name, true)
 		} else
 		//if app.Mode == app.MODE_PLAYING {
 			if eventLeft(key) {
@@ -102,8 +102,8 @@ func maybeOpenMenu (key i32) {
 
 
 func eventBackOrEscape (key i32) (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_ESCAPE), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_HOME), 1) {
+	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_ESCAPE), 1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_HOME), 1) {
 		out = true
 	}
 }
@@ -154,7 +154,7 @@ func respondToMenu () {
 		app.Mode = app.MODE_MENU_OPTIONS
 	} else
 	if s == menu.Quit {
-		glfw.SetShouldClose("window", true)
+		glfw.SetShouldClose(app.Name, true)
 	}
 }
 */
