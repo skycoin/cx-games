@@ -2,7 +2,6 @@ package entities
 
 
 
-
 type Ball struct {
 	x f32
 	y f32

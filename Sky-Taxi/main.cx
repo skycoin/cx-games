@@ -8,10 +8,9 @@ import "draw"
 import "entities"
 import "inputs"
 import "map"
+import "mov"
 
 
-
-var FORCE f32
 
 // graphics 
 var WIDTH i32 = 1280
@@ -76,10 +75,10 @@ func main () {
 
 
 func init () {
-	printf("\n %s \n\n Move with the W,A,S,D keys.\n\n", app.NAME)
-
-	FORCE = 0.08
-
+	app.Name = "S K Y   T A X I"
+	app.Controls = "Move with the W,A,S,D keys."
+	app.CliIntro()
+	
 	ball = entities.Ball{
 		radius: 0.05,
 		x: 0.0,
@@ -91,7 +90,7 @@ func init () {
 
 	// graphics 
 	glfw.Init()
-	glfw.CreateWindow("window", WIDTH, HEIGHT, app.NAME)
+	glfw.CreateWindow("window", WIDTH, HEIGHT, app.Name)
 	glfw.MakeContextCurrent("window")
 	gl.Init()
 	program = gl.CreateProgram()
@@ -116,7 +115,7 @@ func updateTiming () () {
 
 
 func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
-	out = f32.add(currentVelocity, FORCE * timeDelta * strength)
+	out = f32.add(currentVelocity, mov.Force * timeDelta * strength)
 
 	if out > 0.0 {
 		out = 0.0
@@ -125,7 +124,7 @@ func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
 
 
 func dampenPositiveMovement (currentVelocity f32, strength f32) (out f32) {
-	out = f32.sub(currentVelocity, FORCE * timeDelta * strength)
+	out = f32.sub(currentVelocity, mov.Force * timeDelta * strength)
 
 	if out < 0.0 {
 		out = 0.0
@@ -142,14 +141,14 @@ func getVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32
 			out = dampenNegativeMovement(out, 4.0)
 		}
 
-		out = f32.add(out, FORCE * timeDelta)
+		out = f32.add(out, mov.Force * timeDelta)
 	} else //___________________________________________ speed up negatively 
 	if i32.eq(glfw.GetKey("window", subKey), 1) {
 		if out > 0.0 {
 			out = dampenPositiveMovement(out, 4.0)
 		}
 
-		out = f32.sub(out, FORCE * timeDelta)
+		out = f32.sub(out, mov.Force * timeDelta)
 	} else { //__________________________________________ slow down 
 		if out > 0.0 {
 			out = dampenPositiveMovement(out, 1.0)
