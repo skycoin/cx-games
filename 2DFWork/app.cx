@@ -13,6 +13,10 @@ package app
 
 
 
+// FIXME when CX gets constants 
+var START_WIDTH  i32 = 1280
+var START_HEIGHT i32 = 720
+
 var Name     str
 var Controls str
 var Colors   []Color3

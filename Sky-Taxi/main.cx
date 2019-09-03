@@ -13,14 +13,11 @@ import "mov"
 
 
 // graphics 
-var WIDTH i32 = 1280
-var HEIGHT i32 = 720
 var bufferWidth i32
 var bufferHeight i32
 var ratio f32
 var lEdge f64 // left 
 var rEdge f64 // right 
-var program i32
 
 // timing 
 var prevTime f32 // previous 
@@ -57,7 +54,6 @@ func main () {
 		lEdge = f32.f64(f32.mul(ratio, -1.0))
 		rEdge = f32.f64(ratio)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
-		gl.UseProgram(program)
 		gl.MatrixMode(gl.PROJECTION)
 		gl.LoadIdentity()
 		gl.Ortho(lEdge, rEdge, -1.0D, 1.0D, 1.0D, -1.0D)
@@ -90,11 +86,13 @@ func init () {
 
 	// graphics 
 	glfw.Init()
-	glfw.CreateWindow("window", WIDTH, HEIGHT, app.Name)
+	glfw.CreateWindow(
+		"window", 
+		app.START_WIDTH, 
+		app.START_HEIGHT, 
+		app.Name)
 	glfw.MakeContextCurrent("window")
 	gl.Init()
-	program = gl.CreateProgram()
-	gl.LinkProgram(program)
 	
 	app.Init()
 	inputs.Init()
