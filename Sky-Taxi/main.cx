@@ -72,8 +72,9 @@ func main () {
 		gl.Ortho(lEdge, rEdge, -1.0D, 1.0D, 1.0D, -1.0D)
 		gl.Viewport(0, 0, bufferWidth, bufferHeight)
 		gl.MatrixMode(gl.MODELVIEW)
-		draw.Ball(ball)
+
 		draw.Rects()
+		draw.Ball(ball)
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers("window")

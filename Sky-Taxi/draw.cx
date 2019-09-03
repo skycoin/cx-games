@@ -59,10 +59,7 @@ func Rects () {
 				app.Colors[c].G,
 				app.Colors[c].B)
 			
-			/*var r Room
-			r = map.Rooms[iY][iX]
-			bool.print(r.Blank)*/
-			if i32.rand(0, 2) == 0 {
+			if map.RoomIsActive(iX, iY) {
 				gl.Vertex2f(x,  gY) // upper left...
 				gl.Vertex2f(gX, gY) // ...proceed clockwise...
 				gl.Vertex2f(gX, y)
@@ -75,8 +72,4 @@ func Rects () {
 			y = y + map.RoomSpan
 		}
 	gl.End()
-	
-	
-	
-	//map.showBlankStatii()
 }
