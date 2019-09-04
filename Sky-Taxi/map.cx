@@ -25,8 +25,9 @@ type Room struct {
 	Bottom f32
 	Left   f32*/
 	
-	// exits/connections 
-	Possibles []i32
+	// connections 
+	Exits     []i32
+	Possibles []i32 // could be moved to "Exits" 
 }
 
 
@@ -130,29 +131,30 @@ func carveOutConnectedRooms () {
 			
 			// random (exit) id 
 			var ri i32 = i32.rand(0, len(r.Possibles))
-			var exit i32 = r.Possibles[ri]
+			var e /* exit */ i32 = r.Possibles[ri]
 
-			if exit == DIR_LEFT {
-				removeExitFor(x,   y, DIR_LEFT)
-				removeExitFor(x-1, y, DIR_RIGHT)
+			if e == DIR_LEFT {
+				promoteExitAt(x,   y, e)
+				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
+				promoteExitAt(x-1, y, DIR_RIGHT)
 				addActivatedLoc(x-1, y)
-			}
-			
-			if exit == DIR_RIGHT {
-				removeExitFor(x,   y, DIR_RIGHT)
-				removeExitFor(x+1, y, DIR_LEFT)
+			}else			
+			if e == DIR_RIGHT {
+				promoteExitAt(x,   y, e)
+				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
+				promoteExitAt(x+1, y, DIR_LEFT)
 				addActivatedLoc(x+1, y)
-			}
-			
-			if exit == DIR_DOWN {
-				removeExitFor(x, y,   DIR_DOWN)
-				removeExitFor(x, y-1, DIR_UP)
+			}else			
+			if e == DIR_DOWN {
+				promoteExitAt(x, y,   e)
+				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
+				promoteExitAt(x, y-1, DIR_UP)
 				addActivatedLoc(x, y-1)
-			}
-			
-			if exit == DIR_UP {
-				removeExitFor(x, y,   DIR_UP)
-				removeExitFor(x, y+1, DIR_DOWN)
+			}else			
+			if e == DIR_UP {
+				promoteExitAt(x, y,   e)
+				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
+				promoteExitAt(x, y+1, DIR_DOWN)
 				addActivatedLoc(x, y+1)
 			}
 		}
@@ -172,18 +174,21 @@ func addActivatedLoc (x i32, y i32) {
 }
 
 
-func removeExitFor (x i32, y i32, dir i32) {
-	var log bool = false
+func promoteExitAt (x i32, y i32, dir i32) {
+	var log bool = true//false
 	
-	if log { str.print("___________________________________________________________")
+	if log { 
+		str.print("___________________________________________________________")
+		printf("promoteExitAt(%d, %d, %s) \n", x, y, getTextForDir(dir))
 	}
 	
 	var r Room = Rooms[y][x]
+
+	r.Exits = append(
+	r.Exits, dir)
+	
+	// remove from possibles 
 	var n i32 = len(r.Possibles)
-	
-	if log { printf("@ %d,%d remove: %s \n", x, y, getTextForDir(dir))
-	}
-	
 	for i := i32.sub(n, 1); i >= 0; i = i32.sub(i, 1) {
 		if log { str.print(getTextForDir(r.Possibles[i]))
 		}
@@ -198,23 +203,51 @@ func removeExitFor (x i32, y i32, dir i32) {
 	n = len(r.Possibles)
 	if log { printf("------num possibles: %d \n", n)
 	}
+	
+	if log { printf("------num exits: %d \n", len(r.Exits))
+	}
+}
+
+
+func getInversion (dir i32) (out i32) { // (opposite direction) 
+	if dir == DIR_LEFT {
+		out = DIR_RIGHT
+	}else	
+	if dir == DIR_RIGHT {
+		out = DIR_LEFT
+	}else	
+	if dir == DIR_DOWN {
+		out = DIR_UP
+	}else	
+	if dir == DIR_UP {
+		out = DIR_DOWN
+	}
 }
 
 
 func getTextForDir (dir i32) (out str) {
 	if dir ==  DIR_LEFT {
 		out = "DIR_LEFT"
-	}
-	
+	}else	
 	if dir ==  DIR_RIGHT {
 		out = "DIR_RIGHT"
-	}
-	
+	}else	
 	if dir ==  DIR_DOWN {
 		out = "DIR_DOWN"
-	}
-	
+	}else	
 	if dir ==  DIR_UP {
 		out = "DIR_UP"
 	}
+}
+
+
+func GetNumExits (x i32, y i32) (out i32) {
+	var r Room = Rooms[y][x]
+	//printf("GetNumExits: %d \n", len(r.Exits))
+	out = len(r.Exits)
+}
+
+func GetExitDir (x i32, y i32, exitId i32) (out i32) {
+	var r Room = Rooms[y][x]
+	out = r.Exits[exitId]
 }

@@ -48,19 +48,36 @@ func Rects () {
 			var gX f32 = x + map.RoomSpan
 			var gY f32 = y + map.RoomSpan
 			
-			// color 
-			var l i32 = len(app.Colors)
-			var c i32 = i % l
-			gl.Color3f(
-				app.Colors[c].R,
-				app.Colors[c].G,
-				app.Colors[c].B)
-			
 			if map.RoomIsActive(iX, iY) {
+				// set color 
+				var l i32 = len(app.Colors)
+				var c i32 = i % l
+				gl.Color3f(
+					app.Colors[c].R,
+					app.Colors[c].G,
+					app.Colors[c].B)
+				
+				// draw main rect 
 				gl.Vertex2f(x,  gY) // upper left...
 				gl.Vertex2f(gX, gY) // ...proceed clockwise...
 				gl.Vertex2f(gX, y)
 				gl.Vertex2f(x,  y)
+				
+				// draw connection rects 
+				gl.Color3f(0.0, 0.0, 0.0) // black 
+				
+				var n i32 = map.GetNumExits(iX, iY)
+				//printf("n: %d \n", n)
+				for i := 0; i < n; i++ {
+					str.print("urr exit")
+					i32.print(i)
+				}
+				/*
+				gl.Vertex2f(x,  gY) // upper left...
+				gl.Vertex2f(gX, gY) // ...proceed clockwise...
+				gl.Vertex2f(gX, y)
+				gl.Vertex2f(x,  y)
+				*/
 			}
 			
 			i++
