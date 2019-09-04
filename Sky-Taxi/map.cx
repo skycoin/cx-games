@@ -14,7 +14,7 @@ var DIR_UP    i32 = 3
 var NumRoomsAcross i32 = 4
 var RoomSpan f32 = 2.0 / i32.f32(NumRoomsAcross)
 var Rooms [4][4]Room // FIXME: use constants when we can 
-var locs  []app.Vec2     // used locations of the Rooms grid 
+var locs  []app.Vec2 // used/carved-out locations of the Rooms grid 
 
 type Room struct {
 	Active bool // inactive == unused, blank space 
@@ -33,7 +33,7 @@ type Room struct {
 
 func Init () {
 	//showActiveStatii()
-	setupRooms()
+	setupPossibleExits()
 	//showActiveStatii()
 	carveOutConnectedRooms()
 	showActiveStatii()
@@ -62,7 +62,7 @@ func showActiveStatii () {
 }
 
 
-func setupRooms () {
+func setupPossibleExits () {
 	for iY := 0; iY < NumRoomsAcross; iY++ {
 	for iX := 0; iX < NumRoomsAcross; iX++ {
 		var r Room
@@ -88,12 +88,19 @@ func setupRooms () {
 		}
 		
 		Rooms[iY][iX] = r
-		//printf("setupRooms() len(r.Possibles): %d \n", len(r.Possibles))
+		//printf("setupPossibleExits() len(r.Possibles): %d \n", len(r.Possibles))
 		////var poss []i32 = Rooms[iY][iX].Possibles
 		////printf("Rooms[iY][iX].Possibles: %d \n", len(poss))
-		//printf("setupRooms() Rooms[iY][iX].Active:\n")
 	}
 	}
+}
+
+
+func getRandomCarvedLoc () (x i32, y i32, r Room) {
+	var rnd i32 = i32.rand(0, len(locs))
+	x = locs[rnd].X
+	y = locs[rnd].Y
+	r = Rooms[y][x]
 }
 
 
@@ -104,30 +111,25 @@ func carveOutConnectedRooms () {
 	for i := 0; i < n; i++ {
 		var x i32
 		var y i32
+		var r Room
 		
 		if /* 1st room */ i == 0 {
 			// make anywhere 
 			x = i32.rand(0, NumRoomsAcross)
 			y = i32.rand(0, NumRoomsAcross)
-			makeRoom(x, y)
+			addActivatedLoc(x, y)
 		}else{
-			var loc i32 = i32.rand(0, len(locs))
-			x = locs[loc].X
-			y = locs[loc].Y
-			var r Room = Rooms[y][x]
+			x, y, r = getRandomCarvedLoc()
 			//printf("carveOutConnectedRooms() len(r.Possibles): %d \n", len(r.Possibles))
 			
 			for len(r.Possibles) < 1 {
-				loc = i32.rand(0, len(locs))
-				x = locs[loc].X
-				y = locs[loc].Y
-				r = Rooms[y][x]
+				x, y, r = getRandomCarvedLoc()
 			}
 			
-			makeRoom(x, y)
+			addActivatedLoc(x, y)
 
-			var ri i32 // random index 
-			ri = i32.rand(0, len(r.Possibles))
+			// random (exit) id 
+			var ri i32 = i32.rand(0, len(r.Possibles))
 			var exit i32 = r.Possibles[ri]
 
 			if exit == DIR_LEFT {
@@ -154,14 +156,15 @@ func carveOutConnectedRooms () {
 }
 
 
-func makeRoom (x i32, y i32) {
+func addActivatedLoc (x i32, y i32) {
 	//printf("len(locs): %d \n", len(locs))
 	var newLoc app.Vec2
 	newLoc.X = x
 	newLoc.Y = y
-	locs = append(locs, newLoc)
+	locs = append(
+	locs, newLoc)
 	Rooms[y][x].Active = true
-	printf("makeRoom(%d, %d)   -   len(locs): %d \n", x, y, len(locs))
+	printf("addActivatedLoc(%d, %d)   -   len(locs): %d \n", x, y, len(locs))
 }
 
 
