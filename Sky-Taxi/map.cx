@@ -36,7 +36,6 @@ func Init () {
 	setupPossibleExits()
 	//showActiveStatii()
 	carveOutConnectedRooms()
-	showActiveStatii()
 }
 
 
@@ -98,6 +97,7 @@ func setupPossibleExits () {
 
 func getRandomCarvedLoc () (x i32, y i32, r Room) {
 	var rnd i32 = i32.rand(0, len(locs))
+	i32.print(rnd)
 	x = locs[rnd].X
 	y = locs[rnd].Y
 	r = Rooms[y][x]
@@ -105,14 +105,16 @@ func getRandomCarvedLoc () (x i32, y i32, r Room) {
 
 
 func carveOutConnectedRooms () {
+	var x i32
+	var y i32
+	var r Room
+		
 	var numInactives i32 = i32.rand(1, 5)
+	str.print("numInactives: ")
+	i32.print(numInactives)
 	var n i32 = NumRoomsAcross * NumRoomsAcross - numInactives
 	
 	for i := 0; i < n; i++ {
-		var x i32
-		var y i32
-		var r Room
-		
 		if /* 1st room */ i == 0 {
 			// make anywhere 
 			x = i32.rand(0, NumRoomsAcross)
@@ -126,30 +128,32 @@ func carveOutConnectedRooms () {
 				x, y, r = getRandomCarvedLoc()
 			}
 			
-			addActivatedLoc(x, y)
-
 			// random (exit) id 
 			var ri i32 = i32.rand(0, len(r.Possibles))
 			var exit i32 = r.Possibles[ri]
 
 			if exit == DIR_LEFT {
-				//removeExitFor(x,   y, DIR_LEFT)
+				removeExitFor(x,   y, DIR_LEFT)
 				removeExitFor(x-1, y, DIR_RIGHT)
+				addActivatedLoc(x-1, y)
 			}
 			
 			if exit == DIR_RIGHT {
-				//removeExitFor(x,   y, DIR_RIGHT)
+				removeExitFor(x,   y, DIR_RIGHT)
 				removeExitFor(x+1, y, DIR_LEFT)
+				addActivatedLoc(x+1, y)
 			}
 			
 			if exit == DIR_DOWN {
-				//removeExitFor(x, y,   DIR_DOWN)
+				removeExitFor(x, y,   DIR_DOWN)
 				removeExitFor(x, y-1, DIR_UP)
+				addActivatedLoc(x, y-1)
 			}
 			
 			if exit == DIR_UP {
-				//removeExitFor(x, y,   DIR_UP)
+				removeExitFor(x, y,   DIR_UP)
 				removeExitFor(x, y+1, DIR_DOWN)
+				addActivatedLoc(x, y+1)
 			}
 		}
 	}
@@ -157,7 +161,7 @@ func carveOutConnectedRooms () {
 
 
 func addActivatedLoc (x i32, y i32) {
-	//printf("len(locs): %d \n", len(locs))
+	printf("addActivatedLoc(%d, %d)   -   len(locs): %d \n", x, y, len(locs))
 	var newLoc app.Vec2
 	newLoc.X = x
 	newLoc.Y = y
