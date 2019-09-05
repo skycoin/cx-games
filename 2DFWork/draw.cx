@@ -35,8 +35,8 @@ func Rects () {
 
 	gl.Begin(gl.QUADS)
 		var i i32
-		for iY := 0; iY < map.NumRoomsAcross; iY++ {
-		for iX := 0; iX < map.NumRoomsAcross; iX++ {
+		for iY := 0; iY < map.NumCellsAcross; iY++ {
+		for iX := 0; iX < map.NumCellsAcross; iX++ {
 			if iX == 0 {
 				x = -1.0
 			}
@@ -45,8 +45,8 @@ func Rects () {
 			}
 
 			// greater value edge 
-			var gX f32 = x + map.RoomSpan
-			var gY f32 = y + map.RoomSpan
+			var gX f32 = x + map.CellSpan
+			var gY f32 = y + map.CellSpan
 			
 			if map.RoomIsActive(iX, iY) {
 				// set color 
@@ -66,9 +66,7 @@ func Rects () {
 				// draw connection rects 
 				gl.Color3f(0.0, 0.0, 0.0) // black 
 				
-				var n i32 = map.GetNumExits(iX, iY)
-				//printf("n: %d \n", n)
-				for i := 0; i < n; i++ {
+				for i := 0; i < 1; i++ {
 					str.print("urr exit")
 					i32.print(i)
 				}
@@ -81,9 +79,9 @@ func Rects () {
 			}
 			
 			i++
-			x = x + map.RoomSpan
+			x = x + map.CellSpan
 		}
-			y = y + map.RoomSpan
+			y = y + map.CellSpan
 		}
 	gl.End()
 }
