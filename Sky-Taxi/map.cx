@@ -28,8 +28,8 @@ var DIR_UP    i32 = 3
 
 var NumCellsAcross i32 = 4 // in both dimensions 
 var CellSpan f32 = 2.0 / i32.f32(NumCellsAcross)
-var Rooms [4][4]Cell // FIXME: use constants when we can 
-var locs  []app.Vec2 // used/carved-out locations of the Rooms grid 
+var Rooms [4][4]Cell   // FIXME: use constants when we can 
+var Carvs []CarvedRoom // used/carved-out locations of the Rooms grid 
 
 type Cell struct {
 	Exits     []i32
@@ -42,6 +42,7 @@ type CarvedRoom struct {
 	Bottom f32
 	Left   f32*/
 	
+	Pos       app.Vec2
 	Exits     []i32
 }
 
@@ -52,15 +53,7 @@ func Init () {
 	setupPossibleExits()
 	//showActiveStatii()
 	carveOutConnectedRooms()
-}
-
-
-func RoomIsActive (x i32, y i32) (out bool) {
-	// couldn't get the right data from draw.cx 
-	// (even when broken down into 2 steps: 
-	// "var r Room = map.Rooms[iY][iX]" 
-	// & 
-	// "if r.Active(iX, iY) { }") 
+	printf("aaaaaa: %d \n", Carvs[5].Pos.X)
 }
 
 
@@ -99,10 +92,10 @@ func setupPossibleExits () {
 
 
 func getRandomCarvedLoc () (x i32, y i32, r Cell) {
-	var rnd i32 = i32.rand(0, len(locs))
+	var rnd i32 = i32.rand(0, len(Carvs))
 	i32.print(rnd)
-	x = locs[rnd].X
-	y = locs[rnd].Y
+	x = Carvs[rnd].Pos.X
+	y = Carvs[rnd].Pos.Y
 	r = Rooms[y][x]
 }
 
@@ -122,7 +115,7 @@ func carveOutConnectedRooms () {
 			// make anywhere 
 			x = i32.rand(0, NumCellsAcross)
 			y = i32.rand(0, NumCellsAcross)
-			addCarvedRoom(x, y)
+			addCarvedRoom(x, y, 0)
 		}else{
 			x, y, r = getRandomCarvedLoc()
 			//printf("carveOutConnectedRooms() len(r.Exits): %d \n", len(r.Exits))
@@ -139,38 +132,45 @@ func carveOutConnectedRooms () {
 				promoteExitAt(x,   y, e)
 				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
 				promoteExitAt(x-1, y, DIR_RIGHT)
-				addCarvedRoom(x-1, y)
+				addCarvedRoom(x-1, y, DIR_RIGHT)
 			}else			
 			if e == DIR_RIGHT {
 				promoteExitAt(x,   y, e)
 				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
 				promoteExitAt(x+1, y, DIR_LEFT)
-				addCarvedRoom(x+1, y)
+				addCarvedRoom(x+1, y, DIR_LEFT)
 			}else			
 			if e == DIR_DOWN {
 				promoteExitAt(x, y,   e)
 				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
 				promoteExitAt(x, y-1, DIR_UP)
-				addCarvedRoom(x, y-1)
+				addCarvedRoom(x, y-1, DIR_UP)
 			}else			
 			if e == DIR_UP {
 				promoteExitAt(x, y,   e)
 				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
 				promoteExitAt(x, y+1, DIR_DOWN)
-				addCarvedRoom(x, y+1)
+				addCarvedRoom(x, y+1, DIR_DOWN)
 			}
 		}
 	}
 }
 
 
-func addCarvedRoom (x i32, y i32) {
-	printf("addCarvedRoom(%d, %d)   -   len(locs): %d \n", x, y, len(locs))
-	var newLoc app.Vec2
-	newLoc.X = x
-	newLoc.Y = y
-	locs = append(
-	locs, newLoc)
+func addCarvedRoom (x i32, y i32, dir i32) {
+	var newLoc CarvedRoom
+	newLoc.Pos.X = x
+	newLoc.Pos.Y = y
+	
+	if len(Carvs) != 0 { // no direction to set for 1st room 
+		newLoc.Exits = append(
+		newLoc.Exits, dir)
+	}
+	
+	Carvs = append(
+	Carvs, newLoc)
+
+	printf("addCarvedRoom(%d, %d)   -   len(Carvs): %d \n", x, y, len(Carvs))
 }
 
 
@@ -230,4 +230,13 @@ func getTextForDir (dir i32) (out str) {
 	if dir ==  DIR_UP {
 		out = "DIR_UP"
 	}
+}
+
+
+func GetNumCarvs () (out i32) {
+	out = len(Carvs)
+}
+
+func GetGridPos (i i32) (out app.Vec2) {
+	out = Carvs[i].Pos
 }

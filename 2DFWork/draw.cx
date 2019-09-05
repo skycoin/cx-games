@@ -34,11 +34,12 @@ func Rects () {
 	var y f32
 
 	gl.Begin(gl.QUADS)
-		var i i32
-		for iY := 0; iY < map.NumCellsAcross; iY++ {
-		for iX := 0; iX < map.NumCellsAcross; iX++ {
-			var mulX f32 = f32.mul(i32.f32(iX), map.CellSpan)
-			var mulY f32 = f32.mul(i32.f32(iY), map.CellSpan)
+		var n i32 = map.GetNumCarvs()
+		//printf("murrr: %d \n", n)
+		for i := 0; i < n; i++ {
+			var p app.Vec2 = map.GetGridPos(i)
+			var mulX f32 = f32.mul(i32.f32(p.X), map.CellSpan)
+			var mulY f32 = f32.mul(i32.f32(p.Y), map.CellSpan)
 			
 			var b f32 = f32.add(-1.0, mulY)
 			var l f32 = f32.add(-1.0, mulX)
@@ -46,19 +47,14 @@ func Rects () {
 			var r f32 = l + map.CellSpan
 			
 			SetSequentiallyCycledColor(i)
-			
-			// draw main rect 
 			rect(t, r, b, l)
 			
-			// draw connection rects 
+			// connection rects 
 			gl.Color3f(0.0, 0.0, 0.0) // black 
 			
 			for i := 0; i < 1; i++ {
 				//str.print("exit")
 			}
-			
-			i++
-		}
 		}
 	gl.End()
 }
