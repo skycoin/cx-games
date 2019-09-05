@@ -122,7 +122,7 @@ func carveOutConnectedRooms () {
 			// make anywhere 
 			x = i32.rand(0, NumCellsAcross)
 			y = i32.rand(0, NumCellsAcross)
-			addActivatedLoc(x, y)
+			addCarvedRoom(x, y)
 		}else{
 			x, y, r = getRandomCarvedLoc()
 			//printf("carveOutConnectedRooms() len(r.Exits): %d \n", len(r.Exits))
@@ -139,33 +139,33 @@ func carveOutConnectedRooms () {
 				promoteExitAt(x,   y, e)
 				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
 				promoteExitAt(x-1, y, DIR_RIGHT)
-				addActivatedLoc(x-1, y)
+				addCarvedRoom(x-1, y)
 			}else			
 			if e == DIR_RIGHT {
 				promoteExitAt(x,   y, e)
 				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
 				promoteExitAt(x+1, y, DIR_LEFT)
-				addActivatedLoc(x+1, y)
+				addCarvedRoom(x+1, y)
 			}else			
 			if e == DIR_DOWN {
 				promoteExitAt(x, y,   e)
 				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
 				promoteExitAt(x, y-1, DIR_UP)
-				addActivatedLoc(x, y-1)
+				addCarvedRoom(x, y-1)
 			}else			
 			if e == DIR_UP {
 				promoteExitAt(x, y,   e)
 				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
 				promoteExitAt(x, y+1, DIR_DOWN)
-				addActivatedLoc(x, y+1)
+				addCarvedRoom(x, y+1)
 			}
 		}
 	}
 }
 
 
-func addActivatedLoc (x i32, y i32) {
-	printf("addActivatedLoc(%d, %d)   -   len(locs): %d \n", x, y, len(locs))
+func addCarvedRoom (x i32, y i32) {
+	printf("addCarvedRoom(%d, %d)   -   len(locs): %d \n", x, y, len(locs))
 	var newLoc app.Vec2
 	newLoc.X = x
 	newLoc.Y = y

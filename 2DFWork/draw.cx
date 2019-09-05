@@ -37,40 +37,39 @@ func Rects () {
 		var i i32
 		for iY := 0; iY < map.NumCellsAcross; iY++ {
 		for iX := 0; iX < map.NumCellsAcross; iX++ {
-			if iX == 0 {
-				x = -1.0
-			}
-			if iY == 0 {
-				y = -1.0
-			}
-
-			// greater value edge 
-			var gX f32 = x + map.CellSpan
-			var gY f32 = y + map.CellSpan
+			var mulX f32 = f32.mul(i32.f32(iX), map.CellSpan)
+			var mulY f32 = f32.mul(i32.f32(iY), map.CellSpan)
 			
-			if true {//map.RoomIsActive(iX, iY) {
-				SetSequentiallyCycledColor(i)
-				
-				// draw main rect 
-				gl.Vertex2f(x,  gY) // upper left...
-				gl.Vertex2f(gX, gY) // ...proceed clockwise...
-				gl.Vertex2f(gX, y)
-				gl.Vertex2f(x,  y)
-				
-				// draw connection rects 
-				gl.Color3f(0.0, 0.0, 0.0) // black 
-				
-				for i := 0; i < 1; i++ {
-					str.print("urr exit")
-				}
+			var b f32 = f32.add(-1.0, mulY)
+			var l f32 = f32.add(-1.0, mulX)
+			var t f32 = b + map.CellSpan
+			var r f32 = l + map.CellSpan
+			
+			SetSequentiallyCycledColor(i)
+			
+			// draw main rect 
+			rect(t, r, b, l)
+			
+			// draw connection rects 
+			gl.Color3f(0.0, 0.0, 0.0) // black 
+			
+			for i := 0; i < 1; i++ {
+				//str.print("exit")
 			}
 			
 			i++
-			x = x + map.CellSpan
 		}
-			y = y + map.CellSpan
 		}
 	gl.End()
+}
+
+
+// top, right, bottom, left 
+func rect (t f32, r f32, b f32, l f32) {
+	gl.Vertex2f(l, t)
+	gl.Vertex2f(r, t)
+	gl.Vertex2f(r, b)
+	gl.Vertex2f(l, b)
 }
 
 
