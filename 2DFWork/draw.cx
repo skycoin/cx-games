@@ -48,14 +48,8 @@ func Rects () {
 			var gX f32 = x + map.CellSpan
 			var gY f32 = y + map.CellSpan
 			
-			if map.RoomIsActive(iX, iY) {
-				// set color 
-				var l i32 = len(app.Colors)
-				var c i32 = i % l
-				gl.Color3f(
-					app.Colors[c].R,
-					app.Colors[c].G,
-					app.Colors[c].B)
+			if true {//map.RoomIsActive(iX, iY) {
+				SetSequentiallyCycledColor(i)
 				
 				// draw main rect 
 				gl.Vertex2f(x,  gY) // upper left...
@@ -68,14 +62,7 @@ func Rects () {
 				
 				for i := 0; i < 1; i++ {
 					str.print("urr exit")
-					i32.print(i)
 				}
-				/*
-				gl.Vertex2f(x,  gY) // upper left...
-				gl.Vertex2f(gX, gY) // ...proceed clockwise...
-				gl.Vertex2f(gX, y)
-				gl.Vertex2f(x,  y)
-				*/
 			}
 			
 			i++
@@ -84,4 +71,15 @@ func Rects () {
 			y = y + map.CellSpan
 		}
 	gl.End()
+}
+
+
+func SetSequentiallyCycledColor (i i32) {
+	var l i32 = len(app.Colors)
+	var c i32 = i % l
+	
+	gl.Color3f(
+		app.Colors[c].R,
+		app.Colors[c].G,
+		app.Colors[c].B)
 }
