@@ -31,7 +31,7 @@ var F32_RAND_GRAIN_SIZE f32
 
 
 
-func Setup () () {
+func Setup () {
 	str.print("environs.Setup()")
 
 	MINIMUM_CLEARANCE = 0.3
@@ -74,5 +74,3 @@ func GetRandF32 () (out f32) {
 	
 	//printf("GetRandF32 () - rnd: %d - out: %f\n", rnd, out)
 }
-
-

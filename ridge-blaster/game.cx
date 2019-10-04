@@ -21,11 +21,10 @@ var timeDelta f32
 
 // graphics 
 var ratio f32 // aspect... 
-var program i32
 
 
 
-func Init () () {
+func Init () {
 	str.print("game.Init()")
 
 	// graphics 
@@ -33,29 +32,27 @@ func Init () () {
 	glfw.CreateWindow("window", app.WIDTH, app.HEIGHT, app.NAME)
 	glfw.MakeContextCurrent("window")
 	gl.Init()
-	program = gl.CreateProgram()
-	gl.LinkProgram(program)
 
 	app.Setup()
 	ccInput.Setup()
 	collision.Setup()
-	environs.Setup()
+	////environs.Setup()
 	entity.Setup()
-	draw.Setup()
-	doFramebufferStuff()
+	//draw.Setup()
+	//doFramebufferStuff()
 }
 
 
-func Update () () {
-	updateTiming()
-	ccInput.Update()
-	entity.Update(timeDelta, currTime)
+func Update () {
+	/*
+	//updateTiming()
+	//ccInput.Update()
+	//entity.Update(timeDelta, currTime)
 
 
 	// graphics 
-	doFramebufferStuff()
+	//doFramebufferStuff()
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.UseProgram(program)
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
 	
@@ -73,7 +70,8 @@ func Update () () {
 		
 	gl.MatrixMode(gl.MODELVIEW)
 
-	draw.All(currTime, timeDelta)
+	//draw.All(currTime, timeDelta)
+	*/
 
 	glfw.PollEvents()
 	glfw.SwapBuffers("window")
@@ -83,7 +81,7 @@ func Update () () {
 // screen edges 
 var oldL f64 = -1.0D
 var oldR f64 = 1.0D
-func doFramebufferStuff() {
+func doFramebufferStuff () {
 	var ss VecI // LATEST/NEW screen size 
 	ss.X, ss.Y = glfw.GetFramebufferSize("window")
 	
@@ -99,6 +97,7 @@ func doFramebufferStuff() {
 		ratio = f32.div(i32.f32(ss.X), i32.f32(ss.Y))
 		
 		// WAS after gl.MatrixMode(gl.MODELVIEW)
+	/*
 		collision.Update(ratio)
 		
 		// WAS after gl.LoadIdentity()
@@ -117,6 +116,7 @@ func doFramebufferStuff() {
 		
 		mesh.BakeButtonArray(ccInput.EDIT_TOOLBAR, false, true)
 		mesh.BakeMeshPickerButtonGrid()
+	*/
 	}
 }
 
@@ -130,7 +130,7 @@ func ShouldProceed () (out bool) {
 }
 
 
-func updateTiming () () {
+func updateTiming () {
 	// prevent 1st delta from being large, which would make moving objects teleport unpredictably 
 	if prevTime == 0.0 {
 		prevTime = f64.f32(glfw.GetTime())

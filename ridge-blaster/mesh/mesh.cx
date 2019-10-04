@@ -24,6 +24,7 @@ var BakedMeshPicker []Mesh2D // full baked (world size/scale & pos)
 var EditLayers      []Mesh2D // TODO: (just using 1 ATM) a slice (amongst other features) allows multiple vertices at the same position (but with different colors).  allows drastic color changes between adjacent triangle sides 
 
 var CurrLayer        i32
+var currMesh         Mesh2D
 
 // raw mesh ids 
 var ColorWheel       i32
@@ -36,7 +37,8 @@ var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A"
 
 
 
-func Setup () () {
+/*
+func Setup () {
 	str.print("mesh.Setup()")
 	
 	
@@ -107,33 +109,31 @@ func makeAndReportOn (m Mesh2D, raw bool) () {
 }
 
 
-/*
-func UNUSED_CopyFromEditorToGame () () {
-	str.print("mesh.UNUSED_CopyFromEditorToGame ()")
-	var m Mesh2D
-	m = Mesh2D{ Name: "Copy of UserGenMesh" }
-	
-	for i := 0; i32.lt(i, len(EditLayers[CurrLayer].Points)); i++ {
-		var c Color3
-		var p Vec2
-		c = EditLayers[CurrLayer].Colors[i]
-		p = EditLayers[CurrLayer].Points[i]
-		m.Colors = append(
-		m.Colors, c)
-		m.Points = append(
-		m.Points, p)
-	}
-
-	for j := 0; i32.lt(j, len(EditLayers[CurrLayer].TriangleIndices)); j++ {
-		var id i32
-		id = EditLayers[CurrLayer].TriangleIndices[j]
-		m.TriangleIndices = append(
-		m.TriangleIndices, id)
-	}
-		
-	makeAndReportOn(m, false)
-}
-*/
+//func UNUSED_CopyFromEditorToGame () () {
+//	str.print("mesh.UNUSED_CopyFromEditorToGame ()")
+//	var m Mesh2D
+//	m = Mesh2D{ Name: "Copy of UserGenMesh" }
+//	
+//	for i := 0; i32.lt(i, len(EditLayers[CurrLayer].Points)); i++ {
+//		var c Color3
+//		var p Vec2
+//		c = EditLayers[CurrLayer].Colors[i]
+//		p = EditLayers[CurrLayer].Points[i]
+//		m.Colors = append(
+//		m.Colors, c)
+//		m.Points = append(
+//		m.Points, p)
+//	}
+//
+//	for j := 0; i32.lt(j, len(EditLayers[CurrLayer].TriangleIndices)); j++ {
+//		var id i32
+//		id = EditLayers[CurrLayer].TriangleIndices[j]
+//		m.TriangleIndices = append(
+//		m.TriangleIndices, id)
+//	}
+//		
+//	makeAndReportOn(m, false)
+//}
 
 
 func GenerateMeshInitFunc (s str) () {
@@ -230,7 +230,7 @@ func BakeButtonArray (menu i32, minimumEdge bool, vertical bool) {
 		ccInput.Menus[menu].Items[i].Pos = pos
 		ccInput.Menus[menu].Items[i].Extents = ext
 		
-		var /* baked */ id i32 = i32.mul(i, 2)
+		var id i32 = i32.mul(i, 2) // baked id 
 		printf("BakeButtonArray () - id: %d \n", id)
 		
 		// rect background 
@@ -253,17 +253,55 @@ func BakeButtonArray (menu i32, minimumEdge bool, vertical bool) {
 
 
 func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
-	//str.print("bakeUICellFromRaw ()")
+	// FIXME: color & tri data GENERALLY needs no changes
+	//			(when bakedId exists),
+	//			but would when GenFunc expands to also updating
+	//			in-game raw mesh data  
+	var existed bool
+	
+	printf("bakeUICellFromRaw ()   -   bakedId: %d \n", bakedId)
 			
-	var m Mesh2D
-	m = Mesh2D{ Name: "bakedInstanceFromRaw" }
+	// setup currMesh by bakedId's existence 
+	if bakedId < len(BakedUIMeshes) {
+		existed = true
+		
+		printf("    recalculating BakedUIMeshes[%d] \n", bakedId)
+		
+		currMesh = BakedUIMeshes[bakedId]
+		
+		if len(RawMeshes[rawId].Colors) != 
+			len(currMesh.Colors) {
+			str.print(".Colors count is diff between RAW & BAKED")
+			str.print(".Colors count is diff between RAW & BAKED")
+			str.print(".Colors count is diff between RAW & BAKED")
+		}
+		if len(RawMeshes[rawId].Points) != 
+			len(currMesh.Points) {
+			str.print(".Points count is diff between RAW & BAKED")
+			str.print(".Points count is diff between RAW & BAKED")
+			str.print(".Points count is diff between RAW & BAKED")
+		}
+		if len(RawMeshes[rawId].TriangleIndices) != 
+			len(currMesh.TriangleIndices) {
+			str.print(".TriangleIndices count is diff between RAW & BAKED")
+			str.print(".TriangleIndices count is diff between RAW & BAKED")
+			str.print(".TriangleIndices count is diff between RAW & BAKED")
+		}
+	} else {
+		printf("    appending NEW @ BakedUIMeshes[%d] \n", len(BakedUIMeshes))
+
+		currMesh = Mesh2D{ Name: RawMeshes[rawId].Name }
+		BakedUIMeshes = append(
+		BakedUIMeshes, currMesh)
+	}
+	
 
 	// colors/verts 
-	for k := 0; i32.lt(k, len(RawMeshes[rawId].Points)); k++ {
-		var c Color3
-		var p Vec2
-		c = RawMeshes[rawId].Colors[k]
-		p = RawMeshes[rawId].Points[k]
+	for i := 0; i32.lt(i, len(RawMeshes[rawId].Points)); i++ {
+	var c Color3
+	var p Vec2
+		c = RawMeshes[rawId].Colors[i]
+		p = RawMeshes[rawId].Points[i]
 		
 		// scale 
 		p.X = f32.mul(p.X, extents.X)
@@ -273,29 +311,33 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 		p.X = f32.add(pos.X, p.X)
 		p.Y = f32.add(pos.Y, p.Y)
 		
-		m.Colors = append(
-		m.Colors, c)
-		m.Points = append(
-		m.Points, p)
+		if existed {
+			currMesh.Colors[i] = c
+			currMesh.Points[i] = p
+		} else {
+			currMesh.Colors = append(
+			currMesh.Colors, c)
+			currMesh.Points = append(
+			currMesh.Points, p)
+		}
 	}
 
 	// triangles 
-	for j := 0; i32.lt(j, len(RawMeshes[rawId].TriangleIndices)); j++ {
-		var id i32
-		id = RawMeshes[rawId].TriangleIndices[j]
-		m.TriangleIndices = append(
-		m.TriangleIndices, id)
-	}
+	if bool.eq(existed, false) {
+		for j := 0; i32.lt(j, len(RawMeshes[rawId].TriangleIndices)); j++ {
+			var id i32
+			id = RawMeshes[rawId].TriangleIndices[j]
+			currMesh.TriangleIndices = append(
+			currMesh.TriangleIndices, id)
+		}
 
-	// set or append mesh 
-	if len(BakedUIMeshes) <= bakedId {
-		str.print("appending NEW to BakedUIMeshes")
-		BakedUIMeshes = append(
-		BakedUIMeshes, m)
-	} else {
-		printf("recalculating BakedUIMeshes[%d] \n", bakedId)
-		BakedUIMeshes[bakedId] = m
+		printf("new baked mesh, num tris: %d \n", len(RawMeshes[rawId].TriangleIndices))
 	}
+	
+	//var nnn i32 = 3
+	printf("at the end len cm.TriInds: %d \n", len(currMesh.TriangleIndices))
+	//num = len(currMesh.TriangleIndices)
+	//ReportBadTriCount("bakeUICellFromRaw", num)
 }
 
 
@@ -450,39 +492,38 @@ func makeEditorRectResource () () {
 
 
 // NON-editor tri 
-/*
-func MakeNewTriangle (a Vec2, b Vec2, c Vec2) () {
-	////////////////// UNTESTED \\\\\\\\\\\\\\\\\\\\\
-	str.print("mesh.MakeNewTriangle()   (NON-editor)")
-	
-	var m Mesh2D
-	m = Mesh2D{ Name: "NON-editor triangle" }
-	
-	var col Color3
-	col = Color3{ R: 1.0, G: 0.5, B: 0.9 }
-	
-	m.Colors = append(m.Colors, col)
-	col.B = 0.6
-	m.Colors = append(m.Colors, col)
-	col.B = 0.2
-	m.Colors = append(m.Colors, col)
-	
-	m.Points = append(m.Points, a)
-	m.Points = append(m.Points, b)
-	m.Points = append(m.Points, c)
-	
-	var tii i32 // tri indices index 
-	tii = len(SizedMeshes[0].TriangleIndices)
-	
-	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
-	tii = i32.add(tii, 1)
-	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
-	tii = i32.add(tii, 1)
-	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
-	
-	makeAndReportOn(m, false)
-}
-*/
+//func MakeNewTriangle (a Vec2, b Vec2, c Vec2) () {
+//	////////////////// UNTESTED \\\\\\\\\\\\\\\\\\\\\
+//	str.print("mesh.MakeNewTriangle()   (NON-editor)")
+//	
+//	var m Mesh2D
+//	m = Mesh2D{ Name: "NON-editor triangle" }
+//	
+//	var col Color3
+//	col = Color3{ R: 1.0, G: 0.5, B: 0.9 }
+//	
+//	m.Colors = append(m.Colors, col)
+//	col.B = 0.6
+//	m.Colors = append(m.Colors, col)
+//	col.B = 0.2
+//	m.Colors = append(m.Colors, col)
+//	
+//	m.Points = append(m.Points, a)
+//	m.Points = append(m.Points, b)
+//	m.Points = append(m.Points, c)
+//	
+//	var tii i32 // tri indices index 
+//	tii = len(SizedMeshes[0].TriangleIndices)
+//	
+//	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
+//	tii = i32.add(tii, 1)
+//	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
+//	tii = i32.add(tii, 1)
+//	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
+//	
+//	makeAndReportOn(m, false)
+//}
+
 
 func AddNewTriangleInEditor () () { // just tri indices to existing global (ATM) EditorMesh 
 	str.print("mesh.AddNewTriangleInEditor(1st 3 PickedVerts)")
@@ -530,7 +571,7 @@ func AddNewTriangleInEditor () () { // just tri indices to existing global (ATM)
 }
 
 
-func DeleteVertexNode (layerId i32, ir i32 /* id to remove */) () {
+func DeleteVertexNode (layerId i32, ir i32) { // id (to) remove 
 	if app.Mode != app.APPMODE_EDITOR {		
 		return
 	}
@@ -590,24 +631,22 @@ func DeleteVertexNode (layerId i32, ir i32 /* id to remove */) () {
 		m.TriangleIndices[l] = getValidId(ir, currVert)
 	}
 
-	/*
-	var num i32 // last index for printing out positions (CRASHES CUZ 0 GIVES -1 INDEX) 
-	num = i32.sub(len(m.Points), 1)
-	printf("---num: %d \n", num)
-	printf("---len(m.Colors): %d \n", len(m.Colors))
-	printf("---len(m.Points): %d \n", len(m.Points))
-	printf("---m.Points[num].X: %f \n", m.Points[num].X)
-	printf("---m.Points[num].Y: %f \n", m.Points[num].Y)
-	printf("---len(m.TriangleIndices): %d \n", len(m.TriangleIndices))
-	
-	num = i32.sub(len(EditLayers[layerId].Points), 1)
-	printf("\n---num: %d \n", num)
-	printf("---len(EditLayers[layerId].Colors): %d \n", len(EditLayers[layerId].Colors))
-	printf("---len(EditLayers[layerId].Points): %d \n", len(EditLayers[layerId].Points))
-	printf("---EditLayers[layerId].Points[num].X: %f \n", EditLayers[layerId].Points[num].X)
-	printf("---EditLayers[layerId].Points[num].Y: %f \n", EditLayers[layerId].Points[num].Y)
-	printf("---len(EditLayers[layerId].TriangleIndices): %d \n", len(EditLayers[layerId].TriangleIndices))
-	*/
+//	var num i32 // last index for printing out positions (CRASHES CUZ 0 GIVES -1 INDEX) 
+//	num = i32.sub(len(m.Points), 1)
+//	printf("---num: %d \n", num)
+//	printf("---len(m.Colors): %d \n", len(m.Colors))
+//	printf("---len(m.Points): %d \n", len(m.Points))
+//	printf("---m.Points[num].X: %f \n", m.Points[num].X)
+//	printf("---m.Points[num].Y: %f \n", m.Points[num].Y)
+//	printf("---len(m.TriangleIndices): %d \n", len(m.TriangleIndices))
+//	
+//	num = i32.sub(len(EditLayers[layerId].Points), 1)
+//	printf("\n---num: %d \n", num)
+//	printf("---len(EditLayers[layerId].Colors): %d \n", len(EditLayers[layerId].Colors))
+//	printf("---len(EditLayers[layerId].Points): %d \n", len(EditLayers[layerId].Points))
+//	printf("---EditLayers[layerId].Points[num].X: %f \n", EditLayers[layerId].Points[num].X)
+//	printf("---EditLayers[layerId].Points[num].Y: %f \n", EditLayers[layerId].Points[num].Y)
+//	printf("---len(EditLayers[layerId].TriangleIndices): %d \n", len(EditLayers[layerId].TriangleIndices))
 	
 	EditLayers[layerId] = m
 }
@@ -624,3 +663,13 @@ func getValidId (trashVert i32, currVert i32) (out i32) {
 		out = currVert
 	}
 }
+
+
+func ReportBadTriCount (s str, num i32) () {
+	var leftover i32
+	leftover = i32.mod(num, 3)
+	if i32.uneq(0, leftover) {
+		printf("********* BAD NUM OF TRI INDICES! in %s () - leftover: %d \n", s, leftover)
+	}
+}
+*/

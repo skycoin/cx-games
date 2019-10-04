@@ -15,7 +15,8 @@ var numFit      i32 // number that fit across width of screen
 
 
 
-func BakeMeshPickerButtonGrid () () {
+/*
+func BakeMeshPickerButtonGrid () {
 	str.print("BakeMeshPickerButtonGrid ()")	
 	
 	// figure out maximum square size that allows all to fit screen 
@@ -66,7 +67,6 @@ func BakeMeshPickerButtonGrid () () {
 		bakeId = len(ccInput.Menus[ccInput.EDIT_TOOLBAR].Items)
 		bakeId = i32.mul(2, bakeId) // each has background + icon meshes 
 		bakeId = i32.add(bakeId, i)
-		printf("bakeId: %d \n", bakeId)
 		ccInput.Menus[ccInput.MESH_PICKER].Items[i].BakedIcon = bakeId
 		bakeUICellFromRaw(pos, ext, i, bakeId) 
 	}
@@ -81,3 +81,4 @@ func gridCellsWouldNotFitScreen () (out bool) {
 		out = true
 	}
 }
+*/

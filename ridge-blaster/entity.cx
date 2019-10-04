@@ -7,7 +7,61 @@ import "ccInput"
 import "collision"
 import "environs"
 
+/* 
 
+2dbug, [16.08.19 19:14]
+You can remove without Gc if you don't care about the order by swapping element n with element len(slice)-1 and then resize(slice, newlen)
+Yup iirc resize to a smaller size j just update the len of the slice
+
+2dbug, [16.08.19 19:20]
+Yes it's better to avoid allocations. I coded resize to avoid allocation when len is reduced
+
+2dbug, [16.08.19 19:21]
+You could also keep track of len manually in a var and never call resize
+
+
+
+
+
+
+
+
+i dunno that i understood Inge's advice to Moses, but it made me think of this way of handling dead/alive entities:
+
+* 2 vars used in conjunction with the entity slice: 
+	var numDead i32 
+	var spawnValues Entity // fresh new spawn defaults 
+
+* 2 parts to the entities slice.  all the deads 1st, then all the 		alive entities 
+
+
+* when updating actives, no need to check for alive status & jump past deads.  we just start at index of numDead
+
+
+* no need to FIND a dead to recycle (potentially cycling through whole slice)
+
+
+* on death:
+
+func kill (victim i32) {
+	// copy 1st alive to no longer needed corpse slot 
+	entities[victim] = entities[numDead] 
+	numDead++ 
+}
+
+
+* on spawning:
+
+func spawnNew () {
+	if numDead == 0 {
+		entities = append(entities, spawnValues)
+	} else {
+		entities[numDead-1] = spawnValues
+		numDead--
+	}
+}	
+
+*/
 
 // TYPES   (FIXME when we have constants) 
 var TYPE_HERO        i32 = 0
@@ -16,9 +70,9 @@ var TYPE_ROCKET      i32 = 2
 var TYPE_PARTICLE    i32 = 3
 
 // extents
-var HeroExtents   Vec2 = Vec2{ X: 0.08,  Y: 0.04  }
-var BulletExtents Vec2 = Vec2{ X: 0.03,  Y: 0.008 }
-var RocketExtents Vec2 = Vec2{ X: 0.016, Y: 0.05  }
+var HeroExtents   Vec2 = Vec2{ X: 0.08,  Y: 0.055 }
+var BulletExtents Vec2 = Vec2{ X: 0.03,  Y: 0.02  }
+var RocketExtents Vec2 = Vec2{ X: 0.016, Y: 0.045 }
 var NodeExtents   Vec2 = Vec2{ X: 0.02,  Y: 0.02  }
 
 // MODES 
@@ -58,7 +112,7 @@ var Ents []Entity
 
 
 
-func Setup () () {
+func Setup () {
 	str.print("entity.Setup()")
 	SetupHero()
 	
@@ -67,7 +121,7 @@ func Setup () () {
 }
 
 
-func SetupHero () () {
+func SetupHero () {
 	var x f32
 	var pos Vec2
 
@@ -83,16 +137,14 @@ func SetupHero () () {
 	
 	if len(Ents) > 0 {
 		str.print("resetting HERO")
-		/*
-		Ents[0].Mode = ENTMODE_DYNAMIC_MOVER
-		Ents[0].Pos = pos
-		*/
+		//Ents[0].Mode = ENTMODE_DYNAMIC_MOVER
+		//Ents[0].Pos = pos
 		Ents[0] = ent
 	} else {
 		Add(ent)
 	}
 }
-func Add (ent Entity) () {
+func Add (ent Entity) {
 	//printf("entity.Add()   x: %f, y: %f \n", ent.Pos.X, ent.Pos.Y)
 	Ents = append(Ents, ent)
 	

@@ -4,15 +4,16 @@ import "app"
 
 
 
+/*
 func makeColorPickerWheelResource () () {
 	var NUM_ANGS i32
 	NUM_ANGS = 1536 // 3 x 512, 512 needed to show all possible hues between 2 colors 
 	// (256 settings per channel, but we alternate between inc/dec 1 chan at a time)
 
-	var ANG_I /* angle increment */ f32
+	var ANG_I f32 // angle increment
 	ANG_I = f32.div(app.TAU, i32.f32(NUM_ANGS))
 
-	var CI /* color increment */ f32
+	var CI f32 // color increment 
 	CI = f32.div(1.0, i32.f32(256))
 
 	var ang f32
@@ -3129,3 +3130,4 @@ func InitRidgeBlasterLogoMesh () () {
 
     makeAndReportOn(m, true)
 }
+*/ 

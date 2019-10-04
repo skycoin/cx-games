@@ -1,12 +1,12 @@
 /*
-	RIDGE BLASTER 
-
-	(will be similar to the 80s arcade game Scramble) 
-	
-	
-	
-	Amaury: "cxgo.nex was renamed to main.nex and put inside cxgo/parser/"
-	
+	space invaders
+	asteroids
+		asteroids dungeon crawl
+	kaboom
+	lunar lander / space taxi
+	breakout/pong
+	berzerk
+	donkey kong? (platformer)
 	
 	
 	
@@ -15,6 +15,19 @@
 			had to declare/define first, THEN could pass it
 		
 	DEF NEEDS TO BE ADDED TO ISSUES
+		-_-
+		var color Color  needs newColor
+		
+		-_-
+	    glfw.SetKeyCallback("window", "callback")
+	
+		-_-
+        yarnBall.velocity.y = -yarnBall.velocity.y
+
+		-_-
+		FACING = LEFT
+		var LEFT i32 = 2
+		(didn't take on the value)
 		-_-
 		error: map.cx:24 identifier '*lcl_215' does not exist (lt.eq())
 		
@@ -32,18 +45,13 @@
 		
 		-_- 
 		when instantiating a new struct (at least slices of structs, with initial data) can't have space tween var name and opening curly brace
+		
+		-_-
+		"error: graphical2d.cx:188 function 'f32.mod' does not exist"
+		and yet no error given for f % ff
 	
 	ADD 
 		bindings for .rand() on types other than i32
-		
-	PAYCHECKS 
-		according to Amaury, they are making a new paycheck policy:
-			"you need to send your invoice before 5th, shanghai time"
-			
-	INVOICE REPORTS GIVEN
-		[3] I made a struct for Mesh2D objects, and refactored the game from using the entity system to draw the vertex nodes, to using Mesh2D structs to create and render them as they are updated.  I made PLAY, EDITMODE_VERTICES & EDITMODE_TRIANGLES modes, and hotkeys to switch between them.  I separated the drawing of gameplay objects/scenery and editor objects (color picking wheel and exaggerated vertex nodes for easier selection, etc.) to their own modes. I made vertex highlights for the current triangle, and made it draw gray triangles to connect them as soon as the user defines each set of 3 points.
-		
-		(the rest were added to the .PDFs)
 */
 
 

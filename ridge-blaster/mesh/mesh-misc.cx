@@ -4,7 +4,7 @@ import "app"
 
 
 
-func InitGameOverMesh () () {
+/*func InitGameOverMesh () {
     var m Mesh2D
     m = Mesh2D{ Name: "InitGameOverMesh" }
 
@@ -1018,3 +1018,4 @@ func InitGameOverMesh () () {
     
     makeAndReportOn(m, true)
 }
+*/
