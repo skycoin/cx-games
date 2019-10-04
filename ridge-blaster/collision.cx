@@ -9,7 +9,7 @@ var ScreenEdgeR f64 // right
 
 
 
-func Setup () () {
+func Setup () {
 	str.print("collision.Setup()")
 }
 

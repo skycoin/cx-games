@@ -4,7 +4,8 @@ import "app"
 
 
 
-func InitPlayerShipMesh () () {
+/*
+func InitPlayerShipMesh () {
     var m Mesh2D
     m = Mesh2D{ Name: "PlayerShip" }
 
@@ -782,3 +783,4 @@ func InitRocketMesh () () {
 
     makeAndReportOn(m, true)
 }
+*/

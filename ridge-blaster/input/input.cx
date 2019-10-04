@@ -32,7 +32,7 @@ var GLFW_KEY_F3     i32 = 292
 
 
 
-func Setup () () {
+func Setup () {
 	str.print("input/ccInput.Setup()")
 
 	Menus = []Menu{} // prep all menus 
@@ -45,7 +45,7 @@ func Setup () () {
 }
 
 
-func Update () () {
+func Update () {
 	//str.print("input/ccInput.Update()")
 
 	// motion input status 
@@ -92,7 +92,7 @@ func Back(key i32) (out bool) {
 
 // mouse buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
-	if /* release */ action == 0 {
+	if action == 0 { // release 
 		if button == 0 { // LMB 
 			if Dragging {
 				pickAllVertsInDragBox()
@@ -102,7 +102,7 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
 		} else
 		if button == 1 { // RMB 
 		}
-	} else if /* press */ action == 1 {
+	} else if action == 1 { // press 
 		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
 
 		if button == 0 { // LMB 
@@ -132,7 +132,7 @@ func doSecondaryOrTertiaryAction(button i32) () {
 			str.print("MMB press && EDITMODE_VERTICES")
 			
 			if touchedVert {			
-				mesh.DeleteVertexNode(lId, i)
+				str.print("mesh.DeleteVertexNode(lId, i)")
 			}
 		}
 	}

@@ -5,7 +5,7 @@ import "mesh"
 
 
 
-func doPrimaryAbility () () {
+func doPrimaryAbility () {
 	str.print("doPrimaryAbility ()")
 	
 	var touchedMenuItem bool
@@ -29,7 +29,7 @@ func respondToItem (i i32) () {
 		wipePickedVerts()
 	} else { // perform one-time actions 
 		if i == TOOLBAR_GEN_FUNC {
-			mesh.GenerateMeshInitFunc("Char") //"Icon")
+			//mesh.GenerateMeshInitFunc("Char") //"Icon")
 		} else
 		if i == TOOLBAR_SNAP_TO_GRID {
 			SnapToGrid = !SnapToGrid
@@ -102,7 +102,7 @@ func doValidGridSpacePrimary () () {
 }
 
 
-func doValidGridSpaceSecondary () () {
+func doValidGridSpaceSecondary () {
 	var touchedVert bool
 	var layerId     i32
 	var vertId      i32
@@ -122,8 +122,8 @@ func doValidGridSpaceSecondary () () {
 		}
 
 		if i32.gteq(len(mesh.PickedVerts), 3) {
-			mesh.AddNewTriangleInEditor()
-			wipePickedVerts()
+			str.print("mesh.AddNewTriangleInEditor()")
+			//wipePickedVerts()
 		}
 	}
 }
@@ -199,7 +199,7 @@ func addNewVertexNode () () {
 }
 
 
-func pickAllVertsInDragBox () () {		
+func pickAllVertsInDragBox () {		
 	var num i32
 	num = len(mesh.EditLayers[mesh.CurrLayer].Points)
 	
