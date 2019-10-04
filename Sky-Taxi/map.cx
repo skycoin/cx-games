@@ -4,11 +4,11 @@ In our imagined world for this game, the universe is filled with solid
 rock everywhere.
 
 We have a limited grid of possibilities, where we will carve out air space
-(Rooms) in each of those cells.  ALMOST each of them.  Some will remain
-solid rock, for a bit of variety in how the connected rooms are laid out.
+(Rooms) in MOST of those cells.  Some will remain
+solid rock, for a bit of variety in overall map shape.
 
 I THINK OF THE Y DIMENSION INCREASING UPWARDS
-	SO KEEP THIS IN MIND WITH DIR_ECTIONS AND THE "Rooms" GRID INDEXING 
+	SO KEEP THIS IN MIND WITH geom.DIR_...ECTIONS AND THE "Rooms" GRID INDEXING 
 	
 This is how it is by default in OpenGL space, Unity and many modern 3D
 apps, so I think it's important to generally keep synchronized with this.
@@ -18,13 +18,9 @@ apps, so I think it's important to generally keep synchronized with this.
 package map
 
 import "app"
+import "geom"
 
 
-
-var DIR_LEFT  i32 = 0
-var DIR_RIGHT i32 = 1
-var DIR_DOWN  i32 = 2
-var DIR_UP    i32 = 3
 
 var NumCellsAcross i32 = 4 // in both dimensions 
 var CellSpan f32 = 2.0 / i32.f32(NumCellsAcross)
@@ -42,7 +38,7 @@ type CarvedRoom struct {
 	Bottom f32
 	Left   f32*/
 	
-	Pos       app.Vec2
+	Pos       app.Vec2i
 	Exits     []i32
 }
 
@@ -53,7 +49,6 @@ func Init () {
 	setupPossibleExits()
 	//showActiveStatii()
 	carveOutConnectedRooms()
-	printf("aaaaaa: %d \n", Carvs[5].Pos.X)
 }
 
 
@@ -64,22 +59,22 @@ func setupPossibleExits () {
 		
 		if iX > 0 {
 			r.Exits = append(
-			r.Exits, DIR_LEFT)
+			r.Exits, geom.DIR_LEFT)
 		}
 		
 		if iX < i32.sub(NumCellsAcross, 1) {
 			r.Exits = append(
-			r.Exits, DIR_RIGHT)
+			r.Exits, geom.DIR_RIGHT)
 		}
 		
 		if iY > 0 {
 			r.Exits = append(
-			r.Exits, DIR_DOWN)
+			r.Exits, geom.DIR_DOWN)
 		}
 		
 		if iY < i32.sub(NumCellsAcross, 1) {
 			r.Exits = append(
-			r.Exits, DIR_UP)
+			r.Exits, geom.DIR_UP)
 		}
 		
 		Rooms[iY][iX] = r
@@ -91,7 +86,7 @@ func setupPossibleExits () {
 }
 
 
-func getRandomCarvedLoc () (x i32, y i32, r Cell) {
+func getRandomRoomInGrid () (x i32, y i32, r Cell) {
 	var rnd i32 = i32.rand(0, len(Carvs))
 	i32.print(rnd)
 	x = Carvs[rnd].Pos.X
@@ -115,49 +110,49 @@ func carveOutConnectedRooms () {
 			// make anywhere 
 			x = i32.rand(0, NumCellsAcross)
 			y = i32.rand(0, NumCellsAcross)
-			addCarvedRoom(x, y, 0)
+			carveOutRoomWithExit(x, y, 0)
 		}else{
-			x, y, r = getRandomCarvedLoc()
+			x, y, r = getRandomRoomInGrid()
 			//printf("carveOutConnectedRooms() len(r.Exits): %d \n", len(r.Exits))
 			
 			for len(r.Exits) < 1 {
-				x, y, r = getRandomCarvedLoc()
+				x, y, r = getRandomRoomInGrid()
 			}
 			
 			// random (exit) id 
 			var ri i32 = i32.rand(0, len(r.Exits))
 			var e /* exit */ i32 = r.Exits[ri]
 
-			if e == DIR_LEFT {
-				promoteExitAt(x,   y, e)
-				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
-				promoteExitAt(x-1, y, DIR_RIGHT)
-				addCarvedRoom(x-1, y, DIR_RIGHT)
+			if e == geom.DIR_LEFT {
+				removeExitFromGrid(x,   y, e)
+				printf("AFTER DIR_LEFT removeExitFromGrid ------num exits: %d \n", len(r.Exits))
+				removeExitFromGrid(x-1, y, geom.DIR_RIGHT)
+				carveOutRoomWithExit(x-1, y, geom.DIR_RIGHT)
 			}else			
-			if e == DIR_RIGHT {
-				promoteExitAt(x,   y, e)
-				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
-				promoteExitAt(x+1, y, DIR_LEFT)
-				addCarvedRoom(x+1, y, DIR_LEFT)
+			if e == geom.DIR_RIGHT {
+				removeExitFromGrid(x,   y, e)
+				printf("AFTER DIR_RIGHT removeExitFromGrid ------num exits: %d \n", len(r.Exits))
+				removeExitFromGrid(x+1, y, geom.DIR_LEFT)
+				carveOutRoomWithExit(x+1, y, geom.DIR_LEFT)
 			}else			
-			if e == DIR_DOWN {
-				promoteExitAt(x, y,   e)
-				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
-				promoteExitAt(x, y-1, DIR_UP)
-				addCarvedRoom(x, y-1, DIR_UP)
+			if e == geom.DIR_DOWN {
+				removeExitFromGrid(x, y,   e)
+				printf("AFTER DIR_DOWN removeExitFromGrid ------num exits: %d \n", len(r.Exits))
+				removeExitFromGrid(x, y-1, geom.DIR_UP)
+				carveOutRoomWithExit(x, y-1, geom.DIR_UP)
 			}else			
-			if e == DIR_UP {
-				promoteExitAt(x, y,   e)
-				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
-				promoteExitAt(x, y+1, DIR_DOWN)
-				addCarvedRoom(x, y+1, DIR_DOWN)
+			if e == geom.DIR_UP {
+				removeExitFromGrid(x, y,   e)
+				printf("AFTER DIR_UP removeExitFromGrid ------num exits: %d \n", len(r.Exits))
+				removeExitFromGrid(x, y+1, geom.DIR_DOWN)
+				carveOutRoomWithExit(x, y+1, geom.DIR_DOWN)
 			}
 		}
 	}
 }
 
 
-func addCarvedRoom (x i32, y i32, dir i32) {
+func carveOutRoomWithExit (x i32, y i32, dir i32) {
 	var newLoc CarvedRoom
 	newLoc.Pos.X = x
 	newLoc.Pos.Y = y
@@ -170,20 +165,24 @@ func addCarvedRoom (x i32, y i32, dir i32) {
 	Carvs = append(
 	Carvs, newLoc)
 
-	printf("addCarvedRoom(%d, %d)   -   len(Carvs): %d \n", x, y, len(Carvs))
+	printf("carveOutRoomWithExit(%d, %d)   -   len(Carvs): %d \n", x, y, len(Carvs))
 }
 
 
-func promoteExitAt (x i32, y i32, dir i32) {
+func removeExitFromGrid (x i32, y i32, dir i32) {
 	var log bool = true//false
 	
 	if log { 
 		str.print("___________________________________________________________")
-		printf("promoteExitAt(%d, %d, %s) \n", x, y, getTextForDir(dir))
+		printf("removeExitFromGrid(%d, %d, %s) \n", x, y, getTextForDir(dir))
 	}
 	
 	var r Cell = Rooms[y][x]
 	// remove from Exits 
+	
+	if log { printf("------num exits INSIDE-BEFORE: %d \n", len(r.Exits))
+	}
+
 	var n i32 = len(r.Exits)
 	for i := i32.sub(n, 1); i >= 0; i = i32.sub(i, 1) {
 		if log { str.print(getTextForDir(r.Exits[i]))
@@ -196,39 +195,39 @@ func promoteExitAt (x i32, y i32, dir i32) {
 		}
 	}
 	
-	if log { printf("------num exits: %d \n", len(r.Exits))
+	if log { printf("------num exits INSIDE-AFTER: %d \n", len(r.Exits))
 	}
 }
 
 
 func getInversion (dir i32) (out i32) { // (opposite direction) 
-	if dir == DIR_LEFT {
-		out = DIR_RIGHT
+	if dir == geom.DIR_LEFT {
+		out = geom.DIR_RIGHT
 	}else	
-	if dir == DIR_RIGHT {
-		out = DIR_LEFT
+	if dir == geom.DIR_RIGHT {
+		out = geom.DIR_LEFT
 	}else	
-	if dir == DIR_DOWN {
-		out = DIR_UP
+	if dir == geom.DIR_DOWN {
+		out = geom.DIR_UP
 	}else	
-	if dir == DIR_UP {
-		out = DIR_DOWN
+	if dir == geom.DIR_UP {
+		out = geom.DIR_DOWN
 	}
 }
 
 
 func getTextForDir (dir i32) (out str) {
-	if dir ==  DIR_LEFT {
-		out = "DIR_LEFT"
+	if dir ==  geom.DIR_LEFT {
+		out = "     DIR_LEFT"
 	}else	
-	if dir ==  DIR_RIGHT {
-		out = "DIR_RIGHT"
+	if dir ==  geom.DIR_RIGHT {
+		out = "     DIR_RIGHT"
 	}else	
-	if dir ==  DIR_DOWN {
-		out = "DIR_DOWN"
+	if dir ==  geom.DIR_DOWN {
+		out = "     DIR_DOWN"
 	}else	
-	if dir ==  DIR_UP {
-		out = "DIR_UP"
+	if dir ==  geom.DIR_UP {
+		out = "     DIR_UP"
 	}
 }
 
@@ -237,6 +236,21 @@ func GetNumCarvs () (out i32) {
 	out = len(Carvs)
 }
 
-func GetGridPos (i i32) (out app.Vec2) {
+
+func GetGridPos (i i32) (out app.Vec2i) {
 	out = Carvs[i].Pos
+}
+
+
+var currExit i32
+func GetExitAt (i i32) (out i32) {
+	printf("len(Carvs[i].Exits): %d\n", len(Carvs[i].Exits))
+	if i < len(Carvs[i].Exits) {
+		out = Carvs[i].Exits[currExit]
+		currExit++
+		i32.print(currExit)
+	}else{
+		out = app.MAX_I32
+		currExit = 0
+	}
 }

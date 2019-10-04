@@ -37,7 +37,7 @@ func Rects () {
 		var n i32 = map.GetNumCarvs()
 		//printf("murrr: %d \n", n)
 		for i := 0; i < n; i++ {
-			var p app.Vec2 = map.GetGridPos(i)
+			var p app.Vec2i = map.GetGridPos(i)
 			var mulX f32 = f32.mul(i32.f32(p.X), map.CellSpan)
 			var mulY f32 = f32.mul(i32.f32(p.Y), map.CellSpan)
 			
@@ -51,9 +51,26 @@ func Rects () {
 			
 			// connection rects 
 			gl.Color3f(0.0, 0.0, 0.0) // black 
+			var ins f32 = 0.05 // inset 
+			var ex i32 // exit 
 			
-			for i := 0; i < 1; i++ {
-				//str.print("exit")
+			for ex != app.MAX_I32 {
+				ex = map.GetExitAt(i)
+				//str.print("map.GetExitAt")
+				//i32.print(j)
+				
+				if ex == geom.DIR_LEFT {
+					rect(t-ins, r-ins, b+ins, l)
+				}else	
+				if ex == geom.DIR_RIGHT {
+					rect(t-ins, r,     b+ins, l+ins)
+				}else	
+				if ex == geom.DIR_DOWN {
+					rect(t-ins, r-ins, b,     l+ins)
+				}else	
+				if ex == geom.DIR_UP {
+					rect(t,     r-ins, b+ins, l+ins)
+				}
 			}
 		}
 	gl.End()

@@ -16,12 +16,13 @@ package app
 // FIXME when CX gets constants 
 var START_WIDTH  i32 = 1280
 var START_HEIGHT i32 = 720
+var MAX_I32      i32 = 2147483647
 
 var Name     str
 var Controls str
 var Colors   []Color3
 
-type Vec2 struct {
+type Vec2i struct {
 	X i32
 	Y i32
 }
