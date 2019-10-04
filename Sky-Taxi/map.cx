@@ -86,19 +86,21 @@ func setupPossibleExits () {
 }
 
 
-func getRandomRoomInGrid () (x i32, y i32, r Cell) {
+func getRandomCarvedRoom () (x i32, y i32, c Cell, r CarvedRoom) {
 	var rnd i32 = i32.rand(0, len(Carvs))
 	i32.print(rnd)
+	r = Carvs[rnd]
 	x = Carvs[rnd].Pos.X
 	y = Carvs[rnd].Pos.Y
-	r = Cells[y][x]
+	c = Cells[y][x]
 }
 
 
 func carveOutConnectedCells () {
 	var x i32
 	var y i32
-	var r Cell
+	var oc Cell       // older cell 
+	var or CarvedRoom // older room 
 		
 	var numInactives i32 = i32.rand(1, 5)
 	str.print("numInactives: ")
@@ -110,61 +112,68 @@ func carveOutConnectedCells () {
 			// make anywhere 
 			x = i32.rand(0, NumCellsAcross)
 			y = i32.rand(0, NumCellsAcross)
-			carveOutRoomWithExit(x, y, 0)
+			var unused CarvedRoom = carveOutRoom(x, y)
 		}else{
-			x, y, r = getRandomRoomInGrid()
+			x, y, oc, or = getRandomCarvedRoom()
 			//printf("carveOutConnectedCells() len(r.Exits): %d \n", len(r.Exits))
 			
-			for len(r.Exits) < 1 {
-				x, y, r = getRandomRoomInGrid()
+			for len(oc.Exits) < 1 {
+				x, y, oc, or = getRandomCarvedRoom()
 			}
 			
 			// random (exit) id 
-			var ri i32 = i32.rand(0, len(r.Exits))
-			var e /* exit */ i32 = r.Exits[ri]
+			var ri i32 = i32.rand(0, len(oc.Exits))
+			var e /* exit */ i32 = oc.Exits[ri]
+			var nr CarvedRoom // new room 
 
 			if e == geom.DIR_LEFT {
-				removeExitFromGrid(x,   y, e)
-				printf("AFTER DIR_LEFT removeExitFromGrid ------num exits: %d \n", len(r.Exits))
-				carveOutRoomWithExit(x-1, y, geom.DIR_RIGHT)
+				nr = carveOutRoom(x-1, y)
+				moveExitFromGridCellToRoom(x-1, y,   nr, geom.DIR_RIGHT)
+				moveExitFromGridCellToRoom(x,   y,   or, e)
+				//printf("AFTER DIR_LEFT removeExitFromGrid ------num exits: %d \n", len(r.Exits))
 			}else			
 			if e == geom.DIR_RIGHT {
-				removeExitFromGrid(x,   y, e)
-				printf("AFTER DIR_RIGHT removeExitFromGrid ------num exits: %d \n", len(r.Exits))
-				carveOutRoomWithExit(x+1, y, geom.DIR_LEFT)
+				//printf("AFTER DIR_RIGHT removeExitFromGrid ------num exits: %d \n", len(r.Exits))
+				nr = carveOutRoom(x+1, y)
+				moveExitFromGridCellToRoom(x+1, y,   nr, geom.DIR_LEFT)
+				moveExitFromGridCellToRoom(x,   y,   or, e)
 			}else			
 			if e == geom.DIR_DOWN {
-				removeExitFromGrid(x, y,   e)
-				printf("AFTER DIR_DOWN removeExitFromGrid ------num exits: %d \n", len(r.Exits))
-				carveOutRoomWithExit(x, y-1, geom.DIR_UP)
+				//printf("AFTER DIR_DOWN removeExitFromGrid ------num exits: %d \n", len(r.Exits))
+				nr = carveOutRoom(x, y-1)
+				moveExitFromGridCellToRoom(x,   y-1, nr, geom.DIR_UP)
+				moveExitFromGridCellToRoom(x,   y,   or, e)
 			}else			
 			if e == geom.DIR_UP {
-				removeExitFromGrid(x, y,   e)
-				printf("AFTER DIR_UP removeExitFromGrid ------num exits: %d \n", len(r.Exits))
-				carveOutRoomWithExit(x, y+1, geom.DIR_DOWN)
+				//printf("AFTER DIR_UP removeExitFromGrid ------num exits: %d \n", len(r.Exits))
+				nr = carveOutRoom(x, y+1)
+				moveExitFromGridCellToRoom(x,   y+1, nr, geom.DIR_DOWN)
+				moveExitFromGridCellToRoom(x,   y,   or, e)
 			}
 		}
 	}
 }
 
 
-func carveOutRoomWithExit (x i32, y i32, dir i32) {
-	var newLoc CarvedRoom
-	newLoc.Pos.X = x
-	newLoc.Pos.Y = y
-	
-	if len(Carvs) != 0 { // no direction to set for 1st room 
-		newLoc.Exits = append(
-		newLoc.Exits, dir)
-	}
+func carveOutRoom (x i32, y i32) (out CarvedRoom) {
+	out.Pos.X = x
+	out.Pos.Y = y
 	
 	Carvs = append(
-	Carvs, newLoc)
-	removeExitFromGrid(x, y, dir)
+	Carvs, out)
 
-	printf("carveOutRoomWithExit(%d, %d)   -   len(Carvs): %d \n", x, y, len(Carvs))
+	printf("carveOutRoom(%d, %d)   -   len(Carvs): %d \n", x, y, len(Carvs))
+}
+
+
+func moveExitFromGridCellToRoom (x i32, y i32, cr CarvedRoom, dir i32) {
+	removeExitFromGrid(x, y, dir)
+	cr.Exits = append(
+	cr.Exits, dir)
+	printf("moveExitFromGridCellToRoom() - len(CarvedRoom.Exits): %d \n", len(cr.Exits))
+
 	var c Cell = Cells[y][x]
-	printf("carveOutRoomWithExit() AFTER removeExitFromGrid() ------num exits: %d \n", len(c.Exits))
+	printf("moveExitFromGridCellToRoom() - len(Cell.Exits): %d \n", len(c.Exits))
 }
 
 
@@ -243,7 +252,7 @@ func GetGridPos (i i32) (out app.Vec2i) {
 
 var currExit i32
 func GetExitAt (i i32) (out i32) {
-	//printf("len(Carvs[i].Exits): %d\n", len(Carvs[i].Exits))
+	printf("len(Carvs[i].Exits): %d\n", len(Carvs[i].Exits))
 	
 	if i < len(Carvs[i].Exits) {
 		out = Carvs[i].Exits[currExit]
