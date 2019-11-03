@@ -18,6 +18,7 @@ apps, so I think it's important to generally keep synchronized with this.
 package map
 
 import "app"
+import "draw"
 import "geom"
 
 
@@ -49,6 +50,54 @@ func Init () {
 	setupPossibleExits()
 	//showActiveStatii()
 	carveOutConnectedCells()
+}
+
+
+func DrawQuads () {
+	var x f32
+	var y f32
+
+	draw.QuadsBegin()
+		var n i32 = GetNumCarvs()
+		//printf("murrr: %d \n", n)
+		for i := 0; i < n; i++ {
+			var p app.Vec2i = GetGridPos(i)
+			var mulX f32 = f32.mul(i32.f32(p.X), CellSpan)
+			var mulY f32 = f32.mul(i32.f32(p.Y), CellSpan)
+			
+			var b f32 = f32.add(-1.0, mulY)
+			var l f32 = f32.add(-1.0, mulX)
+			var t f32 = b + CellSpan
+			var r f32 = l + CellSpan
+			
+			draw.SetSequentiallyCycledColor(i)
+			draw.Quad(t, r, b, l)
+			
+			// connection rects 
+			draw.SetColor(0.0, 0.0, 0.0) // black 
+			var ins f32 = 0.05 // inset 
+			var ex i32 // exit 
+			
+			for ex != app.MAX_I32 {
+				ex = GetExitAt(i)
+				//str.print("GetExitAt")
+				//i32.print(j)
+				
+				if ex == geom.DIR_LEFT {
+					draw.Quad(t-ins, r-ins, b+ins, l)
+				}else	
+				if ex == geom.DIR_RIGHT {
+					draw.Quad(t-ins, r,     b+ins, l+ins)
+				}else	
+				if ex == geom.DIR_DOWN {
+					draw.Quad(t-ins, r-ins, b,     l+ins)
+				}else	
+				if ex == geom.DIR_UP {
+					draw.Quad(t,     r-ins, b+ins, l+ins)
+				}
+			}
+		}
+	draw.End()
 }
 
 
@@ -88,7 +137,7 @@ func setupPossibleExits () {
 
 func getRandomCarvedRoom () (x i32, y i32, c Cell, r CarvedRoom) {
 	var rnd i32 = i32.rand(0, len(Carvs))
-	i32.print(rnd)
+	printf("getRandomCarvedRoom: %d \n", rnd)
 	r = Carvs[rnd]
 	x = Carvs[rnd].Pos.X
 	y = Carvs[rnd].Pos.Y
@@ -130,25 +179,25 @@ func carveOutConnectedCells () {
 				nr = carveOutRoom(x-1, y)
 				moveExitFromGridCellToRoom(x-1, y,   nr, geom.DIR_RIGHT)
 				moveExitFromGridCellToRoom(x,   y,   or, e)
-				//printf("AFTER DIR_LEFT removeExitFromGrid ------num exits: %d \n", len(r.Exits))
+				printf("AFTER DIR_RIGHT moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}else			
 			if e == geom.DIR_RIGHT {
-				//printf("AFTER DIR_RIGHT removeExitFromGrid ------num exits: %d \n", len(r.Exits))
 				nr = carveOutRoom(x+1, y)
 				moveExitFromGridCellToRoom(x+1, y,   nr, geom.DIR_LEFT)
 				moveExitFromGridCellToRoom(x,   y,   or, e)
+				printf("AFTER DIR_LEFT moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}else			
 			if e == geom.DIR_DOWN {
-				//printf("AFTER DIR_DOWN removeExitFromGrid ------num exits: %d \n", len(r.Exits))
 				nr = carveOutRoom(x, y-1)
 				moveExitFromGridCellToRoom(x,   y-1, nr, geom.DIR_UP)
 				moveExitFromGridCellToRoom(x,   y,   or, e)
+				printf("AFTER DIR_UP moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}else			
 			if e == geom.DIR_UP {
-				//printf("AFTER DIR_UP removeExitFromGrid ------num exits: %d \n", len(r.Exits))
 				nr = carveOutRoom(x, y+1)
 				moveExitFromGridCellToRoom(x,   y+1, nr, geom.DIR_DOWN)
 				moveExitFromGridCellToRoom(x,   y,   or, e)
+				printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}
 		}
 	}
@@ -193,13 +242,14 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 
 	var n i32 = len(c.Exits)
 	for i := i32.sub(n, 1); i >= 0; i = i32.sub(i, 1) {
-		if log { str.print(getTextForDir(c.Exits[i]))
-		}
+		var s str = getTextForDir(c.Exits[i])
 		
 		if c.Exits[i] == dir {
-			if log { str.print("***************************FOUND removable")
-			}
+			s = str.concat(s, "  <----------------- REMOVING")
 			c.Exits = remove(c.Exits, i)
+		}
+		
+		if log { str.print(s)
 		}
 	}
 	
@@ -252,7 +302,7 @@ func GetGridPos (i i32) (out app.Vec2i) {
 
 var currExit i32
 func GetExitAt (i i32) (out i32) {
-	printf("len(Carvs[i].Exits): %d\n", len(Carvs[i].Exits))
+	//printf("len(Carvs[i].Exits): %d\n", len(Carvs[i].Exits))
 	
 	if i < len(Carvs[i].Exits) {
 		out = Carvs[i].Exits[currExit]
