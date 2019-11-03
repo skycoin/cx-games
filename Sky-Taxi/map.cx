@@ -46,10 +46,8 @@ type CarvedRoom struct {
 
 
 func Init () {
-	//showActiveStatii()
 	setupPossibleExits()
-	//showActiveStatii()
-	carveOutConnectedCells()
+	carveOutConnectedRooms()
 }
 
 
@@ -58,12 +56,11 @@ func DrawQuads () {
 	var y f32
 
 	draw.QuadsBegin()
-		var n i32 = GetNumCarvs()
+		var n i32 = len(Carvs)
 		//printf("murrr: %d \n", n)
 		for i := 0; i < n; i++ {
-			var p app.Vec2i = GetGridPos(i)
-			var mulX f32 = f32.mul(i32.f32(p.X), CellSpan)
-			var mulY f32 = f32.mul(i32.f32(p.Y), CellSpan)
+			var mulX f32 = f32.mul(i32.f32(Carvs[i].Pos.X), CellSpan)
+			var mulY f32 = f32.mul(i32.f32(Carvs[i].Pos.Y), CellSpan)
 			
 			var b f32 = f32.add(-1.0, mulY)
 			var l f32 = f32.add(-1.0, mulX)
@@ -75,13 +72,11 @@ func DrawQuads () {
 			
 			// connection rects 
 			draw.SetColor(0.0, 0.0, 0.0) // black 
-			var ins f32 = 0.05 // inset 
+			var ins f32 = 0.085 // inset 
 			var ex i32 // exit 
 			
 			for j := 0; j < len(Carvs[i].Exits); j++ {
 				var ex i32 = Carvs[i].Exits[j]
-				i32.print(j)
-
 
 				if ex == geom.DIR_LEFT {
 					draw.Quad(t-ins, r-ins, b+ins, l)
@@ -98,16 +93,6 @@ func DrawQuads () {
 			}
 		}
 	draw.End()
-}
-
-
-func GetNumCarvs () (out i32) {
-	out = len(Carvs)
-}
-
-
-func GetGridPos (i i32) (out app.Vec2i) {
-	out = Carvs[i].Pos
 }
 
 
@@ -154,7 +139,7 @@ func getRandomCarvedRoom () (x i32, y i32, c Cell, carvedRoomId i32) {
 }
 
 
-func carveOutConnectedCells () {
+func carveOutConnectedRooms () {
 	var x i32
 	var y i32
 	var oc Cell  // older cell 
@@ -180,7 +165,7 @@ func carveOutConnectedCells () {
 		}else{
 			// old cell, old (carved) room id 
 			x, y, oc, orId = getRandomCarvedRoom()
-			//printf("carveOutConnectedCells() len(r.Exits): %d \n", len(r.Exits))
+			//printf("carveOutConnectedRooms() len(r.Exits): %d \n", len(r.Exits))
 			
 			for len(oc.Exits) < 1 {
 				x, y, oc, orId = getRandomCarvedRoom()
