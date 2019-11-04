@@ -3,15 +3,16 @@
 In our imagined world for this game, the universe is filled with solid
 rock everywhere.
 
-We have a limited grid of possibilities, where we will carve out air space
+We have a cell grid of possibilities.  We carve out air/room space
 in MOST of those cells.  Some will remain
 solid rock, for a bit of variety in overall map shape.
 
 I THINK OF THE Y DIMENSION INCREASING UPWARDS
-	SO KEEP THIS IN MIND WITH geom.DIR_...ECTIONS AND THE "Cells" GRID INDEXING 
+	SO KEEP THIS IN MIND WITH geom.DIR_* (directions) 
+	& THE "Cells" GRID INDEXING 
 	
 This is how it is by default in OpenGL space, Unity and many modern 3D
-apps, so I think it's important to generally keep synchronized with this.
+apps, so I think it's important to generally use this convention. 
 
 */
 
@@ -60,15 +61,17 @@ func DrawQuads () {
 		var n i32 = len(Carvs)
 		//printf("murrr: %d \n", n)
 		for i := 0; i < n; i++ {
-			var mulX f32 = f32.mul(i32.f32(Carvs[i].Pos.X), CellSpan)
-			var mulY f32 = f32.mul(i32.f32(Carvs[i].Pos.Y), CellSpan)
+			var x i32 = Carvs[i].Pos.X
+			var y i32 = Carvs[i].Pos.Y
+			var mulX f32 = f32.mul(i32.f32(x), CellSpan)
+			var mulY f32 = f32.mul(i32.f32(y), CellSpan)
 			
 			var b f32 = f32.add(-1.0, mulY)
 			var l f32 = f32.add(-1.0, mulX)
 			var t f32 = b + CellSpan
 			var r f32 = l + CellSpan
 			
-			draw.SetSequentiallyCycledColor(i)
+			draw.SetSequentiallyCycledColor(i32.add(x, i32.mul(y, NumCellsAcross)))
 			draw.Quad(t, r, b, l)
 			
 			// connection rects 
@@ -180,6 +183,7 @@ func carveOutConnectedRooms () {
 
 			str.print("___________________________________________________________")
 			if e == geom.DIR_LEFT {
+				makeConnection(x, y, x-1, y)
 				nr = carveOutRoom(x-1, y, len(Carvs))
 				removeExitFromGrid(x-1, y,   geom.DIR_RIGHT)
 				removeExitFromGrid(x,   y,   e)
@@ -192,6 +196,7 @@ func carveOutConnectedRooms () {
 				//printf("AFTER DIR_RIGHT moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}else			
 			if e == geom.DIR_RIGHT {
+				makeConnection(x, y, x+1, y)
 				nr = carveOutRoom(x+1, y, len(Carvs))
 				removeExitFromGrid(x+1, y,   geom.DIR_LEFT)
 				removeExitFromGrid(x,   y,   e)
@@ -204,6 +209,7 @@ func carveOutConnectedRooms () {
 				//printf("AFTER DIR_LEFT moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}else			
 			if e == geom.DIR_DOWN {
+				makeConnection(x, y, x, y-1)
 				nr = carveOutRoom(x, y-1, len(Carvs))
 				removeExitFromGrid(x,   y-1, geom.DIR_UP)
 				removeExitFromGrid(x,   y,   e)
@@ -216,6 +222,7 @@ func carveOutConnectedRooms () {
 				//printf("AFTER DIR_UP moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}else			
 			if e == geom.DIR_UP {
+				makeConnection(x, y, x, y+1)
 				nr = carveOutRoom(x, y+1, len(Carvs))
 				removeExitFromGrid(x,   y+1, geom.DIR_DOWN)
 				removeExitFromGrid(x,   y,   e)
@@ -242,6 +249,20 @@ func carveOutRoom (x i32, y i32, carvedId i32) (out CarvedRoom) {
 	out.Pos.X = x
 	out.Pos.Y = y
 	Cells[y][x].CarvedId = carvedId
+}
+
+
+// old x,y, new x,y 
+func makeConnection (oX i32, oY i32, nX i32, nY i32) {
+	if Cells[nY][nX].CarvedId == app.MAX_I32 {
+		str.print("NEW CARVED ROOM")
+	}else{
+		str.print("JUST REMOVE WALL")
+	}
+	
+	printf("OLD room %d, %d \n", oX, oY)
+	
+	printf("NEW room %d, %d \n", nX, nY)
 }
 
 
