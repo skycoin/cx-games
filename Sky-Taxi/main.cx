@@ -10,6 +10,22 @@ import "inputs"
 import "map"
 import "mov"
 
+/*
+
+Name ideas:
+
+Pongolf
+Pong Golf
+Pong Putt
+Putt Pong
+
+if lining walls or populating rooms with bricks: 
+
+Ponganoid
+Puttanoid
+
+*/
+
 
 
 // graphics 

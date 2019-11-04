@@ -178,68 +178,33 @@ func carveOutConnectedRooms () {
 			
 			// random (exit) id 
 			var ri i32 = i32.rand(0, len(oc.Exits))
-			var e /* exit */ i32 = oc.Exits[ri]
-			var nr CarvedRoom // new room 
+			var e /* exit direction (from old) */ i32 = oc.Exits[ri]
 
 			str.print("___________________________________________________________")
 			if e == geom.DIR_LEFT {
-				makeConnection(x, y, x-1, y)
-				nr = carveOutRoom(x-1, y, len(Carvs))
-				removeExitFromGrid(x-1, y,   geom.DIR_RIGHT)
-				removeExitFromGrid(x,   y,   e)
-				nr.Exits          = append(
-				nr.Exits,          geom.DIR_RIGHT)
+				drillConnectingWallsAndMaybeRoom(x, y, e, x-1, y)
 				Carvs[orId].Exits = append(
 				Carvs[orId].Exits, e)
-				printf("-----------------------------DIR_LEFT+++++ - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
-				printf("-----------------------------DIR_RIGHT++++ - nr.Exits: %d \n", len(nr.Exits))
-				//printf("AFTER DIR_RIGHT moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
+				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}else			
 			if e == geom.DIR_RIGHT {
-				makeConnection(x, y, x+1, y)
-				nr = carveOutRoom(x+1, y, len(Carvs))
-				removeExitFromGrid(x+1, y,   geom.DIR_LEFT)
-				removeExitFromGrid(x,   y,   e)
-				nr.Exits          = append(
-				nr.Exits,          geom.DIR_LEFT)
+				drillConnectingWallsAndMaybeRoom(x, y, e, x+1, y)
 				Carvs[orId].Exits = append(
 				Carvs[orId].Exits, e)
-				printf("-----------------------------DIR_RIGHT++++ - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
-				printf("-----------------------------DIR_LEFT+++++ - nr.Exits: %d \n", len(nr.Exits))
-				//printf("AFTER DIR_LEFT moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
+				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}else			
 			if e == geom.DIR_DOWN {
-				makeConnection(x, y, x, y-1)
-				nr = carveOutRoom(x, y-1, len(Carvs))
-				removeExitFromGrid(x,   y-1, geom.DIR_UP)
-				removeExitFromGrid(x,   y,   e)
-				nr.Exits          = append(
-				nr.Exits,          geom.DIR_UP)
+				drillConnectingWallsAndMaybeRoom(x, y, e, x, y-1)
 				Carvs[orId].Exits = append(
 				Carvs[orId].Exits, e)
-				printf("-----------------------------DIR_DOWN++++ - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
-				printf("-----------------------------DIR_UP++++++ - nr.Exits: %d \n", len(nr.Exits))
-				//printf("AFTER DIR_UP moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
+				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}else			
 			if e == geom.DIR_UP {
-				makeConnection(x, y, x, y+1)
-				nr = carveOutRoom(x, y+1, len(Carvs))
-				removeExitFromGrid(x,   y+1, geom.DIR_DOWN)
-				removeExitFromGrid(x,   y,   e)
-				nr.Exits          = append(
-				nr.Exits,          geom.DIR_DOWN)
+				drillConnectingWallsAndMaybeRoom(x, y, e, x, y+1)
 				Carvs[orId].Exits = append(
 				Carvs[orId].Exits, e)
-				printf("-----------------------------DIR_UP++++++ - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
-				printf("-----------------------------DIR_DOWN++++ - nr.Exits: %d \n", len(nr.Exits))
-				//printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
+				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}
-	
-			
-			
-			Carvs = append(
-			Carvs, nr)
-			printf("OLD room %d, %d   -   len(Carvs): %d \n", x, y, len(Carvs))
 		}
 	}
 }
@@ -253,16 +218,41 @@ func carveOutRoom (x i32, y i32, carvedId i32) (out CarvedRoom) {
 
 
 // old x,y, new x,y 
-func makeConnection (oX i32, oY i32, nX i32, nY i32) {
-	if Cells[nY][nX].CarvedId == app.MAX_I32 {
-		str.print("NEW CARVED ROOM")
+func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) {
+	var tr CarvedRoom // target room (of wall drilling) 
+	var targId i32 = Cells[nY][nX].CarvedId
+
+	if targId == app.MAX_I32 {
+		str.print("CARVE ROOM")
+		
+		tr = carveOutRoom(nX, nY, len(Carvs))
+		
+		tr.Exits = append(
+		tr.Exits, geom.GetInvertedDir(dir))
+		
+		Carvs = append(
+		Carvs, tr)
 	}else{
-		str.print("JUST REMOVE WALL")
+		str.print("DRILL WALL")
+		
+		tr = Carvs[targId]
+		
+		tr.Exits = append(
+		tr.Exits, geom.GetInvertedDir(dir))
 	}
 	
-	printf("OLD room %d, %d \n", oX, oY)
+	printf("OLD room %d, %d   %s \n", oX, oY, geom.GetTextForDir(dir))
+	removeExitFromGrid(oX, oY, dir)
 	
-	printf("NEW room %d, %d \n", nX, nY)
+	printf("NEW room %d, %d   %s \n", nX, nY, geom.GetTextForDir(geom.GetInvertedDir(dir)))
+	removeExitFromGrid(nX, nY, geom.GetInvertedDir(dir))
+
+	printf("--------------------- tr.Exits: %d \n", len(tr.Exits))
+	printf("len(Carvs): %d \n", len(Carvs))
+
+	//if targId != app.MAX_I32 {
+	//	Carvs[targId] = tr
+	//}
 }
 
 
@@ -271,7 +261,7 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 	
 	if log { 
 		str.print("___________________________________________________________")
-		printf("removeExitFromGrid(%d, %d, %s) \n", x, y, getTextForDir(dir))
+		printf("removeExitFromGrid(%d, %d, %s) \n", x, y, geom.GetTextForDir(dir))
 	}
 	
 	var c Cell = Cells[y][x]
@@ -282,7 +272,7 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 
 	var n i32 = len(c.Exits)
 	for i := i32.sub(n, 1); i >= 0; i = i32.sub(i, 1) {
-		var s str = getTextForDir(c.Exits[i])
+		var s str = geom.GetTextForDir(c.Exits[i])
 		
 		if c.Exits[i] == dir {
 			s = str.concat(s, "  <----------------- REMOVING")
@@ -294,37 +284,5 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 	}
 	
 	if log { printf("------num exits INSIDE-AFTER: %d \n", len(c.Exits))
-	}
-}
-
-
-func getInversion (dir i32) (out i32) { // (opposite direction) 
-	if dir == geom.DIR_LEFT {
-		out = geom.DIR_RIGHT
-	}else	
-	if dir == geom.DIR_RIGHT {
-		out = geom.DIR_LEFT
-	}else	
-	if dir == geom.DIR_DOWN {
-		out = geom.DIR_UP
-	}else	
-	if dir == geom.DIR_UP {
-		out = geom.DIR_DOWN
-	}
-}
-
-
-func getTextForDir (dir i32) (out str) {
-	if dir ==  geom.DIR_LEFT {
-		out = "     DIR_LEFT"
-	}else	
-	if dir ==  geom.DIR_RIGHT {
-		out = "     DIR_RIGHT"
-	}else	
-	if dir ==  geom.DIR_DOWN {
-		out = "     DIR_DOWN"
-	}else	
-	if dir ==  geom.DIR_UP {
-		out = "     DIR_UP"
 	}
 }
