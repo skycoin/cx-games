@@ -3,24 +3,7 @@ package inputs
 import "glfw"
 
 import "app"
-/*
-import "menu"
-import "space"
-import "time"
-*/
 
-/*
-// keys 
-var	GLFW_KEY_W i32
-var	GLFW_KEY_A i32
-var	GLFW_KEY_S i32
-var	GLFW_KEY_D i32
-	// keys 
-	GLFW_KEY_W = 87
-	GLFW_KEY_A = 65
-	GLFW_KEY_S = 83
-	GLFW_KEY_D = 68
-*/
 
 
 func Init () {
@@ -31,8 +14,8 @@ func Init () {
 
 func Update () {
 	str.print("inputs.Update()")
-	//if HoldingGoRight() {	}
 }
+
 
 func HoldingGoLeft () (out bool) {
 	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_A), 1) ||
