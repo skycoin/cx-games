@@ -29,7 +29,8 @@ var Cells [4][4]Cell   // FIXME: use constants when we can
 var Carvs []CarvedRoom // used/carved-out locations of the Cells grid 
 
 type Cell struct {
-	Exits     []i32
+	CarvedId i32 // MAX_I32 == solid rock 
+	Exits    []i32
 }
 
 type CarvedRoom struct {
@@ -100,6 +101,7 @@ func setupPossibleExits () {
 	for iY := 0; iY < NumCellsAcross; iY++ {
 	for iX := 0; iX < NumCellsAcross; iX++ {
 		var r Cell
+		r.CarvedId = app.MAX_I32
 		
 		if iX > 0 {
 			r.Exits = append(
@@ -155,13 +157,13 @@ func carveOutConnectedRooms () {
 			// make anywhere 
 			x = i32.rand(0, NumCellsAcross)
 			y = i32.rand(0, NumCellsAcross)
-			var cr CarvedRoom = carveOutRoom(x, y)
+			var cr CarvedRoom = carveOutRoom(x, y, len(Carvs))
 	
 			
 			
 			Carvs = append(
 			Carvs, cr)
-			printf("carveOutRoom(%d, %d)   -   len(Carvs): %d \n", x, y, len(Carvs))
+			printf("carved FIRST new @ %d, %d   -   len(Carvs): %d \n", x, y, len(Carvs))
 		}else{
 			// old cell, old (carved) room id 
 			x, y, oc, orId = getRandomCarvedRoom()
@@ -176,52 +178,53 @@ func carveOutConnectedRooms () {
 			var e /* exit */ i32 = oc.Exits[ri]
 			var nr CarvedRoom // new room 
 
+			str.print("___________________________________________________________")
 			if e == geom.DIR_LEFT {
-				nr = carveOutRoom(x-1, y)
-				moveExitFromGridCellToRoom(x-1, y,   geom.DIR_RIGHT)
-				moveExitFromGridCellToRoom(x,   y,   e)
+				nr = carveOutRoom(x-1, y, len(Carvs))
+				removeExitFromGrid(x-1, y,   geom.DIR_RIGHT)
+				removeExitFromGrid(x,   y,   e)
 				nr.Exits          = append(
 				nr.Exits,          geom.DIR_RIGHT)
 				Carvs[orId].Exits = append(
 				Carvs[orId].Exits, e)
-				printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
-				printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - nr.Exits: %d \n", len(nr.Exits))
+				printf("-----------------------------DIR_LEFT+++++ - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
+				printf("-----------------------------DIR_RIGHT++++ - nr.Exits: %d \n", len(nr.Exits))
 				//printf("AFTER DIR_RIGHT moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}else			
 			if e == geom.DIR_RIGHT {
-				nr = carveOutRoom(x+1, y)
-				moveExitFromGridCellToRoom(x+1, y,   geom.DIR_LEFT)
-				moveExitFromGridCellToRoom(x,   y,   e)
+				nr = carveOutRoom(x+1, y, len(Carvs))
+				removeExitFromGrid(x+1, y,   geom.DIR_LEFT)
+				removeExitFromGrid(x,   y,   e)
 				nr.Exits          = append(
 				nr.Exits,          geom.DIR_LEFT)
 				Carvs[orId].Exits = append(
 				Carvs[orId].Exits, e)
-				printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
-				printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - nr.Exits: %d \n", len(nr.Exits))
+				printf("-----------------------------DIR_RIGHT++++ - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
+				printf("-----------------------------DIR_LEFT+++++ - nr.Exits: %d \n", len(nr.Exits))
 				//printf("AFTER DIR_LEFT moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}else			
 			if e == geom.DIR_DOWN {
-				nr = carveOutRoom(x, y-1)
-				moveExitFromGridCellToRoom(x,   y-1, geom.DIR_UP)
-				moveExitFromGridCellToRoom(x,   y,   e)
+				nr = carveOutRoom(x, y-1, len(Carvs))
+				removeExitFromGrid(x,   y-1, geom.DIR_UP)
+				removeExitFromGrid(x,   y,   e)
 				nr.Exits          = append(
 				nr.Exits,          geom.DIR_UP)
 				Carvs[orId].Exits = append(
 				Carvs[orId].Exits, e)
-				printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
-				printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - nr.Exits: %d \n", len(nr.Exits))
+				printf("-----------------------------DIR_DOWN++++ - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
+				printf("-----------------------------DIR_UP++++++ - nr.Exits: %d \n", len(nr.Exits))
 				//printf("AFTER DIR_UP moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}else			
 			if e == geom.DIR_UP {
-				nr = carveOutRoom(x, y+1)
-				moveExitFromGridCellToRoom(x,   y+1, geom.DIR_DOWN)
-				moveExitFromGridCellToRoom(x,   y,   e)
+				nr = carveOutRoom(x, y+1, len(Carvs))
+				removeExitFromGrid(x,   y+1, geom.DIR_DOWN)
+				removeExitFromGrid(x,   y,   e)
 				nr.Exits          = append(
 				nr.Exits,          geom.DIR_DOWN)
 				Carvs[orId].Exits = append(
 				Carvs[orId].Exits, e)
-				printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
-				printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - nr.Exits: %d \n", len(nr.Exits))
+				printf("-----------------------------DIR_UP++++++ - Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
+				printf("-----------------------------DIR_DOWN++++ - nr.Exits: %d \n", len(nr.Exits))
 				//printf("AFTER DIR_DOWN moveExitFromGridCellToRoom() - len(OldCell.Exits): %d \n", len(oc.Exits))
 			}
 	
@@ -229,28 +232,21 @@ func carveOutConnectedRooms () {
 			
 			Carvs = append(
 			Carvs, nr)
-			printf("carveOutRoom(%d, %d)   -   len(Carvs): %d \n", x, y, len(Carvs))
+			printf("OLD room %d, %d   -   len(Carvs): %d \n", x, y, len(Carvs))
 		}
 	}
 }
 
 
-func carveOutRoom (x i32, y i32) (out CarvedRoom) {
+func carveOutRoom (x i32, y i32, carvedId i32) (out CarvedRoom) {
 	out.Pos.X = x
 	out.Pos.Y = y
-}
-
-
-func moveExitFromGridCellToRoom (x i32, y i32, dir i32) {
-	removeExitFromGrid(x, y, dir)
-
-	var c Cell = Cells[y][x]
-	printf("AFTER removeExitFromGrid() - len(Cell.Exits): %d \n", len(c.Exits))
+	Cells[y][x].CarvedId = carvedId
 }
 
 
 func removeExitFromGrid (x i32, y i32, dir i32) {
-	var log bool = true//false
+	var log bool = false
 	
 	if log { 
 		str.print("___________________________________________________________")
