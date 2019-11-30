@@ -4,16 +4,16 @@ import "app"
 
 
 
-var EMPTY_CELL i32 = app.I32_MAX
+var EMPTY_CELL i32 = app.MAX_I32
 
 // 0,0 is the bottom left corner, of map/playfield cells 
 var NUM_CELLS_X i32 = 9
 var NUM_CELLS_Y i32 = 17
 
 // fractions of screen width (2.0, -1.0 to 1.0) 
-var fToLEdge       f32 = 18.0 / i32.f32(app.WIDTH)
+var fToLEdge       f32 = 18.0 / i32.f32(app.START_WIDTH)
 var LEdge          f32 = f32.add(-1.0, f32.mul(fToLEdge, 2.0))
-var Width          f32 = f32.div(400.0, i32.f32(app.WIDTH)) * 2.0
+var Width          f32 = f32.div(400.0, i32.f32(app.START_WIDTH)) * 2.0
 var CellWidth      f32 = f32.div(Width, i32.f32(NUM_CELLS_X))
 var CellHeight     f32 = f32.mul(CellWidth, 0.68)
 var CellWidthHalf  f32 = f32.div(CellWidth, 2.0)

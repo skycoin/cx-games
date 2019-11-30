@@ -35,7 +35,7 @@ func InitFontsAndMenuItems() {
 		menu.Items[m][i].Text)
 		menu.Items[m][i].Wid = i32.f32(w)
 		menu.Items[m][i].Hei = i32.f32(h)
-		menu.Items[m][i].Left = (i32.f32(app.WIDTH) - menu.Items[m][i].Wid) / 2.0
+		menu.Items[m][i].Left = (i32.f32(app.START_WIDTH) - menu.Items[m][i].Wid) / 2.0
 		
 		printf("%s ---- %d,%d ---- '%s' \n", font, w, h, menu.Items[m][i].Text)
 	}
@@ -65,7 +65,7 @@ func allText () {
 			scoreText()
 			
 			if app.Mode == app.MODE_GAME_OVER {
-				drawAllOutlinedGlText(18.0, i32.f32(app.WIDTH / 2), 1.0)
+				drawAllOutlinedGlText(18.0, i32.f32(app.START_WIDTH / 2), 1.0)
 			}
 		gl.Disable(gl.DEPTH_TEST)
 	}
@@ -77,7 +77,7 @@ func menuTexts () {
 	gl.LoadIdentity()
 
 	// greater y (value) 
-	var gY f32 = i32.f32(app.HEIGHT - 1) 
+	var gY f32 = i32.f32(app.START_HEIGHT - 1) 
 
 	//drawAllOutlinedGlText(5.0)
 
@@ -104,8 +104,8 @@ func menuTexts () {
 
 
 func scoreText() {	
-	var sX f32 = i32.f32(i32.sub(app.WIDTH, 59))
-	var sY f32 = i32.f32(93) //app.HEIGHT)
+	var sX f32 = i32.f32(i32.sub(app.START_WIDTH, 59))
+	var sY f32 = i32.f32(93) //app.START_HEIGHT)
 	gl.LoadIdentity()
 	gl.Color3f(1.0, 1.0, 1.0)
 	gltext.Printf("Roboto28", sX, sY, shape.PlayerScoreTxt)

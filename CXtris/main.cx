@@ -63,6 +63,9 @@ up to the total score printout
 */
 
 func main () {
+	app.START_WIDTH  i32 = 590
+	app.START_HEIGHT i32 = 960
+	app.Init("C X t r i s", "Move with the W,A,S,D keys.")
 	initAPIs()
 	initGame()
 
@@ -83,7 +86,7 @@ func main () {
 func initAPIs () {
 	glfw.Init()
 
-	glfw.CreateWindow("window", app.WIDTH, app.HEIGHT, app.NAME)
+	glfw.CreateWindow("window", app.START_WIDTH, app.START_HEIGHT, app.Name)
 	glfw.MakeContextCurrent("window")
 
 	gl.Init()
@@ -100,7 +103,6 @@ func initAPIs () {
 
 
 func initGame () {
-	app.Init()
 	shape.Init()
 	draw.Init()
 	inputs.Init()
