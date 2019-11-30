@@ -22,9 +22,35 @@ var Name     str
 var Controls str
 var Colors   []Color3
 
-type Vec2i struct {
+
+// modes 
+var MODE_MENU_MAIN    i32
+var MODE_MENU_OPTIONS i32 = 1
+var MODE_PLAYING      i32 = 2
+var MODE_GAME_OVER    i32 = 3
+var MODE_MAX          i32 = 4
+var Mode i32 = MODE_MENU_MAIN
+
+// (CXtris) 
+// FIXME: these should be updated from window change events 
+var PixelWid           f32
+var PixelHei           f32
+var ScreenSizeInPixels Vec2I
+
+
+type Vec2I struct {
 	X i32
 	Y i32
+}
+
+type Vec2F64 struct {
+	X f64
+	Y f64
+}
+
+type Vec2 struct {
+	X f32
+	Y f32
 }
 
 type Color3 struct {
@@ -41,6 +67,9 @@ func Init (name str, controls str) {
 	Controls = controls
 	CliIntro()
 	
+	PixelWid = 2.0 / i32.f32(START_WIDTH)
+	PixelHei = 2.0 / i32.f32(START_HEIGHT)
+
 	// colors 
 	var f f32 = 0.2
 	addColor(0.9, 0.0, 0.0) // red 

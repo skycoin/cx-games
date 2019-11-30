@@ -41,7 +41,7 @@ type CarvedRoom struct {
 	Bottom f32
 	Left   f32*/
 	
-	Pos       app.Vec2i
+	Pos       app.Vec2I
 	Exits     []i32
 }
 
