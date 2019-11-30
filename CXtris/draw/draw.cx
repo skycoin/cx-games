@@ -19,7 +19,7 @@ var dir           str
 func Init () {
 	str.print("draw.Init ()")
 	
-	dir := os.GetWorkingDirectory()
+	dir = os.GetWorkingDirectory()
 	InitFontsAndMenuItems()
 
 	// pics 
