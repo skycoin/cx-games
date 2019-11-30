@@ -35,8 +35,11 @@ type Color3 struct {
 
 
 
-func Init () {
+func Init (name str, controls str) {
 	str.print("app.Init ()")
+	Name = name
+	Controls = controls
+	CliIntro()
 	
 	// colors 
 	var f f32 = 0.2

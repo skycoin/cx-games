@@ -87,10 +87,8 @@ func main () {
 
 
 func init () {
-	app.Name = "S K Y   T A X I"
-	app.Controls = "Move with the W,A,S,D keys."
-	app.CliIntro()
-	
+	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
+
 	ball = entities.Ball{
 		radius: 0.05,
 		x: 0.0,
@@ -110,7 +108,7 @@ func init () {
 	glfw.MakeContextCurrent(app.Name)
 	gl.Init()
 	
-	app.Init()
+	
 	inputs.Init()
 	map.Init()
 }
