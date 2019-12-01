@@ -2,7 +2,6 @@ package inputs
 
 
 
-/*
 var MousePointer       Vec2
 var MousePointerX64    f64
 var MousePointerY64    f64
@@ -29,7 +28,7 @@ func maybeEnableMousePointer (key i32) {
 
 		app.Mode = app.MODE_MENU_MAIN
 		setMousePointer(true)
-		shape.StartNewGameSession()
+		//shape.StartNewGameSession()
 	}
 }
 
@@ -51,23 +50,23 @@ func blockyMouseMovement () {
 		dist.Y = f64.add(dist.Y, deltaY64)
 	
 		if dist.X > mouseMoveThreshold {
-			shape.MoveByOffset(1, 0)
+			//shape.MoveByOffset(1, 0)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		} else 
 		if dist.X < -mouseMoveThreshold {
-			shape.MoveByOffset(-1, 0)
+			//shape.MoveByOffset(-1, 0)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		}	
 
 		if dist.Y > mouseMoveThreshold {
-			shape.MoveByOffset(0, -1)
+			//shape.MoveByOffset(0, -1)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		} else
 		if dist.Y < -mouseMoveThreshold {
-			//shape.MoveByOffset(0, 1)   NO NEED TO MOVE UP 
+			// NO NEED TO MOVE UP 
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		}
@@ -77,6 +76,7 @@ func blockyMouseMovement () {
 
 // buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
+	/*
 	if action == 0 { // release 
 		if button == 0 { // LMB 
 			HoldingLeftButton = false
@@ -89,7 +89,7 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 			HoldingLeftButton = true
 
 			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
-				respondToMenu()
+				//respondToMenu()
 			}
 			
 			shape.PlayerRotate(-1)
@@ -99,6 +99,7 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 		} else { // MMB or extra buttons (would be unwise to require more than 3 buttons) 
 		}
 	}
+	*/
 }
 
 
@@ -111,6 +112,7 @@ var deltaX64 f64
 var deltaY64 f64
 var dist Vec2F64 // distance since latest piece movement 
 func onCursorPosEvent (window str, x f64, y f64) {
+	/*
 	oldV.X = MousePointer.X
 	oldV.Y = MousePointer.Y
 	old64.X = MousePointerX64
@@ -121,7 +123,7 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	
 	// allow dragging a slider handle 
 	if HoldingLeftButton && app.Mode <= app.MODE_MENU_OPTIONS {
-		respondToMenu()
+		//respondToMenu()
 	}
 	
 	
@@ -146,5 +148,5 @@ func onCursorPosEvent (window str, x f64, y f64) {
 		
 	//printf("onCursorPosEvent %f, %f \n", deltaX64, deltaY64)
 	//printf("onCursorPosEvent %f, %f \n", MousePointer.X, MousePointer.Y)
+	*/
 }
-*/
