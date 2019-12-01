@@ -16,6 +16,11 @@ func respondToMenu () {
 	var i i32
 	s, i = menu.GetHoveredItem(app.Mode)
 
+	/*
+	if s == menu.ItemText {
+		menu.Setting = menu.SetSliderValue(i, f64.f32(MousePointerX64))
+	} else
+	*/
 	if s == menu.DebrisHeightText {
 		menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(MousePointerX64))
 		shape.StartNewGameSession()

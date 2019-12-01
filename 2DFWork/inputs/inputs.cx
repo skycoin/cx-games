@@ -11,34 +11,11 @@ func Init () {
 
 	// events/callbacks 
 	glfw.SetKeyCallback        (app.Name, "onKeyEvent")
-	//glfw.SetMouseButtonCallback(app.Name, "onMouseButtonEvent")
-	//glfw.SetCursorPosCallback  (app.Name, "onCursorPosEvent")
+	glfw.SetMouseButtonCallback(app.Name, "onMouseButtonEvent")
+	glfw.SetCursorPosCallback  (app.Name, "onCursorPosEvent")
 }
 
 
 func Update () {
 	str.print("inputs.Update ()")
 }
-
-
-
-/*
-func respondToMenu () {
-	var s str
-	var i i32
-	s, i = menu.GetHoveredItem(app.Mode)
-
-	if s == menu.ItemText {
-		menu.Setting = menu.SetSliderValue(i, f64.f32(MousePointerX64))
-	} else
-	if s == menu.Play {
-		app.Mode = app.MODE_PLAYING
-	} else
-	if s == menu.Options {
-		app.Mode = app.MODE_MENU_OPTIONS
-	} else
-	if s == menu.Quit {
-		glfw.SetShouldClose(app.Name, true)
-	}
-}
-*/
