@@ -3,6 +3,7 @@ package main
 import "glfw"
 
 import "app"
+import "inputs"
 import "map"
 import "menu"
 import "shape"
@@ -22,15 +23,15 @@ func respondToMenu () {
 	} else
 	*/
 	if s == menu.DebrisHeightText {
-		menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(MousePointerX64))
+		menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
 		shape.StartNewGameSession()
 	} else
 	if s == menu.SpeedText {
-		time.DropSpeed =    menu.SetSliderValue(i, f64.f32(MousePointerX64))
+		time.DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
 		time.CalcDropTime()
 	} else
 	if s == menu.Play {
-		setMousePointer(false)
+		inputs.SetMousePointer(false)
 		shape.PlayerScore    =  0
 		shape.PlayerScoreTxt = "0"
 		shape.StartNewGameSession

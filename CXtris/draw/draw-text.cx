@@ -15,12 +15,13 @@ var dark  f32 = 0.3
 func InitFontsAndMenuItems() {
 	gl.DepthFunc(gl.LESS)
 
-	file := str.concat(dir, "assets/fonts/roboto-light.ttf")
+	file := /*str.concat(dir, */"assets/fonts/roboto-light.ttf"//)
 	loadFontSized(file, f32.i32(menu.MainSize))
 	loadFontSized(file, f32.i32(menu.OptionsSize))
 	loadFontSized(file, 28)
 	loadFontSized(file, 100)
 	
+	/*
 	menu.Init()
 
 	var nm i32 = len(menu.Items)    // nm == num menus 
@@ -40,15 +41,19 @@ func InitFontsAndMenuItems() {
 		printf("%s ---- %d,%d ---- '%s' \n", font, w, h, menu.Items[m][i].Text)
 	}
 	}
+	*/
 }
 
 
 func loadFontSized (fn str, size i32) { // filename 
 	s := str.concat("Roboto", sprintf("%d", size))
+	str.print(s)
 	
+	/*
 	os.Open(fn)
 	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
 	os.Close(fn)
+	*/
 }
 
 
@@ -79,8 +84,9 @@ func menuTexts () {
 	// greater y (value) 
 	var gY f32 = i32.f32(app.START_HEIGHT - 1) 
 
-	//drawAllOutlinedGlText(5.0)
+	///////////////drawAllOutlinedGlText(5.0)
 
+	/*
 	for i := i32.sub(len(menu.Items[m]), 1); i >= 0; i-- {
 		var y f32 = f32.sub(gY, menu.Items[m][i].Hei)
 
@@ -100,22 +106,25 @@ func menuTexts () {
 			
 		gY = y
 	}
+	*/
 }
 
 
-func scoreText() {	
+func scoreText () {
+/*	
 	var sX f32 = i32.f32(i32.sub(app.START_WIDTH, 59))
 	var sY f32 = i32.f32(93) //app.START_HEIGHT)
 	gl.LoadIdentity()
 	gl.Color3f(1.0, 1.0, 1.0)
 	gltext.Printf("Roboto28", sX, sY, shape.PlayerScoreTxt)
+*/
 }
 
 
 // UNUSED for now.  Whacky Stack may never need this, because 
 // we may only be printing on non-noisy backgrounds (or printing
 // fly-up text, which retains clarity by virtue of it's motion) 
-func drawAllOutlinedGlText(x f32, y f32, scale f32) {
+func drawAllOutlinedGlText (x f32, y f32, scale f32) {
 	var alpha f32 = 1.0
 	gl.Scalef(scale, scale, 0.0)
 
@@ -130,7 +139,7 @@ func drawAllOutlinedGlText(x f32, y f32, scale f32) {
 
 
 // x & y are offsets 
-func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
+func printTextWithColor (x f32, y f32, r f32, g f32, b f32, a f32) {
 	gl.Color4f(r, g, b, a)
 	gltext.Printf("Roboto100", x, y, "GAME OVER")
 }

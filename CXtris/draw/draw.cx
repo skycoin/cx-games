@@ -17,15 +17,16 @@ var dir           str
 
 
 func Init () {
-	str.print("draw.Init ()")
+	str.print("draw.Init () -----------nextup is dir:")
 	
 	dir = os.GetWorkingDirectory()
+	str.print(dir)
 	InitFontsAndMenuItems()
 
 	// pics 
-	PicBackground = gl.NewTexture(str.concat(dir, "assets/textures/background.jpg"))
-	PicStar       = gl.NewTexture(str.concat(dir, "assets/textures/star.png"))
-	PicShapeTile  = gl.NewTexture(str.concat(dir, "assets/textures/tile.png"))
+	PicBackground = gl.NewTexture(/*str.concat(dir, */"../CXtris/assets/textures/background.jpg")//)
+	PicStar       = gl.NewTexture(/*str.concat(dir, */"../CXtris/assets/textures/star.png")//)
+	PicShapeTile  = gl.NewTexture(/*str.concat(dir, */"../CXtris/assets/textures/tile.png")//)
 }
 
 
@@ -235,6 +236,7 @@ func NextShape () {
 
 var alpha f32 = 0.8
 func menuRects () {
+	/*
 	var m i32 = app.Mode
 	gl.Color4f(dark, dark, dark, 0.9)
 	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, app.PixelHei)
@@ -251,7 +253,7 @@ func menuRects () {
 		
 		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, xSpan, ySpan)
 		
-		if /* it's a slider */ menu.Items[m][i].Max != 0 {
+		if menu.Items[m][i].Max != 0 { // (if it's a slider) 
 			gl.Color3f(1.0, 1.0, 1.0)
 			var val f32 = i32.f32(menu.Items[m][i].Value)
 			var max f32 = i32.f32(menu.Items[m][i].Max)
@@ -264,4 +266,5 @@ func menuRects () {
 		
 		y = f32.add(y, ySpan)
 	}
+	*/
 }

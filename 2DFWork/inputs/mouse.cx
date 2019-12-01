@@ -22,6 +22,17 @@ func PointerInYPixelRange (lesser f32, greater f32) (out bool) {
 }
 
 
+func SetMousePointer (wantMousePointer bool) {
+	if wantMousePointer {
+		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorNormal)
+	} else {
+		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorDisabled)
+		dist.X = 0.0D
+		dist.Y = 0.0D
+	}
+}
+
+
 func maybeEnableMousePointer (key i32) {
 	if eventBackOrEscape(key) ||
 		key == 257 || // GLFW_KEY_ENTER
@@ -29,19 +40,8 @@ func maybeEnableMousePointer (key i32) {
 		key == 259 { // GLFW_KEY_BACKSPACE 
 
 		app.Mode = app.MODE_MENU_MAIN
-		setMousePointer(true)
+		SetMousePointer(true)
 		//shape.StartNewGameSession()
-	}
-}
-
-
-func setMousePointer (wantMousePointer bool) {
-	if wantMousePointer {
-		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorNormal)
-	} else {
-		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorDisabled)
-		dist.X = 0.0D
-		dist.Y = 0.0D
 	}
 }
 
