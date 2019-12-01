@@ -10,6 +10,8 @@ import "inputs"
 import "map"
 import "mov"
 
+
+
 /*
 
 Name ideas:
@@ -114,7 +116,7 @@ func init () {
 }
 
 
-func updateTiming () () {
+func updateTiming () {
 	// prevent 1st delta from being large, which would make moving objects teleport unpredictably 
 	if prevTime == 0.0 {
 		prevTime = f64.f32(glfw.GetTime())

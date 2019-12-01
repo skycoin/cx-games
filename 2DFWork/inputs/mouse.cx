@@ -1,0 +1,150 @@
+package inputs
+
+
+
+/*
+var MousePointer       Vec2
+var MousePointerX64    f64
+var MousePointerY64    f64
+var HoldingLeftButton  bool
+var mouseMoveThreshold f64 = 85.0D // for Whacky Stack's blocky movement 
+var dist Vec2F64 // distance since latest blocky mouse movement 
+
+
+
+func PointerInYPixelRange (lesser f32, greater f32) (out bool) {
+	if MousePointerY64 < f32.f64(greater) &&
+		MousePointerY64 >= f32.f64(lesser) {
+			
+		out = true
+	}
+}
+
+
+func maybeEnableMousePointer (key i32) {
+	if eventBackOrEscape(key) ||
+		key == 257 || // GLFW_KEY_ENTER
+		key == 258 || // GLFW_KEY_TAB 
+		key == 259 { // GLFW_KEY_BACKSPACE 
+
+		app.Mode = app.MODE_MENU_MAIN
+		setMousePointer(true)
+		shape.StartNewGameSession()
+	}
+}
+
+
+func setMousePointer (wantMousePointer bool) {
+	if wantMousePointer {
+		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorNormal)
+	} else {
+		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorDisabled)
+		dist.X = 0.0D
+		dist.Y = 0.0D
+	}
+}
+
+
+func blockyMouseMovement () {
+	if app.Mode == app.MODE_PLAYING {
+		dist.X = f64.add(dist.X, deltaX64)
+		dist.Y = f64.add(dist.Y, deltaY64)
+	
+		if dist.X > mouseMoveThreshold {
+			shape.MoveByOffset(1, 0)
+			dist.X = 0.0D
+			dist.Y = 0.0D
+		} else 
+		if dist.X < -mouseMoveThreshold {
+			shape.MoveByOffset(-1, 0)
+			dist.X = 0.0D
+			dist.Y = 0.0D
+		}	
+
+		if dist.Y > mouseMoveThreshold {
+			shape.MoveByOffset(0, -1)
+			dist.X = 0.0D
+			dist.Y = 0.0D
+		} else
+		if dist.Y < -mouseMoveThreshold {
+			//shape.MoveByOffset(0, 1)   NO NEED TO MOVE UP 
+			dist.X = 0.0D
+			dist.Y = 0.0D
+		}
+	}
+}
+
+
+// buttons 
+func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
+	if action == 0 { // release 
+		if button == 0 { // LMB 
+			HoldingLeftButton = false
+		}	
+	} else 
+	if action == 1 { // press 
+		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
+
+		if button == 0 { // LMB 
+			HoldingLeftButton = true
+
+			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
+				respondToMenu()
+			}
+			
+			shape.PlayerRotate(-1)
+		} else
+		if button == 1 { // RMB 
+			shape.PlayerRotate(1)
+		} else { // MMB or extra buttons (would be unwise to require more than 3 buttons) 
+		}
+	}
+}
+
+
+// position 
+var oldV Vec2
+var old64 Vec2F64
+var deltaX f32
+var deltaY f32
+var deltaX64 f64
+var deltaY64 f64
+var dist Vec2F64 // distance since latest piece movement 
+func onCursorPosEvent (window str, x f64, y f64) {
+	oldV.X = MousePointer.X
+	oldV.Y = MousePointer.Y
+	old64.X = MousePointerX64
+	old64.Y = MousePointerY64
+	MousePointerX64 = x
+	MousePointerY64 = y
+
+	
+	// allow dragging a slider handle 
+	if HoldingLeftButton && app.Mode <= app.MODE_MENU_OPTIONS {
+		respondToMenu()
+	}
+	
+	
+	var mX f32
+	mX = f32.div(f64.f32(x), i32.f32(app.ScreenSizeInPixels.X))
+	mX = f32.mul(mX, f32.mul(f64.f32(space.ScreenEdgeR), 2.0))
+	MousePointer.X = f32.add(f64.f32(space.ScreenEdgeL), mX)
+
+	var mY f32
+	mY = f32.div(f64.f32(y), i32.f32(app.ScreenSizeInPixels.Y))
+	mY = f32.mul(mY, 2.0)
+	MousePointer.Y = f32.sub(1.0, mY)
+	
+
+	deltaX = f32.sub(MousePointer.X, oldV.X)
+	deltaY = f32.sub(MousePointer.Y, oldV.Y)
+	deltaX64 = f64.sub(x, old64.X)
+	deltaY64 = f64.sub(y, old64.Y)
+
+
+	blockyMouseMovement()
+		
+	//printf("onCursorPosEvent %f, %f \n", deltaX64, deltaY64)
+	//printf("onCursorPosEvent %f, %f \n", MousePointer.X, MousePointer.Y)
+}
+*/
