@@ -236,7 +236,6 @@ func NextShape () {
 
 var alpha f32 = 0.8
 func menuRects () {
-	/*
 	var m i32 = app.Mode
 	gl.Color4f(dark, dark, dark, 0.9)
 	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, app.PixelHei)
@@ -266,5 +265,4 @@ func menuRects () {
 		
 		y = f32.add(y, ySpan)
 	}
-	*/
 }

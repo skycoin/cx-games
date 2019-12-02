@@ -1,14 +1,7 @@
 package main
 
-import "glfw"
-
-import "app"
 import "inputs"
-import "map"
 import "menu"
-import "shape"
-import "space"
-import "time"
 
 
 
