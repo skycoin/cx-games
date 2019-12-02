@@ -75,6 +75,7 @@ func main () {
 		gl.Color3f(1.0, 1.0, 1.0)
 		
 		time.Update()
+		update()
 		draw.All()
 		
 		glfw.PollEvents()

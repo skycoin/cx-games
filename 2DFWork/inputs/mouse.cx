@@ -8,9 +8,26 @@ var MousePointer       Vec2
 var MousePointerX64    f64
 var MousePointerY64    f64
 var HoldingLeftButton  bool
+var EventButtonIds     []i32
+var EventButtonActions []i32
+
 var mouseMoveThreshold f64 = 85.0D // for Whacky Stack's blocky movement 
 var dist Vec2F64 // distance since latest blocky mouse movement 
 
+
+
+func GetOldestButtonEvent () (button i32, action i32) {
+	if len(EventButtonIds) <= 0 {
+		button = app.MAX_I32
+		action = app.MAX_I32
+	}else{
+		button = EventButtonIds[0]
+		action = EventButtonActions[0]
+		//printf("GetOldestButtonEvent - len(EventButtonIds): %d \n", len(EventButtonIds))
+		EventButtonIds     = remove(EventButtonIds, 0)
+		EventButtonActions = remove(EventButtonActions, 0)
+	}
+}
 
 
 func PointerInYPixelRange (lesser f32, greater f32) (out bool) {
@@ -78,28 +95,11 @@ func blockyMouseMovement () {
 
 // buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
-	if action == 0 { // release 
-		if button == 0 { // LMB 
-			HoldingLeftButton = false
-		}	
-	} else 
-	if action == 1 { // press 
-		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
-
-		if button == 0 { // LMB 
-			HoldingLeftButton = true
-
-			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
-				//respondToMenu()
-			}
-			
-			//shape.PlayerRotate(-1)
-		} else
-		if button == 1 { // RMB 
-			//shape.PlayerRotate(1)
-		} else { // MMB or extra buttons (would be unwise to require more than 3 buttons) 
-		}
-	}
+	EventButtonIds = append(
+	EventButtonIds, button)
+	
+	EventButtonActions = append(
+	EventButtonActions, action)
 }
 
 

@@ -24,9 +24,9 @@ func Init () {
 	InitFontsAndMenuItems()
 
 	// pics 
-	PicBackground = gl.NewTexture(/*str.concat(dir, */"../CXtris/assets/textures/background.jpg")//)
-	PicStar       = gl.NewTexture(/*str.concat(dir, */"../CXtris/assets/textures/star.png")//)
-	PicShapeTile  = gl.NewTexture(/*str.concat(dir, */"../CXtris/assets/textures/tile.png")//)
+	PicBackground = gl.NewTexture("../CXtris/assets/textures/background.jpg")
+	PicStar       = gl.NewTexture("../CXtris/assets/textures/star.png")
+	PicShapeTile  = gl.NewTexture("../CXtris/assets/textures/tile.png")
 }
 
 
