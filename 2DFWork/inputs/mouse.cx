@@ -119,12 +119,6 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	MousePointerY64 = y
 
 	
-	// allow dragging a slider handle 
-	if HoldingLeftButton && app.Mode <= app.MODE_MENU_OPTIONS {
-		//respondToMenu()
-	}
-	
-	
 	var mX f32
 	mX = f32.div(f64.f32(x), i32.f32(app.ScreenSizeInPixels.X))
 	mX = f32.mul(mX, f32.mul(f64.f32(space.ScreenEdgeR), 2.0))

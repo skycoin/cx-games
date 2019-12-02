@@ -8,6 +8,11 @@ import "menu"
 func update () {
 	respondToButtons()
 	respondToKeys()
+	
+	// allow dragging a slider handle 
+	if inputs.HoldingLeftButton && app.Mode <= app.MODE_MENU_OPTIONS {
+		respondToMenu()
+	}
 }
 
 
