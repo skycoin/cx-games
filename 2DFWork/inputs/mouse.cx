@@ -8,24 +8,24 @@ var MousePointer       Vec2
 var MousePointerX64    f64
 var MousePointerY64    f64
 var HoldingLeftButton  bool
-var EventButtonIds     []i32
-var EventButtonActions []i32
 
 var mouseMoveThreshold f64 = 85.0D // for Whacky Stack's blocky movement 
 var dist Vec2F64 // distance since latest blocky mouse movement 
+var buttonEventCodes   []i32
+var buttonEventActions []i32
 
 
 
-func GetOldestButtonEvent () (button i32, action i32) {
-	if len(EventButtonIds) <= 0 {
+func GetButtonEvent () (button i32, action i32) {
+	if len(buttonEventCodes) <= 0 {
 		button = app.MAX_I32
 		action = app.MAX_I32
 	}else{
-		button = EventButtonIds[0]
-		action = EventButtonActions[0]
-		//printf("GetOldestButtonEvent - len(EventButtonIds): %d \n", len(EventButtonIds))
-		EventButtonIds     = remove(EventButtonIds, 0)
-		EventButtonActions = remove(EventButtonActions, 0)
+		button = buttonEventCodes[0]
+		action = buttonEventActions[0]
+		//printf("GetButtonEvent - len(buttonEventCodes): %d \n", len(buttonEventCodes))
+		buttonEventCodes   = remove(buttonEventCodes, 0)
+		buttonEventActions = remove(buttonEventActions, 0)
 	}
 }
 
@@ -46,19 +46,6 @@ func SetMousePointer (wantMousePointer bool) {
 		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorDisabled)
 		dist.X = 0.0D
 		dist.Y = 0.0D
-	}
-}
-
-
-func maybeEnableMousePointer (key i32) {
-	if eventBackOrEscape(key) ||
-		key == 257 || // GLFW_KEY_ENTER
-		key == 258 || // GLFW_KEY_TAB 
-		key == 259 { // GLFW_KEY_BACKSPACE 
-
-		app.Mode = app.MODE_MENU_MAIN
-		SetMousePointer(true)
-		//shape.StartNewGameSession()
 	}
 }
 
@@ -95,11 +82,11 @@ func blockyMouseMovement () {
 
 // buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
-	EventButtonIds = append(
-	EventButtonIds, button)
+	buttonEventCodes = append(
+	buttonEventCodes, button)
 	
-	EventButtonActions = append(
-	EventButtonActions, action)
+	buttonEventActions = append(
+	buttonEventActions, action)
 }
 
 
