@@ -63,19 +63,23 @@ up to the total score printout
 */
 
 func main () {
+	app.START_WIDTH  = 590
+	app.START_HEIGHT = 960
+	app.Init("C X t r i s", "Move with the W,A,S,D keys.")
 	initAPIs()
 	initGame()
 
-	for bool.not(glfw.ShouldClose("window")) {
+	for bool.not(glfw.ShouldClose(app.Name)) {
 //		gl.Clear(gl.COLOR_BUFFER_BIT)
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT) // gltext needs 
 		gl.Color3f(1.0, 1.0, 1.0)
 		
 		time.Update()
+		update()
 		draw.All()
 		
 		glfw.PollEvents()
-		glfw.SwapBuffers("window")
+		glfw.SwapBuffers(app.Name)
 	}
 }
 
@@ -83,8 +87,8 @@ func main () {
 func initAPIs () {
 	glfw.Init()
 
-	glfw.CreateWindow("window", app.WIDTH, app.HEIGHT, app.NAME)
-	glfw.MakeContextCurrent("window")
+	glfw.CreateWindow(app.Name, app.START_WIDTH, app.START_HEIGHT, app.Name)
+	glfw.MakeContextCurrent(app.Name)
 
 	gl.Init()
 	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
@@ -100,7 +104,6 @@ func initAPIs () {
 
 
 func initGame () {
-	app.Init()
 	shape.Init()
 	draw.Init()
 	inputs.Init()

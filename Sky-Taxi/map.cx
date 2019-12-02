@@ -3,36 +3,35 @@
 In our imagined world for this game, the universe is filled with solid
 rock everywhere.
 
-We have a limited grid of possibilities, where we will carve out air space
-(Rooms) in each of those cells.  ALMOST each of them.  Some will remain
-solid rock, for a bit of variety in how the connected rooms are laid out.
+We have a cell grid of possibilities.  We carve out air/room space
+in MOST of those cells.  Some will remain
+solid rock, for a bit of variety in overall map shape.
 
 I THINK OF THE Y DIMENSION INCREASING UPWARDS
-	SO KEEP THIS IN MIND WITH DIR_ECTIONS AND THE "Rooms" GRID INDEXING 
+	SO KEEP THIS IN MIND WITH geom.DIR_* (directions) 
+	& THE "Cells" GRID INDEXING 
 	
 This is how it is by default in OpenGL space, Unity and many modern 3D
-apps, so I think it's important to generally keep synchronized with this.
+apps, so I think it's important to generally use this convention. 
 
 */
 
 package map
 
 import "app"
+import "draw"
+import "geom"
 
 
-
-var DIR_LEFT  i32 = 0
-var DIR_RIGHT i32 = 1
-var DIR_DOWN  i32 = 2
-var DIR_UP    i32 = 3
 
 var NumCellsAcross i32 = 4 // in both dimensions 
 var CellSpan f32 = 2.0 / i32.f32(NumCellsAcross)
-var Rooms [4][4]Cell   // FIXME: use constants when we can 
-var Carvs []CarvedRoom // used/carved-out locations of the Rooms grid 
+var Cells [4][4]Cell   // FIXME: use constants when we can 
+var Carvs []CarvedRoom // used/carved-out locations of the Cells grid 
 
 type Cell struct {
-	Exits     []i32
+	CarvedId i32 // MAX_I32 == solid rock 
+	Exits    []i32
 }
 
 type CarvedRoom struct {
@@ -42,18 +41,62 @@ type CarvedRoom struct {
 	Bottom f32
 	Left   f32*/
 	
-	Pos       app.Vec2
+	Pos       app.Vec2I
 	Exits     []i32
 }
 
 
 
 func Init () {
-	//showActiveStatii()
 	setupPossibleExits()
-	//showActiveStatii()
 	carveOutConnectedRooms()
-	printf("aaaaaa: %d \n", Carvs[5].Pos.X)
+}
+
+
+func DrawQuads () {
+	var x f32
+	var y f32
+
+	draw.QuadsBegin()
+		var n i32 = len(Carvs)
+		//printf("murrr: %d \n", n)
+		for i := 0; i < n; i++ {
+			var x i32 = Carvs[i].Pos.X
+			var y i32 = Carvs[i].Pos.Y
+			var mulX f32 = f32.mul(i32.f32(x), CellSpan)
+			var mulY f32 = f32.mul(i32.f32(y), CellSpan)
+			
+			var b f32 = f32.add(-1.0, mulY)
+			var l f32 = f32.add(-1.0, mulX)
+			var t f32 = b + CellSpan
+			var r f32 = l + CellSpan
+			
+			draw.SetSequentiallyCycledColor(i32.add(x, i32.mul(y, NumCellsAcross)))
+			draw.Quad(t, r, b, l)
+			
+			// connection rects 
+			draw.SetColor(0.0, 0.0, 0.0) // black 
+			var ins f32 = 0.085 // inset 
+			var ex i32 // exit 
+			
+			for j := 0; j < len(Carvs[i].Exits); j++ {
+				var ex i32 = Carvs[i].Exits[j]
+
+				if ex == geom.DIR_LEFT {
+					draw.Quad(t-ins, r-ins, b+ins, l)
+				}else	
+				if ex == geom.DIR_RIGHT {
+					draw.Quad(t-ins, r,     b+ins, l+ins)
+				}else	
+				if ex == geom.DIR_DOWN {
+					draw.Quad(t-ins, r-ins, b,     l+ins)
+				}else	
+				if ex == geom.DIR_UP {
+					draw.Quad(t,     r-ins, b+ins, l+ins)
+				}
+			}
+		}
+	draw.End()
 }
 
 
@@ -61,49 +104,51 @@ func setupPossibleExits () {
 	for iY := 0; iY < NumCellsAcross; iY++ {
 	for iX := 0; iX < NumCellsAcross; iX++ {
 		var r Cell
+		r.CarvedId = app.MAX_I32
 		
 		if iX > 0 {
 			r.Exits = append(
-			r.Exits, DIR_LEFT)
+			r.Exits, geom.DIR_LEFT)
 		}
 		
 		if iX < i32.sub(NumCellsAcross, 1) {
 			r.Exits = append(
-			r.Exits, DIR_RIGHT)
+			r.Exits, geom.DIR_RIGHT)
 		}
 		
 		if iY > 0 {
 			r.Exits = append(
-			r.Exits, DIR_DOWN)
+			r.Exits, geom.DIR_DOWN)
 		}
 		
 		if iY < i32.sub(NumCellsAcross, 1) {
 			r.Exits = append(
-			r.Exits, DIR_UP)
+			r.Exits, geom.DIR_UP)
 		}
 		
-		Rooms[iY][iX] = r
+		Cells[iY][iX] = r
 		//printf("setupPossibleExits() len(r.Exits): %d \n", len(r.Exits))
-		////var poss []i32 = Rooms[iY][iX].Exits
-		////printf("Rooms[iY][iX].Exits: %d \n", len(poss))
+		////var poss []i32 = Cells[iY][iX].Exits
+		////printf("Cells[iY][iX].Exits: %d \n", len(poss))
 	}
 	}
 }
 
 
-func getRandomCarvedLoc () (x i32, y i32, r Cell) {
-	var rnd i32 = i32.rand(0, len(Carvs))
-	i32.print(rnd)
-	x = Carvs[rnd].Pos.X
-	y = Carvs[rnd].Pos.Y
-	r = Rooms[y][x]
+func getRandomCarvedRoom () (x i32, y i32, c Cell, carvedRoomId i32) {
+	carvedRoomId = i32.rand(0, len(Carvs))
+	printf("getRandomCarvedRoom: %d \n", carvedRoomId)
+	x = Carvs[carvedRoomId].Pos.X
+	y = Carvs[carvedRoomId].Pos.Y
+	c = Cells[y][x]
 }
 
 
 func carveOutConnectedRooms () {
 	var x i32
 	var y i32
-	var r Cell
+	var oc Cell  // older cell 
+	var orId i32 // older room id 
 		
 	var numInactives i32 = i32.rand(1, 5)
 	str.print("numInactives: ")
@@ -115,128 +160,129 @@ func carveOutConnectedRooms () {
 			// make anywhere 
 			x = i32.rand(0, NumCellsAcross)
 			y = i32.rand(0, NumCellsAcross)
-			addCarvedRoom(x, y, 0)
+			var cr CarvedRoom = carveOutRoom(x, y, len(Carvs))
+	
+			
+			
+			Carvs = append(
+			Carvs, cr)
+			printf("carved FIRST new @ %d, %d   -   len(Carvs): %d \n", x, y, len(Carvs))
 		}else{
-			x, y, r = getRandomCarvedLoc()
+			// old cell, old (carved) room id 
+			x, y, oc, orId = getRandomCarvedRoom()
 			//printf("carveOutConnectedRooms() len(r.Exits): %d \n", len(r.Exits))
 			
-			for len(r.Exits) < 1 {
-				x, y, r = getRandomCarvedLoc()
+			for len(oc.Exits) < 1 {
+				x, y, oc, orId = getRandomCarvedRoom()
 			}
 			
 			// random (exit) id 
-			var ri i32 = i32.rand(0, len(r.Exits))
-			var e /* exit */ i32 = r.Exits[ri]
+			var ri i32 = i32.rand(0, len(oc.Exits))
+			var e /* exit direction (from old) */ i32 = oc.Exits[ri]
 
-			if e == DIR_LEFT {
-				promoteExitAt(x,   y, e)
-				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
-				promoteExitAt(x-1, y, DIR_RIGHT)
-				addCarvedRoom(x-1, y, DIR_RIGHT)
+			str.print("___________________________________________________________")
+			if e == geom.DIR_LEFT {
+				drillConnectingWallsAndMaybeRoom(x, y, e, x-1, y)
+				Carvs[orId].Exits = append(
+				Carvs[orId].Exits, e)
+				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}else			
-			if e == DIR_RIGHT {
-				promoteExitAt(x,   y, e)
-				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
-				promoteExitAt(x+1, y, DIR_LEFT)
-				addCarvedRoom(x+1, y, DIR_LEFT)
+			if e == geom.DIR_RIGHT {
+				drillConnectingWallsAndMaybeRoom(x, y, e, x+1, y)
+				Carvs[orId].Exits = append(
+				Carvs[orId].Exits, e)
+				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}else			
-			if e == DIR_DOWN {
-				promoteExitAt(x, y,   e)
-				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
-				promoteExitAt(x, y-1, DIR_UP)
-				addCarvedRoom(x, y-1, DIR_UP)
+			if e == geom.DIR_DOWN {
+				drillConnectingWallsAndMaybeRoom(x, y, e, x, y-1)
+				Carvs[orId].Exits = append(
+				Carvs[orId].Exits, e)
+				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}else			
-			if e == DIR_UP {
-				promoteExitAt(x, y,   e)
-				printf("AFTER promoteExitAt ------num exits: %d \n", len(r.Exits))
-				promoteExitAt(x, y+1, DIR_DOWN)
-				addCarvedRoom(x, y+1, DIR_DOWN)
+			if e == geom.DIR_UP {
+				drillConnectingWallsAndMaybeRoom(x, y, e, x, y+1)
+				Carvs[orId].Exits = append(
+				Carvs[orId].Exits, e)
+				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}
 		}
 	}
 }
 
 
-func addCarvedRoom (x i32, y i32, dir i32) {
-	var newLoc CarvedRoom
-	newLoc.Pos.X = x
-	newLoc.Pos.Y = y
-	
-	if len(Carvs) != 0 { // no direction to set for 1st room 
-		newLoc.Exits = append(
-		newLoc.Exits, dir)
-	}
-	
-	Carvs = append(
-	Carvs, newLoc)
-
-	printf("addCarvedRoom(%d, %d)   -   len(Carvs): %d \n", x, y, len(Carvs))
+func carveOutRoom (x i32, y i32, carvedId i32) (out CarvedRoom) {
+	out.Pos.X = x
+	out.Pos.Y = y
+	Cells[y][x].CarvedId = carvedId
 }
 
 
-func promoteExitAt (x i32, y i32, dir i32) {
-	var log bool = true//false
+// old x,y, new x,y 
+func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) {
+	var tr CarvedRoom // target room (of wall drilling) 
+	var targId i32 = Cells[nY][nX].CarvedId
+
+	if targId == app.MAX_I32 {
+		str.print("CARVE ROOM")
+		
+		tr = carveOutRoom(nX, nY, len(Carvs))
+		
+		tr.Exits = append(
+		tr.Exits, geom.GetInvertedDir(dir))
+		
+		Carvs = append(
+		Carvs, tr)
+	}else{
+		str.print("DRILL WALL")
+		
+		tr = Carvs[targId]
+		
+		tr.Exits = append(
+		tr.Exits, geom.GetInvertedDir(dir))
+	}
+	
+	printf("OLD room %d, %d   %s \n", oX, oY, geom.GetTextForDir(dir))
+	removeExitFromGrid(oX, oY, dir)
+	
+	printf("NEW room %d, %d   %s \n", nX, nY, geom.GetTextForDir(geom.GetInvertedDir(dir)))
+	removeExitFromGrid(nX, nY, geom.GetInvertedDir(dir))
+
+	printf("--------------------- tr.Exits: %d \n", len(tr.Exits))
+	printf("len(Carvs): %d \n", len(Carvs))
+
+	//if targId != app.MAX_I32 {
+	//	Carvs[targId] = tr
+	//}
+}
+
+
+func removeExitFromGrid (x i32, y i32, dir i32) {
+	var log bool = false
 	
 	if log { 
 		str.print("___________________________________________________________")
-		printf("promoteExitAt(%d, %d, %s) \n", x, y, getTextForDir(dir))
+		printf("removeExitFromGrid(%d, %d, %s) \n", x, y, geom.GetTextForDir(dir))
 	}
 	
-	var r Cell = Rooms[y][x]
+	var c Cell = Cells[y][x]
 	// remove from Exits 
-	var n i32 = len(r.Exits)
+	
+	if log { printf("------num exits INSIDE-BEFORE: %d \n", len(c.Exits))
+	}
+
+	var n i32 = len(c.Exits)
 	for i := i32.sub(n, 1); i >= 0; i = i32.sub(i, 1) {
-		if log { str.print(getTextForDir(r.Exits[i]))
+		var s str = geom.GetTextForDir(c.Exits[i])
+		
+		if c.Exits[i] == dir {
+			s = str.concat(s, "  <----------------- REMOVING")
+			c.Exits = remove(c.Exits, i)
 		}
 		
-		if r.Exits[i] == dir {
-			if log { str.print("***************************FOUND removable")
-			}
-			r.Exits = remove(r.Exits, i)
+		if log { str.print(s)
 		}
 	}
 	
-	if log { printf("------num exits: %d \n", len(r.Exits))
+	if log { printf("------num exits INSIDE-AFTER: %d \n", len(c.Exits))
 	}
-}
-
-
-func getInversion (dir i32) (out i32) { // (opposite direction) 
-	if dir == DIR_LEFT {
-		out = DIR_RIGHT
-	}else	
-	if dir == DIR_RIGHT {
-		out = DIR_LEFT
-	}else	
-	if dir == DIR_DOWN {
-		out = DIR_UP
-	}else	
-	if dir == DIR_UP {
-		out = DIR_DOWN
-	}
-}
-
-
-func getTextForDir (dir i32) (out str) {
-	if dir ==  DIR_LEFT {
-		out = "DIR_LEFT"
-	}else	
-	if dir ==  DIR_RIGHT {
-		out = "DIR_RIGHT"
-	}else	
-	if dir ==  DIR_DOWN {
-		out = "DIR_DOWN"
-	}else	
-	if dir ==  DIR_UP {
-		out = "DIR_UP"
-	}
-}
-
-
-func GetNumCarvs () (out i32) {
-	out = len(Carvs)
-}
-
-func GetGridPos (i i32) (out app.Vec2) {
-	out = Carvs[i].Pos
 }

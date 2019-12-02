@@ -5,7 +5,6 @@ import "gl"
 import "app"
 import "entities"
 import "geom"
-import "map"
 
 
 
@@ -28,40 +27,21 @@ func Ball (ball entities.Ball) {
 }
 
 
+func SetColor (r f32, g f32, b f32) {
+	gl.Color3f(r, g, b)
+}
 
-func Rects () {
-	var x f32
-	var y f32
 
+func QuadsBegin () {
 	gl.Begin(gl.QUADS)
-		var n i32 = map.GetNumCarvs()
-		//printf("murrr: %d \n", n)
-		for i := 0; i < n; i++ {
-			var p app.Vec2 = map.GetGridPos(i)
-			var mulX f32 = f32.mul(i32.f32(p.X), map.CellSpan)
-			var mulY f32 = f32.mul(i32.f32(p.Y), map.CellSpan)
-			
-			var b f32 = f32.add(-1.0, mulY)
-			var l f32 = f32.add(-1.0, mulX)
-			var t f32 = b + map.CellSpan
-			var r f32 = l + map.CellSpan
-			
-			SetSequentiallyCycledColor(i)
-			rect(t, r, b, l)
-			
-			// connection rects 
-			gl.Color3f(0.0, 0.0, 0.0) // black 
-			
-			for i := 0; i < 1; i++ {
-				//str.print("exit")
-			}
-		}
+}
+func End () {
 	gl.End()
 }
 
 
 // top, right, bottom, left 
-func rect (t f32, r f32, b f32, l f32) {
+func Quad (t f32, r f32, b f32, l f32) {
 	gl.Vertex2f(l, t)
 	gl.Vertex2f(r, t)
 	gl.Vertex2f(r, b)

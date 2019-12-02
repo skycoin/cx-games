@@ -12,24 +12,6 @@ import "mov"
 
 
 
-/*
-
-Name ideas:
-
-Pongolf
-Pong Golf
-Pong Putt
-Putt Pong
-
-if lining walls or populating rooms with bricks: 
-
-Ponganoid
-Puttanoid
-
-*/
-
-
-
 // graphics 
 var bufferWidth i32
 var bufferHeight i32
@@ -78,7 +60,7 @@ func main () {
 		gl.Viewport(0, 0, bufferWidth, bufferHeight)
 		gl.MatrixMode(gl.MODELVIEW)
 
-		map.DrawQuads()
+		draw.Rects()
 		draw.Ball(ball)
 		
 		glfw.PollEvents()
@@ -89,8 +71,10 @@ func main () {
 
 
 func init () {
-	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
-
+	app.Name = "S K Y   T A X I"
+	app.Controls = "Move with the W,A,S,D keys."
+	app.CliIntro()
+	
 	ball = entities.Ball{
 		radius: 0.05,
 		x: 0.0,
@@ -110,13 +94,13 @@ func init () {
 	glfw.MakeContextCurrent(app.Name)
 	gl.Init()
 	
-	
+	app.Init()
 	inputs.Init()
 	map.Init()
 }
 
 
-func updateTiming () {
+func updateTiming () () {
 	// prevent 1st delta from being large, which would make moving objects teleport unpredictably 
 	if prevTime == 0.0 {
 		prevTime = f64.f32(glfw.GetTime())

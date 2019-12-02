@@ -17,15 +17,16 @@ var dir           str
 
 
 func Init () {
-	str.print("draw.Init ()")
+	str.print("draw.Init () -----------nextup is dir:")
 	
-	dir := os.GetWorkingDirectory()
+	dir = os.GetWorkingDirectory()
+	str.print(dir)
 	InitFontsAndMenuItems()
 
 	// pics 
-	PicBackground = gl.NewTexture(str.concat(dir, "assets/textures/background.jpg"))
-	PicStar       = gl.NewTexture(str.concat(dir, "assets/textures/star.png"))
-	PicShapeTile  = gl.NewTexture(str.concat(dir, "assets/textures/tile.png"))
+	PicBackground = gl.NewTexture("../CXtris/assets/textures/background.jpg")
+	PicStar       = gl.NewTexture("../CXtris/assets/textures/star.png")
+	PicShapeTile  = gl.NewTexture("../CXtris/assets/textures/tile.png")
 }
 
 
@@ -251,7 +252,7 @@ func menuRects () {
 		
 		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, xSpan, ySpan)
 		
-		if /* it's a slider */ menu.Items[m][i].Max != 0 {
+		if menu.Items[m][i].Max != 0 { // (if it's a slider) 
 			gl.Color3f(1.0, 1.0, 1.0)
 			var val f32 = i32.f32(menu.Items[m][i].Value)
 			var max f32 = i32.f32(menu.Items[m][i].Max)

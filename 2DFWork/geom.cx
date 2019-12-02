@@ -12,3 +12,41 @@ package geom
 
 var PI  f32 = 3.141592654
 var TAU f32 = f32.mul(2.0, PI)
+
+var DIR_LEFT  i32 = 0
+var DIR_RIGHT i32 = 1
+var DIR_DOWN  i32 = 2
+var DIR_UP    i32 = 3
+
+
+
+func GetInvertedDir (dir i32) (out i32) { // (opposite direction) 
+	if dir == DIR_LEFT {
+		out = DIR_RIGHT
+	}else	
+	if dir == DIR_RIGHT {
+		out = DIR_LEFT
+	}else	
+	if dir == DIR_DOWN {
+		out = DIR_UP
+	}else	
+	if dir == DIR_UP {
+		out = DIR_DOWN
+	}
+}
+
+
+func GetTextForDir (dir i32) (out str) {
+	if dir ==  DIR_LEFT {
+		out = "DIR_LEFT"
+	}else	
+	if dir ==  DIR_RIGHT {
+		out = "DIR_RIGHT"
+	}else	
+	if dir ==  DIR_DOWN {
+		out = "DIR_DOWN"
+	}else	
+	if dir ==  DIR_UP {
+		out = "DIR_UP"
+	}
+}
