@@ -50,6 +50,7 @@ func main () {
 	init()
 
 	for bool.not(glfw.ShouldClose(app.Name)) {
+		update()
 		updateTiming()
 
 		// ball velocity & position 

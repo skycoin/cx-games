@@ -87,6 +87,18 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 	
 	buttonEventActions = append(
 	buttonEventActions, action)
+
+	
+	// cache state for polling 
+	if button == 0 { // LMB 
+		if action == 0 { // release 
+			HoldingLeftButton = false
+		}else 
+		if action == 1 { // press 
+			HoldingLeftButton = true
+			//printf("onMouseButtonEvent() PRESSED %f, %f \n", MousePointer.X, MousePointer.Y)
+		}
+	}
 }
 
 
