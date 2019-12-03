@@ -13,14 +13,14 @@ import "shape"
 var PicBackground i32
 var PicStar       i32
 var PicShapeTile  i32
-var dir           str
+//var dir           str
 
 
 func Init () {
-	str.print("draw.Init () -----------nextup is dir:")
+	str.print("draw.Init ()")
 	
-	dir = os.GetWorkingDirectory()
-	str.print(dir)
+	//dir = os.GetWorkingDirectory()
+	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
 	InitFontsAndMenuItems()
 
 	// pics 
