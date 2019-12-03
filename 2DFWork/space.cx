@@ -5,17 +5,19 @@ import "app"
 
 
 // FIXME: these should be updated from window change events 
-var PixelWid           f32
-var PixelHei           f32
-var ScreenSizeInPixels Vec2I
-var ScreenEdgeL        f64 // left 
-var ScreenEdgeR        f64 // right 
+var PixelWid     f32
+var PixelHei     f32
+var PixelsAcross Vec2I
+var ScreenEdgeL  f64 // left 
+var ScreenEdgeR  f64 // right 
 
 
 
 func Init () {
 	str.print("space.Init ()")
 	
+	PixelsAcross.X = app.START_WIDTH
+	PixelsAcross.Y = app.START_HEIGHT
 	PixelWid = 2.0 / i32.f32(app.START_WIDTH)
 	PixelHei = 2.0 / i32.f32(app.START_HEIGHT)
 }

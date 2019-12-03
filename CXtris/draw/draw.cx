@@ -17,6 +17,7 @@ var PicShapeTile  i32
 //var dir           str
 
 
+
 func Init () {
 	str.print("draw.Init ()")
 	
@@ -32,8 +33,6 @@ func Init () {
 
 
 func All () {
-	//gl.UseProgram(prog)
-	
 	//gl.MatrixMode(gl.PROJECTION)
 	//gl.LoadIdentity()
 	//gl.MatrixMode(gl.MODELVIEW)
@@ -45,6 +44,10 @@ func All () {
 	if menu.ShowNextShape {
 		NextShape()
 	}
+	
+	sizedPicAt(PicStar, 
+		inputs.MousePointer.X,
+		inputs.MousePointer.Y, 0.1, 0.07)
 	
 	allText()		
 }
