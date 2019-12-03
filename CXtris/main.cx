@@ -96,8 +96,4 @@ func initAPIs () {
 	gl.Enable(gl.TEXTURE_2D)
 	gl.Enable(gl.BLEND)
 	gl.DepthMask(true) // not needed by "gltext" package 
-
-	// program 
-	prog := gl.CreateProgram()
-	gl.LinkProgram(prog)
 }

@@ -4,18 +4,25 @@ import "app"
 
 
 
-var ScreenEdgeL f64 // left 
-var ScreenEdgeR f64 // right 
+// FIXME: these should be updated from window change events 
+var PixelWid           f32
+var PixelHei           f32
+var ScreenSizeInPixels Vec2I
+var ScreenEdgeL        f64 // left 
+var ScreenEdgeR        f64 // right 
 
 
 
-func Setup () () {
-	str.print("space.Setup()")
+func Init () {
+	str.print("space.Init ()")
+	
+	PixelWid = 2.0 / i32.f32(app.START_WIDTH)
+	PixelHei = 2.0 / i32.f32(app.START_HEIGHT)
 }
 
 
 func Update (ratio f32) () {
-	printf("space.Update() - ratio: %f \n", ratio)
+	printf("space.Update () - ratio: %f \n", ratio)
 
 	ScreenEdgeL = f32.f64(f32.mul(ratio, -1.0))
 	ScreenEdgeR = f32.f64(ratio)

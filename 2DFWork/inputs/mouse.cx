@@ -157,12 +157,12 @@ func onCursorPosEvent (window str, x f64, y f64) {
 
 	
 	var mX f32
-	mX = f32.div(f64.f32(x), i32.f32(app.ScreenSizeInPixels.X))
+	mX = f32.div(f64.f32(x), i32.f32(space.ScreenSizeInPixels.X))
 	mX = f32.mul(mX, f32.mul(f64.f32(space.ScreenEdgeR), 2.0))
 	MousePointer.X = f32.add(f64.f32(space.ScreenEdgeL), mX)
 
 	var mY f32
-	mY = f32.div(f64.f32(y), i32.f32(app.ScreenSizeInPixels.Y))
+	mY = f32.div(f64.f32(y), i32.f32(space.ScreenSizeInPixels.Y))
 	mY = f32.mul(mY, 2.0)
 	MousePointer.Y = f32.sub(1.0, mY)
 	

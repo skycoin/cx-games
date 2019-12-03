@@ -7,6 +7,7 @@ import "os"
 import "app"
 import "map"
 import "shape"
+import "space"
 
 
 
@@ -238,11 +239,11 @@ var alpha f32 = 0.8
 func menuRects () {
 	var m i32 = app.Mode
 	gl.Color4f(dark, dark, dark, 0.9)
-	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, app.PixelHei)
+	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, space.PixelHei)
 	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
 	for i := i32.sub(len(menu[m].Items), 1); i >= 0; i-- {			
-		var xSpan f32 = f32.mul(menu.Items[m][i].Wid, app.PixelWid)
+		var xSpan f32 = f32.mul(menu.Items[m][i].Wid, space.PixelWid)
 	
 		if menu.Items[m][i].Hover {
 			gl.Color4f(mid, mid, mid, alpha)
