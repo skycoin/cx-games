@@ -21,7 +21,7 @@ func respondToButtons () {
 	if action == 1 { // press 
 		if button == 0 { // LMB 
 			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
-				respondToMenu()
+				respondToMenuClicks()
 			}
 			
 			// do 
@@ -46,7 +46,7 @@ func respondToKeys () {
 	if action >= 1 { // (press or repeat) 
 		inputs.MaybeOpenMenu(key)
 		
-		if key == 53 { // GLFW_KEY_5 
+		if key == inputs.GLFW_KEY_5 { 
 			// close 
 			str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 			glfw.SetShouldClose(app.Name, true)
@@ -69,43 +69,5 @@ func respondToKeys () {
 }
 
 
-func respondToMenu () {
-	/*
-	var s str
-	var i i32
-	s, i = menu.GetHoveredItem(app.Mode)
-
-	//if s == menu.ItemText {
-	//	menu.Setting = menu.SetSliderValue(i, f64.f32(MousePointerX64))
-	//} else
-	if s == menu.DebrisHeightText {
-		menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
-		shape.StartNewGameSession()
-	} else
-	if s == menu.SpeedText {
-		time.DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
-		time.CalcDropTime()
-	} else
-	if s == menu.Play {
-		inputs.SetMousePointer(false)
-		shape.PlayerScore    =  0
-		shape.PlayerScoreTxt = "0"
-		shape.StartNewGameSession
-		app.Mode = app.MODE_PLAYING
-	} else
-	if s == menu.Options {
-		app.Mode = app.MODE_MENU_OPTIONS
-	} else
-	if s == menu.Quit {
-		glfw.SetShouldClose(app.Name, true)
-	} else
-	if s == menu.ShowNextShapeText + "YES" {
-		    menu.ShowNextShape = false
-		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText + "NO"
-	} else
-	if s == menu.ShowNextShapeText + "NO" {
-		    menu.ShowNextShape = true
-		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText + "YES"
-	}
-	*/
+func respondToMenuClicks () {
 }

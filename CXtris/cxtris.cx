@@ -1,22 +1,27 @@
 package main
 
+import "app"
 import "inputs"
 import "menu"
 
 
 
-func update () {
-	respondToButtons()
-	respondToKeys()
-	
-	// allow dragging a slider handle 
-	if inputs.HoldingLeftButton && app.Mode <= app.MODE_MENU_OPTIONS {
-		respondToMenu()
-	}
+func initGame () {
+	shape.Init()
+	draw.Init()
+	inputs.Init()
+	inputs.BufferPointerSpots = true
 }
 
 
-func respondToButtons () {
+func update () {
+	respondToButtonEvents()
+	respondToKeyEvents()
+	respondToPointerEvents()
+}
+
+
+func respondToButtonEvents () {
 	var button i32
 	var action i32
 	button, action = inputs.GetButtonEvent ()
@@ -26,7 +31,7 @@ func respondToButtons () {
 	if action == 1 { // press 
 		if button == 0 { // LMB 
 			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
-				respondToMenu()
+				respondToMenuClicks()
 			}
 			
 			shape.PlayerRotate(-1)
@@ -39,7 +44,7 @@ func respondToButtons () {
 }
 
 
-func respondToKeys () {
+func respondToKeyEvents () {
 	var key    i32
 	var action i32
 	key, action = inputs.GetKeyEvent ()
@@ -53,7 +58,7 @@ func respondToKeys () {
 
 		inputs.MaybeOpenMenu(key)
 		
-		if key == 53 { // GLFW_KEY_5 
+		if key == inputs.GLFW_KEY_5 { 
 			// close 
 			str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 			glfw.SetShouldClose(app.Name, true)
@@ -82,7 +87,20 @@ func respondToKeys () {
 }
 
 
-func respondToMenu () {
+func respondToPointerEvents () {
+	var v app.Vec2 = inputs.GetPointerEvent ()
+		
+	// allow dragging a slider handle 
+	if inputs.HoldingLeftButton && 
+		v.X != app.TOO_BIG_F32 &&
+		app.Mode <= app.MODE_MENU_OPTIONS {
+			
+		respondToMenuDrags()
+	}
+}
+
+
+func respondToMenuDrags () {
 	var s str
 	var i i32
 	s, i = menu.GetHoveredItem(app.Mode)
@@ -99,7 +117,15 @@ func respondToMenu () {
 	if s == menu.SpeedText {
 		time.DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
 		time.CalcDropTime()
-	} else
+	}
+}
+
+
+func respondToMenuClicks () {
+	var s str
+	var i i32
+	s, i = menu.GetHoveredItem(app.Mode)
+
 	if s == menu.Play {
 		inputs.SetMousePointer(false)
 		shape.PlayerScore    =  0

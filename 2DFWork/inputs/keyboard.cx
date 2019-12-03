@@ -20,7 +20,7 @@ func GetKeyEvent () (key i32, action i32) {
 	}else{
 		key    = keyEventCodes[0]
 		action = keyEventActions[0]
-		//printf("GetButtonEvent - len(buttonEventCodes): %d \n", len(buttonEventCodes))
+		//printf("GetKeyEvent - len(keyEventCodes): %d \n", len(keyEventCodes))
 		keyEventCodes   = remove(keyEventCodes, 0)
 		keyEventActions = remove(keyEventActions, 0)
 	}
