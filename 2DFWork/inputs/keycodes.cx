@@ -42,7 +42,11 @@ var GLFW_KEY_3   51
 var GLFW_KEY_4   52
 */
  
+ 
+ 
 var GLFW_KEY_5 i32 = 53
+ 
+ 
  
 /*
 var GLFW_KEY_6   54
