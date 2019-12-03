@@ -27,6 +27,15 @@ func GetKeyEvent () (key i32, action i32) {
 }
 
 
+func CloseAppOnDeveloperShortcut (key i32) {
+	if key == GLFW_KEY_5 { 
+		str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+		str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  (PRESSED 5)  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+		glfw.SetShouldClose(app.Name, true)
+	}
+}
+
+
 // polling 
 func HoldingGoLeft () (out bool) {
 	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_A), 1) ||
@@ -55,15 +64,15 @@ func HoldingGoUp () (out bool) {
 
 
 // keycode events 
-func MaybeOpenMenu (key i32) {
+func OpenedMenu (key i32) (out bool) {
 	if eventIsBackOrEscape(key) ||
-		key == 257 || // GLFW_KEY_ENTER
-		key == 258 || // GLFW_KEY_TAB 
-		key == 259 { // GLFW_KEY_BACKSPACE 
+		key == GLFW_KEY_ENTER ||
+		key == GLFW_KEY_TAB || 
+		key == GLFW_KEY_BACKSPACE { 
 
 		app.Mode = app.MODE_MENU_MAIN
 		SetMousePointer(true)
-		//shape.StartNewGameSession()
+		out = true
 	}
 }
 
