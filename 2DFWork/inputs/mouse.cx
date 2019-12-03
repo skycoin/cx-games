@@ -5,6 +5,7 @@ import "space"
 
 
 
+var BufferNotchyDeltas bool // distance threshold triggers (for notchy/blocky movement) 
 var BufferPointerSpots bool // pointer event spots/positions 
 var MousePointer       Vec2
 var MousePointerX64    f64
@@ -12,10 +13,11 @@ var MousePointerY64    f64
 var HoldingLeftButton  bool
 
 var mouseMoveThreshold f64 = 85.0D // for Whacky Stack's blocky movement 
-var dist Vec2F64 // distance since latest blocky mouse movement 
+var dist               Vec2F64 // distance since latest blocky mouse movement 
 var buttonEventCodes   []i32
 var buttonEventActions []i32
 var pointerEventSpots  []app.Vec2
+var notchyMoveDeltas   []app.Vec2I
 
 
 
@@ -41,6 +43,18 @@ func GetPointerEvent () (out app.Vec2) {
 		out = pointerEventSpots[0]
 		//printf("GetPointerEvent - len(pointerEventSpots): %d \n", len(pointerEventSpots))
 		pointerEventSpots = remove(pointerEventSpots, 0)
+	}
+}
+
+
+func GetNotchyMouseDelta () (out app.Vec2I) {
+	if len(notchyMoveDeltas) <= 0 {
+		out.X = app.MAX_I32
+		out.Y = app.MAX_I32
+	}else{
+		out = notchyMoveDeltas[0]
+		//printf("GetNotchyMouseDelta - len(notchyMoveDeltas): %d \n", len(notchyMoveDeltas))
+		notchyMoveDeltas = remove(notchyMoveDeltas, 0)
 	}
 }
 
@@ -71,18 +85,18 @@ func blockyMouseMovement () {
 		dist.Y = f64.add(dist.Y, deltaY64)
 	
 		if dist.X > mouseMoveThreshold {
-			//shape.MoveByOffset(1, 0)
+			addNotchyDelta(1, 0)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		} else 
 		if dist.X < -mouseMoveThreshold {
-			//shape.MoveByOffset(-1, 0)
+			addNotchyDelta(-1, 0)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		}	
 
 		if dist.Y > mouseMoveThreshold {
-			//shape.MoveByOffset(0, -1)
+			addNotchyDelta(0, -1)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		} else
@@ -92,6 +106,14 @@ func blockyMouseMovement () {
 			dist.Y = 0.0D
 		}
 	}
+}
+
+
+func addNotchyDelta (x i32, y i32) {
+	var del app.Vec2I
+	del   = app.Vec2I{ X: x, Y: y }
+	notchyMoveDeltas = append(
+	notchyMoveDeltas, del)
 }
 
 
@@ -159,7 +181,9 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	}
 	
 	
-	blockyMouseMovement()
+	if BufferNotchyDeltas {
+		blockyMouseMovement()
+	}
 		
 	//printf("onCursorPosEvent %f, %f \n", deltaX64, deltaY64)
 	//printf("onCursorPosEvent %f, %f \n", MousePointer.X, MousePointer.Y)
