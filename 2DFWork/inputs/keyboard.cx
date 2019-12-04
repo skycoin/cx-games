@@ -105,15 +105,15 @@ func EventUp (key i32) (out bool) {
 
 func EventRotateLeft (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_Q) ||
-  	i32.eq(key, GLFW_KEY_LEFT_SHIFT) ||
-    i32.eq(key, GLFW_KEY_RIGHT_SHIFT) {
+  	i32.eq(key, GLFW_KEY_LEFT_CONTROL) ||
+    i32.eq(key, GLFW_KEY_RIGHT_ALT) {
     out = true
   }
 }
 
 func EventRotateRight (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_E) ||
-  	i32.eq(key, GLFW_KEY_LEFT_CONTROL) ||
+  	i32.eq(key, GLFW_KEY_LEFT_ALT) ||
     i32.eq(key, GLFW_KEY_RIGHT_CONTROL) {
     out = true
   }
