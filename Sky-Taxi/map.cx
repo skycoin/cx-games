@@ -75,7 +75,7 @@ func DrawQuads () {
 			draw.Quad(t, r, b, l)
 			
 			// connection rects 
-			draw.SetColor(0.0, 0.0, 0.0) // black 
+			draw.SetColorByRGB(0.0, 0.0, 0.0) // black 
 			var ins f32 = 0.085 // inset 
 			var ex i32 // exit 
 			

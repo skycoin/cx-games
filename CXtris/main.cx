@@ -4,7 +4,7 @@ import "app"
 import "gl"
 import "glfw"
 
-import "draw"
+import "gameDraw"
 import "inputs"
 import "shape"
 import "time"
@@ -80,7 +80,7 @@ func main () {
 		
 		update()
 		time.Update()
-		draw.All()
+		gameDraw.All()
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers(app.Name)

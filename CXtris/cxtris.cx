@@ -1,6 +1,8 @@
 package main
 
 import "app"
+import "draw"
+import "gameDraw"
 import "inputs"
 import "menu"
 import "space"
@@ -11,6 +13,7 @@ func initGame () {
 	shape.Init()
 	space.Init()
 	draw.Init()
+	gameDraw.Init()
 	inputs.Init()
 	inputs.BufferingPointerSpots = true
 	inputs.BufferingNotchyDeltas = true

@@ -1,10 +1,11 @@
-package draw
+package gameDraw
 
 import "gl"
 import "gltext"
 import "os"
 
 import "app"
+import "draw"
 import "map"
 import "shape"
 import "space"
@@ -19,7 +20,7 @@ var PicShapeTile  i32
 
 
 func Init () {
-	str.print("draw.Init ()")
+	str.print("CXtris/gameDraw.Init ()")
 	
 	//dir = os.GetWorkingDirectory()
 	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
@@ -176,9 +177,9 @@ func PlayField () {
 		}
 		
 		gl.Color3f(
-			app.Colors[c].R, 
-			app.Colors[c].G, 
-			app.Colors[c].B)
+			draw.Colors[c].R, 
+			draw.Colors[c].G, 
+			draw.Colors[c].B)
 		
 		scaledPic(
 			PicShapeTile, 
@@ -193,9 +194,9 @@ func PlayField () {
 
 func PlayerPiece () {
 	gl.Color3f(
-		app.Colors[shape.PlayerShape].R, 
-		app.Colors[shape.PlayerShape].G, 
-		app.Colors[shape.PlayerShape].B)
+		draw.Colors[shape.PlayerShape].R, 
+		draw.Colors[shape.PlayerShape].G, 
+		draw.Colors[shape.PlayerShape].B)
 	
 	var fX f32 = map.LEdge + map.CellWidthHalf
 	var fY f32 =     -0.95 + map.CellHeightHalf
@@ -217,9 +218,9 @@ func PlayerPiece () {
 
 func NextShape () {
 	gl.Color3f(
-		app.Colors[shape.Next].R, 
-		app.Colors[shape.Next].G, 
-		app.Colors[shape.Next].B)
+		draw.Colors[shape.Next].R, 
+		draw.Colors[shape.Next].G, 
+		draw.Colors[shape.Next].B)
 	
 	var fX f32 = shape.StartPosX
 	var fY f32 = shape.StartPosY
@@ -279,6 +280,7 @@ func menuRects () {
 
 
 func drawVirtualKeys () {
+	/*
 	var numKeysHori i32 = 3
 	var numKeysVert i32 = 2
 	var x f32
@@ -294,4 +296,5 @@ func drawVirtualKeys () {
 			
 		x = x + span
 	}
+	*/
 }

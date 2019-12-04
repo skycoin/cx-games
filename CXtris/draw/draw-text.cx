@@ -1,4 +1,4 @@
-package draw
+package gameDraw
 
 import "inputs"
 import "menu"
@@ -53,6 +53,8 @@ func loadFontSized (fn str, size i32) { // filename
 
 
 func allText () {
+	drawOutlinedText(app.Name, 18.0, i32.f32(app.START_WIDTH / 2), 1.0)
+	
 	if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
 		menuRects()
 		
@@ -65,7 +67,16 @@ func allText () {
 			scoreText()
 			
 			if app.Mode == app.MODE_PLAYING {
-				drawOutlinedText(app.Controls, 18.0, i32.f32(app.START_WIDTH / 2), 0.3)
+				//var numKeysHori i32 = 3
+				//for i := 0; i < numKeysHori; i++ {}
+				//"mouse" icons/s needed 
+				var scale f32 = 0.6
+				drawOutlinedText("[A]", 0.0, 0.0, scale)
+				drawOutlinedText("[S]", i32.f32(app.START_WIDTH) * 0.33, -20.0, scale)
+				drawOutlinedText("[D]", i32.f32(app.START_WIDTH) * 0.66, -40.0, scale)
+	
+					//s = s + "ROTATE Left  == LMB, [Q], [LCtrl], [RAlt]\n"
+					//s = s + "ROTATE Right == RMB, [E], [LAlt],  [RCtrl]\n"
 			}else
 			if app.Mode == app.MODE_GAME_OVER {
 				drawOutlinedText("GAME OVER", 18.0, i32.f32(app.START_WIDTH / 2), 1.0)

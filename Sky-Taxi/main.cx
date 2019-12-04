@@ -91,6 +91,7 @@ func main () {
 
 func init () {
 	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
+	draw.Init()
 
 	ball = entities.Ball{
 		radius: 0.05,
