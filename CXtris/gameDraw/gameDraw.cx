@@ -15,6 +15,8 @@ import "space"
 var PicBackground i32
 var PicStar       i32
 var PicShapeTile  i32
+var PicRotLeft    i32
+var PicRotRight   i32
 //var dir           str
 
 
@@ -30,6 +32,8 @@ func Init () {
 	PicBackground = gl.NewTexture("../CXtris/assets/textures/background.jpg")
 	PicStar       = gl.NewTexture("../CXtris/assets/textures/star.png")
 	PicShapeTile  = gl.NewTexture("../CXtris/assets/textures/tile.png")
+	PicRotLeft    = gl.NewTexture("../CXtris/assets/textures/rotate-left.png")
+	PicRotRight   = gl.NewTexture("../CXtris/assets/textures/rotate-right.png")
 }
 
 
@@ -309,10 +313,20 @@ func drawVirtualKeys () {
 		y, 
 		span, 
 		span)
+	sizedPicAt(PicRotLeft, 
+		x,
+		y, 
+		span, 
+		span)
 
 	x = f32.add(x, span * 2.0)
 	
 	sizedPicAt(PicShapeTile, 
+		x,
+		y, 
+		span, 
+		span)
+	sizedPicAt(PicRotRight, 
 		x,
 		y, 
 		span, 
