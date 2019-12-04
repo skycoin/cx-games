@@ -53,13 +53,16 @@ func loadFontSized (fn str, size i32) { // filename
 
 
 func allText () {
-	drawOutlinedText(app.Name, 18.0, i32.f32(app.START_WIDTH / 2), 1.0)
+	var nameX f32 = 150.0
+	var nameScale f32 = 0.7
+	var vOffs f32 = -38.0
 	
 	if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
 		menuRects()
 		
 		gl.Enable(gl.DEPTH_TEST)
 			menuTexts()
+			drawOutlinedText(app.Name, nameX, vOffs, nameScale)
 			scoreText()
 		gl.Disable(gl.DEPTH_TEST)
 	}else{
@@ -72,8 +75,8 @@ func allText () {
 				//"mouse" icons/s needed 
 				var scale f32 = 0.6
 				drawOutlinedText("[A]", 0.0, 0.0, scale)
-				drawOutlinedText("[S]", i32.f32(app.START_WIDTH) * 0.33, -20.0, scale)
-				drawOutlinedText("[D]", i32.f32(app.START_WIDTH) * 0.66, -40.0, scale)
+				drawOutlinedText("[S]", i32.f32(app.START_WIDTH) * 0.33, 0.0, scale)
+				drawOutlinedText("[D]", i32.f32(app.START_WIDTH) * 0.66, 0.0, scale)
 	
 					//s = s + "ROTATE Left  == LMB, [Q], [LCtrl], [RAlt]\n"
 					//s = s + "ROTATE Right == RMB, [E], [LAlt],  [RCtrl]\n"
@@ -81,6 +84,8 @@ func allText () {
 			if app.Mode == app.MODE_GAME_OVER {
 				drawOutlinedText("GAME OVER", 18.0, i32.f32(app.START_WIDTH / 2), 1.0)
 			}
+			
+			drawOutlinedText(app.Name, nameX, vOffs, nameScale)
 		gl.Disable(gl.DEPTH_TEST)
 	}
 }
