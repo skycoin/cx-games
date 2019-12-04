@@ -45,9 +45,15 @@ func All () {
 		NextShape()
 	}
 	
+	if app.Mode == app.MODE_PLAYING {
+		drawVirtualKeys()
+	}
+	
 	sizedPicAt(PicStar, 
 		inputs.MousePointer.X,
-		inputs.MousePointer.Y, 0.1, 0.07)
+		inputs.MousePointer.Y, 
+		0.1  * 0.3, 
+		0.07 * 0.3)
 	
 	allText()		
 }
@@ -268,5 +274,24 @@ func menuRects () {
 		}
 		
 		y = f32.add(y, ySpan)
+	}
+}
+
+
+func drawVirtualKeys () {
+	var numKeysHori i32 = 3
+	var numKeysVert i32 = 2
+	var x f32
+	var y f32
+	var span f32 = 2.0 / numKeysHori
+	
+	for i := 0; i < numKeysHori; i++ {
+		sizedPicAt(PicStar, 
+			x,
+			y, 
+			span, 
+			span)
+			
+		x = x + span
 	}
 }

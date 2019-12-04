@@ -12,8 +12,8 @@ func initGame () {
 	space.Init()
 	draw.Init()
 	inputs.Init()
-	inputs.BufferPointerSpots = true
-	inputs.BufferNotchyDeltas = true
+	inputs.BufferingPointerSpots = true
+	inputs.BufferingNotchyDeltas = true
 }
 
 

@@ -64,7 +64,7 @@ up to the total score printout
 
 func main () {
 	var s str // game controls info 
-	s =     "MOVE         == mouse, arrow keys or [W], [A], [S], [D]\n"
+	s =     "MOVE         == mouse, arrow keys or [A], [S], [D]\n"
 	s = s + "ROTATE Left  == LMB, [Q], [LCtrl], [RAlt]\n"
 	s = s + "ROTATE Right == RMB, [E], [LAlt],  [RCtrl]\n"
 	app.START_WIDTH  = 590
