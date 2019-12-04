@@ -1,18 +1,23 @@
 package inputs
 
+import "app"
 import "space"
 
 
 
+var BufferNotchyDeltas bool // distance threshold triggers (for notchy/blocky movement) 
+var BufferPointerSpots bool // pointer event spots/positions 
 var MousePointer       Vec2
 var MousePointerX64    f64
 var MousePointerY64    f64
 var HoldingLeftButton  bool
 
 var mouseMoveThreshold f64 = 85.0D // for Whacky Stack's blocky movement 
-var dist Vec2F64 // distance since latest blocky mouse movement 
+var dist               Vec2F64 // distance since latest blocky mouse movement 
 var buttonEventCodes   []i32
 var buttonEventActions []i32
+var pointerEventSpots  []app.Vec2
+var notchyMoveDeltas   []app.Vec2I
 
 
 
@@ -30,6 +35,30 @@ func GetButtonEvent () (button i32, action i32) {
 }
 
 
+func GetPointerEvent () (out app.Vec2) {
+	if len(pointerEventSpots) <= 0 {
+		out.X = app.TOO_BIG_F32
+		out.Y = app.TOO_BIG_F32
+	}else{
+		out = pointerEventSpots[0]
+		//printf("GetPointerEvent - len(pointerEventSpots): %d \n", len(pointerEventSpots))
+		pointerEventSpots = remove(pointerEventSpots, 0)
+	}
+}
+
+
+func GetNotchyMouseDelta () (out app.Vec2I) {
+	if len(notchyMoveDeltas) <= 0 {
+		out.X = app.MAX_I32
+		out.Y = app.MAX_I32
+	}else{
+		out = notchyMoveDeltas[0]
+		//printf("GetNotchyMouseDelta - len(notchyMoveDeltas): %d \n", len(notchyMoveDeltas))
+		notchyMoveDeltas = remove(notchyMoveDeltas, 0)
+	}
+}
+
+
 func PointerInYPixelRange (lesser f32, greater f32) (out bool) {
 	if MousePointerY64 < f32.f64(greater) &&
 		MousePointerY64 >= f32.f64(lesser) {
@@ -39,8 +68,8 @@ func PointerInYPixelRange (lesser f32, greater f32) (out bool) {
 }
 
 
-func SetMousePointer (wantMousePointer bool) {
-	if wantMousePointer {
+func SetMousePointer (wanted bool) {
+	if wanted {
 		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorNormal)
 	} else {
 		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorDisabled)
@@ -56,18 +85,18 @@ func blockyMouseMovement () {
 		dist.Y = f64.add(dist.Y, deltaY64)
 	
 		if dist.X > mouseMoveThreshold {
-			//shape.MoveByOffset(1, 0)
+			addNotchyDelta(1, 0)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		} else 
 		if dist.X < -mouseMoveThreshold {
-			//shape.MoveByOffset(-1, 0)
+			addNotchyDelta(-1, 0)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		}	
 
 		if dist.Y > mouseMoveThreshold {
-			//shape.MoveByOffset(0, -1)
+			addNotchyDelta(0, -1)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		} else
@@ -80,6 +109,14 @@ func blockyMouseMovement () {
 }
 
 
+func addNotchyDelta (x i32, y i32) {
+	var del app.Vec2I
+	del   = app.Vec2I{ X: x, Y: y }
+	notchyMoveDeltas = append(
+	notchyMoveDeltas, del)
+}
+
+
 // buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 	buttonEventCodes = append(
@@ -87,6 +124,18 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 	
 	buttonEventActions = append(
 	buttonEventActions, action)
+
+	
+	// cache state for polling 
+	if button == 0 { // LMB 
+		if action == 0 { // release 
+			HoldingLeftButton = false
+		}else 
+		if action == 1 { // press 
+			HoldingLeftButton = true
+			//printf("onMouseButtonEvent() PRESSED %f, %f \n", MousePointer.X, MousePointer.Y)
+		}
+	}
 }
 
 
@@ -107,21 +156,27 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	MousePointerY64 = y
 
 	
-	// allow dragging a slider handle 
-	if HoldingLeftButton && app.Mode <= app.MODE_MENU_OPTIONS {
-		//respondToMenu()
-	}
-	
-	
+	//printf("space.PixelsAcross.X: %d \n", space.PixelsAcross.X)
+	//printf("space.PixelsAcross.Y: %d \n", space.PixelsAcross.Y)
 	var mX f32
-	mX = f32.div(f64.f32(x), i32.f32(app.ScreenSizeInPixels.X))
+	mX = f32.div(f64.f32(x), i32.f32(space.PixelsAcross.X))
+	/*
+	printf("x: %f \n", x)
 	mX = f32.mul(mX, f32.mul(f64.f32(space.ScreenEdgeR), 2.0))
 	MousePointer.X = f32.add(f64.f32(space.ScreenEdgeL), mX)
+	*/
+	mX = f32.mul(mX, 2.0)
+	MousePointer.X = f32.add(-1.0, mX)
+	printf("mX: %f \n", mX)
 
 	var mY f32
-	mY = f32.div(f64.f32(y), i32.f32(app.ScreenSizeInPixels.Y))
+	mY = f32.div(f64.f32(y), i32.f32(space.PixelsAcross.Y))
 	mY = f32.mul(mY, 2.0)
 	MousePointer.Y = f32.sub(1.0, mY)
+
+
+	printf("MousePointer.X: %f \n", MousePointer.X)
+	printf("MousePointer.Y: %f \n", MousePointer.Y)
 	
 
 	deltaX = f32.sub(MousePointer.X, oldV.X)
@@ -130,7 +185,17 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	deltaY64 = f64.sub(y, old64.Y)
 
 
-	blockyMouseMovement()
+	if BufferPointerSpots {
+		var v app.Vec2 
+		v = app.Vec2{ X: MousePointer.X, Y: MousePointer.Y }
+		pointerEventSpots = append(
+		pointerEventSpots, v)
+	}
+	
+	
+	if BufferNotchyDeltas {
+		blockyMouseMovement()
+	}
 		
 	//printf("onCursorPosEvent %f, %f \n", deltaX64, deltaY64)
 	//printf("onCursorPosEvent %f, %f \n", MousePointer.X, MousePointer.Y)

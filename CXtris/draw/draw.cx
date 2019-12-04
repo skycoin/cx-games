@@ -7,20 +7,22 @@ import "os"
 import "app"
 import "map"
 import "shape"
+import "space"
 
 
 
 var PicBackground i32
 var PicStar       i32
 var PicShapeTile  i32
-var dir           str
+//var dir           str
+
 
 
 func Init () {
-	str.print("draw.Init () -----------nextup is dir:")
+	str.print("draw.Init ()")
 	
-	dir = os.GetWorkingDirectory()
-	str.print(dir)
+	//dir = os.GetWorkingDirectory()
+	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
 	InitFontsAndMenuItems()
 
 	// pics 
@@ -31,8 +33,6 @@ func Init () {
 
 
 func All () {
-	//gl.UseProgram(prog)
-	
 	//gl.MatrixMode(gl.PROJECTION)
 	//gl.LoadIdentity()
 	//gl.MatrixMode(gl.MODELVIEW)
@@ -44,6 +44,10 @@ func All () {
 	if menu.ShowNextShape {
 		NextShape()
 	}
+	
+	sizedPicAt(PicStar, 
+		inputs.MousePointer.X,
+		inputs.MousePointer.Y, 0.1, 0.07)
 	
 	allText()		
 }
@@ -158,25 +162,25 @@ func PlayField () {
 	var fY f32 =     -0.95 + map.CellHeightHalf
 
 	for y := 0; y < map.NUM_CELLS_Y; y++ {
-		for x := 0; x < map.NUM_CELLS_X; x++ {
-			var c i32 = map.Cells[y][x]
+	for x := 0; x < map.NUM_CELLS_X; x++ {
+		var c i32 = map.Cells[y][x]
 
-			if c == map.EMPTY_CELL {
-				c = shape.SHAPE_MAX
-			}
-			
-			gl.Color3f(
-				app.Colors[c].R, 
-				app.Colors[c].G, 
-				app.Colors[c].B)
-			
-			scaledPic(
-				PicShapeTile, 
-				f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
-				f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)), 
-				map.CellWidthHalf, 
-				map.CellHeightHalf)
+		if c == map.EMPTY_CELL {
+			c = shape.SHAPE_MAX
 		}
+		
+		gl.Color3f(
+			app.Colors[c].R, 
+			app.Colors[c].G, 
+			app.Colors[c].B)
+		
+		scaledPic(
+			PicShapeTile, 
+			f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
+			f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)), 
+			map.CellWidthHalf, 
+			map.CellHeightHalf)
+	}
 	}
 }
 
@@ -238,11 +242,11 @@ var alpha f32 = 0.8
 func menuRects () {
 	var m i32 = app.Mode
 	gl.Color4f(dark, dark, dark, 0.9)
-	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, app.PixelHei)
+	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, space.PixelHei)
 	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
 	for i := i32.sub(len(menu[m].Items), 1); i >= 0; i-- {			
-		var xSpan f32 = f32.mul(menu.Items[m][i].Wid, app.PixelWid)
+		var xSpan f32 = f32.mul(menu.Items[m][i].Wid, space.PixelWid)
 	
 		if menu.Items[m][i].Hover {
 			gl.Color4f(mid, mid, mid, alpha)

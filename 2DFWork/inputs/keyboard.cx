@@ -20,9 +20,18 @@ func GetKeyEvent () (key i32, action i32) {
 	}else{
 		key    = keyEventCodes[0]
 		action = keyEventActions[0]
-		//printf("GetButtonEvent - len(buttonEventCodes): %d \n", len(buttonEventCodes))
+		//printf("GetKeyEvent - len(keyEventCodes): %d \n", len(keyEventCodes))
 		keyEventCodes   = remove(keyEventCodes, 0)
 		keyEventActions = remove(keyEventActions, 0)
+	}
+}
+
+
+func CloseAppOnDeveloperShortcut (key i32) {
+	if key == GLFW_KEY_5 { 
+		str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ QUITTING GAME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+		str.print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  (PRESSED 5)  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+		glfw.SetShouldClose(app.Name, true)
 	}
 }
 
@@ -55,15 +64,15 @@ func HoldingGoUp () (out bool) {
 
 
 // keycode events 
-func MaybeOpenMenu (key i32) {
+func OpenedMenu (key i32) (out bool) {
 	if eventIsBackOrEscape(key) ||
-		key == 257 || // GLFW_KEY_ENTER
-		key == 258 || // GLFW_KEY_TAB 
-		key == 259 { // GLFW_KEY_BACKSPACE 
+		key == GLFW_KEY_ENTER ||
+		key == GLFW_KEY_TAB || 
+		key == GLFW_KEY_BACKSPACE { 
 
 		app.Mode = app.MODE_MENU_MAIN
 		SetMousePointer(true)
-		//shape.StartNewGameSession()
+		out = true
 	}
 }
 
@@ -96,15 +105,15 @@ func EventUp (key i32) (out bool) {
 
 func EventRotateLeft (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_Q) ||
-  	i32.eq(key, GLFW_KEY_LEFT_SHIFT) ||
-    i32.eq(key, GLFW_KEY_RIGHT_SHIFT) {
+  	i32.eq(key, GLFW_KEY_LEFT_CONTROL) ||
+    i32.eq(key, GLFW_KEY_RIGHT_ALT) {
     out = true
   }
 }
 
 func EventRotateRight (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_E) ||
-  	i32.eq(key, GLFW_KEY_LEFT_CONTROL) ||
+  	i32.eq(key, GLFW_KEY_LEFT_ALT) ||
     i32.eq(key, GLFW_KEY_RIGHT_CONTROL) {
     out = true
   }

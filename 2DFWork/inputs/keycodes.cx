@@ -6,7 +6,7 @@ var	GLFW_KEY_W i32 = 87
 var	GLFW_KEY_A i32 = 65
 var	GLFW_KEY_S i32 = 83
 var	GLFW_KEY_D i32 = 68
-var	GLFW_KEY_SPACE i32 = 32
+
 var	GLFW_KEY_X i32 = 88
 var	GLFW_KEY_Z i32 = 90
 var	GLFW_KEY_0 i32 = 48
@@ -17,11 +17,10 @@ var	GLFW_KEY_2 i32 = 50
 
 
 
+var GLFW_KEY_UNKNOWN i32 = -1
+var GLFW_KEY_SPACE i32 = 32
+ 
 /*
-var GLFW_KEY_UNKNOWN   -1
- 
-var GLFW_KEY_SPACE   32
- 
 var GLFW_KEY_APOSTROPHE   39 // [']
  
 var GLFW_KEY_COMMA   44 // [,]
@@ -41,9 +40,15 @@ var GLFW_KEY_2   50
 var GLFW_KEY_3   51
  
 var GLFW_KEY_4   52
+*/
  
-var GLFW_KEY_5   53
  
+ 
+var GLFW_KEY_5 i32 = 53
+ 
+ 
+ 
+/*
 var GLFW_KEY_6   54
  
 var GLFW_KEY_7   55

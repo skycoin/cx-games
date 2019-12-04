@@ -63,9 +63,13 @@ up to the total score printout
 */
 
 func main () {
+	var s str // game controls info 
+	s =     "MOVE         == mouse, arrow keys or [W], [A], [S], [D]\n"
+	s = s + "ROTATE Left  == LMB, [Q], [LCtrl], [RAlt]\n"
+	s = s + "ROTATE Right == RMB, [E], [LAlt],  [RCtrl]\n"
 	app.START_WIDTH  = 590
 	app.START_HEIGHT = 960
-	app.Init("C X t r i s", "Move with the W,A,S,D keys.")
+	app.Init("C X t r i s", s)
 	initAPIs()
 	initGame()
 
@@ -74,8 +78,8 @@ func main () {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT) // gltext needs 
 		gl.Color3f(1.0, 1.0, 1.0)
 		
-		time.Update()
 		update()
+		time.Update()
 		draw.All()
 		
 		glfw.PollEvents()
@@ -96,15 +100,4 @@ func initAPIs () {
 	gl.Enable(gl.TEXTURE_2D)
 	gl.Enable(gl.BLEND)
 	gl.DepthMask(true) // not needed by "gltext" package 
-
-	// program 
-	prog := gl.CreateProgram()
-	gl.LinkProgram(prog)
-}
-
-
-func initGame () {
-	shape.Init()
-	draw.Init()
-	inputs.Init()
 }
