@@ -280,21 +280,41 @@ func menuRects () {
 
 
 func drawVirtualKeys () {
-	/*
+	//"mouse" & arrow icon/s needed 
+	//"mouse" & arrow icon/s needed 
+	//"mouse" & arrow icon/s needed 
+	
 	var numKeysHori i32 = 3
 	var numKeysVert i32 = 2
-	var x f32
-	var y f32
-	var span f32 = 2.0 / numKeysHori
+	var span f32 = 2.0 / i32.f32(numKeysHori)
+	var spanHalf f32 = span / 2.0
+	var x f32 = -1.0 + spanHalf
+	var y f32 = -1.0 + spanHalf
 	
 	for i := 0; i < numKeysHori; i++ {
-		sizedPicAt(PicStar, 
+		sizedPicAt(PicShapeTile, 
 			x,
 			y, 
 			span, 
 			span)
 			
-		x = x + span
+		x = f32.add(x, span)
 	}
-	*/
+	
+	x = -1.0 + spanHalf
+	y = f32.add(y, span)
+
+	sizedPicAt(PicShapeTile, 
+		x,
+		y, 
+		span, 
+		span)
+
+	x = f32.add(x, span * 2.0)
+	
+	sizedPicAt(PicShapeTile, 
+		x,
+		y, 
+		span, 
+		span)
 }
