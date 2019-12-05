@@ -1,7 +1,7 @@
 package menu
 
 import "app"
-import "time"
+import "gameTime"
 
 
 
@@ -59,9 +59,9 @@ func Init () {
 // 	makeMenuItem(1, 50.0, "<- BACK")
 
 	// sliders (only items that use these fields) 
-	Items[1][1].Max = time.DROP_SPEED_MAX
-	Items[1][1].Value = time.DropSpeed
-	Items[1][2].Max = 11 // for debris height 
+	Items[1][1].Max   = gameTime.DROP_SPEED_MAX
+	Items[1][1].Value = gameTime.DropSpeed
+	Items[1][2].Max   = 11 // for debris height 
 	Items[1][2].Value = DebrisHeight
 }
 
