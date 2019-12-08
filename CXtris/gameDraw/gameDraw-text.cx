@@ -9,36 +9,12 @@ import "menu"
 var light f32 = 0.75
 var mid   f32 = 0.5
 var dark  f32 = 0.3
-var keySetPri []str //...ary 
-var keySetSec []str //...ondary 
 
 
 
 func InitFontsAndMenuItems() {
 	gl.DepthFunc(gl.LESS)
 	
-	keySetPri = append(
-	keySetPri, "[A]")
-	keySetPri = append(
-	keySetPri, "[S]")
-	keySetPri = append(
-	keySetPri, "[D]")
-	keySetPri = append(
-	keySetPri, "[Q]")
-	keySetPri = append(
-	keySetPri, "[E]")
-	
-	keySetSec = append(
-	keySetSec, "[->]")
-	keySetSec = append(
-	keySetSec, "[V]")
-	keySetSec = append(
-	keySetSec, "[->]")
-	keySetSec = append(
-	keySetSec, "[LCtrl]")
-	keySetSec = append(
-	keySetSec, "[LAlt]")
-
 	var file str = "../CXtris/assets/fonts/roboto-light.ttf"
 	loadFontSized(file, f32.i32(menu.MainSize))
 	loadFontSized(file, f32.i32(menu.OptionsSize))
@@ -95,7 +71,7 @@ func allText () {
 			
 			if app.Mode == app.MODE_PLAYING {
 				var pixHSpan f32 = i32.f32(app.START_WIDTH) / 3.0
-				var pixVSpan f32 = 100.0
+				var pixVSpan f32 = pixHSpan //100.0
 				var x f32
 				var y f32 = i32.f32(app.START_HEIGHT) - pixVSpan - 14.0
 				for i := 0; i < len(keySetPri); i++ {

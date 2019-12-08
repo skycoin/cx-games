@@ -17,7 +17,10 @@ var PicStar       i32
 var PicShapeTile  i32
 var PicRotLeft    i32
 var PicRotRight   i32
-//var dir           str
+var PicArrowLeft  i32
+var PicArrowRight i32
+var PicArrowDown  i32
+//var dir         str
 
 
 
@@ -27,6 +30,7 @@ func Init () {
 	//dir = os.GetWorkingDirectory()
 	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
 	InitFontsAndMenuItems()
+	InitControlsText()
 
 	// pics 
 	PicBackground = gl.NewTexture("../CXtris/assets/textures/background.jpg")
@@ -34,6 +38,9 @@ func Init () {
 	PicShapeTile  = gl.NewTexture("../CXtris/assets/textures/tile.png")
 	PicRotLeft    = gl.NewTexture("../CXtris/assets/textures/rotate-left.png")
 	PicRotRight   = gl.NewTexture("../CXtris/assets/textures/rotate-right.png")
+	PicArrowLeft  = gl.NewTexture("../CXtris/assets/textures/arrow-left.png")
+	PicArrowRight = gl.NewTexture("../CXtris/assets/textures/arrow-right.png")
+	PicArrowDown  = gl.NewTexture("../CXtris/assets/textures/arrow-down.png")
 }
 
 
@@ -51,7 +58,7 @@ func All () {
 	}
 	
 	if app.Mode == app.MODE_PLAYING {
-		drawVirtualKeys()
+		drawVirtualKeyBackdrops()
 	}
 	
 	sizedPicAt(PicStar, 
@@ -280,55 +287,4 @@ func menuRects () {
 		
 		y = f32.add(y, ySpan)
 	}
-}
-
-
-func drawVirtualKeys () {
-	//"mouse" & arrow icon/s needed 
-	//"mouse" & arrow icon/s needed 
-	//"mouse" & arrow icon/s needed 
-	
-	var numKeysHori i32 = 3
-	var numKeysVert i32 = 2
-	var span f32 = 2.0 / i32.f32(numKeysHori)
-	var spanHalf f32 = span / 2.0
-	var x f32 = -1.0 + spanHalf
-	var y f32 = -1.0 + spanHalf
-	
-	for i := 0; i < numKeysHori; i++ {
-		sizedPicAt(PicShapeTile, 
-			x,
-			y, 
-			span, 
-			span)
-			
-		x = f32.add(x, span)
-	}
-	
-	x = -1.0 + spanHalf
-	y = f32.add(y, span)
-
-	sizedPicAt(PicShapeTile, 
-		x,
-		y, 
-		span, 
-		span)
-	sizedPicAt(PicRotLeft, 
-		x,
-		y, 
-		span, 
-		span)
-
-	x = f32.add(x, span * 2.0)
-	
-	sizedPicAt(PicShapeTile, 
-		x,
-		y, 
-		span, 
-		span)
-	sizedPicAt(PicRotRight, 
-		x,
-		y, 
-		span, 
-		span)
 }

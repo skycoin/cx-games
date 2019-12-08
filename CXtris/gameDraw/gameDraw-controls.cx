@@ -1,0 +1,107 @@
+package gameDraw
+
+
+
+// FIXME when CX has constants 
+var NUM_H_KEYS i32 = 3 // horizontal 
+var NUM_V_KEYS i32 = 2 // vertical 
+var SPAN f32 = 2.0 / i32.f32(NUM_H_KEYS)
+var SPAN_HALF f32 = SPAN / 2.0
+
+// controls text 
+var keySetPri []str //...ary 
+var keySetSec []str //...ondary 
+
+
+
+func InitControlsText () {
+	keySetPri = append(
+	keySetPri, "[A]")
+	keySetPri = append(
+	keySetPri, "[S]")
+	keySetPri = append(
+	keySetPri, "[D]")
+	keySetPri = append(
+	keySetPri, "[Q]")
+	keySetPri = append(
+	keySetPri, "[E]")
+	
+	keySetSec = append(
+	keySetSec, "[->]")
+	keySetSec = append(
+	keySetSec, "[V]")
+	keySetSec = append(
+	keySetSec, "[->]")
+	keySetSec = append(
+	keySetSec, "[LCtrl]")
+	keySetSec = append(
+	keySetSec, "[LAlt]")
+}
+
+
+func drawVirtualKeyBackdrops () {
+	//"mouse" & arrow icon/s needed 
+	//"mouse" & arrow icon/s needed 
+	//"mouse" & arrow icon/s needed 
+	
+	var x f32 = -1.0 + SPAN_HALF
+	var y f32 = -1.0 + SPAN_HALF
+	
+	for i := 0; i < NUM_H_KEYS; i++ {
+		sizedPicAt(PicShapeTile, 
+			x,
+			y, 
+			SPAN, 
+			SPAN)
+
+		if i == 0 {
+			sizedPicAt(PicArrowLeft, 
+				x,
+				y, 
+				SPAN, 
+				SPAN)
+		}else			
+		if i == 1 {
+			sizedPicAt(PicArrowDown, 
+				x,
+				y, 
+				SPAN, 
+				SPAN)
+		}else			
+		if i == 2 {
+			sizedPicAt(PicArrowRight, 
+				x,
+				y, 
+				SPAN, 
+				SPAN)
+		}			
+		x = f32.add(x, SPAN)
+	}
+	
+	x = -1.0 + SPAN_HALF
+	y = f32.add(y, SPAN)
+
+	sizedPicAt(PicShapeTile, 
+		x,
+		y, 
+		SPAN, 
+		SPAN)
+	sizedPicAt(PicRotLeft, 
+		x,
+		y, 
+		SPAN, 
+		SPAN)
+
+	x = f32.add(x, SPAN * 2.0)
+	
+	sizedPicAt(PicShapeTile, 
+		x,
+		y, 
+		SPAN, 
+		SPAN)
+	sizedPicAt(PicRotRight, 
+		x,
+		y, 
+		SPAN, 
+		SPAN)
+}
