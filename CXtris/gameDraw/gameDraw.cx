@@ -25,7 +25,7 @@ var PicArrowDown  i32
 
 
 func Init () {
-	str.print("CXtris/gameDraw.Init ()")
+	str.print("gameDraw.Init ()")
 	
 	//dir = os.GetWorkingDirectory()
 	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
@@ -57,10 +57,20 @@ func All () {
 		NextShape()
 	}
 	
+	if app.Mode < app.MODE_MENU_MAX { // in a menu 
+		menu.DrawRects()
+		
+		if app.Mode == app.MODE_MENU_CONTROLS {
+			drawVirtualKeyBackdrops()
+		}
+	}else
 	if app.Mode == app.MODE_PLAYING {
-		drawVirtualKeyBackdrops()
+		if inputs.ShouldShowControls() {
+			drawVirtualKeyBackdrops()
+		}
 	}
 	
+	// cursor/pointer 
 	sizedPicAt(PicStar, 
 		inputs.MousePointer.X,
 		inputs.MousePointer.Y, 
@@ -94,7 +104,7 @@ func sizedPicAt (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 }
 
 
-func sizedNotStretchedPicAt (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
+func SizedNotStretchedPicAt (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 	var tosy f32 = scaleY / 3.0 // 3rd of scale y 
 	var ome f32 // offset (to) middle (section) extent 
 	ome = scaleX - tosy
@@ -252,39 +262,5 @@ func NextShape () {
 		
 		fX = shape.StartPosX
 		fY = f32.add(fY, shape.NextCellSpanY)
-	}
-}
-
-
-var alpha f32 = 0.8
-func menuRects () {
-	var m i32 = app.Mode
-	gl.Color4f(dark, dark, dark, 0.9)
-	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, space.PixelHei)
-	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
-
-	for i := i32.sub(len(menu[m].Items), 1); i >= 0; i-- {			
-		var xSpan f32 = f32.mul(menu.Items[m][i].Wid, space.PixelWid)
-	
-		if menu.Items[m][i].Hover {
-			gl.Color4f(mid, mid, mid, alpha)
-		}else{
-			gl.Color4f(dark, dark, dark, alpha)
-		}
-		
-		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, xSpan, ySpan)
-		
-		if menu.Items[m][i].Max != 0 { // (if it's a slider) 
-			gl.Color3f(1.0, 1.0, 1.0)
-			var val f32 = i32.f32(menu.Items[m][i].Value)
-			var max f32 = i32.f32(menu.Items[m][i].Max)
-			var wid f32 = xSpan / max
-			var x   f32 = (val / max * xSpan)
-			x = f32.sub(x, f32.div(xSpan, 2.0))
-			x = f32.add(x, f32.div(wid, 2.0))
-			sizedNotStretchedPicAt(PicShapeTile, x, y, wid, ySpan)
-		}
-		
-		y = f32.add(y, ySpan)
 	}
 }

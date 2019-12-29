@@ -42,6 +42,7 @@ func Init () {
  	// app.MODE_MENU_MAIN
  	makeMenuSystemItem(0, MainSize, Play)
  	makeMenuSystemItem(0, MainSize, Options)
+ 	makeMenuSystemItem(0, MainSize, Controls)
  	makeMenuSystemItem(0, MainSize, Quit)
 	// app.MODE_MENU_OPTIONS
  	makeMenuSystemItem(1, OptionsSize, ShowNextShapeText + "YES")

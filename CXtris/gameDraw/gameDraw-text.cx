@@ -5,13 +5,6 @@ import "menu"
 
 
 
-// color channel intensities 
-var light f32 = 0.75
-var mid   f32 = 0.5
-var dark  f32 = 0.3
-
-
-
 func InitFontsAndMenuItems() {
 	gl.DepthFunc(gl.LESS)
 	
@@ -57,28 +50,26 @@ func allText () {
 	var nameScale f32 = 0.7
 	var vOffs f32 = -38.0
 	
-	if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
-		menuRects()
+	gl.Enable(gl.DEPTH_TEST)
+		scoreText()
+		drawOutlinedText(app.Name, nameX, vOffs, nameScale)
 		
-		gl.Enable(gl.DEPTH_TEST)
-			menuTexts()
-			drawOutlinedText(app.Name, nameX, vOffs, nameScale)
-			scoreText()
-		gl.Disable(gl.DEPTH_TEST)
-	}else{
-		gl.Enable(gl.DEPTH_TEST)
-			scoreText()
-			
-			if app.Mode == app.MODE_PLAYING {
+		if app.Mode < app.MODE_MENU_MAX { // in a menu 
+			if app.Mode == app.MODE_MENU_CONTROLS {
 				drawKeyCapTexts()
-			}else
-			if app.Mode == app.MODE_GAME_OVER {
-				drawOutlinedText("GAME OVER", 18.0, i32.f32(app.START_WIDTH / 2), 1.0)
 			}
 			
-			drawOutlinedText(app.Name, nameX, vOffs, nameScale)
-		gl.Disable(gl.DEPTH_TEST)
-	}
+			menuTexts()
+		}else
+		if app.Mode == app.MODE_PLAYING {
+			if inputs.ShouldShowControls() {
+				drawKeyCapTexts()
+			}
+		}else
+		if app.Mode == app.MODE_GAME_OVER {
+			drawOutlinedText("GAME OVER", 18.0, i32.f32(app.START_WIDTH / 2), 1.0)
+		}		
+	gl.Disable(gl.DEPTH_TEST)
 }
 
 
@@ -99,7 +90,7 @@ func menuTexts () {
 			gl.Color3f(1.0, 1.0, 1.0)
 		}else{
 			menu.Items[m][i].Hover = false
-			gl.Color3f(mid, mid, mid)
+			gl.Color3f(draw.Mid, draw.Mid, draw.Mid)
 		}
 
 		gltext.Printf(
@@ -114,29 +105,27 @@ func menuTexts () {
 
 
 func drawKeyCapTexts () {
-	if inputs.ShouldShowControls() {
-		var pixHSpan f32 = i32.f32(app.START_WIDTH) / 3.0
-		var pixVSpan f32 = pixHSpan //100.0
-		var x f32
-		var y f32 = i32.f32(app.START_HEIGHT) - pixVSpan - 14.0
-		for i := 0; i < len(keySetPri); i++ {
-			drawOutlinedText(keySetPri[i], x, y, 1.0)
-			
-			if i == 2 {
-				x = 0.0
-				y = y - pixVSpan
-			}else
-			if i == 3 {
-				x = x + pixHSpan
-				x = x + pixHSpan
-			}else{
-				x = x + pixHSpan
-			}
+	var pixHSpan f32 = i32.f32(app.START_WIDTH) / 3.0
+	var pixVSpan f32 = pixHSpan //100.0
+	var x f32
+	var y f32 = i32.f32(app.START_HEIGHT) - pixVSpan - 14.0
+	for i := 0; i < len(keySetPri); i++ {
+		drawOutlinedText(keySetPri[i], x, y, 1.0)
+		
+		if i == 2 {
+			x = 0.0
+			y = y - pixVSpan
+		}else
+		if i == 3 {
+			x = x + pixHSpan
+			x = x + pixHSpan
+		}else{
+			x = x + pixHSpan
 		}
-
-		//s = s + "ROTATE Left  == LMB,  [LCtrl], [RAlt]\n"
-		//s = s + "ROTATE Right == RMB,  [LAlt],  [RCtrl]\n"
 	}
+
+	//s = s + "ROTATE Left  == LMB,  [LCtrl], [RAlt]\n"
+	//s = s + "ROTATE Right == RMB,  [LAlt],  [RCtrl]\n"
 }
 
 

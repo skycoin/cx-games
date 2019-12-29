@@ -43,9 +43,6 @@ func drawVirtualKeyBackdrops () {
 	//"mouse" & arrow icon/s needed 
 	//"mouse" & arrow icon/s needed 
 	//"mouse" & arrow icon/s needed 
-	if bool.not(inputs.ShouldShowControls()) {
-		return // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-	}
 
 	var x f32 = -1.0 + SPAN_HALF
 	var y f32 = -1.0 + SPAN_HALF

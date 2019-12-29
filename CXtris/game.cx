@@ -73,7 +73,7 @@ func respondToButtonEvents () {
 	}else 
 	if action == glfw.Press {
 		if button == glfw.MouseButtonLeft {
-			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
+			if app.Mode < app.MODE_MENU_MAX { // in a menu 
 				respondToMenuClicks()
 			}
 			
@@ -186,6 +186,9 @@ func respondToMenuClicks () {
 	} else
 	if s == menu.Options {
 		app.Mode = app.MODE_MENU_OPTIONS
+	} else
+	if s == menu.Controls {
+		app.Mode = app.MODE_MENU_CONTROLS
 	} else
 	if s == menu.Quit {
 		glfw.SetShouldClose(app.Name, true)
