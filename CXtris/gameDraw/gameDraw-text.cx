@@ -37,7 +37,7 @@ func InitFontsAndMenuItems() {
 		menu.Items[m][i].Hei = i32.f32(h)
 		menu.Items[m][i].Left = (i32.f32(app.START_WIDTH) - menu.Items[m][i].Wid) / 2.0
 		
-		printf("%s ---- %d,%d ---- '%s' \n", font, w, h, menu.Items[m][i].Text)
+		printf("menu %d item ---- %s ---- %d,%d ---- '%s' \n", m, font, w, h, menu.Items[m][i].Text)
 	}
 	}
 }

@@ -22,10 +22,12 @@ var Items [][]MenuItem // 1st is menu id, 2nd is item id
 var MainSize            f32  = 150.0
 var Play                str  = "Play"
 var Options             str  = "Options"
+var Controls            str  = "Controls"
 var Quit                str  = "Quit"
 
 // options 
 var OptionsSize         f32  = 58.0
+var ControlsSize        f32  = 58.0
 var ShowNextShape       bool = true
 var ShowNextShapeText   str  = "Show next shape: "
 var SpeedText           str  = "Speed"
@@ -37,28 +39,19 @@ var DebrisHeight        i32  = 9
 func Init () {
  	printf("menu.Init () \n")
  	
- 	var mis []MenuItem
- 	
- 	mis = []MenuItem{}
- 	Items = append(
-	Items, mis)
- 	
- 	mis = []MenuItem{}
- 	Items = append(
-	Items, mis)
-
  	// app.MODE_MENU_MAIN
- 	makeMenuItem(0, MainSize, Play)
- 	makeMenuItem(0, MainSize, Options)
- 	makeMenuItem(0, MainSize, Quit)
+ 	makeMenuSystemItem(0, MainSize, Play)
+ 	makeMenuSystemItem(0, MainSize, Options)
+ 	makeMenuSystemItem(0, MainSize, Quit)
 	// app.MODE_MENU_OPTIONS
- 	makeMenuItem(1, OptionsSize, ShowNextShapeText + "YES")
- 	makeMenuItem(1, OptionsSize, SpeedText)
- 	makeMenuItem(1, OptionsSize, DebrisHeightText)
- 	makeMenuItem(1, OptionsSize, Play)
-// 	makeMenuItem(1, 50.0, "<- BACK")
+ 	makeMenuSystemItem(1, OptionsSize, ShowNextShapeText + "YES")
+ 	makeMenuSystemItem(1, OptionsSize, SpeedText)
+ 	makeMenuSystemItem(1, OptionsSize, DebrisHeightText)
+ 	makeMenuSystemItem(1, OptionsSize, Play)
+	// app.MODE_MENU_CONTROLS
+ 	makeMenuSystemItem(2, ControlsSize, Play)
 
-	// sliders (only items that use these fields) 
+	// sliders (the only items that use these fields) 
 	Items[1][1].Max   = gameTime.DROP_SPEED_MAX
 	Items[1][1].Value = gameTime.DropSpeed
 	Items[1][2].Max   = 11 // for debris height 
@@ -66,7 +59,17 @@ func Init () {
 }
 
 
-func makeMenuItem(menuId i32, size f32, text str) {
+func makeMenuSystemItem(menuId i32, size f32, text str) {
+	// while menuId is invalid (menu doesn't exist yet) 
+	for len(Items) <= menuId {
+		printf("making new menu (%d) \n", menuId)
+
+	 	var nm []MenuItem
+	 	nm = []MenuItem{}
+	 	Items = append(
+		Items, nm)
+	}
+	
  	var mIt MenuItem 
  	mIt = MenuItem{ Size: size, Text: text }
  	Items[menuId] = append(

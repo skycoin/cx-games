@@ -24,11 +24,12 @@ var Controls str
 
 
 // modes 
-var MODE_MENU_MAIN    i32
-var MODE_MENU_OPTIONS i32 = 1
-var MODE_PLAYING      i32 = 2
-var MODE_GAME_OVER    i32 = 3
-var MODE_MAX          i32 = 4
+var MODE_MENU_MAIN     i32
+var MODE_MENU_OPTIONS  i32 = 1
+var MODE_MENU_CONTROLS i32 = 2
+var MODE_PLAYING       i32 = 3
+var MODE_GAME_OVER     i32 = 4
+var MODE_MAX           i32 = 5
 var Mode i32 = MODE_MENU_MAIN
 
 
