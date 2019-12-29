@@ -129,6 +129,8 @@ func eventIsBackOrEscape (key i32) (out bool) {
 
 
 func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) {
+	LatestUserActionTime = glfw.GetTime()
+	
 	keyEventCodes = append(
 	keyEventCodes, key)
 	

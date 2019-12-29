@@ -6,7 +6,7 @@ import "app"
 
 
 
-var TimeOfLastPlayerAct f32
+var LatestUserActionTime f64
 
 
 
@@ -26,5 +26,9 @@ func Update () {
 
 
 func ShouldShowControls () (out bool) {
-	out = true
+	var /* time */ sinceInput f64 = glfw.GetTime() - LatestUserActionTime
+	
+	if (sinceInput > 1.0D) {
+		out = true
+	}
 }

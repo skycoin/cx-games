@@ -5,7 +5,7 @@ import "space"
 
 
 
-var BufferingNotchyDeltas bool // distance threshold triggers (for notchy/blocky movement) 
+var BufferingNotchyDeltas bool // distance threshold triggers (for low-res/notchy/blocky/jumpy movement) 
 var BufferingPointerSpots bool // pointer event spots/positions 
 var MousePointer       Vec2
 var MousePointerX64    f64
@@ -101,7 +101,7 @@ func blockyMouseMovement () {
 			dist.Y = 0.0D
 		} else
 		if dist.Y < -mouseMoveThreshold {
-			// NO NEED TO MOVE UP 
+			addNotchyDelta(0, 1)
 			dist.X = 0.0D
 			dist.Y = 0.0D
 		}
@@ -110,6 +110,8 @@ func blockyMouseMovement () {
 
 
 func addNotchyDelta (x i32, y i32) {
+	LatestUserActionTime = glfw.GetTime()
+
 	var del app.Vec2I
 	del   = app.Vec2I{ X: x, Y: y }
 	notchyMoveDeltas = append(
@@ -119,6 +121,8 @@ func addNotchyDelta (x i32, y i32) {
 
 // buttons 
 func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
+	LatestUserActionTime = glfw.GetTime()
+
 	buttonEventCodes = append(
 	buttonEventCodes, button)
 	
@@ -148,6 +152,10 @@ var deltaX64 f64
 var deltaY64 f64
 var dist Vec2F64 // distance since latest piece movement 
 func onCursorPosEvent (window str, x f64, y f64) {
+	if bool.not(BufferingNotchyDeltas) {
+		LatestUserActionTime = glfw.GetTime()
+	}
+
 	oldV.X = MousePointer.X
 	oldV.Y = MousePointer.Y
 	old64.X = MousePointerX64

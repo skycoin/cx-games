@@ -43,7 +43,10 @@ func drawVirtualKeyBackdrops () {
 	//"mouse" & arrow icon/s needed 
 	//"mouse" & arrow icon/s needed 
 	//"mouse" & arrow icon/s needed 
-	
+	if bool.not(inputs.ShouldShowControls()) {
+		return // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	}
+
 	var x f32 = -1.0 + SPAN_HALF
 	var y f32 = -1.0 + SPAN_HALF
 	
@@ -58,22 +61,22 @@ func drawVirtualKeyBackdrops () {
 			sizedPicAt(PicArrowLeft, 
 				x,
 				y, 
-				SPAN, 
-				SPAN)
+				SPAN_HALF, 
+				SPAN_HALF)
 		}else			
 		if i == 1 {
 			sizedPicAt(PicArrowDown, 
 				x,
 				y, 
-				SPAN, 
-				SPAN)
+				SPAN_HALF, 
+				SPAN_HALF)
 		}else			
 		if i == 2 {
 			sizedPicAt(PicArrowRight, 
 				x,
 				y, 
-				SPAN, 
-				SPAN)
+				SPAN_HALF, 
+				SPAN_HALF)
 		}			
 		x = f32.add(x, SPAN)
 	}
@@ -89,8 +92,8 @@ func drawVirtualKeyBackdrops () {
 	sizedPicAt(PicRotLeft, 
 		x,
 		y, 
-		SPAN, 
-		SPAN)
+		SPAN_HALF, 
+		SPAN_HALF)
 
 	x = f32.add(x, SPAN * 2.0)
 	
@@ -102,6 +105,6 @@ func drawVirtualKeyBackdrops () {
 	sizedPicAt(PicRotRight, 
 		x,
 		y, 
-		SPAN, 
-		SPAN)
+		SPAN_HALF, 
+		SPAN_HALF)
 }

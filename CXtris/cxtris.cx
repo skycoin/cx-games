@@ -5,9 +5,28 @@ import "draw"
 import "gameDraw"
 import "gameTime"
 import "inputs"
+import "map"
 import "menu"
 import "space"
 
+
+
+func StartNewGameSession () {
+	inputs.LatestUserActionTime = 0.0D
+	
+	shape.Next = i32.rand(0, shape.SHAPE_MAX)
+	map.EmptyPlayfield()
+ 	shape.SpawnNew()
+	
+	// spawn any wanted random debris blocks 
+	for     y := 0; y < menu.DebrisHeight; y++ {
+		for x := 0; x < map.NUM_CELLS_X;   x++ {
+			if i32.rand(0, 2) == 0 {
+				map.Cells[y][x] = i32.rand(0, shape.SHAPE_MAX)
+			}
+		}
+	}
+}
 
 
 func initGame () {
@@ -18,6 +37,7 @@ func initGame () {
 	inputs.Init()
 	inputs.BufferingPointerSpots = true
 	inputs.BufferingNotchyDeltas = true
+	StartNewGameSession()
 }
 
 
@@ -33,6 +53,10 @@ func respondToNotchyMouseDeltas () {
 	var v app.Vec2I = inputs.GetNotchyMouseDelta ()
 	
 	if v.X != app.MAX_I32 {
+		if v.Y > 0 { // only allow moving shape down 
+			v.Y = 0
+		}
+		
 		shape.MoveByOffset(v.X, v.Y)
 	}
 }
@@ -83,7 +107,7 @@ func respondToKeyEvents () {
 
 func oneTimeOnly (key i32) {
 	if inputs.OpenedMenu(key) {
-		shape.StartNewGameSession()
+		StartNewGameSession()
 	}else
 	if inputs.EventRotateLeft(key) {
 		shape.PlayerRotate(-1)
@@ -139,7 +163,7 @@ func respondToMenuDrags () {
 	*/
 	if s == menu.DebrisHeightText {
 		menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
-		shape.StartNewGameSession()
+		StartNewGameSession()
 	} else
 	if s == menu.SpeedText {
 		gameTime.DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
@@ -157,7 +181,7 @@ func respondToMenuClicks () {
 		inputs.SetMousePointer(false)
 		shape.PlayerScore    =  0
 		shape.PlayerScoreTxt = "0"
-		shape.StartNewGameSession
+		StartNewGameSession()
 		app.Mode = app.MODE_PLAYING
 	} else
 	if s == menu.Options {
