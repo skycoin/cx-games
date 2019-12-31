@@ -46,9 +46,12 @@ func InitFontsAndMenuItems() {
 func loadFontSized (fn str, size i32) { // filename 
 	var s str = str.concat("Roboto", sprintf("%d", size))
 	
-	os.Open(fn)
-	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
-	os.Close(fn)
+	var handle i32 = os.Open(fn)
+	if handle >= 0 {
+		gltext.LoadTrueType(handle, s, size, 32, 127, gltext.LeftToRight)
+		if os.Close(handle) {
+		}
+	}
 }
 
 
