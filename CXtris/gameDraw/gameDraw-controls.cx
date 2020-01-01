@@ -27,7 +27,7 @@ func InitControlsText () {
 	keySetPri, "[E]")
 	
 	keySetSec = append(
-	keySetSec, "[->]")
+	keySetSec, "[<-]")
 	keySetSec = append(
 	keySetSec, "[V]")
 	keySetSec = append(
@@ -46,6 +46,7 @@ func drawVirtualKeyBackdrops () {
 
 	var x f32 = -1.0 + SPAN_HALF
 	var y f32 = -1.0 + SPAN_HALF
+	draw.SetColor3(draw.White)
 	
 	for i := 0; i < NUM_H_KEYS; i++ {
 		sizedPicAt(PicShapeTile, 

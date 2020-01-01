@@ -6,6 +6,7 @@ import "os"
 
 import "app"
 import "draw"
+import "gui"
 import "map"
 import "shape"
 import "space"
@@ -65,7 +66,7 @@ func All () {
 		}
 	}else
 	if app.Mode == app.MODE_PLAYING {
-		if inputs.ShouldShowControls() {
+		if gui.ShowControls {
 			drawVirtualKeyBackdrops()
 		}
 	}

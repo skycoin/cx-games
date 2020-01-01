@@ -8,7 +8,9 @@ import "geom"
 
 
 
-var Colors []Color3
+var Black Color3
+var White Color3
+var Colors []Color3 // rainbow colors slice 
 
 
 type Color3 struct {
@@ -21,16 +23,18 @@ type Color3 struct {
 
 func Init () {
 	str.print("2DFWork/draw.Init ()")
-	// colors 
-	var f f32 = 0.2
-	addColor(0.9, 0.0, 0.0) // red 
-	addColor(0.3, 0.3, 0.9) // blue 
-	addColor(0.3, 0.9, 0.3) // green 
-	addColor(0.7, 0.0, 0.8) // purple  
-	addColor(1.0, 0.9, 0.0) // yellow 
-	addColor(1.0, 0.5, 0.0) // orange 
-	addColor(0.0, 1.0, 1.0) // cyan  
-	addColor(f, f, f)       // dark gray 
+	
+	Black = Color3{ R: 0.0, G: 0.0, B: 0.0 }
+	White = Color3{ R: 1.0, G: 1.0, B: 1.0 }
+	
+	addColor(0.9, 0.0, 0.0)          // red 
+	addColor(0.3, 0.3, 0.9)          // blue 
+	addColor(0.3, 0.9, 0.3)          // green 
+	addColor(0.7, 0.0, 0.8)          // purple  
+	addColor(1.0, 0.9, 0.0)          // yellow 
+	addColor(1.0, 0.5, 0.0)          // orange 
+	addColor(0.0, 1.0, 1.0)          // cyan  
+	addColor(Darker, Darker, Darker) // gray 
 }
 
 

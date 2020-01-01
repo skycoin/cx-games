@@ -1,5 +1,6 @@
 package gameDraw
 
+import "gui"
 import "inputs"
 import "menu"
 
@@ -73,7 +74,7 @@ func allText () {
 			menuTexts()
 		}else
 		if app.Mode == app.MODE_PLAYING {
-			if inputs.ShouldShowControls() {
+			if gui.ShowControls {
 				drawKeyCapTexts()
 			}
 		}else

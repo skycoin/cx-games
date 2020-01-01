@@ -24,10 +24,10 @@ func Update () {
 }
 
 
-func ShouldShowControls () (out bool) {
+func UserActionWithinLast (seconds f64) (out bool) {
 	var /* time */ sinceInput f64 = glfw.GetTime() - LatestUserActionTime
 	
-	if (sinceInput > 1.0D) {
+	if (sinceInput < seconds) {
 		out = true
 	}
 }

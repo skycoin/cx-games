@@ -4,6 +4,7 @@ import "app"
 import "draw"
 import "gameDraw"
 import "gameTime"
+import "gui"
 import "inputs"
 import "map"
 import "menu"
@@ -28,11 +29,16 @@ func update () {
 	respondToButtonEvents()
 	respondToPointerEvents()
 	respondToNotchyMouseDeltas()
+	
+	if inputs.UserActionWithinLast(1.0D) {
+		gui.ShowControls = false
+	}
 }
 
 
 func startNewGameSession () {
 	inputs.LatestUserActionTime = 0.0D
+	gui.ShowControls = true
 	
 	shape.Next = i32.rand(0, shape.SHAPE_MAX)
 	map.EmptyPlayfield()
