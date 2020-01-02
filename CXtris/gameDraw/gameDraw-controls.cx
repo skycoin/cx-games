@@ -3,11 +3,12 @@ package gameDraw
 
 
 // FIXME when CX has constants 
-var NUM_H_KEYS  i32 = 3 // horizontal 
-var NUM_V_KEYS  i32 = 2 // vertical 
-var SPAN        f32 = 2.0 / i32.f32(NUM_H_KEYS)
-var SPAN_HALF   f32 = SPAN / 2.0
-var SPAN_HALF_V f32 // vertical 
+var NUM_H_KEYS   i32 = 3 // horizontal 
+var NUM_V_KEYS   i32 = 2 // vertical 
+var SPAN         f32 = 2.0 / i32.f32(NUM_H_KEYS)
+var SPAN_HALF    f32 = SPAN / 2.0
+var SPAN_QUARTER f32 = SPAN / 4.0
+var SPAN_HALF_V  f32 // vertical 
 
 // controls text 
 var keySetPri []str //...ary 
@@ -44,9 +45,9 @@ func InitControlsText () {
 
 
 func drawVirtualKeyBackdrops () {
-	//"mouse" & arrow icon/s needed 
-	//"mouse" & arrow icon/s needed 
-	//"mouse" & arrow icon/s needed 
+	//"mouse" icon/s needed 
+	//"mouse" icon/s needed 
+	//"mouse" icon/s needed 
 
 	draw.SetColor3(draw.White)
 	var x f32 = -1.0 + SPAN_HALF
@@ -66,6 +67,11 @@ func drawVirtualKeyBackdrops () {
 				y, 
 				SPAN_HALF, 
 				SPAN_HALF_V)
+			sizedPicAt(PicMouseLMB, 
+				x,
+				y, 
+				SPAN_QUARTER, 
+				SPAN_QUARTER)			
 		}else			
 		if i == 1 {
 			sizedPicAt(PicArrowDown, 
@@ -73,6 +79,11 @@ func drawVirtualKeyBackdrops () {
 				y, 
 				SPAN_HALF, 
 				SPAN_HALF_V)
+			sizedPicAt(PicMouse, 
+				x,
+				y, 
+				SPAN_QUARTER, 
+				SPAN_QUARTER)			
 		}else			
 		if i == 2 {
 			sizedPicAt(PicArrowRight, 
@@ -80,6 +91,11 @@ func drawVirtualKeyBackdrops () {
 				y, 
 				SPAN_HALF, 
 				SPAN_HALF_V)
+			sizedPicAt(PicMouseRMB, 
+				x,
+				y, 
+				SPAN_QUARTER, 
+				SPAN_QUARTER)			
 		}
 				
 		x = f32.add(x, SPAN)

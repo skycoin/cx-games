@@ -50,7 +50,7 @@ func Init () {
  	makeMenuSystemItem(1, OptionsSize, DebrisHeightText)
  	makeMenuSystemItem(1, OptionsSize, Play)
 	// app.MODE_MENU_CONTROLS
- 	makeMenuSystemItem(2, ControlsSize, "") //Play)
+ 	makeMenuSystemItem(2, ControlsSize, "")
 
 	// sliders (the only items that use these fields) 
 	Items[1][1].Max   = gameTime.DROP_SPEED_MAX
@@ -63,8 +63,6 @@ func Init () {
 func makeMenuSystemItem(menuId i32, size f32, text str) {
 	// while menuId is invalid (menu doesn't exist yet) 
 	for len(Items) <= menuId {
-		printf("making new menu (%d) \n", menuId)
-
 	 	var nm []MenuItem
 	 	nm = []MenuItem{}
 	 	Items = append(

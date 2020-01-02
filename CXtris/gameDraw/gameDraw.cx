@@ -21,6 +21,9 @@ var PicRotRight   i32
 var PicArrowLeft  i32
 var PicArrowRight i32
 var PicArrowDown  i32
+var PicMouse      i32
+var PicMouseLMB   i32
+var PicMouseRMB   i32
 //var dir         str
 
 
@@ -42,6 +45,9 @@ func Init () {
 	PicArrowLeft  = gl.NewTexture("../CXtris/assets/textures/arrow-left.png")
 	PicArrowRight = gl.NewTexture("../CXtris/assets/textures/arrow-right.png")
 	PicArrowDown  = gl.NewTexture("../CXtris/assets/textures/arrow-down.png")
+	PicMouse      = gl.NewTexture("../CXtris/assets/textures/mouse.png")   
+	PicMouseLMB   = gl.NewTexture("../CXtris/assets/textures/mouse-lmb.png")
+	PicMouseRMB   = gl.NewTexture("../CXtris/assets/textures/mouse-rmb.png")
 }
 
 

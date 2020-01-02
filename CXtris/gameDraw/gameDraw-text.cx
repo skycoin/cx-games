@@ -17,10 +17,11 @@ func InitFontsAndMenuItems() {
 	
 	menu.Init()
 
-	var nm i32 = len(menu.Items)    // nm == num menus 
-	for m := 0; m < nm; m++ {       // m  == menu id 
-	var ni i32 = len(menu.Items[m]) // ni == num items 
-	for i := 0; i < ni; i++ {       // i  == item id 
+	var pmi i32 = -1                 // previous menu id 
+	var nm  i32 = len(menu.Items)    // nm == num menus 
+	for m := 0; m < nm; m++ {        // m  == menu id 
+	var ni  i32 = len(menu.Items[m]) // ni == num items 
+	for i := 0; i < ni; i++ {        // i  == item id 
 		var font str = str.concat("Roboto", sprintf("%d", f32.i32(menu.Items[m][i].Size)))
 		menu.Items[m][i].Font = font		
 		var w i32
@@ -31,7 +32,14 @@ func InitFontsAndMenuItems() {
 		menu.Items[m][i].Hei = i32.f32(h)
 		menu.Items[m][i].Left = (i32.f32(app.START_WIDTH) - menu.Items[m][i].Wid) / 2.0
 		
-		printf("menu %d item ---- %s ---- %d,%d ---- '%s' \n", m, font, w, h, menu.Items[m][i].Text)
+		// print CLI info 
+		if pmi != m {
+			pmi = m
+			printf("menu: %d \n", m)
+		}
+		
+		printf("    fontId: %s --- size: %d,%d --- item: '%s' \n", 
+			font, w, h, menu.Items[m][i].Text)
 	}
 	}
 }
@@ -45,7 +53,7 @@ func loadFontSized (fn str, size i32) { // filename
 	os.Close(fn)
 	
 	/*   THE "s" below should actually be "fn" maybe?
-	     2DBUG's screenshot wasn't drawing text
+	     2DBUG's screenshot wasn't drawing 'CXtris' text 
 	     
 	var handle i32 = os.Open(fn)
 	if handle >= 0 {
