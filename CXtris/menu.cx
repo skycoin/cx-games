@@ -27,7 +27,6 @@ var Quit                str  = "Quit"
 
 // options 
 var OptionsSize         f32  = 58.0
-var ControlsSize        f32  = 58.0
 var ShowNextShape       bool = true
 var ShowNextShapeText   str  = "Show next shape: "
 var SpeedText           str  = "Speed"
@@ -50,7 +49,7 @@ func Init () {
  	makeMenuSystemItem(1, OptionsSize, DebrisHeightText)
  	makeMenuSystemItem(1, OptionsSize, Play)
 	// app.MODE_MENU_CONTROLS
- 	makeMenuSystemItem(2, ControlsSize, "")
+ 	makeMenuSystemItem(2, OptionsSize, "")
 
 	// sliders (the only items that use these fields) 
 	Items[1][1].Max   = gameTime.DROP_SPEED_MAX
