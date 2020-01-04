@@ -5,21 +5,10 @@ import "gameTime"
 
 
 
-type MenuItem struct {
-	Text  str
-	Font  str
-	Size  f32  // used for gltext init of the font 
-	Left  f32  // in pixels 
-	Wid   f32  // w/h caches the resulting string measure queries, 
-	Hei   f32  // 		to get the pixel bounds of the text. 
-	Hover bool // pointer is touching/hovering-over measured rect 
-	Value i32  // only for sliders 
-	Max   i32  // (exclusionary) max value for sliders (0 == NOT a slider) 
-}
-var Items [][]MenuItem // 1st is menu id, 2nd is item id 
+var Items [][]TextGL // 1st is menu id, 2nd is item id 
 
 // main  
-var MainSize            f32  = 150.0
+var MainSize            f32  = 125.0
 var Play                str  = "Play"
 var Options             str  = "Options"
 var Controls            str  = "Controls"
@@ -62,14 +51,14 @@ func Init () {
 func makeMenuSystemItem(menuId i32, size f32, text str) {
 	// while menuId is invalid (menu doesn't exist yet) 
 	for len(Items) <= menuId {
-	 	var nm []MenuItem
-	 	nm = []MenuItem{}
+	 	var nm []TextGL // new menu 
+	 	nm = []TextGL{}
 	 	Items = append(
 		Items, nm)
 	}
 	
- 	var mIt MenuItem 
- 	mIt = MenuItem{ Size: size, Text: text }
+ 	var mIt TextGL 
+ 	mIt = TextGL{ Size: size, Text: text }
  	Items[menuId] = append(
 	Items[menuId], mIt)
 }

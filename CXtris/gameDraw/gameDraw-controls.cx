@@ -11,8 +11,8 @@ var SPAN_QUARTER f32 = SPAN / 3.4//4.0
 var SPAN_HALF_V  f32 // vertical 
 
 // controls text 
-var keySetPri []str //...ary 
-var keySetSec []str //...ondary 
+var keySetPri []TextGL //...ary 
+var keySetSec []TextGL //...ondary 
 
 
 
@@ -21,37 +21,68 @@ func InitControlsText () {
 	SPAN_HALF_V = SPAN_HALF * map.HackyHeightFraction
 
 	keySetPri = append(
-	keySetPri, "A")
+	keySetPri, getNewText("A"))
 	keySetPri = append(
-	keySetPri, "S")
+	keySetPri, getNewText("S"))
 	keySetPri = append(
-	keySetPri, "D")
+	keySetPri, getNewText("D"))
 	keySetPri = append(
-	keySetPri, "Q")
+	keySetPri, getNewText("Q"))
 	keySetPri = append(
-	keySetPri, "E")
+	keySetPri, getNewText("E"))
+
+	/*
+	newKey(keySetSec, "<-")
+	newKey(keySetSec, "V")
+	newKey(keySetSec, "->")
+	newKey(keySetSec, "Ctrl/Alt")
+	newKey(keySetSec, "Alt/Ctrl")
+	*/
 	
-	keySetSec = append(
-	keySetSec, "<-")
-	keySetSec = append(
-	keySetSec, "V")
-	keySetSec = append(
-	keySetSec, "->")
-	keySetSec = append(
-	keySetSec, "Ctrl/Alt")
-	keySetSec = append(
-	keySetSec, "Alt/Ctrl")
+	// precalc positions 
+	initKeySet(keySetPri, false)
+	//initKeySet(keySetSec, true)
+}
+
+
+func getNewText (key str) (out TextGL) {
+	out = TextGL{ Text: key, Size: 28.0 }
+}
+
+
+func initKeySet (keySet []TextGL, yOffset bool) {
+	var w i32
+	var h i32
+	var y f32 = i32.f32(app.START_HEIGHT)
+	
+	for i := 0; i < len(keySet); i++ {
+		str.print(keySet[i].Text)
+
+
+
+		var font str = str.concat("Roboto", sprintf("%d", f32.i32(keySet[i].Size)))
+		keySet[i].FontId = font		
+		w, h = gltext.Metrics(font, 
+		keySet[i].Text)
+		keySet[i].Wid = i32.f32(w)
+		keySet[i].Hei = i32.f32(h)
+		y = y -         i32.f32(h)
+		keySet[i].Top = 0.0 //y
+		keySet[i].Left = 0.0 //(i32.f32(app.START_WIDTH) - keySet[i].Wid) / 2.0
+	}
 }
 
 
 func drawKeyCapTexts () {
 	var pixHSpan f32 = i32.f32(app.START_WIDTH) / 3.0
+	var pixHSpanHalf f32 = pixHSpan / 2.0
 	var pixVSpan f32 = pixHSpan //100.0
 	var x f32
 	var y f32 = i32.f32(app.START_HEIGHT) - pixVSpan - 14.0
+	
 	for i := 0; i < len(keySetPri); i++ {
-		drawOutlinedText(keySetPri[i], x, y, 1.0)
-		
+		drawOutlinedText(keySetPri[i].Text, x, y, 1.0)
+
 		if i == 2 {
 			x = 0.0
 			y = y - pixVSpan
@@ -66,6 +97,23 @@ func drawKeyCapTexts () {
 
 	//s = s + "ROTATE Left  == LMB,  [LCtrl], [RAlt]\n"
 	//s = s + "ROTATE Right == RMB,  [LAlt],  [RCtrl]\n"
+	
+	return
+	
+	
+	
+	
+	
+	
+	
+	// testing a bottom edge anchored vertical span of texts 
+	for i := 0; i < len(keySetPri); i++ {
+		drawOutlinedText(
+			keySetPri[i].Text, 
+			keySetPri[i].Left, 
+			keySetPri[i].Top, 
+			1.0)
+	}
 }
 
 
