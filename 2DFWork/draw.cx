@@ -1,16 +1,25 @@
 package draw
 
 import "gl"
-
 import "app"
 import "entities"
 import "geom"
 
 
 
+var COLOR_RED       i32
+var COLOR_BLUE      i32 = 1
+var COLOR_GREEN     i32 = 2
+var COLOR_PURPLE    i32 = 3
+var COLOR_YELLOW    i32 = 4
+var COLOR_ORANGE    i32 = 5
+var COLOR_CYAN      i32 = 6
+var COLOR_GRAY_DARK i32 = 7
+
+var Colors []Color3 // rainbow colors slice 
+
 var Black Color3
 var White Color3
-var Colors []Color3 // rainbow colors slice 
 
 
 type Color3 struct {
@@ -57,13 +66,24 @@ func Ball (ball entities.Ball) {
 }
 
 
+func SetColorById (i i32) {
+	gl.Color3f(
+		Colors[i].R, 
+		Colors[i].G, 
+		Colors[i].B)
+}
+
+
 func SetColorByRGB (r f32, g f32, b f32) {
 	gl.Color3f(r, g, b)
 }
 
 
 func SetColor3 (color Color3) {
-	gl.Color3f(color.R, color.G, color.B)
+	gl.Color3f(
+		color.R, 
+		color.G, 
+		color.B)
 }
 
 

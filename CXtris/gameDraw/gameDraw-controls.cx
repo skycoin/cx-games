@@ -81,7 +81,7 @@ func drawKeyCapTexts () {
 	var y f32 = i32.f32(app.START_HEIGHT) - pixVSpan - 14.0
 	
 	for i := 0; i < len(keySetPri); i++ {
-		drawOutlinedText(keySetPri[i].Text, x, y, 1.0)
+		drawOutlinedText(keySetPri[i].Text, draw.COLOR_GRAY_DARK, x, y, 1.0)
 
 		if i == 2 {
 			x = 0.0
@@ -109,7 +109,8 @@ func drawKeyCapTexts () {
 	// testing a bottom edge anchored vertical span of texts 
 	for i := 0; i < len(keySetPri); i++ {
 		drawOutlinedText(
-			keySetPri[i].Text, 
+			keySetPri[i].Text,
+			draw.COLOR_YELLOW, 
 			keySetPri[i].Left, 
 			keySetPri[i].Top, 
 			1.0)

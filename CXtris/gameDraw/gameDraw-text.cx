@@ -111,7 +111,7 @@ func allText () {
 		var nameX f32 = 150.0
 		var nameScale f32 = 0.7
 		var vo f32 = -38.0 // vertical offset 
-		drawOutlinedText(app.Name, nameX, vo, nameScale)
+		drawOutlinedText(app.Name, draw.COLOR_CYAN, nameX, vo, nameScale)
 		
 		
 		
@@ -128,7 +128,8 @@ func allText () {
 			}
 		}else
 		if app.Mode == app.MODE_GAME_OVER {
-			drawOutlinedText("GAME OVER", 18.0, i32.f32(app.START_WIDTH / 2), 1.0)
+			drawOutlinedText("GAME OVER", draw.YELLOW,
+				18.0, i32.f32(app.START_WIDTH / 2), 1.0)
 		}		
 	gl.Disable(gl.DEPTH_TEST)
 }
@@ -168,22 +169,22 @@ func scoreText () {
 }
 
 
-func drawOutlinedText (s str, x f32, y f32, scale f32) {
+func drawOutlinedText (s str, color i32, x f32, y f32, scale f32) {
 	var alpha f32 = 1.0
 	gl.Scalef(scale, scale, 0.0)
 
 	// background shadow 
-	printTextWithColor(s, x+1.0, y+1.0, 0.0, 0.0, 0.0, alpha)
-	printTextWithColor(s, x-1.0, y+1.0, 0.0, 0.0, 0.0, alpha)
-	printTextWithColor(s, x+1.0, y-1.0, 0.0, 0.0, 0.0, alpha)
-	printTextWithColor(s, x-1.0, y-1.0, 0.0, 0.0, 0.0, alpha)
+	printTextWithColor(s, x+1.0, y+1.0, color, alpha)
+	printTextWithColor(s, x-1.0, y+1.0, color, alpha)
+	printTextWithColor(s, x+1.0, y-1.0, color, alpha)
+	printTextWithColor(s, x-1.0, y-1.0, color, alpha)
 	// main filling on top 
-	printTextWithColor(s, x,     y,     1.0, 0.5, 0.0, alpha)
+	printTextWithColor(s, x,     y,     color, alpha)
 }
 
 
 // x & y are offsets 
-func printTextWithColor (s str, x f32, y f32, r f32, g f32, b f32, a f32) {
-	gl.Color4f(r, g, b, a)
+func printTextWithColor (s str, x f32, y f32, color i32, a f32) {
+	draw.SetColorById(color)
 	gltext.Printf("Roboto100", x, y, s)
 }
