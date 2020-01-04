@@ -22,22 +22,48 @@ type TextGL struct {
 
 
 
-func InitFontsAndMenuItems() {
+func InitFontsAndMenuItems () {
 	gl.DepthFunc(gl.LESS)
 	
-	var file str = "../CXtris/assets/fonts/roboto-light.ttf"
-	loadFontSized(file, f32.i32(menu.MainSize))
-	loadFontSized(file, f32.i32(menu.OptionsSize))
-	loadFontSized(file, 28)
-	loadFontSized(file, 100)
+	var rFile str = "../CXtris/assets/fonts/roboto-light.ttf"
+	var sFile str = "../CXtris/assets/fonts/Skycoin-Regular.ttf"
+	loadFontSized(rFile, f32.i32(menu.MainSize))
+	loadFontSized(rFile, f32.i32(menu.OptionsSize))
+	loadFontSized(rFile, 28)
+	loadFontSized(rFile, 100)
 	
 	// menu 
 	menu.Init()
+	initMenuText()
+}
 
+
+func loadFontSized (fn str, size i32) { // filename 
+	var s str = str.concat("Roboto", sprintf("%d", size))
+	
+	os.Open(fn)
+	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
+	os.Close(fn)
+	
+	/*   THE "s" below should actually be "fn" maybe?
+	     2DBUG's screenshot wasn't drawing 'CXtris' text 
+	     
+	var handle i32 = os.Open(fn)
+	if handle >= 0 {
+		gltext.LoadTrueType(handle, s, size, 32, 127, gltext.LeftToRight)
+		if os.Close(handle) {
+		}
+	}
+	*/
+}
+
+
+func initMenuText () {
 	var w i32
 	var h i32
 	var pmi i32 = -1                 // previous menu id 
 	var nm  i32 = len(menu.Items)    // nm == num menus 
+	
 	for m := 0; m < nm; m++ {        // m  == menu id 
 	var ni  i32 = len(menu.Items[m]) // ni == num items 
 	for i := 0; i < ni; i++ {        // i  == item id 
@@ -74,37 +100,20 @@ func InitFontsAndMenuItems() {
 }
 
 
-func loadFontSized (fn str, size i32) { // filename 
-	var s str = str.concat("Roboto", sprintf("%d", size))
-	
-	os.Open(fn)
-	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
-	os.Close(fn)
-	
-	/*   THE "s" below should actually be "fn" maybe?
-	     2DBUG's screenshot wasn't drawing 'CXtris' text 
-	     
-	var handle i32 = os.Open(fn)
-	if handle >= 0 {
-		gltext.LoadTrueType(handle, s, size, 32, 127, gltext.LeftToRight)
-		if os.Close(handle) {
-		}
-	}
-	*/
-}
-
-
 func allText () {
-	var nameX f32 = 150.0
-	var nameScale f32 = 0.7
-	var vo f32 = -38.0 // vertical offset 
-	
 	gl.Enable(gl.DEPTH_TEST)
 		draw.SetColor3(draw.White)
-		gltext.Printf("Roboto28", 0.0, 40.0, "QojanglesQ")
+		gltext.Printf("Roboto28", 0.0, 0.0, "QQ IgnoreMe TestText QQ")
 
 		scoreText()
+		
+		
+		var nameX f32 = 150.0
+		var nameScale f32 = 0.7
+		var vo f32 = -38.0 // vertical offset 
 		drawOutlinedText(app.Name, nameX, vo, nameScale)
+		
+		
 		
 		if app.Mode < app.MODE_MENU_MAX { // in a menu 
 			if app.Mode == app.MODE_MENU_CONTROLS {

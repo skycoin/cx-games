@@ -84,7 +84,8 @@ func All () {
 		0.1  * 0.3, 
 		0.07 * 0.3)
 	
-	allText()		
+	gl.LoadIdentity()
+	allText()
 }
 
 
