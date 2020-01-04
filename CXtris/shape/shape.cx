@@ -1,6 +1,7 @@
 package shape
 
 import "app"
+import "gameTime"
 import "map"
 import "menu"
 
@@ -50,7 +51,7 @@ func SpawnNew () {
 		return // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	}
 	
-	
+	gameTime.CalcDropTime()
 
 	PlayerFacing = 0
 	PlayerShape  = Next
@@ -60,52 +61,60 @@ func SpawnNew () {
 	var i i32 = Extents[PlayerShape][PlayerFacing][FACING_UP] + 1
 	PlayerPos = app.Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
 	
-	if bool.not(enoughCellsOpenForNextPosition(0, 0, PlayerFacing)) {
+	if bool.not(enoughCellsOpenForMoveDeltaAndDir(0, 0, PlayerFacing)) {
 		app.Mode = app.MODE_GAME_OVER
 	}
 }
 
 
-func PlayerRotate (change i32) {
+func AttemptRotate (change i32) {
 	if app.Mode != app.MODE_PLAYING ||
 		PlayerShape == SHAPE_CUBE {
 			
 		return
 	}
 	
+	// RESTRICT THESE SHAPES TO TOGGLE BETWEEN 2 VALID STATES. 
+	// OTHERWISE THEY HAVE 4 VALID STATES, AND APPEAR TO CIRCLE 
+	// AROUND CENTER/PIVOT CELL (OF 5,5 GRID) WHICH LOOKS 
+	// UNBALANCED, ODD & DISORIENTING 
 	if PlayerShape == SHAPE_BEAM ||
 		PlayerShape == SHAPE_ZIGZAG ||
 		PlayerShape == SHAPE_ZAGZIG {
 		
 		if PlayerFacing == FACING_UP {
-			if enoughCellsOpenForNextPosition(0, 0, FACING_RIGHT) {
+			if enoughCellsOpenForMoveDeltaAndDir(0, 0, FACING_RIGHT) {
 				PlayerFacing = FACING_RIGHT
+			}else{
+				attemptMoveDownThenNewDir(FACING_RIGHT)				
 			}
 			
-			return		
+			return // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		} else if PlayerFacing == FACING_RIGHT {
-			if enoughCellsOpenForNextPosition(0, 0, FACING_UP) {
+			if enoughCellsOpenForMoveDeltaAndDir(0, 0, FACING_UP) {
 				PlayerFacing = FACING_UP
 			}
 			
-			return		
+			return // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		}
 	}
 	
 
 	var wantedFacing i32 = i32.add(PlayerFacing, change)
 	
+	// wrap-around (stay in valid range) 
 	if wantedFacing >= FACING_MAX {
 		wantedFacing = FACING_UP
-	}
-	
+	}	
 	if wantedFacing < FACING_UP {
 		wantedFacing = FACING_LEFT
 	}
 
-	if enoughCellsOpenForNextPosition(0, 0, wantedFacing) {
+	if enoughCellsOpenForMoveDeltaAndDir(0, 0, wantedFacing) {
 		PlayerFacing = wantedFacing
 	} else {
+		attemptMoveDownThenNewDir(wantedFacing)
+		
 		// TODO: 
 		// WOULD BE NICE TO BE ABLE TO PLAY A BZZZZT / ERROR SOUND HERE
 		// but we could print red text saying something 
@@ -113,30 +122,33 @@ func PlayerRotate (change i32) {
 }
 
 
-func MoveByOffset (x i32, y i32) {
+func AttemptMoveByOffset (x i32, y i32) (moved bool) {
 	// FIXME?: 
 	// allow jumps? (to instazoom down to the bottom) 
 	// cuz then we'd call this with an x,y 
 	// change greater than 1?  thereby needing to check 
-	// in between posititions for collision (each +1 step) 
+	// in-between positions for collision (each +1 step) 
 	
 	if /* going left */ x < 0 &&
 		PlayerPos.X > 0 + Extents[PlayerShape][PlayerFacing][FACING_LEFT] && 
-		enoughCellsOpenForNextPosition(x, y, PlayerFacing) {
+		enoughCellsOpenForMoveDeltaAndDir(x, y, PlayerFacing) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
+		moved = true
 	} else
 	if /* going right */ x > 0 &&
 		PlayerPos.X < map.NUM_CELLS_X - 1 - Extents[PlayerShape][PlayerFacing][FACING_RIGHT] &&
-		enoughCellsOpenForNextPosition(x, y, PlayerFacing) {
+		enoughCellsOpenForMoveDeltaAndDir(x, y, PlayerFacing) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
+		moved = true
 	}
 	
 	if /* going down */ y < 0 {
 		if PlayerPos.Y > 0 + Extents[PlayerShape][PlayerFacing][FACING_DOWN] {
-			if enoughCellsOpenForNextPosition(x, y, PlayerFacing) {
+			if enoughCellsOpenForMoveDeltaAndDir(x, y, PlayerFacing) {
 				PlayerPos.Y = i32.add(PlayerPos.Y, y)
+				moved = true
 			}else{
 				freezeShape()
 			}
@@ -144,7 +156,7 @@ func MoveByOffset (x i32, y i32) {
 			freezeShape()
 		}
 	} else
-	if /* going up */ y > 0 &&
+	if /* going up */ y > 0 && // UNWANTED/UNUSED IN CXTRIS 
 		PlayerPos.Y < map.NUM_CELLS_Y - 1 - Extents[PlayerShape][PlayerFacing][FACING_UP] {
 		
 		PlayerPos.Y = i32.add(PlayerPos.Y, y)
@@ -152,7 +164,16 @@ func MoveByOffset (x i32, y i32) {
 }
 
 
-func enoughCellsOpenForNextPosition (xOff i32, yOff i32, facing i32) (out bool) {
+func attemptMoveDownThenNewDir (dir i32) {
+	if AttemptMoveByOffset(0, -1) &&
+		enoughCellsOpenForMoveDeltaAndDir(0, 0, dir) {
+			
+		PlayerFacing = dir		
+	}
+}
+
+
+func enoughCellsOpenForMoveDeltaAndDir (xOff i32, yOff i32, facing i32) (out bool) {
 	out = true
 	
 	for y := 0; y < 5; y++ {
