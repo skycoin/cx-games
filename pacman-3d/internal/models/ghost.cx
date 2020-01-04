@@ -1,0 +1,275 @@
+package main
+
+import "gl"
+import "glfw"
+
+import "graphical"
+import "phx"
+
+/* Constant declaration */
+var GHOST_RADIUS f32 = 0.025
+var GHOST_SPAWN_LINE i32 = 14
+var GHOST_SPAWN_COLLUMN i32 = 13
+
+// Ghost Types
+var GHOST_TYPE_SHADOW  i32 = 0
+var GHOST_TYPE_SPEEDY  i32 = 1
+var GHOST_TYPE_BASHFUL i32 = 2
+var GHOST_TYPE_POKEY   i32 = 3
+
+// Ghost modes
+var GHOST_MODE_CHASE i32 = 0
+var GHOST_MODE_SCATTER i32 = 1
+var GHOST_MODE_FRIGHTENED i32 = 2
+var GHOST_MODE_IN_HOUSE i32 = 3
+
+// Ghost Scatter Points
+var SHADOW_SCATTER_LINE     i32 = 2
+var SHADOW_SCATTER_COLLUMN  i32 = 26
+var SPEEDY_SCATTER_LINE     i32 = 2
+var SPEEDY_SCATTER_COLLUMN  i32 = 1
+var BASHFUL_SCATTER_LINE    i32 = 28
+var BASHFUL_SCATTER_COLLUMN i32 = 26
+var POKEY_SCATTER_LINE      i32 = 28
+var POKEY_SCATTER_COLLUMN i32 = 1
+
+// Must be initialized
+var SCATTER_TARGET [4]phx.Vector
+
+var GHOST_TEXTURES [4]i32
+var GHOST_FRIGHTENED_TEXTURES [2]i32
+
+var GHOST_CHASE_TIMER f64 = 0.0D
+var GHOST_CHASE_LIMIT f64 = 5.0D
+var GHOST_SCATTER_TIMER f64 = 0.0D
+var GHOST_SCATTER_LIMIT f64 = 5.0D
+
+var GHOST_MOVEMENT_TIMER f64 = 0.001D
+//var GHOST_FRIGHTENED_TIMER f64 = 10.0D
+
+var g_ghosts[4]Ghost
+
+type Ghost struct {
+  index_x i32
+  index_y i32
+  gtype i32
+  mode i32
+
+  direction phx.Direction
+  next_direction phx.Direction
+  velocity f32
+
+  head_geometry graphical.SphereGeometry
+  body_geometry graphical.CylinderGeometry
+
+  movement_timer Timer
+  frightened_timer Timer
+  animation_timer Timer
+
+  current_texture i32
+}
+
+func NewGhost(line i32, collumn i32, gtype i32) (ghost Ghost) {
+  ghost.index_x = collumn
+  ghost.index_y = line
+  ghost.gtype = gtype
+  ghost.mode = GHOST_MODE_IN_HOUSE
+
+  ghost.velocity = 0.005
+
+  ghost.movement_timer = NewTimer(GHOST_MOVEMENT_TIMER)
+  ghost.frightened_timer = NewTimer(7.0D)
+  ghost.animation_timer = NewTimer(0.25D)
+
+  ghost.current_texture = 0
+
+  var mat graphical.Material
+  mat = graphical.newMaterial(1.0, 0.0, 0.0) // Red color
+  mat = mat.setTexture(GHOST_TEXTURES[ghost.gtype])
+
+  ghost.head_geometry = graphical.newSphereGeometry(GHOST_RADIUS, 7, mat)
+  ghost.head_geometry.rotation.x = -90.0
+  //ghost.body_geometry = graphical.newCylinderGeometry(GHOST_RADIUS, GHOST_RADIUS, mat)
+
+  ghost.head_geometry.position = getPosition3D(ghost.index_y, ghost.index_x)
+  //ghost.body_geometry.position.y = f32.sub(position.y, GHOST_RADIUS)
+}
+
+// Initializes the ghosts
+func InitGhosts() {
+  loadGhostTextures()
+
+  for i:=0; i<4; i++ {
+    g_ghosts[i] = NewGhost(GHOST_SPAWN_LINE, GHOST_SPAWN_COLLUMN, i)
+  }
+
+  SCATTER_TARGET[GHOST_TYPE_SHADOW] = phx.NewVector(0.855, -0.835, 0.0)
+  SCATTER_TARGET[GHOST_TYPE_SPEEDY] = phx.NewVector(-0.895, -0.825, 0.0)
+  SCATTER_TARGET[GHOST_TYPE_BASHFUL] = phx.NewVector(0.855, 0.995, 0.0)
+  SCATTER_TARGET[GHOST_TYPE_POKEY] = phx.NewVector(-0.895, -0.835, 0.0)
+}
+
+func ResetGhosts()  {
+  for i:=0; i<4; i++ {
+    g_ghosts[i] = NewGhost(GHOST_SPAWN_LINE, GHOST_SPAWN_COLLUMN, i)
+  }
+}
+
+// Loads the ghosts textures
+func loadGhostTextures () {
+  GHOST_TEXTURES[GHOST_TYPE_SHADOW] = gl.NewTexture("assets/textures/ghosts/ghost1.png")
+  GHOST_TEXTURES[GHOST_TYPE_SPEEDY] = gl.NewTexture("assets/textures/ghosts/ghost2.png")
+  GHOST_TEXTURES[GHOST_TYPE_BASHFUL] = gl.NewTexture("assets/textures/ghosts/ghost3.png")
+  GHOST_TEXTURES[GHOST_TYPE_POKEY] = gl.NewTexture("assets/textures/ghosts/ghost4.png")
+
+  GHOST_FRIGHTENED_TEXTURES[0] = gl.NewTexture("assets/textures/ghosts/ghost-frt1.png")
+  GHOST_FRIGHTENED_TEXTURES[1] = gl.NewTexture("assets/textures/ghosts/ghost-frt2.png")
+}
+
+func GhostUpdate(ghost Ghost, time f64) (ghost Ghost) {
+  // Moves the ghost
+  if TimerOver(ghost.movement_timer, time) {
+    ghost = GhostMove(ghost, g_player.index_y, g_player.index_x)
+    ghost.movement_timer = TimerReset(ghost.movement_timer, time)
+  }
+
+  // Frightened ghost animation
+  if ghost.mode == GHOST_MODE_FRIGHTENED && TimerOver(ghost.frightened_timer, time) {
+    if TimerOver(ghost.animation_timer, time) {
+      ghost.current_texture = i32.add(ghost.current_texture, 1) % 2
+      ghost.head_geometry.material.texture = GHOST_FRIGHTENED_TEXTURES[ghost.current_texture]
+      ghost.animation_timer = TimerReset(ghost.animation_timer, time)
+    }
+  }
+
+  // Rotates the ghost
+  if ghost.direction.vector.x == -1.0 {
+    ghost.head_geometry.rotation.y = 180.0
+  } else {
+    ghost.head_geometry.rotation.y = ghost.direction.vector.y*-90.0
+  }
+}
+
+func GhostRelease(ghost Ghost) (ghost Ghost) {
+  ghost.mode = GHOST_MODE_CHASE
+
+  ghost.index_x = 14
+  ghost.index_y = 11
+
+  ghost.head_geometry.position = getPosition3D(ghost.index_y, ghost.index_x)
+  ghost.direction = calculateGhostDirection(ghost, g_player.index_y, g_player.index_y)
+}
+
+func GhostIncarcerate(ghost Ghost, time f64) (ghost Ghost) {
+  ghost = NewGhost(GHOST_SPAWN_LINE, GHOST_SPAWN_COLLUMN, ghost.gtype)
+}
+
+func GhostFrighten(ghost Ghost, time f64) (ghost Ghost) {
+  ghost.mode = GHOST_MODE_FRIGHTENED
+
+  ghost.index_x = i32.add(ghost.index_x, f32.i32(ghost.direction.vector.x))
+  ghost.index_y = i32.add(ghost.index_y, f32.i32(ghost.direction.vector.y))
+  ghost.direction = phx.DirectionOpposite(ghost.direction)
+
+  ghost.head_geometry.material.texture = GHOST_FRIGHTENED_TEXTURES[0]
+  ghost.current_texture = 0
+
+  ghost.frightened_timer = TimerReset(ghost.frightened_timer, time)
+}
+
+func GhostEncourage(ghost Ghost, time f64) (ghost Ghost) {
+  if ghost.mode == GHOST_MODE_FRIGHTENED {
+    ghost.mode = GHOST_MODE_CHASE
+    ghost.head_geometry.material.texture = GHOST_TEXTURES[ghost.gtype]
+  }
+}
+
+func GhostMove(ghost Ghost, player_collumn i32, player_line i32) (ghost Ghost) {
+  new_line := i32.add(ghost.index_y, f32.i32(ghost.direction.vector.y))
+  new_collumn := i32.add(ghost.index_x, f32.i32(ghost.direction.vector.x))
+
+  ghost.head_geometry.position = phx.VectorAdd(ghost.head_geometry.position, phx.VectorMulScalar(ghost.direction.vector, ghost.velocity))
+
+  if phx.VectorDistance(ghost.head_geometry.position, g_cells[new_line][new_collumn].geometry.position) < 0.005 {
+    ghost.index_y = new_line
+    ghost.index_x = new_collumn
+
+    ghost.direction = calculateGhostDirection(ghost, player_collumn, player_line)
+  }
+}
+
+func GhostRender(ghost Ghost) {
+  var hg graphical.SphereGeometry
+  hg = ghost.head_geometry
+
+  //var bg graphical.CylinderGeometry
+  //bg = ghost.body_geometry
+
+  hg.render()
+  //bg.render()
+}
+
+// TODO pass player as agr
+func calculateGhostDirection(ghost Ghost, target_line i32, target_collumn i32) (direction phx.Direction) {
+  var directions [4]phx.Direction
+  directions[0] = phx.DirectionUp()
+  directions[1] = phx.DirectionDown()
+  directions[2] = phx.DirectionLeft()
+  directions[3] = phx.DirectionRight()
+
+  var min_cost f32 = 1000.0 // Infinite
+  var cost f32
+  var valid bool
+
+  var i i32
+  if ghost.mode == GHOST_MODE_CHASE {
+    for i=0; i<len(directions); i++ {
+      cost, valid = calculateDirectionCost(ghost, directions[i], g_player.geometry.position)
+      if valid && cost < min_cost {
+        min_cost = cost
+        direction = directions[i]
+      }
+    }
+
+  } else if ghost.mode == GHOST_MODE_SCATTER {
+    for i=0; i<len(directions); i++ {
+      cost, valid = calculateDirectionCost(ghost, directions[i], SCATTER_TARGET[ghost.gtype])
+      if valid && cost < min_cost {
+        min_cost = cost
+        direction = directions[i]
+      }
+    }
+
+  } else if ghost.mode == GHOST_MODE_FRIGHTENED {
+    direction = directions[i32.rand(0, 4)]
+    for bool.not(GhostCanMove(ghost, direction)) {
+      direction = directions[i32.rand(0, 4)]
+    }
+
+  } else if ghost.mode == GHOST_MODE_IN_HOUSE {
+    direction = directions[i32.rand(0, 4)]
+    for bool.not(GhostCanMove(ghost, direction)) {
+      direction = directions[i32.rand(0, 4)]
+    }
+  }
+}
+
+// TODO pass player as arg
+func calculateDirectionCost(ghost Ghost, direction phx.Direction, target phx.Vector) (cost f32, valid bool) {
+  valid = GhostCanMove(ghost, direction)
+  if valid {
+    cost = phx.VectorDistance(
+      phx.VectorAdd(ghost.head_geometry.position, direction.vector), target)
+  } else {
+    cost = 1000.0 // Infinite
+  }
+}
+
+func GhostCanMove(ghost Ghost, direction phx.Direction) (out bool) {
+  new_line := i32.add(ghost.index_y, f32.i32(direction.vector.y))
+  new_collumn := i32.add(ghost.index_x, f32.i32(direction.vector.x))
+
+  out = bool.and(
+    i32.eq(g_cells[new_line][new_collumn].ctype, CELL_TYPE_PATH),
+    bool.not(phx.DirectionEq(phx.DirectionOpposite(ghost.direction), direction)))
+}

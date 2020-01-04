@@ -1,0 +1,282 @@
+package main
+
+import "glfw"
+
+import "phx"
+
+type Settings struct {
+  // Graphical settings
+  rotation_x f32
+  rotation_y f32
+  rotation_z f32
+  scale f32
+
+  character_skin i32
+  board_theme i32
+  points_theme i32
+}
+
+func initSettings() (settings Settings) {
+  settings.rotation_x = 0.0
+  settings.rotation_y = 0.0
+  settings.rotation_z = 0.0
+  settings.scale = 1.0
+
+  settings.character_skin = 0
+  settings.board_theme = 0
+  settings.points_theme = 0
+}
+
+var OPCODE_NULL i32 = 0
+var OPCODE_PLAYER_KILLED i32 = 1
+
+type Game struct {
+  level i32
+  score i32
+  mode str // Change to settings
+  game_over bool
+
+  ghosts_mode str
+  ghost_release_timer Timer
+  ghost_frightned_timer Timer
+  ghost_chase_timer Timer
+  ghost_scatter_timer Timer
+
+  settings Settings
+}
+
+func initGame() (game Game) {
+  game.level = 1
+  game.score = 0
+  game.game_over = false
+  game.settings = initSettings()
+  game = GameSet3D(game)
+
+  game.ghosts_mode = "chase"
+  game.ghost_release_timer = NewTimer(5.0D) // GHOST_RELEASE_TIMER
+  game.ghost_frightned_timer = NewTimer(10.0D)
+  game.ghost_chase_timer = NewTimer(30.0D)
+  game.ghost_scatter_timer = NewTimer(15.0D)
+}
+
+func startGame (game Game) (game Game) {
+  InitPlayer(game.settings.character_skin) // Initializes the player
+  InitGhosts() // Initialize the ghosts
+  InitPoints(game.settings.points_theme)
+  InitBoard(game.settings.board_theme)
+}
+
+func ResetGame (game Game) (game Game) {
+  game.level = 1
+  game.score = 0
+  game.game_over = false
+
+  ResetPlayer(game.settings.character_skin)
+  ResetGhosts()
+  ResetBoard(game.settings.board_theme)
+  ResetPoints(game.settings.points_theme)
+}
+
+func (game Game) leveUp (game Game, level i32) {
+  game.level = i32.add(game.level, 1)
+  level = game.level
+}
+
+func (game Game) update (time f64) (game Game, opcode i32) {
+  opcode = OPCODE_NULL
+
+  g_player = PlayerUpdate(g_player, time)
+  //g_board = BoardUpdate(g_board)
+  for i:=0; i<4; i++ {
+    g_ghosts[i] = GhostUpdate(g_ghosts[i], time)
+  }
+
+  // Handles player <-> ghost collision
+  for i:=0; i<len(g_ghosts); i++ {
+    if phx.VectorDistance(g_ghosts[i].head_geometry.position, g_player.geometry.position) < GHOST_RADIUS {
+      if g_ghosts[i].mode == GHOST_MODE_FRIGHTENED {
+        g_ghosts[i] = GhostIncarcerate(g_ghosts[i], glfw.GetTime())
+      } else {
+        game, g_player = GameKillPlayer(game, g_player)
+        opcode = OPCODE_PLAYER_KILLED
+      }
+    }
+  }
+
+  // Handles the ghost release
+  if game.ghosts_mode == "chase" && TimerOver(game.ghost_release_timer, glfw.GetTime()) {
+    for i:=0; i<len(g_ghosts); i++ {
+      if g_ghosts[i].mode == GHOST_MODE_IN_HOUSE {
+        g_ghosts[i] = GhostRelease(g_ghosts[i])
+        break;
+      }
+    }
+    game.ghost_release_timer = TimerReset(game.ghost_release_timer, glfw.GetTime())
+
+  // Handles the chase <-> scatter transition
+  } else if game.ghosts_mode == "chase" && TimerOver(game.ghost_chase_timer, glfw.GetTime()) {
+    for i:=0; i<len(g_ghosts); i++ {
+      if g_ghosts[i].mode == GHOST_MODE_CHASE {
+        g_ghosts[i].mode = GHOST_MODE_SCATTER
+      }
+    }
+    game.ghosts_mode = "scatter"
+    game.ghost_scatter_timer = TimerReset(game.ghost_scatter_timer, glfw.GetTime())
+
+  } else if game.ghosts_mode == "scatter" && TimerOver(game.ghost_scatter_timer, glfw.GetTime()) {
+    for i:=0; i<len(g_ghosts); i++ {
+      if g_ghosts[i].mode == GHOST_MODE_SCATTER {
+        g_ghosts[i].mode = GHOST_MODE_CHASE
+      }
+    }
+    game.ghosts_mode = "chase"
+    game.ghost_chase_timer = TimerReset(game.ghost_chase_timer, glfw.GetTime())
+
+  } else if game.ghosts_mode == "frightened" && TimerOver(game.ghost_frightned_timer, glfw.GetTime()) {
+    // FIXME panic: runtime error: slice bounds out of range is thrown if for loop is used instead
+    g_ghosts[0] = GhostEncourage(g_ghosts[0], glfw.GetTime())
+    g_ghosts[1] = GhostEncourage(g_ghosts[1], glfw.GetTime())
+    g_ghosts[2] = GhostEncourage(g_ghosts[2], glfw.GetTime())
+    g_ghosts[3] = GhostEncourage(g_ghosts[3], glfw.GetTime())
+
+    game.ghosts_mode = "chase"
+    game.ghost_chase_timer = TimerReset(game.ghost_chase_timer, glfw.GetTime())
+  }
+
+  // Custom updates
+  for i:=0; i<240; i++ {
+    if g_simple_points[i].point.active {
+      if g_player.index_x == g_simple_points[i].point.index_x && g_player.index_y == g_simple_points[i].point.index_y {
+        game = GameIncrementScore(game, 10)
+        g_simple_points[i].point.active = false
+      }
+    }
+  }
+
+  for i:=0; i<len(g_super_points); i++ {
+    if g_super_points[i].point.active {
+      if g_player.index_x == g_super_points[i].point.index_x && g_player.index_y == g_super_points[i].point.index_y {
+        game = GameIncrementScore(game, 100)
+        g_super_points[i].point.active = false
+
+        for j:=0; j<len(g_ghosts); j++ {
+          if g_ghosts[j].mode != GHOST_MODE_IN_HOUSE {
+            g_ghosts[j] = GhostFrighten(g_ghosts[j], glfw.GetTime())
+          }
+        }
+        game.ghosts_mode = "frightened"
+        game.ghost_frightned_timer = TimerReset(game.ghost_frightned_timer, glfw.GetTime())
+      }
+    }
+  }
+}
+
+func GameSet2D(game Game) (game Game) {
+  game.mode = "2D"
+
+  game.settings.rotation_x = 0.0
+  game.settings.rotation_y = 0.0
+  game.settings.rotation_z = 0.0
+  game.settings.scale = 1.0
+}
+
+func GameSet3D(game Game) (game Game) {
+  game.mode = "3D"
+
+  game.settings.rotation_x = 25.0
+  game.settings.rotation_y = 0.0
+  game.settings.rotation_z = 25.0
+  game.settings.scale = 1.5
+}
+
+func GameIncrementScore(game Game, amount i32) (game Game) {
+  game.score = game.score + amount
+}
+
+func GameKillPlayer(game Game, player Player) (game Game, player Player) {
+  var gameOver bool
+  player, gameOver = PlayerKill(player)
+  if bool.not(gameOver) {
+    for i:=0; i<len(g_ghosts); i++ {
+      g_ghosts[i] = GhostIncarcerate(g_ghosts[i], glfw.GetTime())
+    }
+  } else {
+    game = GameOver(game)
+  }
+}
+
+func GameOver(game Game) (game Game) {
+  game.game_over = true
+}
+
+func (game Game) render (program i32) {
+  var ratio f64
+  ratio = f64.div(1920.0D, 1080.0D) // TODO @galah4d pass as args
+
+  left := f64.add(f64.mul(-1.0D, ratio), f32.f64(g_player.geometry.position.x))
+  right := f64.add(f64.mul(1.0D, ratio), f32.f64(g_player.geometry.position.x))
+  bottom := f64.add(1.0D, f32.f64(g_player.geometry.position.y))
+  top := f64.add(-1.0D, f32.f64(g_player.geometry.position.y))
+  if game.mode == "2D" {
+    gl.Ortho(f64.mul(-1.0D, ratio), f64.mul(1.0D, ratio), 1.0D, -1.0D, -1.0D, 1.0D)
+  } else if game.mode == "3D" {
+    gl.Ortho(left, right, bottom, top, -1.0D, 1.0D)
+  }
+
+
+  // Scales and rotates the scene
+  gl.Scalef(game.settings.scale, game.settings.scale, game.settings.scale);
+  gl.Rotatef(game.settings.rotation_x, 1.0, 0.0, 0.0 );
+  gl.Rotatef(game.settings.rotation_y, 0.0, 1.0, 0.0 );
+  gl.Rotatef(game.settings.rotation_z, 0.0, 0.0, 1.0 );
+  gl.UseProgram(program)
+
+  BoardRender(g_board, game.mode)
+  PlayerRender(g_player)
+
+  var i i32
+  for i=0; i<4; i++ {
+    GhostRender(g_ghosts[i])
+  }
+  for i=0; i<240; i++ {
+    SimplePointRender(g_simple_points[i], game.mode)
+  }
+}
+
+func GameRender(game Game, program i32) {
+  var ratio f64
+  ratio = f64.div(1920.0D, 1080.0D) // TODO @galah4d pass as args
+
+  left := f64.add(f64.mul(-1.0D, ratio), f32.f64(g_player.geometry.position.x))
+  right := f64.add(f64.mul(1.0D, ratio), f32.f64(g_player.geometry.position.x))
+  bottom := f64.add(1.0D, f32.f64(g_player.geometry.position.y))
+  top := f64.add(-1.0D, f32.f64(g_player.geometry.position.y))
+  if game.mode == "2D" {
+    gl.Ortho(f64.mul(-1.0D, ratio), f64.mul(1.0D, ratio), 1.0D, -1.0D, -1.0D, 1.0D)
+  } else if game.mode == "3D" {
+    gl.Ortho(left, right, bottom, top, -1.0D, 1.0D)
+  }
+
+
+  // Scales and rotates the scene
+  gl.Scalef(game.settings.scale, game.settings.scale, game.settings.scale);
+  gl.Rotatef(game.settings.rotation_x, 1.0, 0.0, 0.0 );
+  gl.Rotatef(game.settings.rotation_y, 0.0, 1.0, 0.0 );
+  gl.Rotatef(game.settings.rotation_z, 0.0, 0.0, 1.0 );
+
+  gl.UseProgram(program)
+
+  BoardRender(g_board, game.mode)
+  PlayerRender(g_player)
+
+  var i i32
+  for i=0; i<4; i++ {
+    GhostRender(g_ghosts[i])
+  }
+  for i=0; i<240; i++ {
+    SimplePointRender(g_simple_points[i], game.mode)
+  }
+  for i:=0; i<len(g_super_points); i++ {
+    SuperPointRender(g_super_points[i])
+  }
+}

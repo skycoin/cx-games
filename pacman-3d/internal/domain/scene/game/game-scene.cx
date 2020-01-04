@@ -1,0 +1,81 @@
+package main
+
+import "glfw"
+
+import "screen_pkg"
+import "button_pkg"
+
+var game Game
+
+func NewGameScene(screen_width i32, screen_height i32, game Game) (scene Scene) {
+  scene = NewScene("game-scene", NewGameRearScreen(screen_width, screen_height), NewGameFrontScreen(screen_width, screen_height))
+  game = startGame(game)
+}
+
+func NewGameRearScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("game-rear-screen", screen_width, screen_height)
+	screen = screen_pkg.ScreenSetBackground(screen, "static/texture/screen/classic-background.jpg")
+}
+
+func NewGameFrontScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("game-front-screen", screen_width, screen_height)
+
+  screen = screen.addLayer(NewLivesLayer2(i32.div(screen_width, 2), i32.div(screen_height, 2), 3))
+  screen = screen.addLayer(NewLevelLayer2(i32.div(screen_width, 2), i32.div(screen_height, 2), 1))
+
+  var buttons_layer layer_pkg.Layer
+  buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("return-button", 0.9, 0.9, 60, 60, "static/texture/btn/back-arrow.png", "static/texture/btn/back-arrow-active.png"))
+  screen = screen.addLayer(buttons_layer)
+}
+
+func NewLivesLayer2(width i32, height i32, lives i32) (layer layer_pkg.Layer) {
+  layer = layer_pkg.newLayer("lives-layer", 0.0, 0.0, width, height, true, true)
+  for i:=0; i<lives; i++ {
+    layer = layer.addImage(image_pkg.newImage("life-x", f32.add(0.8, f32.mul(0.05, i32.f32(i))), -0.9, 30, 35, "static/texture/img/pacman-side.png"))
+  }
+}
+
+func NewLevelLayer2(width i32, height i32, level i32) (layer layer_pkg.Layer) {
+  layer = layer_pkg.newLayer("level-layer", 0.0, 0.0, width, height, true, true)
+  for i:=0; i<level; i++ {
+    layer = layer.addImage(image_pkg.newImage("level-x", f32.add(-0.9, f32.mul(0.05, i32.f32(i))), -0.9, 50, 50, "static/texture/img/skycoin-cloud.png"))
+  }
+}
+
+func GameSceneRender(scene Scene, game Game, program i32) {
+  SceneRenderRear(scene)
+
+  // Render the actual game
+  GameRender(game, program)
+
+  SceneRenderFront(scene)
+}
+
+func GameSceneUpdate(scene Scene, game Game) (current_screen i32) {
+  var x f64
+  var y f64
+
+  x, y = glfw.GetCursorPos("window")
+  scene = SceneUpdate(scene, f64.i32(x), f64.i32(y))
+
+  current_screen = GAME_SCENE
+  for j:=0; j<len(scene.front_screen.layers); j++ {
+    if scene.front_screen.layers[j].pending_callback {
+      scene.front_screen.layers[j].pending_callback = false
+
+      if str.eq(scene.front_screen.layers[j].callback_id, "return-button") {
+        current_screen = HOME_SCENE
+      }
+    }
+  }
+
+  var opcode i32
+  game, opcode = game.update(glfw.GetTime())
+  if opcode == 1 {
+    scene.front_screen.layers[0] = NewLivesLayer2(
+      i32.div(scene.front_screen.dimensions.width, 2),
+      i32.div(scene.front_screen.dimensions.height, 2),
+      i32.sub(len(scene.front_screen.layers[0].images), 1))
+  }
+}

@@ -1,0 +1,139 @@
+package main
+
+import "glfw"
+import "gl"
+
+import "screen_pkg"
+import "layer_pkg"
+import "slider_pkg"
+import "button_pkg"
+
+import "graphical"
+
+var CHARACTER_COUNT i32 = 5
+var characters []graphical.SphereGeometry
+
+var BOARDS_COUNT i32 = 5
+var boards []graphical.BoxGeometry
+
+var POINTS_COUNT i32 = 5
+var points []graphical.CylinderGeometry
+
+func NewSettingsScene(screen_width i32, screen_height i32) (scene Scene) {
+  scene = NewScene(
+    "settings-scene",
+    NewSettingsRearScreen(screen_width, screen_height),
+    NewSettingsFrontScreen(screen_width, screen_height))
+
+  var material graphical.Material
+  for i:=0; i<CHARACTER_COUNT; i++ {
+    material = graphical.newMaterial(0.0, 0.0, 0.0)
+    material = material.setTexture(gl.NewTexture(sprintf("assets/textures/player/player-%d/player-%d.png", i, i)))
+    characters = append(characters, graphical.newSphereGeometry(0.3, 25, material))
+  }
+
+  var materials [6]graphical.Material
+  for i:=0; i<BOARDS_COUNT; i++ {
+    for j:=0; j<6; j++ {
+      material = graphical.newMaterial(0.0, 0.0, 0.0)
+      if j <= 1 {
+        material = material.setTexture(gl.NewTexture(sprintf("assets/textures/board/walls/wall-%d/wall-side-2.png", i)))
+      } else if j <= 3 {
+        material = material.setTexture(gl.NewTexture(sprintf("assets/textures/board/walls/wall-%d/wall-side-1.png", i)))
+      } else if j == 4 {
+        material = material.setTexture(gl.NewTexture(sprintf("assets/textures/board/walls/wall-%d/wall-bottom.png", i)))
+      } else if j == 5 {
+        material = material.setTexture(gl.NewTexture(sprintf("assets/textures/board/walls/wall-%d/wall-top.png", i)))
+      }
+      materials[j] = material
+    }
+    boards = append(boards, graphical.newBoxGeometry(0.5, 0.5, 0.5, materials))
+    boards[i].rotation.x = -25.0
+  }
+
+  var mats [2]graphical.Material
+  for i=0; i<POINTS_COUNT; i++ {
+    mats[0] = graphical.newMaterial(0.0, 0.0, 0.0)
+    mats[0] = mats[0].setTexture(gl.NewTexture(sprintf("assets/textures/points/points-%d/super-point.png", i)))
+    mats[1] = graphical.newMaterial(0.0, 0.0, 0.0)
+    mats[1] = mats[1].setTexture(gl.NewTexture(sprintf("assets/textures/points/points-%d/super-point-side.png", i)))
+
+    points = append(points, graphical.newCylinderGeometry(0.1, 0.3, 20, mats))
+  }
+}
+
+func NewSettingsRearScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("settings-rear-screen", screen_width, screen_height)
+	screen = screen_pkg.ScreenSetBackground(screen, "static/texture/screen/blue-background.jpg")
+}
+
+func NewSettingsFrontScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("settings-front-screen", screen_width, screen_height)
+
+  var header_layer layer_pkg.Layer
+	header_layer = layer_pkg.newLayer("header-layer", 0.0, 0.70, screen_width, i32.div(screen_height, 2), true, true)
+	header_layer = header_layer.addImage(image_pkg.newImage("characters-title", 0.0, 0.0, 1200, 175, "static/texture/img/settings-title.png"))
+	screen = screen.addLayer(header_layer)
+
+  var buttons_layer layer_pkg.Layer
+  buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("edit-player-button", -0.5, -0.5, 300, 100, "static/texture/btn/select-button-inactive.png", "static/texture/btn/select-button-active.png"))
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("edit-board-button", 0.0, -0.5, 300, 100, "static/texture/btn/select-button-inactive.png", "static/texture/btn/select-button-active.png"))
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("edit-points-button", 0.5, -0.5, 300, 100, "static/texture/btn/select-button-inactive.png", "static/texture/btn/select-button-active.png"))
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("back-button", -0.9, -0.8, 64, 64, "static/texture/btn/back-arrow.png", "static/texture/btn/back-arrow-active.png"))
+	screen = screen.addLayer(buttons_layer)
+}
+
+func SettingsSceneRender(scene Scene, program i32, settings Settings) {
+  SceneRenderRear(scene)
+
+  var ratio f64
+  ratio = f64.div(1920.0D, 1080.0D) // TODO @galah4d pass as args
+  gl.Ortho(f64.mul(-1.0D, ratio), f64.mul(1.0D, ratio), 1.0D, -1.0D, -1.0D, 1.0D)
+  gl.UseProgram(program)
+
+  graphical.BoxGeometryRender(boards[settings.board_theme], true, true, true, true, true, true)
+  graphical.SphereGeometryRender(characters[settings.character_skin])
+  graphical.CylinderGeometryRender(points[settings.points_theme])
+
+  SceneRenderFront(scene)
+}
+
+func SettingsSceneUpdate(scene Scene, settings Settings) (settings Settings, current_screen i32) {
+  var x f64
+  var y f64
+
+  x, y = glfw.GetCursorPos("window")
+  scene = SceneUpdate(scene, f64.i32(x), f64.i32(y))
+
+  boards[settings.board_theme].rotation.y = 45.0
+  boards[settings.board_theme].position.x = -0.88
+  boards[settings.board_theme].dimensions.x = 0.35
+  boards[settings.board_theme].dimensions.y = 0.35
+  boards[settings.board_theme].dimensions.z = 0.35
+
+  characters[settings.character_skin].rotation.y = -45.0
+  characters[settings.character_skin].position.x = 0.0
+  characters[settings.character_skin].radius = 0.225
+
+  points[settings.points_theme].rotation.y = -45.0
+  points[settings.points_theme].position.x = 0.88
+  points[settings.points_theme].radius = 0.225
+
+  current_screen = SETTINGS_SCENE
+  for i:=0; i<len(scene.front_screen.layers); i++ {
+    if scene.front_screen.layers[i].pending_callback {
+      scene.front_screen.layers[i].pending_callback = false
+
+      if str.eq(scene.front_screen.layers[i].callback_id, "back-button") {
+        current_screen = HOME_SCENE
+      } else if str.eq(scene.front_screen.layers[i].callback_id, "edit-player-button") {
+        current_screen = SELECT_BOARD_SCENE
+      } else if str.eq(scene.front_screen.layers[i].callback_id, "edit-board-button") {
+        current_screen = SELECT_PLAYER_SCENE
+      } else if str.eq(scene.front_screen.layers[i].callback_id, "edit-points-button") {
+        current_screen = SELECT_POINTS_SCENE
+      }
+    }
+  }
+}

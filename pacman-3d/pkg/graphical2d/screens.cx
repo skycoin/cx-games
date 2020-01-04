@@ -1,0 +1,141 @@
+package main
+
+import "os"
+import "gltext"
+
+import "image_pkg"
+import "button_pkg"
+import "textbox_pkg"
+import "spinbox_pkg"
+import "radiobox_pkg"
+import "layer_pkg"
+import "screen_pkg"
+
+func newHomeScreen(screen_width i32, screen_height i32) (home_screen screen_pkg.Screen) {
+	var wd str
+	wd = os.GetWorkingDirectory()
+	fontFile := str.concat(wd, "static/font/skycoin_light.ttf")
+	os.Open(fontFile)
+	gltext.LoadTrueType("SkycoinSans36-Light", fontFile, 50, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+
+	home_screen = screen_pkg.newScreen("home-screen", screen_width, screen_height)
+	home_screen = home_screen.setBackground("static/texture/screen/blue-background.jpg")
+
+	var header_layer layer_pkg.Layer
+	header_layer = layer_pkg.newLayer("header-layer", 0.0, 0.5, screen_width, i32.div(screen_height, 2), true, true)
+	header_layer = header_layer.addImage(image_pkg.newImage("pacman-title", 0.0, 0.0, 1200, 200, "static/texture/img/pac-man-title.png"))
+	home_screen = home_screen.addLayer(header_layer)
+
+  var buttons_layer layer_pkg.Layer
+  buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("play-button", 0.0, 0.0, 360, 130, "static/texture/btn/PLAY-button-inactive.png", "static/texture/btn/PLAY-button-active.png"))
+	buttons_layer = buttons_layer.addButton(button_pkg.newButton("settings-button", 0.0, -0.25, 360, 130, "static/texture/btn/SETTINGS-button-inactive.png", "static/texture/btn/SETTINGS-button-active.png"))
+	buttons_layer = buttons_layer.addButton(button_pkg.newButton("exit-button", 0.0, -0.5, 360, 130, "static/texture/btn/EXIT-button-inactive.png", "static/texture/btn/EXIT-button-active.png"))
+	home_screen = home_screen.addLayer(buttons_layer)
+
+	var footer_layer layer_pkg.Layer
+	footer_layer = layer_pkg.newLayer("footer-layer", 0.0, -0.5, screen_width, i32.div(screen_height, 2), true, true)
+	footer_layer = footer_layer.addTextbox(textbox_pkg.newTextbox("author-textbox", -0.45, -0.7, "Developed by Galah4d - Skycoin 2019", "SkycoinSans36-Light"))
+	home_screen = home_screen.addLayer(footer_layer)
+
+  return home_screen
+}
+
+func newGameScreen(screen_width i32, screen_height i32) (game_screen screen_pkg.Screen) {
+	game_screen = screen_pkg.newScreen("game-screen", screen_width, screen_height)
+	game_screen = game_screen.setBackground("static/texture/screen/classic-background.jpg")
+
+	var level_layer layer_pkg.Layer
+	level_layer = layer_pkg.newLayer("level-layer", 0.0, 0.0, i32.div(screen_width, 2), i32.div(screen_height, 2), true, true)
+	level_layer = level_layer.addImage(image_pkg.newImage("level1", -0.9, -0.9, 60, 60, "static/texture/img/skycoin-cloud.png"))
+	game_screen = game_screen.addLayer(level_layer)
+
+	var lives_layer layer_pkg.Layer
+	lives_layer = layer_pkg.newLayer("lives-layer", 0.0, 0.0, i32.div(screen_width, 2), i32.div(screen_height, 2), true, true)
+	lives_layer = lives_layer.addImage(image_pkg.newImage("life1", 0.9, -0.9, 30, 35, "static/texture/img/pacman-side.png"))
+	game_screen = game_screen.addLayer(lives_layer)
+
+	//var buttons_layer layer_pkg.Layer
+	//buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+	//buttons_layer = buttons_layer.addButton(button_pkg.newButton("pause-button", 0.9, -0.9, 60, 60, "static/texture/btn/PLAY-button-inactive.png", "static/texture/btn/PLAY-button-active.png"))
+	//game_screen = game_screen.addLayer(buttons_layer)
+
+	return game_screen
+}
+
+
+func newPauseScreen(screen_width i32, screen_height i32) (pause_screen screen_pkg.Screen) {
+	pause_screen = screen_pkg.newScreen("pause-screen", screen_width, screen_height)
+	pause_screen = pause_screen.setBackground("static/texture/screen/blue-background.jpg")
+
+	var header_layer layer_pkg.Layer
+	header_layer = layer_pkg.newLayer("header-layer", 0.0, 0.5, screen_width, i32.div(screen_height, 2), true, true)
+	header_layer = header_layer.addImage(image_pkg.newImage("pause-title", 0.0, 0.0, 871, 227, "static/texture/img/pause-title.png"))
+	pause_screen = pause_screen.addLayer(header_layer)
+
+	var buttons_layer layer_pkg.Layer
+	buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+	buttons_layer = buttons_layer.addButton(button_pkg.newButton("resume-button", 0.0, 0.0, 360, 130, "static/texture/btn/RESUME-button-inactive.png", "static/texture/btn/RESUME-button-active.png"))
+	buttons_layer = buttons_layer.addButton(button_pkg.newButton("settings-button", 0.0, -0.3, 360, 130, "static/texture/btn/SETTINGS-button-inactive.png", "static/texture/btn/SETTINGS-button-active.png"))
+	buttons_layer = buttons_layer.addButton(button_pkg.newButton("exit-button", 0.0, -0.6, 360, 130, "static/texture/btn/EXIT-button-inactive.png", "static/texture/btn/EXIT-button-active.png"))
+	pause_screen = pause_screen.addLayer(buttons_layer)
+
+	return pause_screen
+}
+
+func newSettingsScreen(screen_width i32, screen_height i32) (settings_screen screen_pkg.Screen) {
+	var wd str
+	wd = os.GetWorkingDirectory()
+	fontFile := str.concat(wd, "static/font/skycoin_light.ttf")
+	os.Open(fontFile)
+	gltext.LoadTrueType("SkycoinSans36-Light", fontFile, 50, 32, 127, gltext.LeftToRight)
+	os.Close(fontFile)
+
+	settings_screen = screen_pkg.newScreen("settings-screen", screen_width, screen_height)
+	settings_screen = settings_screen.setBackground("static/texture/screen/blue-background.jpg")
+
+	var buttons_layer layer_pkg.Layer
+	buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+
+	var radiobox radiobox_pkg.Radiobox
+	radiobox = radiobox_pkg.newRadiobox("select-game-mode")
+	radiobox = radiobox.addBox(button_pkg.newCheckbox("3d-game-mode", -0.2, 0.0, 100, 100, "static/texture/btn/PLAY-button-inactive.png", "static/texture/btn/PLAY-button-active.png"))
+	radiobox = radiobox.addBox(button_pkg.newCheckbox("2d-game-mode",  0.2, 0.0, 100, 100, "static/texture/btn/PLAY-button-inactive.png", "static/texture/btn/PLAY-button-active.png"))
+	buttons_layer = buttons_layer.addRadiobox(radiobox)
+
+	var spinbox spinbox_pkg.Spinbox
+	spinbox = spinbox_pkg.newSpinbox(
+		"select-level", 1, 1, 9,
+		button_pkg.newButton("minus-button", -0.2, -0.5, 75, 75, "static/texture/btn/MINUS-button-inactive.png", "static/texture/btn/MINUS-button-active.png"),
+		button_pkg.newButton("plus-button", 0.2, -0.5, 75, 75, "static/texture/btn/PLUS-button-inactive.png", "static/texture/btn/PLUS-button-active.png"),
+		textbox_pkg.newTextbox("level-label", 0.0, -0.5, "Level Label", "SkycoinSans36-Light"))
+	buttons_layer = buttons_layer.addSpinbox(spinbox)
+
+	buttons_layer = buttons_layer.addButton(button_pkg.newButton("return-button", -0.25, -0.75, 360, 130, "static/texture/btn/RETURN-button-inactive.png", "static/texture/btn/RETURN-button-active.png"))
+	buttons_layer = buttons_layer.addButton(button_pkg.newButton("save-button", 0.25, -0.75, 360, 130, "static/texture/btn/SAVE-button-inactive.png", "static/texture/btn/SAVE-button-active.png"))
+
+	settings_screen = settings_screen.addLayer(buttons_layer)
+
+	return settings_screen
+}
+
+func newGraphicalSettingsScreen(screen_width i32, screen_height i32) (g_settings_screen screen_pkg.Screen) {
+	g_settings_screen = screen_pkg.newScreen("graphical-settings-screen", screen_width, screen_height)
+	g_settings_screen = g_settings_screen.setBackground("static/texture/screen/blue-background.jpg")
+
+	var buttons_layer layer_pkg.Layer
+	buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+
+	var x_rotation_spinbox spinbox_pkg.Spinbox
+	x_rotation_spinbox = spinbox_pkg.newSpinbox(
+		"select-level", 1, 1, 9,
+		button_pkg.newButton("minus-button", -0.2, -0.5, 75, 75, "static/texture/btn/MINUS-button-inactive.png", "static/texture/btn/MINUS-button-active.png"),
+		button_pkg.newButton("plus-button", 0.2, -0.5, 75, 75, "static/texture/btn/PLUS-button-inactive.png", "static/texture/btn/PLUS-button-active.png"),
+		textbox_pkg.newTextbox("level-label", 0.0, -0.5, "Level Label", "SkycoinSans36-Light"))
+	buttons_layer = buttons_layer.addSpinbox(x_rotation_spinbox)
+
+	g_settings_screen = g_settings_screen.addLayer(buttons_layer)
+
+	return g_settings_screen
+}
