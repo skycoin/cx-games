@@ -128,7 +128,7 @@ func allText () {
 			}
 		}else
 		if app.Mode == app.MODE_GAME_OVER {
-			drawOutlinedText("GAME OVER", draw.YELLOW,
+			drawOutlinedText("GAME OVER", draw.COLOR_YELLOW,
 				18.0, i32.f32(app.START_WIDTH / 2), 1.0)
 		}		
 	gl.Disable(gl.DEPTH_TEST)
