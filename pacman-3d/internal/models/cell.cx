@@ -1,0 +1,83 @@
+package main
+
+import "graphical"
+
+var CELL_TYPE_WALL i32 = 0
+var CELL_TYPE_PATH i32 = 1
+var CELL_TYPE_GATE i32 = 2
+var CELL_TYPE_TELEPORT i32 = 3
+
+var CELL_WIDTH f32 = 0.07
+var CELL_HEIGHT f32 = 0.07
+var CELL_DEPTH f32 = 0.07
+
+var THEMES_COUNT i32 = 5
+var CELL_TEXTURES []i32
+
+func loadCellTextures () {
+  for i:=0; i<THEMES_COUNT; i++ {
+    // Wall textures
+    CELL_TEXTURES = append(CELL_TEXTURES, gl.NewTexture(sprintf("assets/textures/board/walls/wall-%d/wall-side-1.png", i)))
+    CELL_TEXTURES = append(CELL_TEXTURES, gl.NewTexture(sprintf("assets/textures/board/walls/wall-%d/wall-side-2.png", i)))
+    CELL_TEXTURES = append(CELL_TEXTURES, gl.NewTexture(sprintf("assets/textures/board/walls/wall-%d/wall-top.png", i)))
+    CELL_TEXTURES = append(CELL_TEXTURES, gl.NewTexture(sprintf("assets/textures/board/walls/wall-%d/wall-bottom.png", i)))
+  }
+}
+
+type Cell struct {
+  index_x i32
+  index_y i32
+  ctype i32
+	geometry graphical.BoxGeometry
+}
+
+func NewCell (line i32, collumn i32, ct i32) (cell Cell) {
+  var materials [6]graphical.Material
+  var mat graphical.Material
+
+  mat = graphical.newMaterial(1.0, 1.0, 0.0)
+  mat = mat.setTexture(CELL_TEXTURES[0])
+  for i:=0; i<2; i++ {
+    materials[i] = mat
+  }
+
+  mat = graphical.newMaterial(1.0, 1.0, 0.0)
+  mat = mat.setTexture(CELL_TEXTURES[1])
+  for i:=2; i<4; i++ {
+    materials[i] = mat
+  }
+
+  mat = graphical.newMaterial(1.0, 1.0, 0.0)
+  mat = mat.setTexture(CELL_TEXTURES[2])
+  for i:=4; i<6; i++ {
+    materials[i] = mat
+  }
+
+  cell.index_x = collumn
+  cell.index_y = line
+  cell.ctype = ct
+	cell.geometry = graphical.newBoxGeometry(CELL_WIDTH, CELL_HEIGHT, CELL_DEPTH, materials)
+	cell.geometry.position = getPosition3D(line, collumn)
+  cell.geometry.rotation.x = -90.0
+
+  return cell
+}
+
+func SetCellTheme(cell Cell, theme i32) (cell Cell) {
+  cell.geometry.materials[0] = cell.geometry.materials[0].setTexture(CELL_TEXTURES[4*theme])
+  cell.geometry.materials[1] = cell.geometry.materials[1].setTexture(CELL_TEXTURES[4*theme])
+  cell.geometry.materials[2] = cell.geometry.materials[2].setTexture(CELL_TEXTURES[4*theme+1])
+  cell.geometry.materials[3] = cell.geometry.materials[3].setTexture(CELL_TEXTURES[4*theme+1])
+  cell.geometry.materials[4] = cell.geometry.materials[4].setTexture(CELL_TEXTURES[4*theme+2])
+  cell.geometry.materials[5] = cell.geometry.materials[5].setTexture(CELL_TEXTURES[4*theme+2])
+}
+
+func CellRender(cell Cell, mode str) {
+  if cell.ctype != CELL_TYPE_PATH {
+    if mode == "2D" {
+      graphical.BoxGeometryRender(cell.geometry, false, true, false, false, false, false)
+    } else if mode == "3D" {
+      graphical.BoxGeometryRender(cell.geometry, false, true, false, true, true, false)
+    }
+  }
+}

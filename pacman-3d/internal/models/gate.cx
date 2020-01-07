@@ -1,0 +1,21 @@
+package main
+
+import "graphical"
+
+var GATE_WIDTH f32 = 0.07
+var GATE_HEIGHT f32 = 0.07
+var GATE_DEPTH f32 = 0.07
+
+type Gate struct {
+  index_x i32
+  index_y i32
+  open bool
+
+  open_materials [6]graphical.Material
+  closed_materials [6]graphical.Material
+	geometry graphical.BoxGeometry
+}
+
+func newGate(line i32, collumn i32) (gate Gate) {
+  var materials [6]graphical.Material
+}

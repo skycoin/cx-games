@@ -1,0 +1,62 @@
+package main
+
+import "glfw"
+
+import "screen_pkg"
+
+func NewHomeScene(screen_width i32, screen_height i32) (scene Scene) {
+  scene = NewScene("home-scene", NewHomeRearScreen(screen_width, screen_height), NewHomeFrontScreen(screen_width, screen_height))
+}
+
+func NewHomeRearScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("home-rear-screen", screen_width, screen_height)
+	screen = screen_pkg.ScreenSetBackground(screen, "static/texture/screen/blue-background.jpg")
+}
+
+func NewHomeFrontScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+	screen = screen_pkg.newScreen("home-front-screen", screen_width, screen_height)
+
+	var header_layer layer_pkg.Layer
+	header_layer = layer_pkg.newLayer("header-layer", 0.0, 0.5, screen_width, i32.div(screen_height, 2), true, true)
+	header_layer = header_layer.addImage(image_pkg.newImage("pacman-title", 0.0, 0.0, 1200, 200, "static/texture/img/pac-man-title.png"))
+	screen = screen.addLayer(header_layer)
+
+  var buttons_layer layer_pkg.Layer
+  buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("play-button", 0.0, 0.0, 360, 130, "static/texture/btn/PLAY-button-inactive.png", "static/texture/btn/PLAY-button-active.png"))
+	buttons_layer = buttons_layer.addButton(button_pkg.newButton("settings-button", 0.0, -0.25, 360, 130, "static/texture/btn/SETTINGS-button-inactive.png", "static/texture/btn/SETTINGS-button-active.png"))
+	buttons_layer = buttons_layer.addButton(button_pkg.newButton("exit-button", 0.0, -0.5, 360, 130, "static/texture/btn/EXIT-button-inactive.png", "static/texture/btn/EXIT-button-active.png"))
+	screen = screen.addLayer(buttons_layer)
+
+	var footer_layer layer_pkg.Layer
+	footer_layer = layer_pkg.newLayer("footer-layer", 0.0, -0.5, screen_width, i32.div(screen_height, 2), true, true)
+	screen = screen.addLayer(footer_layer)
+}
+
+func HomeSceneRender(scene Scene) {
+  SceneRenderRear(scene)
+  SceneRenderFront(scene)
+}
+
+func HomeSceneUpdate(scene Scene) (current_screen i32) {
+  var x f64
+  var y f64
+
+  x, y = glfw.GetCursorPos("window")
+  scene = SceneUpdate(scene, f64.i32(x), f64.i32(y))
+
+  current_screen = 0
+  for j:=0; j<len(scene.front_screen.layers); j++ {
+    if scene.front_screen.layers[j].pending_callback {
+      scene.front_screen.layers[j].pending_callback = false
+
+      if str.eq(scene.front_screen.layers[j].callback_id, "play-button") {
+        current_screen = GAME_SCENE
+      } else if str.eq(scene.front_screen.layers[j].callback_id, "settings-button") {
+        current_screen = SETTINGS_SCENE
+      } else if str.eq(scene.front_screen.layers[j].callback_id, "exit-button") {
+        current_screen = -1
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+package graphical
+
+import "gl"
+import "glfw"
+
+var PI f32 = 3.14159
+
+type CircleGeometry struct {
+  position Vector3f
+  radius f32
+  theta_length f32
+	segments i32
+  rotation Vector3f
+	material Material
+}
+
+func newCircleGeometry(radius f32, segments i32, material Material) (cg CircleGeometry) {
+  cg.position = newVector3f(0.0, 0.0, 0.0)
+	cg.radius = radius
+	cg.segments = segments
+	cg.rotation = newVector3f(0.0, 0.0, 0.0)
+	cg.material = material
+  cg.theta_length = f32.div(2.0*PI, i32.f32(cg.segments))
+}
+
+func (cg CircleGeometry) render () {
+  var px f32
+  var py f32
+
+  var theta f32
+
+  gl.MatrixMode(gl.MODELVIEW)
+	gl.PushMatrix()
+	gl.Translatef(cg.position.x, cg.position.y, cg.position.z)
+  gl.Rotatef(cg.rotation.x, 1.0, 0.0, 0.0)
+	gl.Rotatef(cg.rotation.y, 0.0, 1.0, 0.0)
+	gl.Rotatef(cg.rotation.z, 0.0, 0.0, 1.0)
+	gl.Translatef(f32.mul(-1.0, cg.position.x), f32.mul(-1.0, cg.position.y), f32.mul(-1.0, cg.position.z))
+
+  gl.BindTexture(gl.TEXTURE_2D, cg.material.texture)
+  gl.Begin(gl.TRIANGLE_STRIP);
+  for i:=0; i<=cg.segments; i++ {
+    theta = i32.f32(i)*cg.theta_length
+    px = cg.radius*f32.cos(theta)
+    py = cg.radius*f32.sin(theta)
+
+    gl.TexCoord2d(convert_p(px, cg.radius), convert_p(py, cg.radius))
+    gl.Vertex3f(f32.add(cg.position.x, px), f32.add(cg.position.y, py),  cg.position.z);
+    gl.TexCoord2d(0.5D, 0.5D)
+    gl.Vertex3f(cg.position.x, cg.position.y,  cg.position.z);
+  }
+  gl.End();
+  gl.PopMatrix();
+}

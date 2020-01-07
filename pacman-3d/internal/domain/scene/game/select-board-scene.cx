@@ -1,0 +1,92 @@
+package main
+
+import "glfw"
+import "gl"
+
+import "screen_pkg"
+import "layer_pkg"
+import "slider_pkg"
+import "button_pkg"
+
+import "graphical"
+
+func NewSelectBoardScene(screen_width i32, screen_height i32) (scene Scene) {
+  scene = NewScene("select-board-scene", NewSelectBoardRearScreen(screen_width, screen_height), NewSelectBoardFrontScreen(screen_width, screen_height))
+}
+
+func NewSelectBoardRearScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("select-board-rear-screen", screen_width, screen_height)
+	screen = screen_pkg.ScreenSetBackground(screen, "static/texture/screen/blue-background.jpg")
+}
+
+func NewSelectBoardFrontScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("select-board-front-screen", screen_width, screen_height)
+
+  var board_slider slider_pkg.Slider
+  board_slider = slider_pkg.NewSlider("board-slider")
+
+  var slide layer_pkg.Layer
+  for i:=0; i<BOARDS_COUNT; i++ {
+    slide = layer_pkg.newLayer(sprintf("board-slide-%d", i), 0.0, 0.0, screen_width, screen_height, true, true)
+    slide = slide.addButton(button_pkg.newButton("prev-button", -0.75, 0.0, 125, 125, "static/texture/btn/left-arrow.png", "static/texture/btn/left-arrow-active.png"))
+    slide = slide.addButton(button_pkg.newButton("next-button", 0.75, 0.0, 125, 130, "static/texture/btn/right-arrow.png", "static/texture/btn/right-arrow-active.png"))
+    board_slider = slider_pkg.AddSlide(board_slider, slide)
+  }
+
+  screen = screen.addSlider(board_slider)
+
+  var header_layer layer_pkg.Layer
+	header_layer = layer_pkg.newLayer("header-layer", 0.0, 0.70, screen_width, i32.div(screen_height, 2), true, true)
+	header_layer = header_layer.addImage(image_pkg.newImage("characters-title", 0.0, 0.0, 1200, 150, "static/texture/img/board-theme-title.png"))
+	screen = screen.addLayer(header_layer)
+
+  var buttons_layer layer_pkg.Layer
+  buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("select-button", 0.0, -0.7, 360, 130, "static/texture/btn/select-button-inactive.png", "static/texture/btn/select-button-active.png"))
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("back-button", -0.9, -0.8, 64, 64, "static/texture/btn/back-arrow.png", "static/texture/btn/back-arrow-active.png"))
+	screen = screen.addLayer(buttons_layer)
+}
+
+func SelectBoardSceneRender(scene Scene, program i32) {
+  SceneRenderRear(scene)
+
+  var ratio f64
+  ratio = f64.div(1920.0D, 1080.0D) // TODO @galah4d pass as args
+  gl.Ortho(f64.mul(-1.0D, ratio), f64.mul(1.0D, ratio), 1.0D, -1.0D, -1.0D, 1.0D)
+  gl.UseProgram(program)
+
+  selected := scene.front_screen.sliders[0].current_slide
+  graphical.BoxGeometryRender(boards[selected], true, true, true, true, true, true)
+
+  SceneRenderFront(scene)
+}
+
+func SelectBoardSceneUpdate(scene Scene, settings Settings) (settings Settings, current_screen i32) {
+  var x f64
+  var y f64
+
+  x, y = glfw.GetCursorPos("window")
+  scene = SceneUpdate(scene, f64.i32(x), f64.i32(y))
+
+  selected := scene.front_screen.sliders[0].current_slide
+  boards[selected].rotation.y = f32.add(boards[selected].rotation.y, 1.0)
+  boards[settings.board_theme].position.x = 0.0
+  boards[settings.board_theme].position.y = 0.0
+  boards[settings.board_theme].dimensions.x = 0.5
+  boards[settings.board_theme].dimensions.y = 0.5
+  boards[settings.board_theme].dimensions.z = 0.5
+
+  current_screen = SELECT_BOARD_SCENE
+  for i:=0; i<len(scene.front_screen.layers); i++ {
+    if scene.front_screen.layers[i].pending_callback {
+      scene.front_screen.layers[i].pending_callback = false
+
+      if str.eq(scene.front_screen.layers[i].callback_id, "back-button") {
+        current_screen = SETTINGS_SCENE
+      } else if str.eq(scene.front_screen.layers[i].callback_id, "select-button") {
+        settings.board_theme = selected
+        current_screen = SETTINGS_SCENE
+      }
+    }
+  }
+}

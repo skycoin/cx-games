@@ -1,0 +1,184 @@
+package main
+
+import "graphical"
+
+var BOARD_LINES i32 = 31
+var BOARD_COLLUMNS i32 = 28
+
+var CODE_WALL i32 = 1
+var CODE_PATH i32 = 3
+var CODE_SIMPLE_POINT i32 = 0
+var CODE_SUPER_POINT i32 = 2
+var CODE_TELEPORT i32 = 4
+var CODE_GATE i32 = 5
+
+var g_board Board
+
+var g_cells [31][28]Cell
+
+type Board struct {
+  id str
+  cells [31][28]Cell
+  simple_points []SimplePoint
+  super_points []SuperPoint
+}
+
+func newBoard() (board Board) {
+  board.id = "Skycoin"
+
+  var line [28]i32
+  for i:=0; i<31; i++ {
+    line = loadBoardLine(i)
+    var cells_aux []Cell
+    for j:=0; j<28; j++ {
+      if line[j] == CODE_WALL {
+        g_cells[i][j] = NewCell(i, j, CELL_TYPE_WALL)
+
+      } else if line[j] == CODE_PATH {
+        g_cells[i][j] = NewCell(i, j, CELL_TYPE_PATH)
+
+      } else if line[j] == CODE_SIMPLE_POINT {
+        board.simple_points = append(board.simple_points, newSimplePoint(i, j))
+        g_cells[i][j] = NewCell(i, j, CELL_TYPE_PATH)
+
+      } else if line[j] == CODE_SUPER_POINT {
+        board.super_points = append(board.super_points, newSuperPoint(i, j))
+        g_cells[i][j] = NewCell(i, j, CELL_TYPE_PATH)
+
+      } else if line[j] == CODE_GATE {
+        g_cells[i][j] = NewCell(i, j, CELL_TYPE_GATE)
+
+      } else {
+        g_cells[i][j] = NewCell(i, j, CELL_TYPE_PATH)
+      }
+    }
+  }
+}
+
+func InitBoard(board_theme i32) {
+	loadCellTextures()
+
+  g_board = newBoard()
+}
+
+func ResetBoard(board_theme i32) {
+  for i:=0; i<31; i++ {
+    for j:=0; j<28; j++ {
+      g_cells[i][j] = SetCellTheme(g_cells[i][j], board_theme)
+    }
+  }
+}
+
+func BoardUpdate(board Board) (board Board) {
+  for i:=0; i<len(board.super_points); i++ {
+    board.super_points[i] = SuperPointUpdate(board.super_points[i])
+  }
+}
+
+func BoardRender(board Board, game_mode str) {
+  var time f64
+
+	time = glfw.GetTime()
+  for i:=0; i<BOARD_LINES; i++ {
+    for j:=0; j<BOARD_COLLUMNS; j++ {
+			CellRender(g_cells[i][j], game_mode)
+    }
+  }
+}
+
+func loadBoardLine(i i32) (line [28]i32) {
+    if i32.eq(i, 0) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 1) {
+      line = [28]i32{1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1}
+    }
+    if i32.eq(i, 2) {
+      line = [28]i32{1,  2,  1,  1,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  1,  1,  2,  1}
+    }
+    if i32.eq(i, 3) {
+      line = [28]i32{1,  0,  1,  1,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  1,  1,  0,  1}
+    }
+    if i32.eq(i, 4) {
+      line = [28]i32{1,  0,  1,  1,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  1,  1,  0,  1}
+    }
+    if i32.eq(i, 5) {
+      line = [28]i32{1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1}
+    }
+    if i32.eq(i, 6) {
+      line = [28]i32{1,  0,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  0,  1}
+    }
+    if i32.eq(i, 7) {
+      line = [28]i32{1,  0,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  0,  1}
+    }
+    if i32.eq(i, 8) {
+      line = [28]i32{1,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,  0,  1,  1,  0,  0,  0,  0,  1,  1,  0,  0,  0,  0,  0,  0,  1}
+    }
+    if i32.eq(i, 9) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  1,  1,  1,  3,  1,  1,  3,  1,  1,  1,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 10) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  1,  1,  1,  3,  1,  1,  3,  1,  1,  1,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 11) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 12) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  3,  1,  1,  1,  5,  5,  1,  1,  1,  3,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 13) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  3,  1,  3,  3,  3,  3,  3,  3,  1,  3,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 14) {
+      line = [28]i32{3,  3,  3,  3,  3,  1,  0,  3,  3,  3,  1,  3,  3,  3,  3,  3,  3,  1,  3,  3,  3,  0,  1,  3,  3,  3,  3,  3}
+    }
+    if i32.eq(i, 15) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  3,  1,  3,  3,  3,  3,  3,  3,  1,  3,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 16) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  3,  1,  1,  1,  1,  1,  1,  1,  1,  3,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 17) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 18) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  3,  1,  1,  1,  1,  1,  1,  1,  1,  3,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 19) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  0,  1,  1,  3,  1,  1,  1,  1,  1,  1,  1,  1,  3,  1,  1,  0,  1,  1,  1,  1,  1,  1}
+    }
+    if i32.eq(i, 20) {
+      line = [28]i32{1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1}
+    }
+    if i32.eq(i, 21) {
+      line = [28]i32{1,  0,  1,  1,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  1,  1,  0,  1}
+    }
+    if i32.eq(i, 22) {
+      line = [28]i32{1,  0,  1,  1,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  0,  1,  1,  1,  1,  0,  1}
+    }
+    if i32.eq(i, 23) {
+      line = [28]i32{1,  0,  0,  0,  1,  1,  0,  0,  0,  0,  0,  0,  0,  3,  3,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,  1}
+    }
+    if i32.eq(i, 24) {
+      line = [28]i32{1,  1,  1,  0,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  0,  1,  1,  1}
+    }
+    if i32.eq(i, 25) {
+      line = [28]i32{1,  1,  1,  0,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  0,  1,  1,  1}
+    }
+    if i32.eq(i, 26) {
+      line = [28]i32{1,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,  0,  1,  1,  0,  0,  0,  0,  1,  1,  0,  0,  0,  0,  0,  0,  1}
+    }
+    if i32.eq(i, 27) {
+      line = [28]i32{1,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1}
+    }
+    if i32.eq(i, 28) {
+      line = [28]i32{1,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  1}
+    }
+    if i32.eq(i, 29) {
+      line = [28]i32{1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1}
+    }
+    if i32.eq(i, 30) {
+      line = [28]i32{1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1}
+    }
+    return line
+}

@@ -1,0 +1,198 @@
+package main
+
+// Import core packages
+import "gl"
+import "glfw"
+import "os"
+
+// Import custom packages
+import "graphical"
+import "image_pkg"
+import "button_pkg"
+import "textbox_pkg"
+import "layer_pkg"
+import "screen_pkg"
+
+import "phx"
+
+// Keyboard Keys
+var RIGHT_ARROW_KEY i32 = 262
+var LEFT_ARROW_KEY i32 = 263
+var DOWN_ARROW_KEY i32 = 264
+var UP_ARROW_KEY i32 = 265
+
+// Directions
+var UP i32 = 1
+var DOWN i32 = 3
+var LEFT i32 = 2
+var RIGHT i32 = 0
+
+// Screens
+var SCREEN_WIDTH i32 = 1920
+var SCREEN_HEIGHT i32 = 1080
+var current_screen i32 = 0
+var screens [5]screen_pkg.Screen
+
+var current_scene_id i32 = 0
+var current_scene Scene
+
+var EXIT_FLAG bool = false
+
+/* Function     : initGLFW
+   Desctription : Initializes the game window and input callback functions.
+*/
+func initGLFW() {
+	glfw.Init()
+	glfw.WindowHint(glfw.Resizable, glfw.False)
+	glfw.WindowHint(glfw.ContextVersionMajor, 2)
+  glfw.WindowHint(glfw.ContextVersionMinor, 1)
+
+	glfw.CreateWindow("window", SCREEN_WIDTH, SCREEN_HEIGHT, "PACMAN 3D") // TODO add fullscreen support
+	glfw.MakeContextCurrent("window")
+
+	glfw.SetKeyCallback("window", "keyboardManager")
+	//glfw.SetCursorPosCallback("window", "cursor_pos_callback")
+	glfw.SetMouseButtonCallback("window", "mouse_button_callback")
+}
+
+/* Function     : initOpenGL
+   Output       : OpenGL program (program i32)
+   Desctription : Initializes the OpenGL lib.
+*/
+func initGL() (program i32) {
+	gl.Init()
+	gl.Enable(gl.BLEND)
+  gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.DEPTH_TEST)
+	gl.Enable(gl.TEXTURE_2D)
+
+	program = gl.CreateProgram()
+	gl.LinkProgram(program)
+	return program
+}
+
+func keyboardManager(window str, key i32, scancode i32, action i32, mods i32) () {
+	if current_screen == 0 {
+		homeScreenKeyboardManager(window, key, scancode, action, mods)
+	} else if current_screen == 1 {
+		gameScreenKeyboardManager(window, key, scancode, action, mods)
+	}
+}
+
+func homeScreenKeyboardManager(window str, key i32, scancode i32, action i32, mods i32) () {
+	if bool.and(i32.eq(key, 256), i32.eq(action, 1)) {
+    EXIT_FLAG = true
+	}
+}
+
+func gameScreenKeyboardManager(window str, key i32, scancode i32, action i32, mods i32) () {
+	// Movement keys
+	if bool.and(i32.eq(key, RIGHT_ARROW_KEY), i32.eq(action, 1)) {
+    g_player = PlayerChangeDirection(g_player, phx.DirectionRight())
+
+	} else if bool.and(i32.eq(key, LEFT_ARROW_KEY), i32.eq(action, 1)) {
+		g_player = PlayerChangeDirection(g_player, phx.DirectionLeft())
+
+	} else if bool.and(i32.eq(key, DOWN_ARROW_KEY), i32.eq(action, 1)) {
+		g_player = PlayerChangeDirection(g_player, phx.DirectionDown())
+
+	} else if bool.and(i32.eq(key, UP_ARROW_KEY), i32.eq(action, 1)) {
+		g_player = PlayerChangeDirection(g_player, phx.DirectionUp())
+  }
+
+	// Game mode selection keys
+	if bool.and(i32.eq(key, 50), i32.eq(action, 1)) {
+    game = GameSet2D(game)
+
+	} else if bool.and(i32.eq(key, 51), i32.eq(action, 1)) {
+		game = GameSet3D(game)
+	}
+}
+
+func mouse_button_callback(window str, key i32, action i32, mods i32) () {
+	if i32.eq(action, 1) && i32.eq(key, glfw.MouseButtonLeft) {
+		current_scene = SceneClick(current_scene)
+	}
+}
+
+func cursor_pos_callback(window str, xpos f64, ypos f64) () {
+	// Removed
+}
+
+/* GAME LOGIC */
+
+var scenes[7] Scene
+
+// Item Types
+var PATH_CELL i32 = 3
+var WALL_CELL i32 = 1
+var PATH_CELL_WITH_SIMPLE_POINT i32 = 0
+var PATH_CELL_WITH_SUPER_POINT i32 = 2
+var TELEPORT_CELL i32 = 4
+var GATE_CELL i32 = 5
+
+func getPosition3D(line i32, collumn i32) (v phx.Vector) {
+  x := f32.add(-1.0, f32.add(f32.mul(i32.f32(collumn), CELL_WIDTH), f32.div(CELL_WIDTH, 2.0)))
+  y := f32.add(-1.0, f32.add(f32.mul(i32.f32(line), CELL_HEIGHT), f32.div(CELL_HEIGHT, 2.0)))
+	v = phx.NewVector(x, y, 0.0)
+}
+
+func main () () {
+	initGLFW()
+	var program i32
+	program = initGL()
+
+	// Initializes all the scenes
+	scenes[HOME_SCENE] = NewHomeScene(SCREEN_WIDTH, SCREEN_HEIGHT)
+	scenes[GAME_SCENE] = NewGameScene(SCREEN_WIDTH, SCREEN_HEIGHT, game)
+	scenes[SETTINGS_SCENE] = NewSettingsScene(SCREEN_WIDTH, SCREEN_HEIGHT)
+	scenes[SELECT_PLAYER_SCENE] = NewSelectPlayerScene(SCREEN_WIDTH, SCREEN_HEIGHT)
+	scenes[SELECT_BOARD_SCENE] = NewSelectBoardScene(SCREEN_WIDTH, SCREEN_HEIGHT)
+	scenes[SELECT_POINTS_SCENE] = NewSelectPointsScene(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+	current_scene = scenes[HOME_SCENE]
+
+	game = initGame()
+
+	for bool.and(bool.not(glfw.ShouldClose("window")), i32.gteq(current_screen, 0)) {
+		gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
+		gl.LoadIdentity()
+
+		last_screen := current_screen
+		if current_screen == HOME_SCENE {
+			current_screen = HomeSceneUpdate(current_scene)
+			HomeSceneRender(current_scene)
+
+		} else if current_screen == GAME_SCENE {
+			current_screen = GameSceneUpdate(current_scene, game)
+			GameSceneRender(current_scene, game, program)
+
+		} else if current_screen == SETTINGS_SCENE {
+			game.settings, current_screen = SettingsSceneUpdate(current_scene, game.settings)
+			SettingsSceneRender(current_scene, program, game.settings)
+
+
+		} else if current_screen == SELECT_PLAYER_SCENE {
+			game.settings, current_screen = SelectPlayerSceneUpdate(current_scene, game.settings)
+			SelectPlayerSceneRender(current_scene, program)
+
+		} else if current_screen == SELECT_BOARD_SCENE {
+			game.settings, current_screen = SelectBoardSceneUpdate(current_scene, game.settings)
+			SelectBoardSceneRender(current_scene, program)
+
+		} else if current_screen == SELECT_POINTS_SCENE {
+			game.settings, current_screen = SelectPointsSceneUpdate(current_scene, game.settings)
+			SelectPointsSceneRender(current_scene, program)
+		}
+
+		if bool.not(i32.eq(last_screen, current_screen)) {
+			if current_screen == GAME_SCENE {
+				game = ResetGame(game)
+			}
+			current_scene = scenes[current_screen]
+		}
+
+		glfw.PollEvents()
+		glfw.SwapBuffers("window")
+	}
+}
