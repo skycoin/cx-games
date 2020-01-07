@@ -1,4 +1,4 @@
-package time
+package gameTime
 
 import "glfw"
 import "shape"
@@ -15,12 +15,13 @@ var curr           f64
 
 
 
+var moved bool
 func Update () {
 	curr = glfw.GetTime()
 	
 	if curr >= timeToDrop {
 		CalcDropTime()
-		shape.MoveByOffset(0, -1)
+		moved = shape.AttemptMoveByOffset(0, -1)
 	}	
 }
 

@@ -1,0 +1,11 @@
+package draw
+
+//import "inputs"
+
+
+
+// color channel intensities 
+var Light  f32 = 0.75
+var Mid    f32 = 0.5
+var Dark   f32 = 0.3
+var Darker f32 = 0.2

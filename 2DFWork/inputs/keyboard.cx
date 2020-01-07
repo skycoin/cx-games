@@ -23,6 +23,10 @@ func GetKeyEvent () (key i32, action i32) {
 		//printf("GetKeyEvent - len(keyEventCodes): %d \n", len(keyEventCodes))
 		keyEventCodes   = remove(keyEventCodes, 0)
 		keyEventActions = remove(keyEventActions, 0)
+		
+		if action == glfw.Press {
+			LatestUserActionTime = glfw.GetTime()
+		}
 	}
 }
 

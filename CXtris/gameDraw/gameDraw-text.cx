@@ -1,0 +1,190 @@
+package gameDraw
+
+import "gui"
+import "inputs"
+import "menu"
+
+
+
+type TextGL struct {
+	Text   str
+	FontId str
+	Size   f32  // used for gltext init of the font 
+	Top    f32  // in pixels 
+	Bottom f32  // in pixels 
+	Left   f32  // in pixels 
+	Wid    f32  // wid/hei caches the resulting string metric queries, 
+	Hei    f32  // 		to get the pixel bounds of the text. 
+	Hover  bool // pointer is touching/hovering-over measured rect 
+	Value  i32  // only for sliders 
+	Max    i32  // (exclusionary) max value for sliders (0 == NOT a slider) 
+}
+
+
+
+func InitFontsAndMenuItems () {
+	gl.DepthFunc(gl.LESS)
+	
+	var rFile str = "../CXtris/assets/fonts/roboto-light.ttf"
+	var sFile str = "../CXtris/assets/fonts/Skycoin-Regular.ttf"
+	loadFontSized(rFile, f32.i32(menu.MainSize))
+	loadFontSized(rFile, f32.i32(menu.OptionsSize))
+	loadFontSized(rFile, 28)
+	loadFontSized(rFile, 100)
+	
+	// menu 
+	menu.Init()
+	initMenuText()
+}
+
+
+func loadFontSized (fn str, size i32) { // filename 
+	var s str = str.concat("Roboto", sprintf("%d", size))
+	
+	os.Open(fn)
+	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
+	os.Close(fn)
+	
+	/*   THE "s" below should actually be "fn" maybe?
+	     2DBUG's screenshot wasn't drawing 'CXtris' text 
+	     
+	var handle i32 = os.Open(fn)
+	if handle >= 0 {
+		gltext.LoadTrueType(handle, s, size, 32, 127, gltext.LeftToRight)
+		if os.Close(handle) {
+		}
+	}
+	*/
+}
+
+
+func initMenuText () {
+	var w i32
+	var h i32
+	var pmi i32 = -1                 // previous menu id 
+	var nm  i32 = len(menu.Items)    // nm == num menus 
+	
+	for m := 0; m < nm; m++ {        // m  == menu id 
+	var ni  i32 = len(menu.Items[m]) // ni == num items 
+	for i := 0; i < ni; i++ {        // i  == item id 
+		var font str = str.concat("Roboto", sprintf("%d", f32.i32(menu.Items[m][i].Size)))
+		menu.Items[m][i].FontId = font		
+		w, h = gltext.Metrics(font, 
+		menu.Items[m][i].Text)
+		menu.Items[m][i].Wid = i32.f32(w)
+		menu.Items[m][i].Hei = i32.f32(h)
+		menu.Items[m][i].Left = (i32.f32(app.START_WIDTH) - menu.Items[m][i].Wid) / 2.0
+		
+		// print CLI info 
+		if pmi != m {
+			pmi = m
+			printf("menu %d \n", m)
+		}
+		
+		printf("   fontId: %s --- size: %d,%d --- item: '%s' \n", 
+			font, w, h, menu.Items[m][i].Text)
+	}
+	}
+	
+	// set vertical boundaries 
+	nm = len(menu.Items)    // nm == num menus 
+	for m := 0; m < nm; m++ {        // m  == menu id 
+	var b /* bottom */ f32 = i32.f32(app.START_HEIGHT - 1) 
+		for i := i32.sub(len(menu.Items[m]), 1); i >= 0; i-- {
+			var t /* top */ f32 = f32.sub(b, menu.Items[m][i].Hei)
+			menu.Items[m][i].Top    = t
+			menu.Items[m][i].Bottom = b
+			b = t
+		}
+	}
+}
+
+
+func allText () {
+	gl.Enable(gl.DEPTH_TEST)
+		draw.SetColor3(draw.White)
+		gltext.Printf("Roboto28", 0.0, 0.0, "QQ IgnoreMe TestText QQ")
+
+		scoreText()
+		
+		
+		var nameX f32 = 150.0
+		var nameScale f32 = 0.7
+		var vo f32 = -38.0 // vertical offset 
+		drawOutlinedText(app.Name, draw.COLOR_CYAN, nameX, vo, nameScale)
+		
+		
+		
+		if app.Mode < app.MODE_MENU_MAX { // in a menu 
+			if app.Mode == app.MODE_MENU_CONTROLS {
+				drawKeyCapTexts()
+			}
+			
+			menuTexts()
+		}else
+		if app.Mode == app.MODE_PLAYING {
+			if gui.ShowControls {
+				drawKeyCapTexts()
+			}
+		}else
+		if app.Mode == app.MODE_GAME_OVER {
+			drawOutlinedText("GAME OVER", draw.COLOR_PURPLE,
+				18.0, i32.f32(app.START_WIDTH / 2), 1.0)
+		}		
+	gl.Disable(gl.DEPTH_TEST)
+}
+
+
+func menuTexts () {
+	var m i32 = app.Mode
+	gl.LoadIdentity()
+
+	for i := i32.sub(len(menu.Items[m]), 1); i >= 0; i-- {
+		if inputs.PointerInYPixelRange(
+			menu.Items[m][i].Top, 
+			menu.Items[m][i].Bottom) {
+				
+			menu.Items[m][i].Hover = true			
+			gl.Color3f(1.0, 1.0, 1.0)
+		}else{
+			menu.Items[m][i].Hover = false
+			gl.Color3f(draw.Mid, draw.Mid, draw.Mid)
+		}
+
+		gltext.Printf(
+			menu.Items[m][i].FontId, 
+			menu.Items[m][i].Left, 
+			menu.Items[m][i].Top, 
+			menu.Items[m][i].Text)
+	}
+}
+
+
+func scoreText () {
+	var sX f32 = i32.f32(i32.sub(app.START_WIDTH, 59))
+	var sY f32 = i32.f32(93) //app.START_HEIGHT)
+	gl.LoadIdentity()
+	gl.Color3f(1.0, 1.0, 1.0)
+	gltext.Printf("Roboto28", sX, sY, shape.PlayerScoreTxt)
+}
+
+
+func drawOutlinedText (s str, color i32, x f32, y f32, scale f32) {
+	var alpha f32 = 1.0
+	gl.Scalef(scale, scale, 0.0)
+
+	// background shadow 
+	printTextWithColor(s, x+1.0, y+1.0, color, alpha)
+	printTextWithColor(s, x-1.0, y+1.0, color, alpha)
+	printTextWithColor(s, x+1.0, y-1.0, color, alpha)
+	printTextWithColor(s, x-1.0, y-1.0, color, alpha)
+	// main filling on top 
+	printTextWithColor(s, x,     y,     color, alpha)
+}
+
+
+// x & y are offsets 
+func printTextWithColor (s str, x f32, y f32, color i32, a f32) {
+	draw.SetColorById(color)
+	gltext.Printf("Roboto100", x, y, s)
+}

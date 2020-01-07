@@ -1,8 +1,11 @@
 package inputs
 
 import "glfw"
-
 import "app"
+
+
+
+var LatestUserActionTime f64
 
 
 
@@ -18,4 +21,13 @@ func Init () {
 
 func Update () {
 	str.print("inputs.Update ()")
+}
+
+
+func UserActionWithinLast (seconds f64) (out bool) {
+	var /* time */ sinceInput f64 = glfw.GetTime() - LatestUserActionTime
+	
+	if (sinceInput < seconds) {
+		out = true
+	}
 }

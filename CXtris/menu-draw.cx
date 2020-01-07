@@ -1,0 +1,41 @@
+package menu
+
+import "gl"
+import "draw"
+import "gameDraw"
+import "space"
+
+
+
+var alpha f32 = 0.8
+func DrawRects () {
+	var m i32 = app.Mode	
+	gl.Color4f(draw.Dark, draw.Dark, draw.Dark, 0.9)
+	var ySpan f32 = f32.mul(Items[m][0].Hei, space.PixelHei)
+	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
+
+	for i := i32.sub(len(Items[m]), 1); i >= 0; i-- {			
+		var xSpan f32 = f32.mul(Items[m][i].Wid, space.PixelWid)
+	
+		if Items[m][i].Hover {
+			gl.Color4f(draw.Mid, draw.Mid, draw.Mid, alpha)
+		}else{
+			gl.Color4f(draw.Dark, draw.Dark, draw.Dark, alpha)
+		}
+		
+		gameDraw.SizedNotStretchedPicAt(gameDraw.PicShapeTile, 0.0, y, xSpan, ySpan)
+		
+		if Items[m][i].Max != 0 { // (if it's a slider) 
+			gl.Color3f(1.0, 1.0, 1.0)
+			var val f32 = i32.f32(Items[m][i].Value)
+			var max f32 = i32.f32(Items[m][i].Max)
+			var wid f32 = xSpan / max
+			var x   f32 = (val / max * xSpan)
+			x = f32.sub(x, f32.div(xSpan, 2.0))
+			x = f32.add(x, f32.div(wid, 2.0))
+			gameDraw.SizedNotStretchedPicAt(gameDraw.PicShapeTile, x, y, wid, ySpan)
+		}
+		
+		y = f32.add(y, ySpan)
+	}
+}

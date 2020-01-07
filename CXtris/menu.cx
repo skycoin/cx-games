@@ -1,27 +1,17 @@
 package menu
 
 import "app"
-import "time"
+import "gameTime"
 
 
 
-type MenuItem struct {
-	Text  str
-	Font  str
-	Size  f32  // used for gltext init of the font 
-	Left  f32  // in pixels 
-	Wid   f32  // w/h caches the resulting string measure queries, 
-	Hei   f32  // 		to get the pixel bounds of the text. 
-	Hover bool // pointer is touching/hovering-over measured rect 
-	Value i32  // only for sliders 
-	Max   i32  // (exclusionary) max value for sliders (0 == NOT a slider) 
-}
-var Items [][]MenuItem // 1st is menu id, 2nd is item id 
+var Items [][]TextGL // 1st is menu id, 2nd is item id 
 
 // main  
-var MainSize            f32  = 150.0
+var MainSize            f32  = 125.0
 var Play                str  = "Play"
 var Options             str  = "Options"
+var Controls            str  = "Controls"
 var Quit                str  = "Quit"
 
 // options 
@@ -37,38 +27,38 @@ var DebrisHeight        i32  = 9
 func Init () {
  	printf("menu.Init () \n")
  	
- 	var mis []MenuItem
- 	
- 	mis = []MenuItem{}
- 	Items = append(
-	Items, mis)
- 	
- 	mis = []MenuItem{}
- 	Items = append(
-	Items, mis)
-
  	// app.MODE_MENU_MAIN
- 	makeMenuItem(0, MainSize, Play)
- 	makeMenuItem(0, MainSize, Options)
- 	makeMenuItem(0, MainSize, Quit)
+ 	makeMenuSystemItem(0, MainSize, Play)
+ 	makeMenuSystemItem(0, MainSize, Options)
+ 	makeMenuSystemItem(0, MainSize, Controls)
+ 	makeMenuSystemItem(0, MainSize, Quit)
 	// app.MODE_MENU_OPTIONS
- 	makeMenuItem(1, OptionsSize, ShowNextShapeText + "YES")
- 	makeMenuItem(1, OptionsSize, SpeedText)
- 	makeMenuItem(1, OptionsSize, DebrisHeightText)
- 	makeMenuItem(1, OptionsSize, Play)
-// 	makeMenuItem(1, 50.0, "<- BACK")
+ 	makeMenuSystemItem(1, OptionsSize, ShowNextShapeText + "YES")
+ 	makeMenuSystemItem(1, OptionsSize, SpeedText)
+ 	makeMenuSystemItem(1, OptionsSize, DebrisHeightText)
+ 	makeMenuSystemItem(1, OptionsSize, Play)
+	// app.MODE_MENU_CONTROLS
+ 	makeMenuSystemItem(2, OptionsSize, "")
 
-	// sliders (only items that use these fields) 
-	Items[1][1].Max = time.DROP_SPEED_MAX
-	Items[1][1].Value = time.DropSpeed
-	Items[1][2].Max = 11 // for debris height 
+	// sliders (the only items that use these fields) 
+	Items[1][1].Max   = gameTime.DROP_SPEED_MAX
+	Items[1][1].Value = gameTime.DropSpeed
+	Items[1][2].Max   = 11 // for debris height 
 	Items[1][2].Value = DebrisHeight
 }
 
 
-func makeMenuItem(menuId i32, size f32, text str) {
- 	var mIt MenuItem 
- 	mIt = MenuItem{ Size: size, Text: text }
+func makeMenuSystemItem(menuId i32, size f32, text str) {
+	// while menuId is invalid (menu doesn't exist yet) 
+	for len(Items) <= menuId {
+	 	var nm []TextGL // new menu 
+	 	nm = []TextGL{}
+	 	Items = append(
+		Items, nm)
+	}
+	
+ 	var mIt TextGL 
+ 	mIt = TextGL{ Size: size, Text: text }
  	Items[menuId] = append(
 	Items[menuId], mIt)
 }

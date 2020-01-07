@@ -1,10 +1,12 @@
-package draw
+package gameDraw
 
 import "gl"
 import "gltext"
 import "os"
 
 import "app"
+import "draw"
+import "gui"
 import "map"
 import "shape"
 import "space"
@@ -14,21 +16,38 @@ import "space"
 var PicBackground i32
 var PicStar       i32
 var PicShapeTile  i32
-//var dir           str
+var PicRotLeft    i32
+var PicRotRight   i32
+var PicArrowLeft  i32
+var PicArrowRight i32
+var PicArrowDown  i32
+var PicMouse      i32
+var PicMouseLMB   i32
+var PicMouseRMB   i32
+//var dir         str
 
 
 
 func Init () {
-	str.print("draw.Init ()")
+	str.print("gameDraw.Init ()")
 	
 	//dir = os.GetWorkingDirectory()
 	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
 	InitFontsAndMenuItems()
+	InitControlsText()
 
 	// pics 
 	PicBackground = gl.NewTexture("../CXtris/assets/textures/background.jpg")
 	PicStar       = gl.NewTexture("../CXtris/assets/textures/star.png")
 	PicShapeTile  = gl.NewTexture("../CXtris/assets/textures/tile.png")
+	PicRotLeft    = gl.NewTexture("../CXtris/assets/textures/rotate-left.png")
+	PicRotRight   = gl.NewTexture("../CXtris/assets/textures/rotate-right.png")
+	PicArrowLeft  = gl.NewTexture("../CXtris/assets/textures/arrow-left.png")
+	PicArrowRight = gl.NewTexture("../CXtris/assets/textures/arrow-right.png")
+	PicArrowDown  = gl.NewTexture("../CXtris/assets/textures/arrow-down.png")
+	PicMouse      = gl.NewTexture("../CXtris/assets/textures/mouse.png")   
+	PicMouseLMB   = gl.NewTexture("../CXtris/assets/textures/mouse-lmb.png")
+	PicMouseRMB   = gl.NewTexture("../CXtris/assets/textures/mouse-rmb.png")
 }
 
 
@@ -45,11 +64,28 @@ func All () {
 		NextShape()
 	}
 	
+	if app.Mode < app.MODE_MENU_MAX { // in a menu 
+		menu.DrawRects()
+		
+		if app.Mode == app.MODE_MENU_CONTROLS {
+			drawVirtualKeyBackdrops()
+		}
+	}else
+	if app.Mode == app.MODE_PLAYING {
+		if gui.ShowControls {
+			drawVirtualKeyBackdrops()
+		}
+	}
+	
+	// cursor/pointer 
 	sizedPicAt(PicStar, 
 		inputs.MousePointer.X,
-		inputs.MousePointer.Y, 0.1, 0.07)
+		inputs.MousePointer.Y, 
+		0.1  * 0.3, 
+		0.07 * 0.3)
 	
-	allText()		
+	gl.LoadIdentity()
+	allText()
 }
 
 
@@ -76,7 +112,7 @@ func sizedPicAt (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 }
 
 
-func sizedNotStretchedPicAt (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
+func SizedNotStretchedPicAt (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 	var tosy f32 = scaleY / 3.0 // 3rd of scale y 
 	var ome f32 // offset (to) middle (section) extent 
 	ome = scaleX - tosy
@@ -170,9 +206,9 @@ func PlayField () {
 		}
 		
 		gl.Color3f(
-			app.Colors[c].R, 
-			app.Colors[c].G, 
-			app.Colors[c].B)
+			draw.Colors[c].R, 
+			draw.Colors[c].G, 
+			draw.Colors[c].B)
 		
 		scaledPic(
 			PicShapeTile, 
@@ -187,9 +223,9 @@ func PlayField () {
 
 func PlayerPiece () {
 	gl.Color3f(
-		app.Colors[shape.PlayerShape].R, 
-		app.Colors[shape.PlayerShape].G, 
-		app.Colors[shape.PlayerShape].B)
+		draw.Colors[shape.PlayerShape].R, 
+		draw.Colors[shape.PlayerShape].G, 
+		draw.Colors[shape.PlayerShape].B)
 	
 	var fX f32 = map.LEdge + map.CellWidthHalf
 	var fY f32 =     -0.95 + map.CellHeightHalf
@@ -211,9 +247,9 @@ func PlayerPiece () {
 
 func NextShape () {
 	gl.Color3f(
-		app.Colors[shape.Next].R, 
-		app.Colors[shape.Next].G, 
-		app.Colors[shape.Next].B)
+		draw.Colors[shape.Next].R, 
+		draw.Colors[shape.Next].G, 
+		draw.Colors[shape.Next].B)
 	
 	var fX f32 = shape.StartPosX
 	var fY f32 = shape.StartPosY
@@ -234,39 +270,5 @@ func NextShape () {
 		
 		fX = shape.StartPosX
 		fY = f32.add(fY, shape.NextCellSpanY)
-	}
-}
-
-
-var alpha f32 = 0.8
-func menuRects () {
-	var m i32 = app.Mode
-	gl.Color4f(dark, dark, dark, 0.9)
-	var ySpan f32 = f32.mul(menu.Items[m][0].Hei, space.PixelHei)
-	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
-
-	for i := i32.sub(len(menu[m].Items), 1); i >= 0; i-- {			
-		var xSpan f32 = f32.mul(menu.Items[m][i].Wid, space.PixelWid)
-	
-		if menu.Items[m][i].Hover {
-			gl.Color4f(mid, mid, mid, alpha)
-		}else{
-			gl.Color4f(dark, dark, dark, alpha)
-		}
-		
-		sizedNotStretchedPicAt(PicShapeTile, 0.0, y, xSpan, ySpan)
-		
-		if menu.Items[m][i].Max != 0 { // (if it's a slider) 
-			gl.Color3f(1.0, 1.0, 1.0)
-			var val f32 = i32.f32(menu.Items[m][i].Value)
-			var max f32 = i32.f32(menu.Items[m][i].Max)
-			var wid f32 = xSpan / max
-			var x   f32 = (val / max * xSpan)
-			x = f32.sub(x, f32.div(xSpan, 2.0))
-			x = f32.add(x, f32.div(wid, 2.0))
-			sizedNotStretchedPicAt(PicShapeTile, x, y, wid, ySpan)
-		}
-		
-		y = f32.add(y, ySpan)
 	}
 }
