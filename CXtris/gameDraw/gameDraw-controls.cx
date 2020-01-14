@@ -50,42 +50,38 @@ func getNewText (key str) (out TextGL) {
 }
 
 
-func initKeySet (keySet []TextGL, yOffset bool) {
-	var w i32
-	var h i32
-	var y f32 = i32.f32(app.START_HEIGHT)
-	
-	for i := 0; i < len(keySet); i++ {
-		str.print(keySet[i].Text)
-
-
-
-		var font str = str.concat("Roboto", sprintf("%d", f32.i32(keySet[i].Size)))
-		keySet[i].FontId = font		
-		w, h = gltext.Metrics(font, 
-		keySet[i].Text)
-		keySet[i].Wid = i32.f32(w)
-		keySet[i].Hei = i32.f32(h)
-		y = y -         i32.f32(h)
-		keySet[i].Top = 0.0 //y
-		keySet[i].Left = 0.0 //(i32.f32(app.START_WIDTH) - keySet[i].Wid) / 2.0
-	}
-}
-
-
 func drawKeyCapTexts () {
-	var pixHSpan f32 = i32.f32(app.START_WIDTH) / 3.0
+	var pixHSpan     f32 = i32.f32(app.START_WIDTH) / 3.0
 	var pixHSpanHalf f32 = pixHSpan / 2.0
-	var pixVSpan f32 = pixHSpan //100.0
+	var margin       f32 = pixHSpan / 5.0
 	var x f32
-	var y f32 = i32.f32(app.START_HEIGHT) - pixVSpan - 14.0
+	var y f32 = i32.f32(app.START_HEIGHT) - pixHSpan
 	
 	for i := 0; i < len(keySetPri); i++ {
-		drawOutlinedText(keySetPri[i].Text, draw.COLOR_GRAY_DARK, x, y, 1.0)
+		// set horizontal alignment to left or right edge of keycap 
+		var xo f32 // x offset 
+		
+		if i == 2 || // (align right) 
+			i == 4 {
+				
+			xo = pixHSpan - keySetPri[i].Wid - margin
+		}else{ // (align left) 
+			xo = margin
+		}
+		
+		
+		draw.SetColor3(draw.Black)
+		gltext.Printf(
+			keySetPri[i].FontId, 
+			x + xo, 
+			y,
+			keySetPri[i].Text)
 
+
+		// increment virtual text cursor 
 		if i == 2 {
 			x = 0.0
-			y = y - pixVSpan
+			y = y - pixHSpan //* map.HackyHeightFraction)
 		}else
 		if i == 3 {
 			x = x + pixHSpan
@@ -97,24 +93,6 @@ func drawKeyCapTexts () {
 
 	//s = s + "ROTATE Left  == LMB,  [LCtrl], [RAlt]\n"
 	//s = s + "ROTATE Right == RMB,  [LAlt],  [RCtrl]\n"
-	
-	return
-	
-	
-	
-	
-	
-	
-	
-	// testing a bottom edge anchored vertical span of texts 
-	for i := 0; i < len(keySetPri); i++ {
-		drawOutlinedText(
-			keySetPri[i].Text,
-			draw.COLOR_YELLOW, 
-			keySetPri[i].Left, 
-			keySetPri[i].Top, 
-			1.0)
-	}
 }
 
 
@@ -123,7 +101,11 @@ func drawVirtualKeyBackdrops () {
 	//"mouse" icon/s needed 
 	//"mouse" icon/s needed 
 
-	draw.SetColor3(draw.White)
+	if app.Mode == app.MODE_PLAYING {
+		draw.SetColor4(draw.White, 0.8)
+	}else{
+		draw.SetColor3(draw.White)
+	}
 	var x f32 = -1.0 + SPAN_HALF
 	var y f32 = -1.0 + SPAN_HALF_V
 	
