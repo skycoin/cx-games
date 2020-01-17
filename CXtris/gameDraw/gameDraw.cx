@@ -1,13 +1,12 @@
 package gameDraw
 
 import "gl"
-import "gltext"
-import "os"
 
 import "app"
 import "draw"
 import "gui"
 import "map"
+import "main"
 import "shape"
 import "space"
 
@@ -37,9 +36,6 @@ func Init () {
 	// SO......HARDWIRED VALUE AT DECLARATION (FIXME when CX FIXES THIS) 
 	//HackyHeightFraction = f32.div(i32.f32(app.START_WIDTH), i32.f32(app.START_HEIGHT))
 
-	//dir = os.GetWorkingDirectory()
-	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
-	InitFontsAndMenuItems()
 	InitControlsText()
 
 	// pics 
@@ -66,7 +62,7 @@ func All () {
 	PlayField()
 	PlayerPiece()
 
-	if menu.ShowNextShape {
+	if main.ShowNextShape {
 		NextShape()
 	}
 	

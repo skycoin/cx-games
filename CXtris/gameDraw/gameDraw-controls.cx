@@ -1,5 +1,8 @@
 package gameDraw
 
+import "draw"
+import "gltext"
+
 
 
 // FIXME when CX has constants 
@@ -15,8 +18,8 @@ var pixHSpanHalf f32
 var pixMargin    f32
 
 // controls text 
-var keySetPri []TextGL // primary 
-var keySetSec []TextGL // secondary 
+var keySetPri []draw.TextGL // primary 
+var keySetSec []draw.TextGL // secondary 
 
 
 
@@ -58,13 +61,13 @@ func InitControlsText () {
 }
 
 
-func getNewText (key str) (out TextGL) {
-	out = TextGL{ Text: key, Size: 28.0 }
+func getNewText (key str) (out draw.TextGL) {
+	out = draw.TextGL{ Text: key, Size: 28.0 }
 }
 
 
 func initKeySet (yOffset bool) {
-	var keySet []TextGL
+	var keySet []draw.TextGL
 	
 	if yOffset {
 		keySet = keySetSec
