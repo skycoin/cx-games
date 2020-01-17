@@ -26,11 +26,17 @@ var PicMouseLMB   i32
 var PicMouseRMB   i32
 //var dir         str
 
+var HackyHeightFraction f32 = 0.61458333333
+
 
 
 func Init () {
 	str.print("gameDraw.Init ()")
 	
+	// BELOW (MORE PROPER) CALCULATION DOESN'T WORK FOR SOME REASON, 
+	// SO......HARDWIRED VALUE AT DECLARATION (FIXME when CX FIXES THIS) 
+	//HackyHeightFraction = f32.div(i32.f32(app.START_WIDTH), i32.f32(app.START_HEIGHT))
+
 	//dir = os.GetWorkingDirectory()
 	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
 	InitFontsAndMenuItems()

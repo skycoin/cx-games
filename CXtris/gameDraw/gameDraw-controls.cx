@@ -9,16 +9,26 @@ var SPAN         f32 = 2.0 / i32.f32(NUM_H_KEYS)
 var SPAN_HALF    f32 = SPAN / 2.0
 var SPAN_QUARTER f32 = SPAN / 3.4//4.0
 var SPAN_HALF_V  f32 // vertical 
+// pixel space 
+var pixHSpan     f32
+var pixHSpanHalf f32
+var pixMargin    f32
 
 // controls text 
-var keySetPri []TextGL //...ary 
-var keySetSec []TextGL //...ondary 
+var keySetPri []TextGL // primary 
+var keySetSec []TextGL // secondary 
 
 
 
 func InitControlsText () {
-	// couldn't do next bit of math in the declaration 
-	SPAN_HALF_V = SPAN_HALF * map.HackyHeightFraction
+	// couldn't do next bits of math @ declaration 
+	//		gl space 
+	SPAN_HALF_V  = SPAN_HALF * HackyHeightFraction
+	// 		pixel space 
+	pixHSpan     = f32.div(i32.f32(app.START_WIDTH), 3.0)
+	pixHSpanHalf = pixHSpan / 2.0
+	str.print("pixHSpan:")
+	f32.print(pixHSpan)
 
 	keySetPri = append(
 	keySetPri, getNewText("A"))
@@ -31,17 +41,20 @@ func InitControlsText () {
 	keySetPri = append(
 	keySetPri, getNewText("E"))
 
-	/*
-	newKey(keySetSec, "<-")
-	newKey(keySetSec, "V")
-	newKey(keySetSec, "->")
-	newKey(keySetSec, "Ctrl/Alt")
-	newKey(keySetSec, "Alt/Ctrl")
-	*/
-	
+	keySetSec = append(
+	keySetSec, getNewText("<-"))
+	keySetSec = append(
+	keySetSec, getNewText("V"))
+	keySetSec = append(
+	keySetSec, getNewText("->"))
+	keySetSec = append(
+	keySetSec, getNewText("Ctrl/Alt"))
+	keySetSec = append(
+	keySetSec, getNewText("Alt/Ctrl"))
+
 	// precalc positions 
-	initKeySet(keySetPri, false)
-	//initKeySet(keySetSec, true)
+	initKeySet(false)
+	initKeySet(true)
 }
 
 
@@ -50,38 +63,70 @@ func getNewText (key str) (out TextGL) {
 }
 
 
+func initKeySet (yOffset bool) {
+	var keySet []TextGL
+	
+	if yOffset {
+		keySet = keySetSec
+	}else{
+		keySet = keySetPri	
+	}
+	
+	var w i32
+	var h i32
+	var y f32 = i32.f32(app.START_HEIGHT)
+	
+	for i := 0; i < len(keySet); i++ {
+		str.print(keySet[i].Text)
+
+
+
+		var font str = str.concat("Roboto", sprintf("%d", f32.i32(keySet[i].Size)))
+		printf("font: %s \n", font)
+		keySet[i].FontId = font		
+		w, h = gltext.Metrics(font, 
+		keySet[i].Text)
+		printf("keySet[i].Text: %s \n", keySet[i].Text)
+		keySet[i].Wid = i32.f32(w)
+		keySet[i].Hei = i32.f32(h)
+		y = f32.sub(y,     i32.f32(h))
+		printf("NEW Y IS: %f \n", y)
+		keySet[i].Top = y
+		keySet[i].Left = 0.0 //(i32.f32(app.START_WIDTH) - keySet[i].Wid) / 2.0
+	}
+}
+
+
 func drawKeyCapTexts () {
-	var pixHSpan     f32 = i32.f32(app.START_WIDTH) / 3.0
-	var pixHSpanHalf f32 = pixHSpan / 2.0
-	var margin       f32 = pixHSpan / 5.0
+	draw.SetColor3(draw.Black)
+	
 	var x f32
 	var y f32 = i32.f32(app.START_HEIGHT) - pixHSpan
 	
 	for i := 0; i < len(keySetPri); i++ {
-		// set horizontal alignment to left or right edge of keycap 
 		var xo f32 // x offset 
-		
-		if i == 2 || // (align right) 
-			i == 4 {
-				
-			xo = pixHSpan - keySetPri[i].Wid - margin
-		}else{ // (align left) 
-			xo = margin
-		}
-		
-		
-		draw.SetColor3(draw.Black)
+
+		// primary set 
+		xo = getXOffset(i, keySetPri[i].Wid)
 		gltext.Printf(
 			keySetPri[i].FontId, 
 			x + xo, 
 			y,
 			keySetPri[i].Text)
+			
+		// secondary set 
+		xo = getXOffset(i, keySetSec[i].Wid)
+		gltext.Printf(
+			keySetSec[i].FontId, 
+			x + xo, 
+			y + keySetSec[i].Hei,
+			keySetSec[i].Text)
 
 
 		// increment virtual text cursor 
 		if i == 2 {
 			x = 0.0
-			y = y - pixHSpan //* map.HackyHeightFraction)
+			y = y - pixHSpan
 		}else
 		if i == 3 {
 			x = x + pixHSpan
@@ -90,9 +135,18 @@ func drawKeyCapTexts () {
 			x = x + pixHSpan
 		}
 	}
+}
 
-	//s = s + "ROTATE Left  == LMB,  [LCtrl], [RAlt]\n"
-	//s = s + "ROTATE Right == RMB,  [LAlt],  [RCtrl]\n"
+
+func getXOffset(i i32, wid f32) (xo f32) {
+	// set horizontal alignment to left or right edge of keycap 
+	if i == 2 || // (align right) 
+		i == 4 {
+			
+		xo = pixHSpan - wid - pixMargin
+	}else{       // (align left) 
+		xo = pixMargin
+	}
 }
 
 
@@ -115,7 +169,7 @@ func drawVirtualKeyBackdrops () {
 			x,
 			y, 
 			SPAN, 
-			SPAN * map.HackyHeightFraction)
+			SPAN * HackyHeightFraction)
 
 		if i == 0 {
 			sizedPicAt(PicArrowLeft, 
@@ -159,7 +213,7 @@ func drawVirtualKeyBackdrops () {
 	
 	
 	x = -1.0 + SPAN_HALF
-	y = f32.add(y, SPAN * map.HackyHeightFraction)
+	y = f32.add(y, SPAN * HackyHeightFraction)
 
 
 	// top left 
@@ -167,7 +221,7 @@ func drawVirtualKeyBackdrops () {
 		x,
 		y, 
 		SPAN, 
-		SPAN * map.HackyHeightFraction)
+		SPAN * HackyHeightFraction)
 	sizedPicAt(PicRotLeft, 
 		x,
 		y, 
@@ -188,7 +242,7 @@ func drawVirtualKeyBackdrops () {
 		x,
 		y, 
 		SPAN, 
-		SPAN * map.HackyHeightFraction)
+		SPAN * HackyHeightFraction)
 	sizedPicAt(PicRotRight, 
 		x,
 		y, 

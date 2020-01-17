@@ -58,34 +58,6 @@ func loadFontSized (fn str, size i32) { // filename
 }
 
 
-func initKeySet (keySet []TextGL, yOffset bool) {
-	// ATM UNUSED "keySet", // FIXME: change func back to using that
-	// IF it's possible in this version of CX 
-	var w i32
-	var h i32
-	var y f32 = i32.f32(app.START_HEIGHT)
-	
-	for i := 0; i < len(keySetPri); i++ {
-		str.print(keySetPri[i].Text)
-
-
-
-		var font str = str.concat("Roboto", sprintf("%d", f32.i32(keySetPri[i].Size)))
-		printf("font: %s \n", font)
-		keySetPri[i].FontId = font		
-		w, h = gltext.Metrics(font, 
-		keySetPri[i].Text)
-		printf("keySetPri[i].Text: %s \n", keySetPri[i].Text)
-		keySetPri[i].Wid = i32.f32(w)
-		keySetPri[i].Hei = i32.f32(h)
-		y = f32.sub(y,     i32.f32(h))
-		printf("NEW Y IS: %f \n", y)
-		keySetPri[i].Top = y
-		keySetPri[i].Left = 0.0 //(i32.f32(app.START_WIDTH) - keySetPri[i].Wid) / 2.0
-	}
-}
-
-
 func initMenuText () {
 	var w i32
 	var h i32
