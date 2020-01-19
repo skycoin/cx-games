@@ -2,25 +2,13 @@ package draw
 
 import "gl"
 import "app"
-import "entities"
 import "geom"
 
 
 
-// pics (textures) 
-var PicBackground i32
-var PicStar       i32
-var PicShapeTile  i32
-var PicRotLeft    i32
-var PicRotRight   i32
-var PicArrowLeft  i32
-var PicArrowRight i32
-var PicArrowDown  i32
-var PicMouse      i32
-var PicMouseLMB   i32
-var PicMouseRMB   i32
-
-// color 
+// color (ATM, MOST vars & funcs in this file are color related
+//			(other than init funcs, & quad soup related) 
+// 			...so should be moved to color.cx?)
 //		"id constants" 
 var COLOR_RED       i32
 var COLOR_BLUE      i32 = 1
@@ -62,19 +50,6 @@ type Color4 struct {
 func Init () {
 	str.print("2DFWork/draw.Init ()")
 
-	// pics 
-	PicBackground = gl.NewTexture("../CXtris/assets/textures/background.jpg")
-	PicStar       = gl.NewTexture("../CXtris/assets/textures/star.png")
-	PicShapeTile  = gl.NewTexture("../CXtris/assets/textures/tile.png")
-	PicRotLeft    = gl.NewTexture("../CXtris/assets/textures/rotate-left.png")
-	PicRotRight   = gl.NewTexture("../CXtris/assets/textures/rotate-right.png")
-	PicArrowLeft  = gl.NewTexture("../CXtris/assets/textures/arrow-left.png")
-	PicArrowRight = gl.NewTexture("../CXtris/assets/textures/arrow-right.png")
-	PicArrowDown  = gl.NewTexture("../CXtris/assets/textures/arrow-down.png")
-	PicMouse      = gl.NewTexture("../CXtris/assets/textures/mouse.png")   
-	PicMouseLMB   = gl.NewTexture("../CXtris/assets/textures/mouse-lmb.png")
-	PicMouseRMB   = gl.NewTexture("../CXtris/assets/textures/mouse-rmb.png")
-
 
 	// color 
 	Black = Color3{ R: 0.0, G: 0.0, B: 0.0 }
@@ -90,27 +65,8 @@ func Init () {
 	addColor(Darker, Darker, Darker) // gray 
 
 
-	// text 
 	InitFonts()
-}
-
-
-func Ball (ball entities.Ball) {
-	var x f32
-	var y f32
-
-	gl.Begin(gl.POLYGON)
-	gl.Color3f(1.0, 1.0, 1.0)
-
-	var i f32
-	for i = 0.0; f32.lt(i, 20.0); i = f32.add(i, 1.0) {
-		x = f32.add(ball.x, f32.mul(ball.radius, f32.cos(f32.div(f32.mul(i, geom.TAU), 20.0))))
-		y = f32.add(ball.y, f32.mul(ball.radius, f32.sin(f32.div(f32.mul(i, geom.TAU), 20.0))))
-
-		gl.Vertex2f(x, y)
-	}
-
-	gl.End()
+	InitPics()
 }
 
 
@@ -167,64 +123,6 @@ func SetSequentiallyCycledColor (i i32) {
 		Colors[c].R,
 		Colors[c].G,
 		Colors[c].B)
-}
-
-
-func Scaled3SlicedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
-	var tosy f32 = scaleY / 3.0 // 3rd of scale y 
-	var ome f32 // offset (to) middle (section) extent 
-	ome = scaleX - tosy
-	ome = ome - tosy
-	ome = ome / 2.0
-	ome = ome * 0.5
-	
-	gl.LoadIdentity()
-
-	gl.BindTexture(gl.TEXTURE_2D, picId)
-	gl.Translatef(x, y, 0.0)
-	gl.Scalef(scaleX, scaleY, 0.0)
-
-	gl.Begin(gl.QUADS)
-		gl.TexCoord2d(0.0D, 0.0D)
-		gl.Vertex3f(-0.5, 0.5, 0.0)
-		
-		gl.TexCoord2d(0.33D, 0.0D)
-		gl.Vertex3f(-ome, 0.5, 0.0)
-		
-		gl.TexCoord2d(0.33D, 1.0D)
-		gl.Vertex3f(-ome, -0.5, 0.0)
-		
-		gl.TexCoord2d(0.0D, 1.0D)
-		gl.Vertex3f(-0.5, -0.5, 0.0)
-
-
-
-		gl.TexCoord2d(0.33D, 0.0D)
-		gl.Vertex3f(-ome, 0.5, 0.0)
-		
-		gl.TexCoord2d(0.66D, 0.0D)
-		gl.Vertex3f(ome, 0.5, 0.0)
-		
-		gl.TexCoord2d(0.66D, 1.0D)
-		gl.Vertex3f(ome, -0.5, 0.0)
-		
-		gl.TexCoord2d(0.33D, 1.0D)
-		gl.Vertex3f(-ome, -0.5, 0.0)
-
-
-
-		gl.TexCoord2d(0.66D, 0.0D)
-		gl.Vertex3f(ome, 0.5, 0.0)
-		
-		gl.TexCoord2d(1.0D, 0.0D)
-		gl.Vertex3f(0.5, 0.5, 0.0)
-		
-		gl.TexCoord2d(1.0D, 1.0D)
-		gl.Vertex3f(0.5, -0.5, 0.0)
-		
-		gl.TexCoord2d(0.66D, 1.0D)
-		gl.Vertex3f(ome, -0.5, 0.0)
-	gl.End()
 }
 
 

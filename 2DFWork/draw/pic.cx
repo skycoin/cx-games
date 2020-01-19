@@ -2,6 +2,39 @@ package draw
 
 
 
+// pics (textures) 
+var PicBackground i32
+var PicStar       i32
+var PicShapeTile  i32
+var PicRotLeft    i32
+var PicRotRight   i32
+var PicArrowLeft  i32
+var PicArrowRight i32
+var PicArrowDown  i32
+var PicMouse      i32
+var PicMouseLMB   i32
+var PicMouseRMB   i32
+
+
+
+func InitPics () {
+	str.print("2DFWork/draw.InitPics ()")
+
+	// pics 
+	PicBackground = gl.NewTexture("../CXtris/assets/textures/background.jpg")
+	PicStar       = gl.NewTexture("../CXtris/assets/textures/star.png")
+	PicShapeTile  = gl.NewTexture("../CXtris/assets/textures/tile.png")
+	PicRotLeft    = gl.NewTexture("../CXtris/assets/textures/rotate-left.png")
+	PicRotRight   = gl.NewTexture("../CXtris/assets/textures/rotate-right.png")
+	PicArrowLeft  = gl.NewTexture("../CXtris/assets/textures/arrow-left.png")
+	PicArrowRight = gl.NewTexture("../CXtris/assets/textures/arrow-right.png")
+	PicArrowDown  = gl.NewTexture("../CXtris/assets/textures/arrow-down.png")
+	PicMouse      = gl.NewTexture("../CXtris/assets/textures/mouse.png")   
+	PicMouseLMB   = gl.NewTexture("../CXtris/assets/textures/mouse-lmb.png")
+	PicMouseRMB   = gl.NewTexture("../CXtris/assets/textures/mouse-rmb.png")
+}
+
+
 func ScaledPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 	gl.LoadIdentity()
 
@@ -21,5 +54,63 @@ func ScaledPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 		
 		gl.TexCoord2d(0.0D, 1.0D)
 		gl.Vertex3f(-0.5, -0.5, 0.0)
+	gl.End()
+}
+
+
+func Scaled3SlicedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
+	var tosy f32 = scaleY / 3.0 // 3rd of scale y 
+	var ome f32 // offset (to) middle (section) extent 
+	ome = scaleX - tosy
+	ome = ome - tosy
+	ome = ome / 2.0
+	ome = ome * 0.5
+	
+	gl.LoadIdentity()
+
+	gl.BindTexture(gl.TEXTURE_2D, picId)
+	gl.Translatef(x, y, 0.0)
+	gl.Scalef(scaleX, scaleY, 0.0)
+
+	gl.Begin(gl.QUADS)
+		gl.TexCoord2d(0.0D, 0.0D)
+		gl.Vertex3f(-0.5, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.33D, 0.0D)
+		gl.Vertex3f(-ome, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.33D, 1.0D)
+		gl.Vertex3f(-ome, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.0D, 1.0D)
+		gl.Vertex3f(-0.5, -0.5, 0.0)
+
+
+
+		gl.TexCoord2d(0.33D, 0.0D)
+		gl.Vertex3f(-ome, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.66D, 0.0D)
+		gl.Vertex3f(ome, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.66D, 1.0D)
+		gl.Vertex3f(ome, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.33D, 1.0D)
+		gl.Vertex3f(-ome, -0.5, 0.0)
+
+
+
+		gl.TexCoord2d(0.66D, 0.0D)
+		gl.Vertex3f(ome, 0.5, 0.0)
+		
+		gl.TexCoord2d(1.0D, 0.0D)
+		gl.Vertex3f(0.5, 0.5, 0.0)
+		
+		gl.TexCoord2d(1.0D, 1.0D)
+		gl.Vertex3f(0.5, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.66D, 1.0D)
+		gl.Vertex3f(ome, -0.5, 0.0)
 	gl.End()
 }

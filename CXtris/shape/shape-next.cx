@@ -64,8 +64,8 @@ func setupSizesAndOffsetsForNext () {
 	MostCellsInX    = i32.add(MostCellsInX, 1)
 	MostCellsInY    = i32.add(MostCellsInY, 1)
 	
-	var halfX f32 = f32.div(NextCellSpanX, 2.0)
-	var halfY f32 = f32.div(NextCellSpanY, 2.0)
+	var halfX f32 = NextCellSpanX / 2.0
+	var halfY f32 = NextCellSpanY / 2.0
 	StartPosX = CenterOfBoxX - i32.f32(MostCellsInX) * NextCellSpanX / 2.0 + halfX
 	StartPosY = CenterOfBoxY - i32.f32(MostCellsInY) * NextCellSpanY / 2.0 + halfY
 }
