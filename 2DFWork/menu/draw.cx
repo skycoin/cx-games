@@ -2,7 +2,6 @@ package menu
 
 import "gl"
 import "draw"
-import "gameDraw"
 import "space"
 
 
@@ -23,7 +22,7 @@ func DrawRects () {
 			gl.Color4f(draw.Dark, draw.Dark, draw.Dark, alpha)
 		}
 		
-		gameDraw.SizedNotStretchedPicAt(gameDraw.PicShapeTile, 0.0, y, xSpan, ySpan)
+		draw.Scaled3SlicedPic(draw.PicShapeTile, 0.0, y, xSpan, ySpan)
 		
 		if Items[m][i].Max != 0 { // (if it's a slider) 
 			gl.Color3f(1.0, 1.0, 1.0)
@@ -33,7 +32,7 @@ func DrawRects () {
 			var x   f32 = (val / max * xSpan)
 			x = f32.sub(x, f32.div(xSpan, 2.0))
 			x = f32.add(x, f32.div(wid, 2.0))
-			gameDraw.SizedNotStretchedPicAt(gameDraw.PicShapeTile, x, y, wid, ySpan)
+			draw.Scaled3SlicedPic(draw.PicShapeTile, x, y, wid, ySpan)
 		}
 		
 		y = f32.add(y, ySpan)

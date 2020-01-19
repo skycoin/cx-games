@@ -168,43 +168,43 @@ func drawVirtualKeyBackdrops () {
 	
 	// bottom 3 
 	for i := 0; i < NUM_H_KEYS; i++ {
-		sizedPicAt(PicShapeTile, 
+		sizedPicAt(draw.PicShapeTile, 
 			x,
 			y, 
 			SPAN, 
 			SPAN * HackyHeightFraction)
 
 		if i == 0 {
-			sizedPicAt(PicArrowLeft, 
+			sizedPicAt(draw.PicArrowLeft, 
 				x,
 				y, 
 				SPAN_HALF, 
 				SPAN_HALF_V)
-			sizedPicAt(PicMouse, 
+			sizedPicAt(draw.PicMouse, 
 				x + SPAN_QUARTER,
 				y, 
 				SPAN_QUARTER, 
 				SPAN_QUARTER)			
 		}else			
 		if i == 1 {
-			sizedPicAt(PicArrowDown, 
+			sizedPicAt(draw.PicArrowDown, 
 				x,
 				y, 
 				SPAN_HALF, 
 				SPAN_HALF_V)
-			sizedPicAt(PicMouse, 
+			sizedPicAt(draw.PicMouse, 
 				x,
 				y + SPAN_QUARTER, 
 				SPAN_QUARTER, 
 				SPAN_QUARTER)			
 		}else			
 		if i == 2 {
-			sizedPicAt(PicArrowRight, 
+			sizedPicAt(draw.PicArrowRight, 
 				x,
 				y, 
 				SPAN_HALF, 
 				SPAN_HALF_V)
-			sizedPicAt(PicMouse, 
+			sizedPicAt(draw.PicMouse, 
 				x - SPAN_QUARTER,
 				y, 
 				SPAN_QUARTER, 
@@ -220,17 +220,17 @@ func drawVirtualKeyBackdrops () {
 
 
 	// top left 
-	sizedPicAt(PicShapeTile, 
+	sizedPicAt(draw.PicShapeTile, 
 		x,
 		y, 
 		SPAN, 
 		SPAN * HackyHeightFraction)
-	sizedPicAt(PicRotLeft, 
+	sizedPicAt(draw.PicRotLeft, 
 		x,
 		y, 
 		SPAN_HALF, 
 		SPAN_HALF_V)
-	sizedPicAt(PicMouseLMB, 
+	sizedPicAt(draw.PicMouseLMB, 
 		x + SPAN_QUARTER,
 		y, 
 		SPAN_QUARTER, 
@@ -241,17 +241,17 @@ func drawVirtualKeyBackdrops () {
 
 	
 	// top right 
-	sizedPicAt(PicShapeTile, 
+	sizedPicAt(draw.PicShapeTile, 
 		x,
 		y, 
 		SPAN, 
 		SPAN * HackyHeightFraction)
-	sizedPicAt(PicRotRight, 
+	sizedPicAt(draw.PicRotRight, 
 		x,
 		y, 
 		SPAN_HALF, 
 		SPAN_HALF_V)
-	sizedPicAt(PicMouseRMB, 
+	sizedPicAt(draw.PicMouseRMB, 
 		x - SPAN_QUARTER,
 		y, 
 		SPAN_QUARTER, 
