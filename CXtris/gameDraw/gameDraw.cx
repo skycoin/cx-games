@@ -32,7 +32,7 @@ func All () {
 	//gl.LoadIdentity()
 	//gl.MatrixMode(gl.MODELVIEW)
 
-	scaledPic(draw.PicBackground, 0.0, 0.0, 1.0, 1.0)
+	draw.ScaledPic(draw.PicBackground, 0.0, 0.0, 2.0, 2.0)
 	PlayField()
 	PlayerPiece()
 
@@ -54,7 +54,7 @@ func All () {
 	}
 	
 	// cursor/pointer 
-	sizedPicAt(draw.PicStar, 
+	draw.ScaledPic(draw.PicStar, 
 		inputs.MousePointer.X,
 		inputs.MousePointer.Y, 
 		0.1  * 0.3, 
@@ -62,52 +62,6 @@ func All () {
 	
 	gl.LoadIdentity()
 	allText()
-}
-
-
-func sizedPicAt (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
-	gl.LoadIdentity()
-
-	gl.BindTexture(gl.TEXTURE_2D, picId)
-	gl.Translatef(x, y, 0.0)
-	gl.Scalef(scaleX, scaleY, 0.0)
-
-	gl.Begin(gl.QUADS)
-		gl.TexCoord2d(0.0D, 0.0D)
-		gl.Vertex3f(-0.5, 0.5, 0.0)
-		
-		gl.TexCoord2d(1.0D, 0.0D)
-		gl.Vertex3f(0.5, 0.5, 0.0)
-		
-		gl.TexCoord2d(1.0D, 1.0D)
-		gl.Vertex3f(0.5, -0.5, 0.0)
-		
-		gl.TexCoord2d(0.0D, 1.0D)
-		gl.Vertex3f(-0.5, -0.5, 0.0)
-	gl.End()
-}
-
-
-func scaledPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
-	gl.LoadIdentity()
-
-	gl.BindTexture(gl.TEXTURE_2D, picId)
-	gl.Translatef(x, y, 0.0)
-	gl.Scalef(scaleX, scaleY, 0.0)
-	
-	gl.Begin(gl.QUADS)
-		gl.TexCoord2d(0.0D, 0.0D)
-		gl.Vertex3f(-1.0, 1.0, 0.0)
-		
-		gl.TexCoord2d(1.0D, 0.0D)
-		gl.Vertex3f(1.0, 1.0, 0.0)
-		
-		gl.TexCoord2d(1.0D, 1.0D)
-		gl.Vertex3f(1.0, -1.0, 0.0)
-		
-		gl.TexCoord2d(0.0D, 1.0D)
-		gl.Vertex3f(-1.0, -1.0, 0.0)
-	gl.End()
 }
 
 
@@ -128,12 +82,12 @@ func PlayField () {
 			draw.Colors[c].G, 
 			draw.Colors[c].B)
 		
-		scaledPic(
+		draw.ScaledPic(
 			draw.PicShapeTile, 
 			f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
 			f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)), 
-			map.CellWidthHalf, 
-			map.CellHeightHalf)
+			map.CellWidth, 
+			map.CellHeight)
 	}
 	}
 }
@@ -151,12 +105,12 @@ func PlayerPiece () {
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
 			if shape.Cells[shape.PlayerShape][shape.PlayerFacing][y][x] {
-				scaledPic(
+				draw.ScaledPic(
 					draw.PicShapeTile, 
 					f32.add(fX, f32.mul(i32.f32(x - 2 + shape.PlayerPos.X), map.CellWidth)),
 					f32.add(fY, f32.mul(i32.f32(y - 2 + shape.PlayerPos.Y), map.CellHeight)), 
-					map.CellWidthHalf, 
-					map.CellHeightHalf)
+					map.CellWidth, 
+					map.CellHeight)
 			}
 		}
 	}
@@ -175,12 +129,12 @@ func NextShape () {
 	for y := shape.StartY; y < 5; y++ {
 		for x := shape.StartX; x < 5; x++ {
 			if shape.Cells[shape.Next][shape.FACING_UP][y][x] {
-				scaledPic(
+				draw.ScaledPic(
 					draw.PicShapeTile, 
 					fX,
 					fY, 
-					shape.NextCellScaleX, 
-					shape.NextCellScaleY)
+					shape.NextCellSpanX, 
+					shape.NextCellSpanY)
 			}
 			
 			fX = f32.add(fX, shape.NextCellSpanX)
