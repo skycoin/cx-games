@@ -1,4 +1,4 @@
-package gameTime
+package main
 
 import "glfw"
 import "shape"
@@ -16,7 +16,7 @@ var curr           f64
 
 
 var moved bool
-func Update () {
+func timeUpdate () {
 	curr = glfw.GetTime()
 	
 	if curr >= timeToDrop {

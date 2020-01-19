@@ -3,7 +3,6 @@ package main
 import "app"
 import "draw"
 import "gameDraw"
-import "gameTime"
 import "gui"
 import "inputs"
 import "map"
@@ -177,8 +176,8 @@ func respondToMenuDrags () {
 		startNewGameSession()
 	} else
 	if s == SpeedText {
-		gameTime.DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
-		gameTime.CalcDropTime()
+		DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
+		CalcDropTime()
 	}
 }
 

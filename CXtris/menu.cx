@@ -23,8 +23,8 @@ func initMenu() {
  	menu.MakeItem(2, menu.OptionsSize, "")
 
 	// sliders (the only items that use these fields) 
-	menu.Items[1][1].Max   = gameTime.DROP_SPEED_MAX
-	menu.Items[1][1].Value = gameTime.DropSpeed
+	menu.Items[1][1].Max   = DROP_SPEED_MAX
+	menu.Items[1][1].Value = DropSpeed
 	menu.Items[1][2].Max   = 11 // for debris height 
 	menu.Items[1][2].Value = DebrisHeight
 
