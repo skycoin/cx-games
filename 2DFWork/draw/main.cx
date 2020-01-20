@@ -1,6 +1,8 @@
 package draw
 
 import "gl"
+import "glfw"
+import "gltext"
 import "app"
 import "geom"
 
@@ -70,6 +72,19 @@ func Init () {
 
 	InitFonts()
 	InitPics()
+}
+func InitGL () {
+	glfw.Init()
+
+	glfw.CreateWindow(app.Name, app.START_WIDTH, app.START_HEIGHT, app.Name)
+	glfw.MakeContextCurrent(app.Name)
+
+	gl.Init()
+	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.TEXTURE_2D)
+	gl.Enable(gl.BLEND)
+	gl.DepthMask(true) // not needed by "gltext" package 
 }
 
 

@@ -12,16 +12,16 @@ import "space"
 
 
 func initGame () {
-	shape.Init()
-	space.Init()
 	draw.Init()
-	gameDraw.Init()
+	space.Init()
+	initMenu()
 
 	inputs.Init()
 	inputs.BufferingPointerSpots = true
 	inputs.BufferingNotchyDeltas = true
 	
-	initMenu()
+	shape.Init()
+	gameDraw.Init()
 	startNewGameSession()
 }
 

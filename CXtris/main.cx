@@ -1,9 +1,8 @@
 package main
 
-import "app"
 import "gl"
 import "glfw"
-
+import "app"
 import "gameDraw"
 import "inputs"
 import "shape"
@@ -70,7 +69,7 @@ func main () {
 	app.START_WIDTH  = 590
 	app.START_HEIGHT = 960
 	app.Init("C X t r i s", s)
-	initAPIs()
+	draw.InitGL()
 	initGame()
 
 	for bool.not(glfw.ShouldClose(app.Name)) {
@@ -85,19 +84,4 @@ func main () {
 		glfw.PollEvents()
 		glfw.SwapBuffers(app.Name)
 	}
-}
-
-
-func initAPIs () {
-	glfw.Init()
-
-	glfw.CreateWindow(app.Name, app.START_WIDTH, app.START_HEIGHT, app.Name)
-	glfw.MakeContextCurrent(app.Name)
-
-	gl.Init()
-	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-	gl.Enable(gl.TEXTURE_2D)
-	gl.Enable(gl.BLEND)
-	gl.DepthMask(true) // not needed by "gltext" package 
 }
