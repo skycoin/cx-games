@@ -8,8 +8,8 @@ import "app"
 var PixelWid     f32
 var PixelHei     f32
 var PixelsAcross Vec2I
-var ScreenEdgeL  f64 // left 
-var ScreenEdgeR  f64 // right 
+var ViewEdgeL  f64 // viewport left 
+var ViewEdgeR  f64 // viewport right 
 
 
 
@@ -26,10 +26,10 @@ func Init () {
 func Update (ratio f32) () {
 	printf("space.Update () - ratio: %f \n", ratio)
 
-	ScreenEdgeL = f32.f64(f32.mul(ratio, -1.0))
-	ScreenEdgeR = f32.f64(ratio)
+	ViewEdgeL = f32.f64(f32.mul(ratio, -1.0))
+	ViewEdgeR = f32.f64(ratio)
 
-	printf("ScreenEdgeL, ScreenEdgeR: %f, %f \n", ScreenEdgeL, ScreenEdgeR)
+	printf("ViewEdgeL, ViewEdgeR: %f, %f \n", ViewEdgeL, ViewEdgeR)
 }
 
 

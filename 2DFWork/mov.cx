@@ -1,3 +1,5 @@
+package mov
+
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 //////////////////////            ///////////////////
@@ -6,8 +8,89 @@
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 
-package mov
+import "app"
+import "glfw"
+import "time"
 
 
 
 var Force f32 = 0.08
+
+
+
+func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
+	out = f32.add(currentVelocity, Force * time.Delta * strength)
+
+	if out > 0.0 {
+		out = 0.0
+	}
+}
+
+
+func dampenPositiveMovement (currentVelocity f32, strength f32) (out f32) {
+	out = f32.sub(currentVelocity, Force * time.Delta * strength)
+
+	if out < 0.0 {
+		out = 0.0
+	}
+}
+
+
+func GetVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32) {
+	out = velocity
+
+	//______________________________________________________________________ 
+	if i32.eq(glfw.GetKey(app.Name, addKey), 1) { //     speed up positively 
+		if out < 0.0 {
+			out = dampenNegativeMovement(out, 4.0)
+		}
+
+		out = f32.add(out, Force * time.Delta)
+	} else //___________________________________________ speed up negatively 
+	if i32.eq(glfw.GetKey(app.Name, subKey), 1) {
+		if out > 0.0 {
+			out = dampenPositiveMovement(out, 4.0)
+		}
+
+		out = f32.sub(out, Force * time.Delta)
+	} else { //__________________________________________ slow down 
+		if out > 0.0 {
+			out = dampenPositiveMovement(out, 1.0)
+		} else
+		if out < 0.0 {
+			out = dampenNegativeMovement(out, 1.0)
+		}
+	}
+}
+
+
+// position, velocity, radius, negative value edge boundary, positive value edge boundary 
+func GetVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f64, posEdge f64) (out f32) {
+	out = vel
+
+	if f32.lteq(f32.sub(pos, rad), f64.f32(negEdge)) { 
+		// hit neg edge 
+		out = f32.abs(vel)
+	} else
+	if f32.gteq(f32.add(pos, rad), f64.f32(posEdge)) { 
+		// hit pos edge 
+		out = 0.0 - f32.abs(vel)
+	}
+}
+
+
+// position, radius, negative value edge boundary, positive value edge boundary 
+func EnsureEntirelyWithinBounds (pos f32, rad f32, negEdge f64, posEdge f64) (out f32) {
+	out = pos
+	ne := f64.f32(negEdge)
+	pe := f64.f32(posEdge)
+
+	if f32.lteq(f32.sub(pos, rad), ne) { 
+		// hit neg edge 
+		out = f32.add(ne, rad)
+	} else
+	if f32.gteq(f32.add(pos, rad), pe) { 
+		// hit pos edge 
+		out = f32.sub(pe, rad)
+	}
+}

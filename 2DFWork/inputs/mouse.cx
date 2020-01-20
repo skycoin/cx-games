@@ -171,8 +171,8 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	mX = f32.div(f64.f32(x), i32.f32(space.PixelsAcross.X))
 	/*
 	printf("x: %f \n", x)
-	mX = f32.mul(mX, f32.mul(f64.f32(space.ScreenEdgeR), 2.0))
-	MousePointer.X = f32.add(f64.f32(space.ScreenEdgeL), mX)
+	mX = f32.mul(mX, f32.mul(f64.f32(space.ViewEdgeR), 2.0))
+	MousePointer.X = f32.add(f64.f32(space.ViewEdgeL), mX)
 	*/
 	mX = f32.mul(mX, 2.0)
 	MousePointer.X = f32.add(-1.0, mX)
