@@ -19,8 +19,6 @@ func allText () {
 		}
 		
 		draw.SetColor3(draw.White)
-		gltext.Printf("Roboto28", 0.0, 0.0, "QQ IgnoreMe TestText QQ")
-
 		scoreText()
 		
 		

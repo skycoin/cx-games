@@ -11,22 +11,18 @@ import "space"
 
 
 
-func initGame () {
-	draw.Init()
-	space.Init()
-	initMenu()
-
-	inputs.Init()
+func mainInit () {
 	inputs.BufferingPointerSpots = true
 	inputs.BufferingNotchyDeltas = true
 	
+	menuInit()
 	shape.Init()
 	gameDraw.Init()
 	startNewGameSession()
 }
 
 
-func update () {
+func gameUpdate () {
 	respondToKeyEvents()
 	respondToButtonEvents()
 	respondToPointerEvents()

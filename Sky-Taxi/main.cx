@@ -9,7 +9,6 @@ import "entities"
 import "inputs"
 import "map"
 import "mov"
-import "space"
 import "time"
 
 
@@ -32,10 +31,6 @@ Puttanoid
 
 
 
-// graphics 
-var bufferWidth i32
-var bufferHeight i32
-var ratio f32
 
 
 
@@ -43,24 +38,18 @@ func main () {
 	init()
 
 	for bool.not(glfw.ShouldClose(app.Name)) {
-		update()
 		time.Update()
 		entities.Update()
+		gameUpdate()
 
 		
 
-		// graphics 
-		bufferWidth, bufferHeight = glfw.GetFramebufferSize(app.Name)
-		ratio = f32.div(i32.f32(bufferWidth), i32.f32(bufferHeight))
-		space.ViewEdgeL = f32.f64(f32.mul(ratio, -1.0))
-		space.ViewEdgeR = f32.f64(ratio)
-		gl.Clear(gl.COLOR_BUFFER_BIT)
-		gl.MatrixMode(gl.PROJECTION)
-		gl.LoadIdentity()
-		gl.Ortho(space.ViewEdgeL, space.ViewEdgeR, -1.0D, 1.0D, 1.0D, -1.0D)
-		gl.Viewport(0, 0, bufferWidth, bufferHeight)
-		gl.MatrixMode(gl.MODELVIEW)
+		// GL graphics calls 
 
+
+
+
+		drawUpdate()
 		map.DrawQuads()
 		draw.Ball(entities.ball)
 		
@@ -75,21 +64,7 @@ func init () {
 	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
 	draw.InitGL()
 	draw.Init()
-	entities.Init()
-
-
-
-	// graphics 
-	glfw.Init()
-	glfw.CreateWindow(
-		app.Name, 
-		app.START_WIDTH, 
-		app.START_HEIGHT, 
-		app.Name)
-	glfw.MakeContextCurrent(app.Name)
-	gl.Init()
-	
-	
 	inputs.Init()
 	map.Init()
+	entities.Init()
 }

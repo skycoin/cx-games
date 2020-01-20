@@ -5,7 +5,7 @@ import "inputs"
 
 
 
-func update () {
+func gameUpdate () {
 	respondToButtonEvents()
 	respondToKeyEvents()
 }

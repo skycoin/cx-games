@@ -75,8 +75,11 @@ func Init () {
 }
 func InitGL () {
 	glfw.Init()
-
-	glfw.CreateWindow(app.Name, app.START_WIDTH, app.START_HEIGHT, app.Name)
+	glfw.CreateWindow(
+		app.Name, 
+		app.START_WIDTH, 
+		app.START_HEIGHT, 
+		app.Name)
 	glfw.MakeContextCurrent(app.Name)
 
 	gl.Init()
