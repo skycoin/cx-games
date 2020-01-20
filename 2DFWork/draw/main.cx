@@ -6,6 +6,9 @@ import "geom"
 
 
 
+// general 
+var assetDir str = "../2DFWork/draw/assets/"
+
 // color (ATM, MOST vars & funcs in this file are color related
 //			(other than init funcs, & quad soup related) 
 // 			...so should be moved to color.cx?)

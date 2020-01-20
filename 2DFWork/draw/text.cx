@@ -28,8 +28,8 @@ func InitFonts () {
 	//dir = os.GetWorkingDirectory()
 	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
 
-	var rFile str = "../CXtris/assets/fonts/roboto-light.ttf"
-	var sFile str = "../CXtris/assets/fonts/Skycoin-Regular.ttf"
+	var rFile str = assetDir + "fonts/roboto-light.ttf"
+	var sFile str = assetDir + "fonts/Skycoin-Regular.ttf"
 	loadFontSized(rFile, f32.i32(menu.MainSize))
 	loadFontSized(rFile, f32.i32(menu.OptionsSize))
 	loadFontSized(rFile, 28)

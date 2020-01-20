@@ -21,17 +21,17 @@ func InitPics () {
 	str.print("2DFWork/draw.InitPics ()")
 
 	// pics 
-	PicBackground = gl.NewTexture("../CXtris/assets/textures/background.jpg")
-	PicStar       = gl.NewTexture("../CXtris/assets/textures/star.png")
-	PicShapeTile  = gl.NewTexture("../CXtris/assets/textures/tile.png")
-	PicRotLeft    = gl.NewTexture("../CXtris/assets/textures/rotate-left.png")
-	PicRotRight   = gl.NewTexture("../CXtris/assets/textures/rotate-right.png")
-	PicArrowLeft  = gl.NewTexture("../CXtris/assets/textures/arrow-left.png")
-	PicArrowRight = gl.NewTexture("../CXtris/assets/textures/arrow-right.png")
-	PicArrowDown  = gl.NewTexture("../CXtris/assets/textures/arrow-down.png")
-	PicMouse      = gl.NewTexture("../CXtris/assets/textures/mouse.png")   
-	PicMouseLMB   = gl.NewTexture("../CXtris/assets/textures/mouse-lmb.png")
-	PicMouseRMB   = gl.NewTexture("../CXtris/assets/textures/mouse-rmb.png")
+	PicBackground = gl.NewTexture(assetDir + "textures/background.jpg")
+	PicStar       = gl.NewTexture(assetDir + "textures/star.png")
+	PicShapeTile  = gl.NewTexture(assetDir + "textures/tile.png")
+	PicRotLeft    = gl.NewTexture(assetDir + "textures/rotate-left.png")
+	PicRotRight   = gl.NewTexture(assetDir + "textures/rotate-right.png")
+	PicArrowLeft  = gl.NewTexture(assetDir + "textures/arrow-left.png")
+	PicArrowRight = gl.NewTexture(assetDir + "textures/arrow-right.png")
+	PicArrowDown  = gl.NewTexture(assetDir + "textures/arrow-down.png")
+	PicMouse      = gl.NewTexture(assetDir + "textures/mouse.png")   
+	PicMouseLMB   = gl.NewTexture(assetDir + "textures/mouse-lmb.png")
+	PicMouseRMB   = gl.NewTexture(assetDir + "textures/mouse-rmb.png")
 }
 
 
