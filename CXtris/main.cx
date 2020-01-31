@@ -3,7 +3,6 @@ package main
 import "gl"
 import "glfw"
 import "app"
-import "gameDraw"
 import "inputs"
 import "shape"
 import "time"
@@ -84,7 +83,7 @@ func main () {
 		
 		timeUpdate()
 		gameUpdate()
-		gameDraw.All()
+		drawAll()
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers(app.Name)

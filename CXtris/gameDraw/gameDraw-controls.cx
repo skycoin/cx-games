@@ -1,4 +1,4 @@
-package gameDraw
+package main
 
 import "draw"
 import "gltext"

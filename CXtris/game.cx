@@ -2,7 +2,6 @@ package main
 
 import "app"
 import "draw"
-import "gameDraw"
 import "gui"
 import "inputs"
 import "map"
@@ -17,7 +16,7 @@ func mainInit () {
 	
 	menuInit()
 	shape.Init()
-	gameDraw.Init()
+	drawInit()
 	startNewGameSession()
 }
 

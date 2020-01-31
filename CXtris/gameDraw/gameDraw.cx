@@ -1,4 +1,4 @@
-package gameDraw
+package main
 
 import "gl"
 
@@ -16,8 +16,8 @@ var HackyHeightFraction f32 = 0.61458333333
 
 
 
-func Init () {
-	str.print("gameDraw.Init ()")
+func drawInit () {
+	str.print("drawInit ()")
 	
 	// THE (MORE PROPER) CALCULATION BELOW, DOESN'T WORK FOR SOME REASON, 
 	// SO......HARDWIRED VALUE AT DECLARATION (FIXME when CX FIXES THIS) 
@@ -27,7 +27,7 @@ func Init () {
 }
 
 
-func All () {
+func drawAll () {
 	//gl.MatrixMode(gl.PROJECTION)
 	//gl.LoadIdentity()
 	//gl.MatrixMode(gl.MODELVIEW)

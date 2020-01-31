@@ -1,5 +1,6 @@
-package gameDraw
+package main
 
+import "gltext"
 import "gui"
 import "inputs"
 import "menu"

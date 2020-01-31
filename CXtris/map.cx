@@ -1,7 +1,7 @@
 package map // the cells of the playfield 
 
 import "app"
-import "gameDraw"
+import "main"
 
 
 
@@ -17,7 +17,7 @@ var fToLEdge       f32 = 18.0 / pixelW // fraction to left edge of playfield?
 var LEdge          f32 = f32.add(-1.0, f32.mul(fToLEdge, 2.0))
 var Width          f32 = f32.div(400.0, pixelW) * 2.0
 var CellWidth      f32 = f32.div(Width, i32.f32(NUM_CELLS_X))
-var CellHeight     f32 = f32.mul(CellWidth, gameDraw.HackyHeightFraction)
+var CellHeight     f32 = f32.mul(CellWidth, main.HackyHeightFraction)
 var CellWidthHalf  f32 = f32.div(CellWidth, 2.0)
 var CellHeightHalf f32 = f32.div(CellHeight, 2.0)
 var Cells [19][9]i32 // FIXME with NUM_CELLS_* FROM ABOVE WHEN CX FIXED 
