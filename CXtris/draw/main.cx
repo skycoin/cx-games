@@ -1,15 +1,5 @@
 package main
 
-import "gl"
-
-import "app"
-import "draw"
-import "gui"
-import "map"
-import "main"
-import "shape"
-import "space"
-
 
 
 var HackyHeightFraction f32 = 0.61458333333
@@ -36,7 +26,7 @@ func drawAll () {
 	PlayField()
 	PlayerPiece()
 
-	if main.ShowNextShape {
+	if ShowNextShape {
 		NextShape()
 	}
 	
