@@ -21,17 +21,17 @@ func InitPics () {
 	str.print("2DFWork/draw.InitPics ()")
 
 	// pics 
-	PicBackground = gl.NewTexture(assetDir + "textures/background.jpg")
-	PicStar       = gl.NewTexture(assetDir + "textures/star.png")
-	PicShapeTile  = gl.NewTexture(assetDir + "textures/tile.png")
-	PicRotLeft    = gl.NewTexture(assetDir + "textures/rotate-left.png")
-	PicRotRight   = gl.NewTexture(assetDir + "textures/rotate-right.png")
-	PicArrowLeft  = gl.NewTexture(assetDir + "textures/arrow-left.png")
-	PicArrowRight = gl.NewTexture(assetDir + "textures/arrow-right.png")
-	PicArrowDown  = gl.NewTexture(assetDir + "textures/arrow-down.png")
-	PicMouse      = gl.NewTexture(assetDir + "textures/mouse.png")   
-	PicMouseLMB   = gl.NewTexture(assetDir + "textures/mouse-lmb.png")
-	PicMouseRMB   = gl.NewTexture(assetDir + "textures/mouse-rmb.png")
+	PicBackground = gl.NewTexture(AssetDir + "textures/background.jpg")
+	PicStar       = gl.NewTexture(AssetDir + "textures/star.png")
+	PicShapeTile  = gl.NewTexture(AssetDir + "textures/tile.png")
+	PicRotLeft    = gl.NewTexture(AssetDir + "textures/rotate-left.png")
+	PicRotRight   = gl.NewTexture(AssetDir + "textures/rotate-right.png")
+	PicArrowLeft  = gl.NewTexture(AssetDir + "textures/arrow-left.png")
+	PicArrowRight = gl.NewTexture(AssetDir + "textures/arrow-right.png")
+	PicArrowDown  = gl.NewTexture(AssetDir + "textures/arrow-down.png")
+	PicMouse      = gl.NewTexture(AssetDir + "textures/mouse.png")   
+	PicMouseLMB   = gl.NewTexture(AssetDir + "textures/mouse-lmb.png")
+	PicMouseRMB   = gl.NewTexture(AssetDir + "textures/mouse-rmb.png")
 }
 
 

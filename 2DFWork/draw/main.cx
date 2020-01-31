@@ -5,11 +5,15 @@ import "glfw"
 import "gltext"
 import "app"
 import "geom"
+import "space"
 
 
 
 // general 
-var assetDir str = "../2DFWork/draw/assets/"
+var AspectRatio f32
+var BufferWid   i32
+var BufferHei   i32
+var AssetDir    str = "../2DFWork/draw/assets/"
 
 // color (ATM, MOST vars & funcs in this file are color related
 //			(other than init funcs, & quad soup related) 
@@ -88,6 +92,22 @@ func InitGL () {
 	gl.Enable(gl.TEXTURE_2D)
 	gl.Enable(gl.BLEND)
 	gl.DepthMask(true) // not needed by "gltext" package 
+}
+
+
+func Start_SKYTAXI () { // FIXME: get this out of here after debugging ST drawing 
+	BufferWid, BufferHei = glfw.GetFramebufferSize(app.Name)
+	AspectRatio = f32.div(i32.f32(BufferWid), i32.f32(BufferHei))
+	space.ViewEdgeL = f32.f64(f32.mul(AspectRatio, -1.0))
+	space.ViewEdgeR = f32.f64(AspectRatio)
+	//gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.MatrixMode(gl.PROJECTION)
+	gl.LoadIdentity()
+	gl.Ortho(space.ViewEdgeL, space.ViewEdgeR, -1.0D, 1.0D, 1.0D, -1.0D)
+	gl.Viewport(0, 0, BufferWid, BufferHei)
+	gl.MatrixMode(gl.MODELVIEW)
+
+	gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
 }
 
 

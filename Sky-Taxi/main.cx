@@ -51,7 +51,6 @@ func main () {
 
 		drawUpdate()
 		map.DrawQuads()
-		draw.Ball(entities.ball)
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers(app.Name)

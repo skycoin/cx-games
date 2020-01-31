@@ -1,35 +1,16 @@
 package main
 
-import "gl"
-import "glfw"
 import "draw"
-import "space"
 
 
 
-var bufferWidth i32
-var bufferHeight i32
-var ratio f32
 func drawUpdate () {
 	//str.print("drawUpdate")
-	
-	bufferWidth, bufferHeight = glfw.GetFramebufferSize(app.Name)
-	ratio = f32.div(i32.f32(bufferWidth), i32.f32(bufferHeight))
-	space.ViewEdgeL = f32.f64(f32.mul(ratio, -1.0))
-	space.ViewEdgeR = f32.f64(ratio)
-	//gl.Clear(gl.COLOR_BUFFER_BIT)
-	gl.MatrixMode(gl.PROJECTION)
-	gl.LoadIdentity()
-	gl.Ortho(space.ViewEdgeL, space.ViewEdgeR, -1.0D, 1.0D, 1.0D, -1.0D)
-	gl.Viewport(0, 0, bufferWidth, bufferHeight)
-	gl.MatrixMode(gl.MODELVIEW)
 
-
-
-	gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
-
-
+	draw.Start_SKYTAXI()
 
 	draw.SetColor4(draw.White, 0.2)
 	draw.ScaledPic(draw.PicBackground, 0.0, 0.0, 2.0, 2.0)
+
+	draw.Ball(entities.ball)
 }
