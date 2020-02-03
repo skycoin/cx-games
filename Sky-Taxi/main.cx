@@ -42,15 +42,7 @@ func main () {
 		entities.Update()
 		gameUpdate()
 
-		
-
-		// GL graphics calls 
-
-
-
-
-		drawUpdate()
-		map.DrawQuads()
+		drawAll()
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers(app.Name)
@@ -61,7 +53,6 @@ func main () {
 
 func init () {
 	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
-	draw.InitGL()
 	draw.Init()
 	inputs.Init()
 	map.Init()

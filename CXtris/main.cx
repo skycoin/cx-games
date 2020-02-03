@@ -65,9 +65,7 @@ func main () {
 	app.START_HEIGHT = 960
 	app.Init("C X t r i s", getControlsText() )
 	
-	draw.InitGL()
 	draw.Init()
-	
 	space.Init()
 	inputs.Init()
 	menu.Init()
@@ -77,10 +75,6 @@ func main () {
 	
 	// loop 
 	for bool.not(glfw.ShouldClose(app.Name)) {
-//		gl.Clear(gl.COLOR_BUFFER_BIT)
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT) // gltext needs 
-		gl.Color3f(1.0, 1.0, 1.0)
-		
 		timeUpdate()
 		gameUpdate()
 		drawAll()

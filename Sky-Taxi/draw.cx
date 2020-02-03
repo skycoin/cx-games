@@ -4,13 +4,15 @@ import "draw"
 
 
 
-func drawUpdate () {
-	//str.print("drawUpdate")
+func drawAll () {
+	//str.print("drawAll")
+
 
 	draw.Start_SKYTAXI()
+	map.DrawQuads()
 
 	draw.SetColor4(draw.White, 0.2)
-	draw.ScaledPic(draw.PicBackground, 0.0, 0.0, 2.0, 2.0)
+	draw.ScaledPic(draw.PicBackground, 0.0, 0.0, 1.0, 1.0)
 
 	draw.Ball(entities.ball)
 }

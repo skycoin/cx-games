@@ -6,6 +6,7 @@ import "gltext"
 
 func allText () {
 	gl.Enable(gl.DEPTH_TEST)
+		/*
 		// testing a bottom edge anchored vertical span of texts 
 		draw.SetColor3(draw.Colors[draw.COLOR_YELLOW])
 		for i := 0; i < len(keySetPri); i++ {
@@ -15,6 +16,7 @@ func allText () {
 				keySetPri[i].Top, 
 				keySetPri[i].Text)
 		}
+		*/
 		
 		draw.SetColor3(draw.White)
 		scoreText()

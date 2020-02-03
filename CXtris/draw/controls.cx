@@ -92,7 +92,7 @@ func initKeySet (yOffset bool) {
 		keySet[i].Wid = i32.f32(w)
 		keySet[i].Hei = i32.f32(h)
 		y = f32.sub(y,     i32.f32(h))
-		printf("NEW Y IS: %f \n", y)
+		//printf("NEW Y IS: %f \n", y)
 		keySet[i].Top = y
 		keySet[i].Left = 0.0 //(i32.f32(app.START_WIDTH) - keySet[i].Wid) / 2.0
 	}

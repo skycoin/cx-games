@@ -9,7 +9,7 @@ func Ball (ball entities.Ball) {
 	var y f32
 
 	//gl.Color3f(1.0, 1.0, 1.0)
-	SetColor4(White, 1.0)
+	SetColor3(White)
 
 	gl.Begin(gl.POLYGON)
 		var i f32
