@@ -12,9 +12,9 @@ var SPAN_HALF    f32 = SPAN / 2.0
 var SPAN_QUARTER f32 = SPAN / 3.4//4.0
 var SPAN_HALF_V  f32 // vertical 
 // pixel space 
-var pixHSpan     f32
-var pixHSpanHalf f32
-var pixMargin    f32
+var psSpan     f32
+var psSpanHalf f32
+var pixMargin  f32
 
 // controls text 
 var keySetPri []draw.TextGL // primary 
@@ -27,10 +27,10 @@ func InitControlsText () {
 	//		gl space 
 	SPAN_HALF_V  = SPAN_HALF * HackyHeightFraction
 	// 		pixel space 
-	pixHSpan     = f32.div(i32.f32(app.START_WIDTH), 3.0)
-	pixHSpanHalf = pixHSpan / 2.0
-	str.print("pixHSpan:")
-	f32.print(pixHSpan)
+	psSpan     = f32.div(i32.f32(app.START_WIDTH), 3.0)
+	psSpanHalf = psSpan / 2.0
+	str.print("psSpan:")
+	f32.print(psSpan)
 
 	keySetPri = append(
 	keySetPri, getNewText("A"))
@@ -76,6 +76,7 @@ func initKeySet (yOffset bool) {
 	
 	var w i32
 	var h i32
+	var x f32
 	var y f32 = i32.f32(app.START_HEIGHT)
 	
 	for i := 0; i < len(keySet); i++ {
@@ -91,10 +92,23 @@ func initKeySet (yOffset bool) {
 		printf("keySet[i].Text: %s \n", keySet[i].Text)
 		keySet[i].Wid = i32.f32(w)
 		keySet[i].Hei = i32.f32(h)
-		y = f32.sub(y,     i32.f32(h))
+		y = f32.sub(y,  i32.f32(h))
 		//printf("NEW Y IS: %f \n", y)
 		keySet[i].Top = y
-		keySet[i].Left = 0.0 //(i32.f32(app.START_WIDTH) - keySet[i].Wid) / 2.0
+		keySet[i].Left = x //(i32.f32(app.START_WIDTH) - keySet[i].Wid) / 2.0
+
+
+		// increment virtual text "cursor" 
+		if i == 2 {
+			x = 0.0
+			//y = y - psSpan
+		}else
+		if i == 3 {
+			x = x + psSpan
+			x = x + psSpan
+		}else{
+			x = x + psSpan
+		}
 	}
 }
 
@@ -102,39 +116,33 @@ func initKeySet (yOffset bool) {
 func drawKeyCapTexts () {
 	draw.SetColor3(draw.Black)
 	
-	var x f32
-	var y f32 = i32.f32(app.START_HEIGHT) - pixHSpan
+	var y f32 = i32.f32(app.START_HEIGHT) - psSpan
 	
 	for i := 0; i < len(keySetPri); i++ {
 		var xo f32 // x offset 
 
 		// primary set 
-		xo = getXOffset(i, keySetPri[i].Wid)
+		xo = getXOffset(i, 
+			keySetPri[i].Wid)
 		gltext.Printf(
 			keySetPri[i].FontId, 
-			x + xo, 
+			keySetPri[i].Left + xo, 
 			y,
 			keySetPri[i].Text)
 			
 		// secondary set 
-		xo = getXOffset(i, keySetSec[i].Wid)
+		xo = getXOffset(i, 
+			keySetSec[i].Wid)
 		gltext.Printf(
 			keySetSec[i].FontId, 
-			x + xo, 
+			keySetSec[i].Left + xo, 
 			y + keySetSec[i].Hei,
 			keySetSec[i].Text)
 
 
-		// increment virtual text cursor 
+		// increment virtual text "cursor" 
 		if i == 2 {
-			x = 0.0
-			y = y - pixHSpan
-		}else
-		if i == 3 {
-			x = x + pixHSpan
-			x = x + pixHSpan
-		}else{
-			x = x + pixHSpan
+			y = y - psSpan
 		}
 	}
 }
@@ -145,7 +153,7 @@ func getXOffset(i i32, wid f32) (xo f32) {
 	if i == 2 || // (align right) 
 		i == 4 {
 			
-		xo = pixHSpan - wid - pixMargin
+		xo = psSpan - wid - pixMargin
 	}else{       // (align left) 
 		xo = pixMargin
 	}
