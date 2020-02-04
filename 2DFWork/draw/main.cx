@@ -23,7 +23,6 @@ func Init () {
 	initGL()
 	initColor()
 	InitFonts()
-	InitPics()
 
 	glfw.SetFramebufferSizeCallback(app.Name, "onFramebufferSize", "draw")
 }

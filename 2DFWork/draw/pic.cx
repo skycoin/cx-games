@@ -19,8 +19,7 @@ var PicMouseRMB   i32
 
 func InitPics () {
 	str.print("2DFWork/draw.InitPics ()")
-/*
-	// pics 
+	
 	PicBackground = gl.NewTexture(AssetDir + "textures/background.jpg")
 	PicStar       = gl.NewTexture(AssetDir + "textures/star.png")
 	PicShapeTile  = gl.NewTexture(AssetDir + "textures/tile.png")
@@ -32,7 +31,6 @@ func InitPics () {
 	PicMouse      = gl.NewTexture(AssetDir + "textures/mouse.png")   
 	PicMouseLMB   = gl.NewTexture(AssetDir + "textures/mouse-lmb.png")
 	PicMouseRMB   = gl.NewTexture(AssetDir + "textures/mouse-rmb.png")
-*/
 }
 
 
