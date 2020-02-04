@@ -10,6 +10,12 @@ func gameInit () {
 	inputs.Init()
 	map.Init()
 	entities.Init()
+	
+	draw.BufferWid, 
+	draw.BufferHei = glfw.GetFramebufferSize(app.Name)
+	draw.OnFramebufferSize(app.Name, 
+		draw.BufferWid, 
+		draw.BufferHei)
 }
 
 
