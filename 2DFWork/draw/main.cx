@@ -24,6 +24,8 @@ func Init () {
 	initColor()
 	InitFonts()
 	InitPics()
+
+	glfw.SetFramebufferSizeCallback(app.Name, "onFramebufferSize", "draw")
 }
 
 
@@ -77,4 +79,12 @@ func initGL () {
 	gl.Enable(gl.TEXTURE_2D)
 	gl.Enable(gl.BLEND)
 	gl.DepthMask(true) // not needed by "gltext" package 
+}
+
+
+func onFramebufferSize (window str, wid i32, hei i32) {
+	str.print("onFramebufferSize()")
+	i32.print(wid)
+	i32.print(hei)
+	//gl.Viewport(0, 0, wid, hei)
 }
