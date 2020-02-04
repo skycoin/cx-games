@@ -14,7 +14,6 @@ var SPAN_HALF_V  f32 // vertical
 // pixel space 
 var psSpan     f32
 var psSpanHalf f32
-var pixMargin  f32
 
 // controls text 
 var keySetPri []draw.TextGL // primary 
@@ -44,15 +43,15 @@ func InitControlsText () {
 	keySetPri, getNewText("E"))
 
 	keySetSec = append(
-	keySetSec, getNewText("<-"))
+	keySetSec, getNewText(""))
 	keySetSec = append(
-	keySetSec, getNewText("V"))
+	keySetSec, getNewText(""))
 	keySetSec = append(
-	keySetSec, getNewText("->"))
+	keySetSec, getNewText(""))
 	keySetSec = append(
-	keySetSec, getNewText("Ctrl/Alt"))
+	keySetSec, getNewText("            Ctrl / Alt"))
 	keySetSec = append(
-	keySetSec, getNewText("Alt/Ctrl"))
+	keySetSec, getNewText("            Alt / Ctrl"))
 
 	// precalc positions 
 	initKeySet(false)
@@ -76,25 +75,21 @@ func initKeySet (yOffset bool) {
 	
 	var w i32
 	var h i32
+	// key cap edges 
 	var x f32
-	var y f32 = i32.f32(app.START_HEIGHT) - 1.0 // key cap edge 
+	var y f32 = i32.f32(app.START_HEIGHT) - 1.0
 	
 	for i := 0; i < len(keySet); i++ {
-		str.print(keySet[i].Text)
-
-
-
 		var font str = str.concat("Roboto", sprintf("%d", f32.i32(keySet[i].Size)))
-		printf("font: %s \n", font)
 		keySet[i].FontId = font		
 		w, h = gltext.Metrics(font, 
 		keySet[i].Text)
-		printf("keySet[i].Text: %s \n", keySet[i].Text)
 		keySet[i].Wid =     i32.f32(w)
 		keySet[i].Hei =     i32.f32(h)
 		keySet[i].Top = y - i32.f32(h)
 		keySet[i].Bottom = y
-		keySet[i].Left = x //(i32.f32(app.START_WIDTH) - keySet[i].Wid) / 2.0
+		var xo /* x offset */ f32 = (psSpan - keySet[i].Wid) / 2.0
+		keySet[i].Left = x + xo
 
 
 		// increment virtual text "cursor" 
@@ -116,37 +111,19 @@ func drawKeyCapTexts () {
 	draw.SetColor3(draw.Black)
 	
 	for i := 0; i < len(keySetPri); i++ {
-		var xo f32 // x offset 
-
 		// primary set 
-		xo = getXOffset(i, 
-			keySetPri[i].Wid)
 		gltext.Printf(
 			keySetPri[i].FontId, 
-			keySetPri[i].Left + xo, 
+			keySetPri[i].Left, 
 			keySetPri[i].Top,
 			keySetPri[i].Text)
 			
 		// secondary set 
-		xo = getXOffset(i, 
-			keySetSec[i].Wid)
 		gltext.Printf(
 			keySetSec[i].FontId, 
-			keySetSec[i].Left + xo, 
-			keySetSec[i].Top - keySetSec[i].Hei,
+			keySetSec[i].Left, 
+			keySetSec[i].Top - psSpan + keySetSec[i].Hei,
 			keySetSec[i].Text)
-	}
-}
-
-
-func getXOffset(i i32, wid f32) (xo f32) {
-	// set horizontal alignment to left or right edge of keycap 
-	if i == 2 || // (align right) 
-		i == 4 {
-			
-		xo = psSpan - wid - pixMargin
-	}else{       // (align left) 
-		xo = pixMargin
 	}
 }
 
