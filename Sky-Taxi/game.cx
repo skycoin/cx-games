@@ -1,13 +1,22 @@
 package main
 
 import "inputs"
-//import "menu"
 
+
+
+func gameInit () {
+	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
+	draw.Init()
+	inputs.Init()
+	map.Init()
+	entities.Init()
+}
 
 
 func gameUpdate () {
 	respondToButtonEvents()
 	respondToKeyEvents()
+	entities.Update()
 }
 
 

@@ -10,7 +10,16 @@ import "space"
 
 
 
-func mainInit () {
+func gameInit () {
+	app.START_WIDTH  = 590
+	app.START_HEIGHT = 960
+	app.Init("C X t r i s", getControlsText() )
+	
+	draw.Init()
+	space.Init()
+	menu.Init()
+
+	inputs.Init()
 	inputs.BufferingPointerSpots = true
 	inputs.BufferingNotchyDeltas = true
 	
@@ -30,6 +39,14 @@ func gameUpdate () {
 	if inputs.UserActionWithinLast(1.0D) {
 		gui.ShowControls = false
 	}
+}
+
+
+// game controls info 
+func getControlsText () (s str) {
+	s =     "MOVE         == mouse, [A], [S], [D], or arrow keys\n"
+	s = s + "ROTATE Left  == LMB,   [Q], [LCtrl], [RAlt]\n"
+	s = s + "ROTATE Right == RMB,   [E], [LAlt],  [RCtrl]\n"
 }
 
 

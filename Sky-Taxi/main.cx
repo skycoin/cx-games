@@ -11,8 +11,6 @@ import "map"
 import "mov"
 import "time"
 
-
-
 /*
 
 Name ideas:
@@ -29,32 +27,15 @@ Puttanoid
 
 */
 
-
-
-
-
-
 func main () {
-	init()
+	gameInit()
 
 	for bool.not(glfw.ShouldClose(app.Name)) {
 		time.Update()
-		entities.Update()
 		gameUpdate()
-
 		drawAll()
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers(app.Name)
 	}
-}
-
-
-
-func init () {
-	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
-	draw.Init()
-	inputs.Init()
-	map.Init()
-	entities.Init()
 }
