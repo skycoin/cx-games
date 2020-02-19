@@ -1,0 +1,77 @@
+package draw
+
+import "gl"
+import "glfw"
+import "gltext"
+import "app"
+import "geom"
+import "space"
+
+
+
+// general 
+var AspectRatio f32
+var BufferWid   i32
+var BufferHei   i32
+var AssetDir    str = "../2DFWork/draw/assets/"
+
+
+
+func Init () {
+	str.print("2DFWork/draw.Init ()")
+
+	initGL()
+	initColor()
+	InitFonts()
+
+	glfw.SetFramebufferSizeCallback(app.Name, "OnFramebufferSize", "draw")
+}
+
+
+func OnFramebufferSize (window str, wid i32, hei i32) {
+	printf("onFramebufferSize() wid,hei: %d,%d \n", wid, hei)
+	
+	BufferWid = wid
+	BufferHei = hei
+	AspectRatio = f32.div(i32.f32(wid), i32.f32(hei))
+	space.ViewEdgeL = f32.f64(f32.mul(AspectRatio, -1.0))
+	space.ViewEdgeR = f32.f64(AspectRatio)
+	
+	//gl.Viewport(0, 0, wid, hei)
+}
+
+
+func QuadsBegin () {
+	SetColor3(White)
+	gl.Begin(gl.QUADS)
+}
+func End () {
+	gl.End()
+}
+
+
+// top, right, bottom, left 
+func Quad (t f32, r f32, b f32, l f32) {
+	gl.Vertex2f(l, t)
+	gl.Vertex2f(r, t)
+	gl.Vertex2f(r, b)
+	gl.Vertex2f(l, b)
+}
+
+
+func initGL () {
+	glfw.Init()
+	glfw.CreateWindow(
+		app.Name, 
+		app.START_WIDTH, 
+		app.START_HEIGHT, 
+		app.Name)
+	glfw.MakeContextCurrent(app.Name)
+
+	gl.Init()
+	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.TEXTURE_2D)
+	gl.Enable(gl.BLEND)
+	gl.DepthMask(true) // not needed by "gltext" package 
+}

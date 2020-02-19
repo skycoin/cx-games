@@ -1,0 +1,83 @@
+package draw
+
+import "menu"
+import "os"
+
+
+
+type TextGL struct {
+	Text   str
+	FontId str
+	Size   f32  // used for gltext init of the font 
+	Top    f32  // in pixels 
+	Bottom f32  // in pixels 
+	Left   f32  // in pixels 
+	Wid    f32  // wid/hei caches the resulting string metric queries, 
+	Hei    f32  // 		to get the pixel bounds of the text. 
+	Hover  bool // pointer is touching/hovering-over measured rect 
+	Value  i32  // only for sliders 
+	Max    i32  // (exclusionary) max value for sliders (0 == NOT a slider) 
+}
+
+
+
+func InitFonts () {
+	gl.DepthFunc(gl.LESS)
+	
+	//dir = os.GetWorkingDirectory()
+	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
+
+	var sFile str = AssetDir + "fonts/Skycoin-Regular.ttf"
+	var rFile str = AssetDir + "fonts/roboto-light.ttf"
+
+	str.print("Loading " + rFile)
+	loadFontSized(rFile, f32.i32(menu.MainSize))
+	loadFontSized(rFile, f32.i32(menu.OptionsSize))
+	loadFontSized(rFile, 28)
+	loadFontSized(rFile, 100)
+
+	str.print("Loading " + sFile + " (actually NOT ATM)")
+}
+
+
+func OutlinedText (s str, color i32, x f32, y f32, scale f32) {
+	var alpha f32 = 1.0
+	gl.Scalef(scale, scale, 0.0)
+
+	// background shadow 
+	printTextWithColor(s, x+1.0, y+1.0, color, alpha)
+	printTextWithColor(s, x-1.0, y+1.0, color, alpha)
+	printTextWithColor(s, x+1.0, y-1.0, color, alpha)
+	printTextWithColor(s, x-1.0, y-1.0, color, alpha)
+	// main filling on top 
+	printTextWithColor(s, x,     y,     color, alpha)
+}
+
+
+// x & y are offsets 
+func printTextWithColor (s str, x f32, y f32, color i32, a f32) {
+	SetColorById(color)
+	gltext.Printf("Roboto100", x, y, s)
+}
+
+
+func loadFontSized (fn str, size i32) { // filename 
+	var s str = str.concat("Roboto", sprintf("%d", size))
+	
+	os.Open(fn)
+	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
+	os.Close(fn)
+	
+	/*   THE "s" below should actually be "fn" maybe?
+	     2DBUG's screenshot wasn't drawing 'CXtris' text 
+	     
+	var handle i32 = os.Open(fn)
+	if handle >= 0 {
+		gltext.LoadTrueType(handle, s, size, 32, 127, gltext.LeftToRight)
+		if os.Close(handle) {
+		}
+	}
+	*/
+}
+
+

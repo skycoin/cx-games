@@ -17,8 +17,6 @@ var MostCellsInY    i32
 var Next            i32
 var NextCellSpanX   f32 = f32.mul(map.CellWidth,  0.7)
 var NextCellSpanY   f32 = f32.mul(map.CellHeight, 0.7)
-var NextCellScaleX  f32 = f32.div(NextCellSpanX, 2.0)
-var NextCellScaleY  f32 = f32.div(NextCellSpanY, 2.0)
 var StartX          i32 // indices 
 var StartY          i32
 var StartPosX       f32
@@ -66,6 +64,8 @@ func setupSizesAndOffsetsForNext () {
 	MostCellsInX    = i32.add(MostCellsInX, 1)
 	MostCellsInY    = i32.add(MostCellsInY, 1)
 	
-	StartPosX = CenterOfBoxX - i32.f32(MostCellsInX) * NextCellSpanX / 2.0 + NextCellScaleX
-	StartPosY = CenterOfBoxY - i32.f32(MostCellsInY) * NextCellSpanY / 2.0 + NextCellScaleY
+	var halfX f32 = NextCellSpanX / 2.0
+	var halfY f32 = NextCellSpanY / 2.0
+	StartPosX = CenterOfBoxX - i32.f32(MostCellsInX) * NextCellSpanX / 2.0 + halfX
+	StartPosY = CenterOfBoxY - i32.f32(MostCellsInY) * NextCellSpanY / 2.0 + halfY
 }

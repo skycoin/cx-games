@@ -1,5 +1,9 @@
 package entities
 
+import "inputs"
+import "mov"
+import "space"
+
 
 
 type Ball struct {
@@ -9,4 +13,35 @@ type Ball struct {
 	vy f32
 	gravity f32
 	radius f32
+}
+
+var ball Ball
+
+
+
+func Init () {
+	ball = Ball{
+		radius: 0.05,
+		x: 0.0,
+		y: 0.0,
+		vx: 0.0,
+		vy: 0.0,
+		gravity: 0.01}
+}
+
+
+func Update () {
+		// ball velocity & position 
+		ball.vx = mov.GetVelocityChangesFromInput(ball.vx, inputs.GLFW_KEY_A, inputs.GLFW_KEY_D)
+		ball.vy = mov.GetVelocityChangesFromInput(ball.vy, inputs.GLFW_KEY_S, inputs.GLFW_KEY_W)
+		ball.vx = mov.GetVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
+		ball.vy = mov.GetVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, -1.0D, 1.0D)
+		// when speed gets high enough, a simple velocity reversal isn't enough 
+		// (jitters back & forth without getting back in bounds)
+		ball.x = mov.EnsureEntirelyWithinBounds(ball.x, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
+		ball.y = mov.EnsureEntirelyWithinBounds(ball.y, ball.radius, -1.0D, 1.0D)
+		
+		// motion 
+		ball.x = f32.add(ball.x, ball.vx)
+		ball.y = f32.add(ball.y, ball.vy)
 }

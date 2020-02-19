@@ -1,0 +1,22 @@
+package time
+
+import "glfw"
+
+
+
+var Previous f32 
+var Now f32
+var Delta f32
+
+
+
+func Update () {
+	// prevent 1st delta from being large, which would make moving objects teleport unpredictably 
+	if Previous == 0.0 {
+		Previous = f64.f32(glfw.GetTime())
+	}
+
+	Now = f64.f32(glfw.GetTime())
+	Delta = Now - Previous
+	Previous = Now
+}

@@ -1,10 +1,8 @@
 package main
 
-import "app"
 import "gl"
 import "glfw"
-
-import "gameDraw"
+import "app"
 import "inputs"
 import "shape"
 import "time"
@@ -63,41 +61,14 @@ up to the total score printout
 */
 
 func main () {
-	var s str // game controls info 
-	s =     "MOVE         == mouse, [A], [S], [D], or arrow keys\n"
-	s = s + "ROTATE Left  == LMB,   [Q], [LCtrl], [RAlt]\n"
-	s = s + "ROTATE Right == RMB,   [E], [LAlt],  [RCtrl]\n"
-	app.START_WIDTH  = 590
-	app.START_HEIGHT = 960
-	app.Init("C X t r i s", s)
-	initAPIs()
-	initGame()
-
+	gameInit()
+	
 	for bool.not(glfw.ShouldClose(app.Name)) {
-//		gl.Clear(gl.COLOR_BUFFER_BIT)
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT) // gltext needs 
-		gl.Color3f(1.0, 1.0, 1.0)
-		
-		update()
-		gameTime.Update()
-		gameDraw.All()
+		timeUpdate()
+		gameUpdate()
+		drawAll()
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers(app.Name)
 	}
-}
-
-
-func initAPIs () {
-	glfw.Init()
-
-	glfw.CreateWindow(app.Name, app.START_WIDTH, app.START_HEIGHT, app.Name)
-	glfw.MakeContextCurrent(app.Name)
-
-	gl.Init()
-	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-	gl.Enable(gl.TEXTURE_2D)
-	gl.Enable(gl.BLEND)
-	gl.DepthMask(true) // not needed by "gltext" package 
 }

@@ -9,8 +9,8 @@ import "entities"
 import "inputs"
 import "map"
 import "mov"
-
-
+import "space"
+import "time"
 
 /*
 
@@ -28,181 +28,15 @@ Puttanoid
 
 */
 
-
-
-// graphics 
-var bufferWidth i32
-var bufferHeight i32
-var ratio f32
-var lEdge f64 // left 
-var rEdge f64 // right 
-
-// timing 
-var prevTime f32 // previous 
-var currTime f32 // current 
-var timeDelta f32
-
-var ball entities.Ball
-
-
-
 func main () {
-	init()
+	gameInit()
 
 	for bool.not(glfw.ShouldClose(app.Name)) {
-		update()
-		updateTiming()
-
-		// ball velocity & position 
-		ball.vx = getVelocityChangesFromInput(ball.vx, inputs.GLFW_KEY_A, inputs.GLFW_KEY_D)
-		ball.vy = getVelocityChangesFromInput(ball.vy, inputs.GLFW_KEY_S, inputs.GLFW_KEY_W)
-		ball.vx = getVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, lEdge, rEdge)
-		ball.vy = getVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, -1.0D, 1.0D)
-		// when speed gets high enough, a simple velocity reversal isn't enough 
-		// (jitters back & forth without getting back in bounds)
-		ball.x = ensureEntirelyWithinBounds(ball.x, ball.radius, lEdge, rEdge)
-		ball.y = ensureEntirelyWithinBounds(ball.y, ball.radius, -1.0D, 1.0D)
-		
-		// motion 
-		ball.x = f32.add(ball.x, ball.vx)
-		ball.y = f32.add(ball.y, ball.vy)
-
-		// graphics 
-		bufferWidth, bufferHeight = glfw.GetFramebufferSize(app.Name)
-		ratio = f32.div(i32.f32(bufferWidth), i32.f32(bufferHeight))
-		lEdge = f32.f64(f32.mul(ratio, -1.0))
-		rEdge = f32.f64(ratio)
-		gl.Clear(gl.COLOR_BUFFER_BIT)
-		gl.MatrixMode(gl.PROJECTION)
-		gl.LoadIdentity()
-		gl.Ortho(lEdge, rEdge, -1.0D, 1.0D, 1.0D, -1.0D)
-		gl.Viewport(0, 0, bufferWidth, bufferHeight)
-		gl.MatrixMode(gl.MODELVIEW)
-
-		map.DrawQuads()
-		draw.Ball(ball)
+		time.Update()
+		gameUpdate()
+		drawAll()
 		
 		glfw.PollEvents()
 		glfw.SwapBuffers(app.Name)
-	}
-}
-
-
-
-func init () {
-	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
-	draw.Init()
-
-	ball = entities.Ball{
-		radius: 0.05,
-		x: 0.0,
-		y: 0.0,
-		vx: 0.0,
-		vy: 0.0,
-		gravity: 0.01}
-
-
-	// graphics 
-	glfw.Init()
-	glfw.CreateWindow(
-		app.Name, 
-		app.START_WIDTH, 
-		app.START_HEIGHT, 
-		app.Name)
-	glfw.MakeContextCurrent(app.Name)
-	gl.Init()
-	
-	
-	inputs.Init()
-	map.Init()
-}
-
-
-func updateTiming () {
-	// prevent 1st delta from being large, which would make moving objects teleport unpredictably 
-	if prevTime == 0.0 {
-		prevTime = f64.f32(glfw.GetTime())
-	}
-
-	currTime = f64.f32(glfw.GetTime())
-	timeDelta = currTime - prevTime
-	prevTime = currTime
-}
-
-
-func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
-	out = f32.add(currentVelocity, mov.Force * timeDelta * strength)
-
-	if out > 0.0 {
-		out = 0.0
-	}
-}
-
-
-func dampenPositiveMovement (currentVelocity f32, strength f32) (out f32) {
-	out = f32.sub(currentVelocity, mov.Force * timeDelta * strength)
-
-	if out < 0.0 {
-		out = 0.0
-	}
-}
-
-
-func getVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32) {
-	out = velocity
-
-	//______________________________________________________________________ 
-	if i32.eq(glfw.GetKey(app.Name, addKey), 1) { //     speed up positively 
-		if out < 0.0 {
-			out = dampenNegativeMovement(out, 4.0)
-		}
-
-		out = f32.add(out, mov.Force * timeDelta)
-	} else //___________________________________________ speed up negatively 
-	if i32.eq(glfw.GetKey(app.Name, subKey), 1) {
-		if out > 0.0 {
-			out = dampenPositiveMovement(out, 4.0)
-		}
-
-		out = f32.sub(out, mov.Force * timeDelta)
-	} else { //__________________________________________ slow down 
-		if out > 0.0 {
-			out = dampenPositiveMovement(out, 1.0)
-		} else
-		if out < 0.0 {
-			out = dampenNegativeMovement(out, 1.0)
-		}
-	}
-}
-
-
-// position, velocity, radius, negative value edge boundary, positive value edge boundary 
-func getVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f64, posEdge f64) (out f32) {
-	out = vel
-
-	if f32.lteq(f32.sub(pos, rad), f64.f32(negEdge)) { 
-		// hit neg edge 
-		out = f32.abs(vel)
-	} else
-	if f32.gteq(f32.add(pos, rad), f64.f32(posEdge)) { 
-		// hit pos edge 
-		out = 0.0 - f32.abs(vel)
-	}
-}
-
-
-// position, radius, negative value edge boundary, positive value edge boundary 
-func ensureEntirelyWithinBounds (pos f32, rad f32, negEdge f64, posEdge f64) (out f32) {
-	out = pos
-	ne := f64.f32(negEdge)
-	pe := f64.f32(posEdge)
-
-	if f32.lteq(f32.sub(pos, rad), ne) { 
-		// hit neg edge 
-		out = f32.add(ne, rad)
-	} else
-	if f32.gteq(f32.add(pos, rad), pe) { 
-		// hit pos edge 
-		out = f32.sub(pe, rad)
 	}
 }

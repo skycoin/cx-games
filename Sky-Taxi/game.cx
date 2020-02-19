@@ -1,13 +1,28 @@
 package main
 
 import "inputs"
-//import "menu"
 
 
 
-func update () {
+func gameInit () {
+	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
+	draw.Init()
+	inputs.Init()
+	map.Init()
+	entities.Init()
+	
+	draw.BufferWid, 
+	draw.BufferHei = glfw.GetFramebufferSize(app.Name)
+	draw.OnFramebufferSize(app.Name, 
+		draw.BufferWid, 
+		draw.BufferHei)
+}
+
+
+func gameUpdate () {
 	respondToButtonEvents()
 	respondToKeyEvents()
+	entities.Update()
 }
 
 

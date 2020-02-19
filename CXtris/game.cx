@@ -2,8 +2,6 @@ package main
 
 import "app"
 import "draw"
-import "gameDraw"
-import "gameTime"
 import "gui"
 import "inputs"
 import "map"
@@ -12,19 +10,27 @@ import "space"
 
 
 
-func initGame () {
-	shape.Init()
-	space.Init()
+func gameInit () {
+	app.START_WIDTH  = 590
+	app.START_HEIGHT = 960
+	app.Init("C X t r i s", getControlsText() )
+	
 	draw.Init()
-	gameDraw.Init()
+	space.Init()
+	menu.Init()
+
 	inputs.Init()
 	inputs.BufferingPointerSpots = true
 	inputs.BufferingNotchyDeltas = true
+	
+	menuInit()
+	shape.Init()
+	drawInit()
 	startNewGameSession()
 }
 
 
-func update () {
+func gameUpdate () {
 	respondToKeyEvents()
 	respondToButtonEvents()
 	respondToPointerEvents()
@@ -33,6 +39,14 @@ func update () {
 	if inputs.UserActionWithinLast(1.0D) {
 		gui.ShowControls = false
 	}
+}
+
+
+// game controls info 
+func getControlsText () (s str) {
+	s =     "MOVE         == mouse, [A], [S], [D], or arrow keys\n"
+	s = s + "ROTATE Left  == LMB,   [Q], [LCtrl], [RAlt]\n"
+	s = s + "ROTATE Right == RMB,   [E], [LAlt],  [RCtrl]\n"
 }
 
 
@@ -45,7 +59,7 @@ func startNewGameSession () {
  	shape.SpawnNew()
 	
 	// spawn any wanted random debris blocks 
-	for     y := 0; y < menu.DebrisHeight; y++ {
+	for     y := 0; y < DebrisHeight; y++ {
 		for x := 0; x < map.NUM_CELLS_X;   x++ {
 			if i32.rand(0, 2) == 0 {
 				map.Cells[y][x] = i32.rand(0, shape.SHAPE_MAX)
@@ -169,13 +183,13 @@ func respondToMenuDrags () {
 		menu.Setting = menu.SetSliderValue(i, f64.f32(MousePointerX64))
 	} else
 	*/
-	if s == menu.DebrisHeightText {
-		menu.DebrisHeight = menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
+	if s == DebrisHeightText {
+		DebrisHeight = menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
 		startNewGameSession()
 	} else
-	if s == menu.SpeedText {
-		gameTime.DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
-		gameTime.CalcDropTime()
+	if s == SpeedText {
+		DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
+		CalcDropTime()
 	}
 }
 
@@ -201,12 +215,12 @@ func respondToMenuClicks () {
 	if s == menu.Quit {
 		glfw.SetShouldClose(app.Name, true)
 	} else
-	if s == menu.ShowNextShapeText + "YES" {
-		    menu.ShowNextShape = false
-		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText + "NO"
+	if s == ShowNextShapeText + "YES" {
+		    ShowNextShape = false
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "NO"
 	} else
-	if s == menu.ShowNextShapeText + "NO" {
-		    menu.ShowNextShape = true
-		menu.Items[app.Mode][i].Text = menu.ShowNextShapeText + "YES"
+	if s == ShowNextShapeText + "NO" {
+		    ShowNextShape = true
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "YES"
 	}
 }

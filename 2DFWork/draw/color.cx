@@ -1,0 +1,101 @@
+package draw
+
+
+
+//		"id constants" 
+var COLOR_RED       i32
+var COLOR_BLUE      i32 = 1
+var COLOR_GREEN     i32 = 2
+var COLOR_PURPLE    i32 = 3
+var COLOR_YELLOW    i32 = 4
+var COLOR_ORANGE    i32 = 5
+var COLOR_CYAN      i32 = 6
+var COLOR_GRAY_DARK i32 = 7
+
+// 		self-contained 
+var Black Color3
+var White Color3
+
+// 		channel intensities 
+var Light  f32 = 0.75
+var Mid    f32 = 0.5
+var Dark   f32 = 0.3
+var Darker f32 = 0.2
+
+// 		rainbow spectrum slice 
+var Colors []Color3 
+
+
+type Color3 struct {
+	R f32
+	G f32
+	B f32
+}
+type Color4 struct {
+	R f32
+	G f32
+	B f32
+	A f32
+}
+
+
+
+func SetColorById (i i32) {
+	gl.Color3f(
+		Colors[i].R, 
+		Colors[i].G, 
+		Colors[i].B)
+}
+
+
+func SetColorByRGB (r f32, g f32, b f32) {
+	gl.Color3f(r, g, b)
+}
+
+
+func SetColor3 (color Color3) {
+	gl.Color3f(
+		color.R, 
+		color.G, 
+		color.B)
+}
+func SetColor4 (color Color3, alpha f32) {
+	gl.Color4f(
+		color.R, 
+		color.G, 
+		color.B,
+		alpha)
+}
+
+
+func SetSequentiallyCycledColor (i i32) {
+	var l i32 = len(Colors)
+	var c i32 = i % l
+	
+	gl.Color3f(
+		Colors[c].R,
+		Colors[c].G,
+		Colors[c].B)
+}
+
+
+func initColor () {
+	Black = Color3{ R: 0.0, G: 0.0, B: 0.0 }
+	White = Color3{ R: 1.0, G: 1.0, B: 1.0 }
+	
+	addColor(0.9, 0.0, 0.0)          // red 
+	addColor(0.3, 0.3, 0.9)          // blue 
+	addColor(0.3, 0.9, 0.3)          // green 
+	addColor(0.7, 0.0, 0.8)          // purple  
+	addColor(1.0, 0.9, 0.0)          // yellow 
+	addColor(1.0, 0.5, 0.0)          // orange 
+	addColor(0.0, 1.0, 1.0)          // cyan  
+	addColor(Darker, Darker, Darker) // gray 
+}
+
+
+func addColor (r f32, g f32, b f32) {
+	var col Color3
+	col = Color3{R: r, G: g, B: b}
+	Colors = append(Colors, col)
+}

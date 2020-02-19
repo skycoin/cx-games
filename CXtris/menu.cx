@@ -1,94 +1,29 @@
-package menu
-
-import "app"
-import "gameTime"
+package main
 
 
-
-var Items [][]TextGL // 1st is menu id, 2nd is item id 
-
-// main  
-var MainSize            f32  = 125.0
-var Play                str  = "Play"
-var Options             str  = "Options"
-var Controls            str  = "Controls"
-var Quit                str  = "Quit"
 
 // options 
-var OptionsSize         f32  = 58.0
-var ShowNextShape       bool = true
-var ShowNextShapeText   str  = "Show next shape: "
-var SpeedText           str  = "Speed"
-var DebrisHeightText    str  = "Debris height"
-var DebrisHeight        i32  = 9
+var ShowNextShape     bool = true
+var ShowNextShapeText str  = "Show next shape: "
+var SpeedText         str  = "Speed"
+var DebrisHeightText  str  = "Debris height"
+var DebrisHeight      i32  = 9
 
 
 
-func Init () {
- 	printf("menu.Init () \n")
- 	
- 	// app.MODE_MENU_MAIN
- 	makeMenuSystemItem(0, MainSize, Play)
- 	makeMenuSystemItem(0, MainSize, Options)
- 	makeMenuSystemItem(0, MainSize, Controls)
- 	makeMenuSystemItem(0, MainSize, Quit)
+func menuInit () {
 	// app.MODE_MENU_OPTIONS
- 	makeMenuSystemItem(1, OptionsSize, ShowNextShapeText + "YES")
- 	makeMenuSystemItem(1, OptionsSize, SpeedText)
- 	makeMenuSystemItem(1, OptionsSize, DebrisHeightText)
- 	makeMenuSystemItem(1, OptionsSize, Play)
+ 	menu.MakeItem(1, menu.OptionsSize, ShowNextShapeText + "YES")
+ 	menu.MakeItem(1, menu.OptionsSize, SpeedText)
+ 	menu.MakeItem(1, menu.OptionsSize, DebrisHeightText)
 	// app.MODE_MENU_CONTROLS
- 	makeMenuSystemItem(2, OptionsSize, "")
+ 	menu.MakeItem(2, menu.OptionsSize, "")
 
 	// sliders (the only items that use these fields) 
-	Items[1][1].Max   = gameTime.DROP_SPEED_MAX
-	Items[1][1].Value = gameTime.DropSpeed
-	Items[1][2].Max   = 11 // for debris height 
-	Items[1][2].Value = DebrisHeight
-}
+	menu.Items[1][1].Max   = DROP_SPEED_MAX
+	menu.Items[1][1].Value = DropSpeed
+	menu.Items[1][2].Max   = 11 // for debris height 
+	menu.Items[1][2].Value = DebrisHeight
 
-
-func makeMenuSystemItem(menuId i32, size f32, text str) {
-	// while menuId is invalid (menu doesn't exist yet) 
-	for len(Items) <= menuId {
-	 	var nm []TextGL // new menu 
-	 	nm = []TextGL{}
-	 	Items = append(
-		Items, nm)
-	}
-	
- 	var mIt TextGL 
- 	mIt = TextGL{ Size: size, Text: text }
- 	Items[menuId] = append(
-	Items[menuId], mIt)
-}
-
-
-func GetHoveredItem (menuId i32) (text str, id i32) {
-	for i := 0; i < len(Items[menuId]); i++ {			
-		if         Items[menuId][i].Hover {
-			text = Items[menuId][i].Text
-			id   = i
-		}
-	}
-}
-
-
-func SetSliderValue (i i32, mouseX f32) (out i32) {
-	var span f32 = 
-		        Items[app.Mode][i].Wid / 
-		i32.f32(Items[app.Mode][i].Max)
-		
-	mouseX = mouseX - Items[app.Mode][i].Left
-	Items[app.Mode][i].Value = f32.i32(mouseX / span)
-	
-	if Items[app.Mode][i].Value < 0 {
-		Items[app.Mode][i].Value = 0
-	}
-	if Items[app.Mode][i].Value >= Items[app.Mode][i].Max {
-		Items[app.Mode][i].Value = Items[app.Mode][i].Max - 1
-	}
-	
-	out = Items[app.Mode][i].Value
-	//printf("set slider value to: %d \n", out)
+	menu.BakeItemText()
 }

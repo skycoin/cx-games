@@ -1,8 +1,8 @@
 package shape
 
 import "app"
-import "gameTime"
 import "map"
+import "main"
 import "menu"
 
 
@@ -51,7 +51,7 @@ func SpawnNew () {
 		return // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	}
 	
-	gameTime.CalcDropTime()
+	main.CalcDropTime()
 
 	PlayerFacing = 0
 	PlayerShape  = Next

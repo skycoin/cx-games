@@ -1,0 +1,234 @@
+package main
+
+import "draw"
+
+
+
+// FIXME when CX has constants 
+var NUM_H_KEYS   i32 = 3 // horizontal 
+var NUM_V_KEYS   i32 = 2 // vertical 
+var SPAN         f32 = 2.0 / i32.f32(NUM_H_KEYS)
+var SPAN_HALF    f32 = SPAN / 2.0
+var SPAN_QUARTER f32 = SPAN / 3.4//4.0
+var SPAN_HALF_V  f32 // vertical 
+// pixel space 
+var psSpan     f32
+var psSpanHalf f32
+
+// controls text 
+var keySetPri []draw.TextGL // primary 
+var keySetSec []draw.TextGL // secondary 
+
+
+
+func InitControlsText () {
+	// couldn't do next bits of math @ declaration 
+	//		gl space 
+	SPAN_HALF_V  = SPAN_HALF * HackyHeightFraction
+	// 		pixel space 
+	psSpan     = f32.div(i32.f32(app.START_WIDTH), 3.0)
+	psSpanHalf = psSpan / 2.0
+	str.print("psSpan:")
+	f32.print(psSpan)
+
+	keySetPri = append(
+	keySetPri, getNewText("A"))
+	keySetPri = append(
+	keySetPri, getNewText("S"))
+	keySetPri = append(
+	keySetPri, getNewText("D"))
+	keySetPri = append(
+	keySetPri, getNewText("Q"))
+	keySetPri = append(
+	keySetPri, getNewText("E"))
+
+	keySetSec = append(
+	keySetSec, getNewText(""))
+	keySetSec = append(
+	keySetSec, getNewText(""))
+	keySetSec = append(
+	keySetSec, getNewText(""))
+	keySetSec = append(
+	keySetSec, getNewText("            Ctrl / Alt"))
+	keySetSec = append(
+	keySetSec, getNewText("            Alt / Ctrl"))
+
+	// precalc positions 
+	initKeySet(false)
+	initKeySet(true)
+}
+
+
+func getNewText (key str) (out draw.TextGL) {
+	out = draw.TextGL{ Text: key, Size: 28.0 }
+}
+
+
+func initKeySet (yOffset bool) {
+	var keySet []draw.TextGL
+	
+	if yOffset {
+		keySet = keySetSec
+	}else{
+		keySet = keySetPri	
+	}
+	
+	var w i32
+	var h i32
+	// key cap edges 
+	var x f32
+	var y f32 = i32.f32(app.START_HEIGHT) - 1.0
+	
+	for i := 0; i < len(keySet); i++ {
+		var font str = str.concat("Roboto", sprintf("%d", f32.i32(keySet[i].Size)))
+		keySet[i].FontId = font		
+		w, h = gltext.Metrics(font, 
+		keySet[i].Text)
+		keySet[i].Wid =     i32.f32(w)
+		keySet[i].Hei =     i32.f32(h)
+		keySet[i].Top = y - i32.f32(h)
+		keySet[i].Bottom = y
+		var xo /* x offset */ f32 = (psSpan - keySet[i].Wid) / 2.0
+		keySet[i].Left = x + xo
+
+
+		// increment virtual text "cursor" 
+		if i == 2 {
+			x = 0.0
+			y = y - psSpan
+		}else
+		if i == 3 {
+			x = x + psSpan
+			x = x + psSpan
+		}else{
+			x = x + psSpan
+		}
+	}
+}
+
+
+func drawKeyCapTexts () {
+	draw.SetColor3(draw.Black)
+	
+	for i := 0; i < len(keySetPri); i++ {
+		// primary set 
+		gltext.Printf(
+			keySetPri[i].FontId, 
+			keySetPri[i].Left, 
+			keySetPri[i].Top,
+			keySetPri[i].Text)
+			
+		// secondary set 
+		gltext.Printf(
+			keySetSec[i].FontId, 
+			keySetSec[i].Left, 
+			keySetSec[i].Top - psSpan + keySetSec[i].Hei,
+			keySetSec[i].Text)
+	}
+}
+
+
+func drawVirtualKeyBackdrops () {
+	//"mouse" icon/s needed 
+	//"mouse" icon/s needed 
+	//"mouse" icon/s needed 
+
+	if app.Mode == app.MODE_PLAYING {
+		draw.SetColor4(draw.White, 0.8)
+	}else{
+		draw.SetColor3(draw.White)
+	}
+	var x f32 = -1.0 + SPAN_HALF
+	var y f32 = -1.0 + SPAN_HALF_V
+	
+	// bottom 3 
+	for i := 0; i < NUM_H_KEYS; i++ {
+		draw.ScaledPic(draw.PicShapeTile, 
+			x,
+			y, 
+			SPAN, 
+			SPAN * HackyHeightFraction)
+
+		if i == 0 {
+			draw.ScaledPic(draw.PicArrowLeft, 
+				x,
+				y, 
+				SPAN_HALF, 
+				SPAN_HALF_V)
+			draw.ScaledPic(draw.PicMouse, 
+				x + SPAN_QUARTER,
+				y, 
+				SPAN_QUARTER, 
+				SPAN_QUARTER)			
+		}else			
+		if i == 1 {
+			draw.ScaledPic(draw.PicArrowDown, 
+				x,
+				y, 
+				SPAN_HALF, 
+				SPAN_HALF_V)
+			draw.ScaledPic(draw.PicMouse, 
+				x,
+				y + SPAN_QUARTER, 
+				SPAN_QUARTER, 
+				SPAN_QUARTER)			
+		}else			
+		if i == 2 {
+			draw.ScaledPic(draw.PicArrowRight, 
+				x,
+				y, 
+				SPAN_HALF, 
+				SPAN_HALF_V)
+			draw.ScaledPic(draw.PicMouse, 
+				x - SPAN_QUARTER,
+				y, 
+				SPAN_QUARTER, 
+				SPAN_QUARTER)			
+		}
+				
+		x = f32.add(x, SPAN)
+	}
+	
+	
+	x = -1.0 + SPAN_HALF
+	y = f32.add(y, SPAN * HackyHeightFraction)
+
+
+	// top left 
+	draw.ScaledPic(draw.PicShapeTile, 
+		x,
+		y, 
+		SPAN, 
+		SPAN * HackyHeightFraction)
+	draw.ScaledPic(draw.PicRotLeft, 
+		x,
+		y, 
+		SPAN_HALF, 
+		SPAN_HALF_V)
+	draw.ScaledPic(draw.PicMouseLMB, 
+		x + SPAN_QUARTER,
+		y, 
+		SPAN_QUARTER, 
+		SPAN_QUARTER)			
+
+
+	x = f32.add(x, SPAN * 2.0)
+
+	
+	// top right 
+	draw.ScaledPic(draw.PicShapeTile, 
+		x,
+		y, 
+		SPAN, 
+		SPAN * HackyHeightFraction)
+	draw.ScaledPic(draw.PicRotRight, 
+		x,
+		y, 
+		SPAN_HALF, 
+		SPAN_HALF_V)
+	draw.ScaledPic(draw.PicMouseRMB, 
+		x - SPAN_QUARTER,
+		y, 
+		SPAN_QUARTER, 
+		SPAN_QUARTER)			
+}
