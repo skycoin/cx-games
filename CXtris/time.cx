@@ -6,6 +6,8 @@ import "shape"
 
 
 var CurrTime       f64
+var prevTime       f64
+var DeltaTime      f64
 var DropDelta      f64 
 var DropSpeed      i32 = 2  // ints for menu settings 
 var DROP_SPEED_MAX i32 = 11 // exclusive 
@@ -18,7 +20,9 @@ var timeToDrop     f64 = minSpeed * 2.0D
 
 var moved bool
 func timeUpdate () {
+	prevTime = CurrTime
 	CurrTime = glfw.GetTime()
+	DeltaTime = CurrTime - prevTime
 	
 	if CurrTime >= timeToDrop {
 		CalcDropTime()
