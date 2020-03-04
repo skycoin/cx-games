@@ -6,7 +6,8 @@ import "shape"
 
 
 var CurrTime       f64
-var DropSpeed      i32 = 2
+var DropDelta      f64 
+var DropSpeed      i32 = 2  // ints for menu settings 
 var DROP_SPEED_MAX i32 = 11 // exclusive 
 
 var minSpeed       f64 = 1.5D // minimum/slowest 
@@ -27,8 +28,7 @@ func timeUpdate () {
 
 
 func CalcDropTime () {
-	var inc f64 
-	inc = f64.mul(i32.f64(DropSpeed), dropGrain)
-	inc = f64.sub(minSpeed, inc)
-	timeToDrop = CurrTime + inc
+	DropDelta = f64.mul(i32.f64(DropSpeed), dropGrain)
+	DropDelta = f64.sub(minSpeed, DropDelta)
+	timeToDrop = CurrTime + DropDelta
 }

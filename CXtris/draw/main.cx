@@ -94,7 +94,7 @@ func PlayerPiece () {
 	var del f64 = CurrTime - shape.PlayerMoveTime // time delta 
 	var osX f32 // offset 
 	var osY f32 //   ^ 
-	var dura /* ...tion of smooth slide */ f64 = 0.2D
+	var dura /* ...tion of smooth slide */ f64 = DropDelta * 0.2D
 	
 	// calculate a potential offset for smooth sliding interpolation 
 	if del < dura {
