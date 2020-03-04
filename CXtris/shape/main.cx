@@ -34,6 +34,8 @@ var Next i32
 //}
 
 var PlayerPos      Vec2I
+var PlayerPosPrev  Vec2I
+var PlayerMoveTime f64    // the latest 
 var PlayerFacing   i32
 var PlayerShape    i32
 var PlayerScore    i32 =  0
@@ -135,6 +137,7 @@ func AttemptMoveByOffset (x i32, y i32) (moved bool) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
 		moved = true
+		PlayerMoveTime = main.CurrTime
 	} else
 	if /* going right */ x > 0 &&
 		PlayerPos.X < map.NUM_CELLS_X - 1 - Extents[PlayerShape][PlayerFacing][FACING_RIGHT] &&
@@ -142,6 +145,7 @@ func AttemptMoveByOffset (x i32, y i32) (moved bool) {
 		
 		PlayerPos.X = i32.add(PlayerPos.X, x)
 		moved = true
+		PlayerMoveTime = main.CurrTime
 	}
 	
 	if /* going down */ y < 0 {
@@ -149,6 +153,7 @@ func AttemptMoveByOffset (x i32, y i32) (moved bool) {
 			if enoughCellsOpenForMoveDeltaAndDir(x, y, PlayerFacing) {
 				PlayerPos.Y = i32.add(PlayerPos.Y, y)
 				moved = true
+				PlayerMoveTime = main.CurrTime
 			}else{
 				freezeShape()
 			}
