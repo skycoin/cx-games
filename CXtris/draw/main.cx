@@ -61,15 +61,18 @@ func drawAll () {
 
 
 func PlayField () {
-	var fX f32 = map.LEdge + map.CellWidthHalf
-	var fY f32 =     -0.95 + map.CellHeightHalf
+	var fX f32 = map.LEdge + map.CellWidthHalf  // bottom left corner anchor 
+	var fY f32 =     -0.95 + map.CellHeightHalf //            ^ 
+	var osY /* offset in Y */ f32
 
 	for     y := 0; y < map.NUM_CELLS_Y; y++ {
+		osY = getOffsetForWholeRow(y)
+		
 		for x := 0; x < map.NUM_CELLS_X; x++ {
 			var c i32 = map.Cells[y][x]
-
+			
 			if c == map.EMPTY_CELL {
-				c = shape.SHAPE_MAX
+				c = shape.SHAPE_MAX // set to last color (dark gray) 
 			}
 			
 			gl.Color3f(
@@ -80,9 +83,33 @@ func PlayField () {
 			draw.ScaledPic(
 				draw.PicShapeTile, 
 				f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
-				f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)), 
+				f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)) - osY, 
 				map.CellWidth, 
 				map.CellHeight)
+		}
+	}
+}
+
+
+func getOffsetForWholeRow (y i32) (osY f32) {
+	osY = 0.0
+	
+	if len(map.CollapsingRows) != 0 {
+		var del f64 = CurrTime - map.CollapseStartTime // time delta 
+		var dura /* ...tion of smooth slide */ f64 = DropDelta * 0.2D
+
+		// calculate a potential offset for smooth sliding interpolation 
+		if del < dura {
+			for i := 0; i < len(map.CollapsingRows); i++ {
+				if map.CollapsingRows[i] <= y {
+					osY = f32.add(osY, f64.f32(del / dura) * map.CellHeight - map.CellHeight)
+				}
+			}
+		}else{
+			// transition time is up, clear slice 
+			for len(map.CollapsingRows) > 0 {
+				map.CollapsingRows = remove(map.CollapsingRows, 0)
+			}
 		}
 	}
 }
