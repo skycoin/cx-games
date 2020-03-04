@@ -135,25 +135,28 @@ func AttemptMoveByOffset (x i32, y i32) (moved bool) {
 		PlayerPos.X > 0 + Extents[PlayerShape][PlayerFacing][FACING_LEFT] && 
 		enoughCellsOpenForMoveDeltaAndDir(x, y, PlayerFacing) {
 		
+		PlayerPosPrev = PlayerPos
 		PlayerPos.X = i32.add(PlayerPos.X, x)
-		moved = true
 		PlayerMoveTime = main.CurrTime
+		moved = true
 	} else
 	if /* going right */ x > 0 &&
 		PlayerPos.X < map.NUM_CELLS_X - 1 - Extents[PlayerShape][PlayerFacing][FACING_RIGHT] &&
 		enoughCellsOpenForMoveDeltaAndDir(x, y, PlayerFacing) {
 		
+		PlayerPosPrev = PlayerPos
 		PlayerPos.X = i32.add(PlayerPos.X, x)
-		moved = true
 		PlayerMoveTime = main.CurrTime
+		moved = true
 	}
 	
 	if /* going down */ y < 0 {
 		if PlayerPos.Y > 0 + Extents[PlayerShape][PlayerFacing][FACING_DOWN] {
 			if enoughCellsOpenForMoveDeltaAndDir(x, y, PlayerFacing) {
+				PlayerPosPrev = PlayerPos
 				PlayerPos.Y = i32.add(PlayerPos.Y, y)
-				moved = true
 				PlayerMoveTime = main.CurrTime
+				moved = true
 			}else{
 				freezeShape()
 			}

@@ -64,46 +64,55 @@ func PlayField () {
 	var fX f32 = map.LEdge + map.CellWidthHalf
 	var fY f32 =     -0.95 + map.CellHeightHalf
 
-	for y := 0; y < map.NUM_CELLS_Y; y++ {
-	for x := 0; x < map.NUM_CELLS_X; x++ {
-		var c i32 = map.Cells[y][x]
+	for     y := 0; y < map.NUM_CELLS_Y; y++ {
+		for x := 0; x < map.NUM_CELLS_X; x++ {
+			var c i32 = map.Cells[y][x]
 
-		if c == map.EMPTY_CELL {
-			c = shape.SHAPE_MAX
+			if c == map.EMPTY_CELL {
+				c = shape.SHAPE_MAX
+			}
+			
+			gl.Color3f(
+				draw.Colors[c].R, 
+				draw.Colors[c].G, 
+				draw.Colors[c].B)
+			
+			draw.ScaledPic(
+				draw.PicShapeTile, 
+				f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
+				f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)), 
+				map.CellWidth, 
+				map.CellHeight)
 		}
-		
-		gl.Color3f(
-			draw.Colors[c].R, 
-			draw.Colors[c].G, 
-			draw.Colors[c].B)
-		
-		draw.ScaledPic(
-			draw.PicShapeTile, 
-			f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
-			f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)), 
-			map.CellWidth, 
-			map.CellHeight)
-	}
 	}
 }
 
 
 func PlayerPiece () {
+	var fX   f32 = map.LEdge + map.CellWidthHalf
+	var fY   f32 =     -0.95 + map.CellHeightHalf
+	var del  f64 = CurrTime - shape.PlayerMoveTime
+	var offs f32
+	
+	if del < 0.2D {
+		offs = f64.f32(del / 0.2D) * map.CellHeight
+		offs = offs - map.CellHeight
+	}else{
+		offs = 0.0
+	}
+				
 	gl.Color3f(
 		draw.Colors[shape.PlayerShape].R, 
 		draw.Colors[shape.PlayerShape].G, 
 		draw.Colors[shape.PlayerShape].B)
 	
-	var fX f32 = map.LEdge + map.CellWidthHalf
-	var fY f32 =     -0.95 + map.CellHeightHalf
-
-	for y := 0; y < 5; y++ {
+	for     y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
 			if shape.Cells[shape.PlayerShape][shape.PlayerFacing][y][x] {
 				draw.ScaledPic(
 					draw.PicShapeTile, 
 					f32.add(fX, f32.mul(i32.f32(x - 2 + shape.PlayerPos.X), map.CellWidth)),
-					f32.add(fY, f32.mul(i32.f32(y - 2 + shape.PlayerPos.Y), map.CellHeight)), 
+					f32.add(fY, f32.mul(i32.f32(y - 2 + shape.PlayerPos.Y), map.CellHeight)) - offs,
 					map.CellWidth, 
 					map.CellHeight)
 			}
