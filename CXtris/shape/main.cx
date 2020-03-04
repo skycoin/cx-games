@@ -62,6 +62,8 @@ func SpawnNew () {
 	
 	var i i32 = Extents[PlayerShape][PlayerFacing][FACING_UP] + 1
 	PlayerPos = app.Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
+	PlayerPosPrev = PlayerPos // looked kinda cool before this reset... 
+	                          // ...fix, but it felt buggy to ME 
 	
 	if bool.not(enoughCellsOpenForMoveDeltaAndDir(0, 0, PlayerFacing)) {
 		app.Mode = app.MODE_GAME_OVER
@@ -241,6 +243,8 @@ func freezeShape () {
 		//str.print("if rowFull")
 		
 		if rowFull {
+			map.CollapsingRows = append(map.CollapsingRows, y)
+			map.CollapseStartTime = main.CurrTime
 			numRowsFilled = i32.add(numRowsFilled, 1)
 		
 			// shift all-rows-above down by one 

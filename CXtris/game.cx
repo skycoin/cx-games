@@ -61,7 +61,7 @@ func startNewGameSession () {
 	// spawn any wanted random debris blocks 
 	for     y := 0; y < DebrisHeight; y++ {
 		for x := 0; x < map.NUM_CELLS_X;   x++ {
-			if i32.rand(0, 2) == 0 {
+			if x != 4 && y != 1 && y != 2 { //i32.rand(0, 2) == 0 {
 				map.Cells[y][x] = i32.rand(0, shape.SHAPE_MAX)
 			}
 		}
