@@ -18,8 +18,11 @@ apps, so I think it's important to generally use this convention.
 
 package map
 
+import "gl"
+
 import "app"
 import "draw"
+import "entities"
 import "geom"
 
 
@@ -53,7 +56,26 @@ func Init () {
 }
 
 
+/*
+func GetNumCarvedOutRooms () (num i32) {
+	num = len(Carvs)	
+}
+func GetNumExitsAt (roomId i32) (num i32) {
+	num = len(Carvs[roomId].Exits)
+}
+func GetExitAt (roomId i32, exitId i32) (num i32) {
+	num = len(Carvs[roomId].Exits[exitId])
+}
+*/ 
+// ideally, the below func would be in "sky-taxi/draw.cx", 
+// but moving it there would require the 3 funcs above PLUS more, 
+// in order to get all the data you'd need from the "map" package. 
+// since ATM, CX 0.7.0 has trouble getting values out of packages 
+// via "[package].*".  ATM CX gives lot's of unhelpful errors when 
+// such out-of-package data access attempts are made 
 func DrawQuads () {
+	gl.Translatef(0.0-entities.ball.x, 0.0-entities.ball.y, 0.0)
+	
 	var x f32
 	var y f32
 
@@ -97,6 +119,8 @@ func DrawQuads () {
 			}
 		}
 	draw.End()
+	
+	gl.LoadIdentity()
 }
 
 
