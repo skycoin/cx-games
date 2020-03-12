@@ -9,7 +9,9 @@ package mov
 /////////////////////////////////////////////////////
 
 import "app"
+import "entities"
 import "glfw"
+import "inputs"
 import "time"
 
 
@@ -18,8 +20,8 @@ var Force f32 = 0.08
 
 
 
-func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
-	out = f32.add(currentVelocity, Force * time.Delta * strength)
+func dampenNegativeMovement (velocity f32, strength f32) (out f32) {
+	out = f32.add(velocity, Force * time.Delta * strength)
 
 	if out > 0.0 {
 		out = 0.0
@@ -27,8 +29,8 @@ func dampenNegativeMovement (currentVelocity f32, strength f32) (out f32) {
 }
 
 
-func dampenPositiveMovement (currentVelocity f32, strength f32) (out f32) {
-	out = f32.sub(currentVelocity, Force * time.Delta * strength)
+func dampenPositiveMovement (velocity f32, strength f32) (out f32) {
+	out = f32.sub(velocity, Force * time.Delta * strength)
 
 	if out < 0.0 {
 		out = 0.0
@@ -36,24 +38,30 @@ func dampenPositiveMovement (currentVelocity f32, strength f32) (out f32) {
 }
 
 
-func GetVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32) {
+func SetPlayerVelocityFromInput () {
+	entities.ball.vx = getVelocity(entities.ball.vx, inputs.HoldingGoLeft(), inputs.HoldingGoRight())
+	entities.ball.vy = getVelocity(entities.ball.vy, inputs.HoldingGoDown(), inputs.HoldingGoUp())
+}
+
+
+func getVelocity (velocity f32, negative bool, positive bool) (out f32) {
 	out = velocity
 
-	//______________________________________________________________________ 
-	if i32.eq(glfw.GetKey(app.Name, addKey), 1) { //     speed up positively 
+	//____________________________________________ 
+	if positive { // _________ speed up positively 
 		if out < 0.0 {
 			out = dampenNegativeMovement(out, 4.0)
 		}
 
 		out = f32.add(out, Force * time.Delta)
-	} else //___________________________________________ speed up negatively 
-	if i32.eq(glfw.GetKey(app.Name, subKey), 1) {
+	} else
+	if negative { // _________ speed up negatively 
 		if out > 0.0 {
 			out = dampenPositiveMovement(out, 4.0)
 		}
 
 		out = f32.sub(out, Force * time.Delta)
-	} else { //__________________________________________ slow down 
+	} else { //_________________________ slow down 
 		if out > 0.0 {
 			out = dampenPositiveMovement(out, 1.0)
 		} else

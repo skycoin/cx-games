@@ -1,6 +1,7 @@
 package entities
 
 import "app"
+import "geom"
 import "inputs"
 import "map"
 import "mov"
@@ -18,6 +19,7 @@ type Entity struct {
 	
 	CellMin app.Vec2 // boundaries of the current cell it's in 
 	CellMax app.Vec2 // ^ 
+	//Room    map.CarvedRoom
 }
 
 var ball Entity
@@ -41,8 +43,7 @@ func Init () {
 
 func Update () {
 	// ball velocity & position 
-	ball.vx = mov.GetVelocityChangesFromInput(ball.vx, inputs.GLFW_KEY_A, inputs.GLFW_KEY_D)
-	ball.vy = mov.GetVelocityChangesFromInput(ball.vy, inputs.GLFW_KEY_S, inputs.GLFW_KEY_W)
+	mov.SetPlayerVelocityFromInput()
 	ball.vx = mov.GetVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, 
 		ball.CellMin.X, ball.CellMax.X) //space.ViewEdgeL, space.ViewEdgeR)
 	ball.vy = mov.GetVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, 
@@ -71,6 +72,12 @@ func SetPos (pos app.Vec2) {
 func putPlayerInRandomRoom () {
 	var rand i32 = i32.rand(0, map.GetNumCarvedOutRooms())
 	var room CarvedRoom = map.GetRoom(rand)
+	
+	str.print("1st room has exits in:")
+	for i := 0; i < len(room.Exits); i++ {
+		str.print(geom.GetTextForDir(room.Exits[i]))
+	}
+	
 	var minX f32 = i32.f32(room.Pos.X) * map.CellSpan
 	var minY f32 = i32.f32(room.Pos.Y) * map.CellSpan
 	
@@ -85,6 +92,7 @@ func putPlayerInRandomRoom () {
 	ball.CellMin.Y = minY + map.WTh
 	ball.CellMax.X = minX + map.CellSpan - map.WTh
 	ball.CellMax.Y = minY + map.CellSpan - map.WTh
+	//ball.Room      = map.GetRoom(rand) //room
 	
 	//printf("putPlayerInRandomRoom ball.x: %f \n", ball.x)
 	//printf("putPlayerInRandomRoom ball.y: %f \n", ball.y)
