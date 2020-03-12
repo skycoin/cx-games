@@ -79,28 +79,6 @@ func putPlayerInRandomRoom () {
 	var rand i32 = i32.rand(0, map.GetNumCarvedOutRooms())
 	var room CarvedRoom = map.GetRoom(rand)
 	
-	ball.ExitWest  = false
-	ball.ExitEast  = false
-	ball.ExitSouth = false
-	ball.ExitNorth = false
-	str.print("1st room has exits in:")
-	for i := 0; i < len(room.Exits); i++ {
-		str.print(geom.GetTextForDir(room.Exits[i]))
-		
-		if room.Exits[i] == geom.DIR_LEFT  {
-			ball.ExitWest = true
-		}else
-		if room.Exits[i] == geom.DIR_RIGHT {
-			ball.ExitEast = true
-		}else
-		if room.Exits[i] == geom.DIR_DOWN  {
-			ball.ExitSouth = true
-		}else
-		if room.Exits[i] == geom.DIR_UP    {
-			ball.ExitNorth = true
-		}
-	}
-	
 	var minX f32 = i32.f32(room.Pos.X) * map.CellSpan
 	var minY f32 = i32.f32(room.Pos.Y) * map.CellSpan
 	
@@ -117,6 +95,31 @@ func putPlayerInRandomRoom () {
 	ball.CellMax.Y = minY + map.CellSpan - map.WTh
 	//ball.Room      = map.GetRoom(rand) //room
 	
-	//printf("putPlayerInRandomRoom ball.x: %f \n", ball.x)
-	//printf("putPlayerInRandomRoom ball.y: %f \n", ball.y)
+	
+	// setup connection flags/boundaries 	
+	ball.ExitWest  = false
+	ball.ExitEast  = false
+	ball.ExitSouth = false
+	ball.ExitNorth = false
+	str.print("1st room has exits in:")
+	for i := 0; i < len(room.Exits); i++ {
+		str.print(geom.GetTextForDir(room.Exits[i]))
+		
+		if room.Exits[i] == geom.DIR_LEFT  {
+			ball.ExitWest = true
+			ball.CellMin.X = minX
+		}else
+		if room.Exits[i] == geom.DIR_RIGHT {
+			ball.ExitEast = true
+			ball.CellMax.X = minX + map.CellSpan
+		}else
+		if room.Exits[i] == geom.DIR_DOWN  {
+			ball.ExitSouth = true
+			ball.CellMin.Y = minY
+		}else
+		if room.Exits[i] == geom.DIR_UP    {
+			ball.ExitNorth = true
+			ball.CellMax.Y = minY + map.CellSpan
+		}
+	}
 }
