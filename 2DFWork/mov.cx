@@ -73,38 +73,22 @@ func getVelocity (velocity f32, negative bool, positive bool) (out f32) {
 
 
 // position, velocity, radius, negative edge boundary, positive edge boundary 
-func GetVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExit bool, posExit bool) (out f32) {
-	out = vel
+func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExit bool, posExit bool) (outPos f32, outVel f32) {
+	outPos = pos
+	outVel = vel
 
 	if f32.lteq(f32.sub(pos, rad), negEdge) { 
 		// (hit neg edge) 
 		if !negExit {
-			out = f32.abs(vel)
+			outPos = f32.add(negEdge, rad)
+			outVel = f32.abs(vel)
 		}
 	} else
 	if f32.gteq(f32.add(pos, rad), posEdge) { 
 		// (hit pos edge) 
 		if !posExit {
-			out = 0.0 - f32.abs(vel)
-		}
-	}
-}
-
-
-// position, radius, negative edge boundary, positive edge boundary 
-func EnsureEntirelyWithinBounds (pos f32, rad f32, negEdge f32, posEdge f32, negExit bool, posExit bool) (out f32) {
-	out = pos
-
-	if f32.lteq(f32.sub(pos, rad), negEdge) { 
-		// hit neg edge 
-		if !negExit {
-			out = f32.add(negEdge, rad)
-		}
-	}else
-	if f32.gteq(f32.add(pos, rad), posEdge) { 
-		// hit pos edge 
-		if !posExit {
-			out = f32.sub(posEdge, rad)
+			outPos = f32.sub(posEdge, rad)
+			outVel = 0.0 - f32.abs(vel)
 		}
 	}
 }

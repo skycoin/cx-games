@@ -50,23 +50,20 @@ func Update () {
 	// velocity 
 	//		player desired 
 	mov.SetPlayerVelocityFromInput()
-	//		by collision bounce 
-	ball.vx = mov.GetVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, 
-		ball.CellMin.X, ball.CellMax.X, ball.ExitWest, ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
-	ball.vy = mov.GetVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, 
-		ball.CellMin.Y, ball.CellMax.Y, ball.ExitSouth, ball.ExitNorth) //-1.0D, 1.0D)
 	
 	// motion/position 
 	ball.x = f32.add(ball.x, ball.vx)
 	ball.y = f32.add(ball.y, ball.vy)
 
+	//		by collision bounce 
+	ball.x, ball.vx = mov.BounceOffWalls(ball.x, ball.vx, ball.radius, 
+		ball.CellMin.X, ball.CellMax.X, ball.ExitWest, ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
+	ball.y, ball.vy = mov.BounceOffWalls(ball.y, ball.vy, ball.radius, 
+		ball.CellMin.Y, ball.CellMax.Y, ball.ExitSouth, ball.ExitNorth) //-1.0D, 1.0D)
+
 	// position correction 
 	// 		when speed gets high enough, a simple velocity reversal isn't enough 
 	// 		(jitters back & forth without getting back in bounds)
-	ball.x = mov.EnsureEntirelyWithinBounds(ball.x, ball.radius, 
-		ball.CellMin.X, ball.CellMax.X, ball.ExitWest, ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
-	ball.y = mov.EnsureEntirelyWithinBounds(ball.y, ball.radius, 
-		ball.CellMin.Y, ball.CellMax.Y, ball.ExitSouth, ball.ExitNorth) //-1.0D, 1.0D)
 }
 
 
