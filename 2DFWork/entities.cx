@@ -79,6 +79,10 @@ func putPlayerInRandomRoom () {
 	var rand i32 = i32.rand(0, map.GetNumCarvedOutRooms())
 	var room CarvedRoom = map.GetRoom(rand)
 	
+	ball.ExitWest  = false
+	ball.ExitEast  = false
+	ball.ExitSouth = false
+	ball.ExitNorth = false
 	str.print("1st room has exits in:")
 	for i := 0; i < len(room.Exits); i++ {
 		str.print(geom.GetTextForDir(room.Exits[i]))
