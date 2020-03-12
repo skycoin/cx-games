@@ -5,7 +5,7 @@ import "entities"
 
 
 
-func Ball (ball entities.Ball) {
+func Ball (ball entities.Entity) {
 	var x f32
 	var y f32
 
@@ -25,20 +25,13 @@ func Ball (ball entities.Ball) {
 
 
 func AddRect (pos app.Vec2, extents app.Vec2) () {
-		var lX f32
-		lX = f32.sub(pos.X, extents.X)
+	var lX /* left   */ f32 = f32.sub(pos.X, extents.X)
+	var rX /* right  */ f32 = f32.add(pos.X, extents.X)
+	var bY /* bottom */ f32 = f32.sub(pos.Y, extents.Y)
+	var tY /* top    */ f32 = f32.add(pos.Y, extents.Y)
 
-		var rX f32
-		rX = f32.add(pos.X, extents.X)
-
-		var bY f32
-		bY = f32.sub(pos.Y, extents.Y)
-
-		var tY f32
-		tY = f32.add(pos.Y, extents.Y)
-		
-		gl.Vertex3f(lX, bY, 0.0)
-		gl.Vertex3f(lX, tY, 0.0)
-		gl.Vertex3f(rX, tY, 0.0)
-		gl.Vertex3f(rX, bY, 0.0)
+	gl.Vertex3f(lX, bY, 0.0)
+	gl.Vertex3f(lX, tY, 0.0)
+	gl.Vertex3f(rX, tY, 0.0)
+	gl.Vertex3f(rX, bY, 0.0)
 }

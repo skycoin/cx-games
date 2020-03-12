@@ -28,9 +28,10 @@ import "geom"
 
 
 var NumCellsAcross i32 = 4 // in both dimensions 
-var CellSpan f32 = 2.0 / i32.f32(NumCellsAcross)
-var Cells [4][4]Cell   // FIXME: use constants when we can 
-var Carvs []CarvedRoom // used/carved-out locations of the Cells grid 
+var CellSpan       f32 = 2.0 / i32.f32(NumCellsAcross)
+var CellSpanHalf   f32 = CellSpan / 2.0
+var Cells          [4][4]Cell   // FIXME: use constants when we can 
+var Carvs          []CarvedRoom // used/carved-out locations of the Cells grid 
 
 type Cell struct {
 	CarvedId i32 // MAX_I32 == solid rock 
@@ -56,10 +57,13 @@ func Init () {
 }
 
 
-/*
 func GetNumCarvedOutRooms () (num i32) {
 	num = len(Carvs)	
 }
+func GetRoom (id i32) (room CarvedRoom) {
+	room = Carvs[id]
+}
+/*
 func GetNumExitsAt (roomId i32) (num i32) {
 	num = len(Carvs[roomId].Exits)
 }
@@ -81,17 +85,15 @@ func DrawQuads () {
 
 	draw.QuadsBegin()
 		var n i32 = len(Carvs)
-		//printf("murrr: %d \n", n)
+		//printf("len(Carvs): %d \n", n)
 		for i := 0; i < n; i++ {
 			var x i32 = Carvs[i].Pos.X
 			var y i32 = Carvs[i].Pos.Y
-			var mulX f32 = f32.mul(i32.f32(x), CellSpan)
-			var mulY f32 = f32.mul(i32.f32(y), CellSpan)
 			
-			var b f32 = f32.add(-1.0, mulY)
-			var l f32 = f32.add(-1.0, mulX)
-			var t f32 = b + CellSpan
+			var l f32 = f32.mul(i32.f32(x), CellSpan)
+			var b f32 = f32.mul(i32.f32(y), CellSpan)
 			var r f32 = l + CellSpan
+			var t f32 = b + CellSpan
 			
 			draw.SetSequentiallyCycledColor(i32.add(x, i32.mul(y, NumCellsAcross)))
 			draw.Quad(t, r, b, l)

@@ -1,47 +1,87 @@
 package entities
 
+import "app"
 import "inputs"
+import "map"
 import "mov"
 import "space"
 
 
 
-type Ball struct {
-	x f32
-	y f32
-	vx f32
-	vy f32
+type Entity struct {
+	x       f32
+	y       f32
+	vx      f32
+	vy      f32
 	gravity f32
-	radius f32
+	radius  f32
+	
+	CellMin app.Vec2 // boundaries of the current cell it's in 
+	CellMax app.Vec2 // ^ 
 }
 
-var ball Ball
+var ball Entity
 
 
 
 func Init () {
-	ball = Ball{
+	str.print("entities.Init ()")
+	
+	ball = Entity{
 		radius: 0.05,
 		x: 0.0,
 		y: 0.0,
 		vx: 0.0,
 		vy: 0.0,
 		gravity: 0.01}
+		
+	putPlayerInRandomRoom()
 }
 
 
 func Update () {
-		// ball velocity & position 
-		ball.vx = mov.GetVelocityChangesFromInput(ball.vx, inputs.GLFW_KEY_A, inputs.GLFW_KEY_D)
-		ball.vy = mov.GetVelocityChangesFromInput(ball.vy, inputs.GLFW_KEY_S, inputs.GLFW_KEY_W)
-		ball.vx = mov.GetVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
-		ball.vy = mov.GetVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, -1.0D, 1.0D)
-		// when speed gets high enough, a simple velocity reversal isn't enough 
-		// (jitters back & forth without getting back in bounds)
-		ball.x = mov.EnsureEntirelyWithinBounds(ball.x, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
-		ball.y = mov.EnsureEntirelyWithinBounds(ball.y, ball.radius, -1.0D, 1.0D)
-		
-		// motion 
-		ball.x = f32.add(ball.x, ball.vx)
-		ball.y = f32.add(ball.y, ball.vy)
+	// ball velocity & position 
+	ball.vx = mov.GetVelocityChangesFromInput(ball.vx, inputs.GLFW_KEY_A, inputs.GLFW_KEY_D)
+	ball.vy = mov.GetVelocityChangesFromInput(ball.vy, inputs.GLFW_KEY_S, inputs.GLFW_KEY_W)
+	ball.vx = mov.GetVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
+	ball.vy = mov.GetVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, -1.0D, 1.0D)
+	// when speed gets high enough, a simple velocity reversal isn't enough 
+	// (jitters back & forth without getting back in bounds)
+	ball.x = mov.EnsureEntirelyWithinBounds(ball.x, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
+	ball.y = mov.EnsureEntirelyWithinBounds(ball.y, ball.radius, -1.0D, 1.0D)
+	
+	// motion 
+	ball.x = f32.add(ball.x, ball.vx)
+	ball.y = f32.add(ball.y, ball.vy)
+}
+
+
+func SetPos (pos app.Vec2) {
+	ball.x = pos.X
+	ball.y = pos.Y
+	//printf("SetPos () ball.x: %f \n", ball.x)
+	//printf("SetPos () ball.y: %f \n", ball.y)
+}
+
+
+func putPlayerInRandomRoom () {
+	var rand i32 = i32.rand(0, map.GetNumCarvedOutRooms())
+	var room CarvedRoom = map.GetRoom(rand)
+	var minX f32 = i32.f32(room.Pos.X) * map.CellSpan
+	var minY f32 = i32.f32(room.Pos.Y) * map.CellSpan
+	
+	var pos app.Vec2
+	pos = app.Vec2{
+		X: minX + map.CellSpanHalf, 
+		Y: minY + map.CellSpanHalf}
+	SetPos(pos)
+
+	// set boundaries (for limiting collision checks) 
+	ball.CellMin.X = minX
+	ball.CellMin.Y = minY
+	ball.CellMax.X = minX + map.CellSpan
+	ball.CellMax.Y = minY + map.CellSpan
+	
+	//printf("putPlayerInRandomRoom ball.x: %f \n", ball.x)
+	//printf("putPlayerInRandomRoom ball.y: %f \n", ball.y)
 }
