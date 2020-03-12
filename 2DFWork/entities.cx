@@ -43,12 +43,16 @@ func Update () {
 	// ball velocity & position 
 	ball.vx = mov.GetVelocityChangesFromInput(ball.vx, inputs.GLFW_KEY_A, inputs.GLFW_KEY_D)
 	ball.vy = mov.GetVelocityChangesFromInput(ball.vy, inputs.GLFW_KEY_S, inputs.GLFW_KEY_W)
-	ball.vx = mov.GetVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
-	ball.vy = mov.GetVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, -1.0D, 1.0D)
+	ball.vx = mov.GetVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, 
+		ball.CellMin.X, ball.CellMax.X) //space.ViewEdgeL, space.ViewEdgeR)
+	ball.vy = mov.GetVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, 
+		ball.CellMin.Y, ball.CellMax.Y) //-1.0D, 1.0D)
 	// when speed gets high enough, a simple velocity reversal isn't enough 
 	// (jitters back & forth without getting back in bounds)
-	ball.x = mov.EnsureEntirelyWithinBounds(ball.x, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
-	ball.y = mov.EnsureEntirelyWithinBounds(ball.y, ball.radius, -1.0D, 1.0D)
+	ball.x = mov.EnsureEntirelyWithinBounds(ball.x, ball.radius, 
+		ball.CellMin.X, ball.CellMax.X) //space.ViewEdgeL, space.ViewEdgeR)
+	ball.y = mov.EnsureEntirelyWithinBounds(ball.y, ball.radius, 
+		ball.CellMin.Y, ball.CellMax.Y) //-1.0D, 1.0D)
 	
 	// motion 
 	ball.x = f32.add(ball.x, ball.vx)

@@ -65,14 +65,14 @@ func GetVelocityChangesFromInput (velocity f32, subKey i32, addKey i32) (out f32
 
 
 // position, velocity, radius, negative value edge boundary, positive value edge boundary 
-func GetVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f64, posEdge f64) (out f32) {
+func GetVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f32, posEdge f32) (out f32) {
 	out = vel
 
-	if f32.lteq(f32.sub(pos, rad), f64.f32(negEdge)) { 
+	if f32.lteq(f32.sub(pos, rad), negEdge) { 
 		// hit neg edge 
 		out = f32.abs(vel)
 	} else
-	if f32.gteq(f32.add(pos, rad), f64.f32(posEdge)) { 
+	if f32.gteq(f32.add(pos, rad), posEdge) { 
 		// hit pos edge 
 		out = 0.0 - f32.abs(vel)
 	}
@@ -80,17 +80,15 @@ func GetVelocityChangesOnEdgeCollision (pos f32, vel f32, rad f32, negEdge f64, 
 
 
 // position, radius, negative value edge boundary, positive value edge boundary 
-func EnsureEntirelyWithinBounds (pos f32, rad f32, negEdge f64, posEdge f64) (out f32) {
+func EnsureEntirelyWithinBounds (pos f32, rad f32, negEdge f32, posEdge f32) (out f32) {
 	out = pos
-	ne := f64.f32(negEdge)
-	pe := f64.f32(posEdge)
 
-	if f32.lteq(f32.sub(pos, rad), ne) { 
+	if f32.lteq(f32.sub(pos, rad), negEdge) { 
 		// hit neg edge 
-		out = f32.add(ne, rad)
+		out = f32.add(negEdge, rad)
 	} else
-	if f32.gteq(f32.add(pos, rad), pe) { 
+	if f32.gteq(f32.add(pos, rad), posEdge) { 
 		// hit pos edge 
-		out = f32.sub(pe, rad)
+		out = f32.sub(posEdge, rad)
 	}
 }
