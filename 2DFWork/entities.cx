@@ -10,16 +10,21 @@ import "space"
 
 
 type Entity struct {
-	x       f32
-	y       f32
-	vx      f32
-	vy      f32
-	gravity f32
-	radius  f32
+	x         f32
+	y         f32
+	vx        f32
+	vy        f32
+	gravity   f32
+	radius    f32
 	
-	CellMin app.Vec2 // boundaries of the current cell it's in 
-	CellMax app.Vec2 // ^ 
+	// cell bounds/connections 
+	CellMin   app.Vec2 // boundaries of the current cell it's in 
+	CellMax   app.Vec2 // ^ 
 	//Room    map.CarvedRoom
+	ExitNorth bool
+	ExitSouth bool
+	ExitEast  bool
+	ExitWest  bool
 }
 
 var ball Entity
@@ -42,22 +47,26 @@ func Init () {
 
 
 func Update () {
-	// ball velocity & position 
+	// velocity 
+	//		player desired 
 	mov.SetPlayerVelocityFromInput()
+	//		by collision bounce 
 	ball.vx = mov.GetVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, 
-		ball.CellMin.X, ball.CellMax.X) //space.ViewEdgeL, space.ViewEdgeR)
+		ball.CellMin.X, ball.CellMax.X, ball.ExitWest, ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
 	ball.vy = mov.GetVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, 
-		ball.CellMin.Y, ball.CellMax.Y) //-1.0D, 1.0D)
-	// when speed gets high enough, a simple velocity reversal isn't enough 
-	// (jitters back & forth without getting back in bounds)
-	ball.x = mov.EnsureEntirelyWithinBounds(ball.x, ball.radius, 
-		ball.CellMin.X, ball.CellMax.X) //space.ViewEdgeL, space.ViewEdgeR)
-	ball.y = mov.EnsureEntirelyWithinBounds(ball.y, ball.radius, 
-		ball.CellMin.Y, ball.CellMax.Y) //-1.0D, 1.0D)
+		ball.CellMin.Y, ball.CellMax.Y, ball.ExitSouth, ball.ExitNorth) //-1.0D, 1.0D)
 	
-	// motion 
+	// motion/position 
 	ball.x = f32.add(ball.x, ball.vx)
 	ball.y = f32.add(ball.y, ball.vy)
+
+	// position correction 
+	// 		when speed gets high enough, a simple velocity reversal isn't enough 
+	// 		(jitters back & forth without getting back in bounds)
+	ball.x = mov.EnsureEntirelyWithinBounds(ball.x, ball.radius, 
+		ball.CellMin.X, ball.CellMax.X, ball.ExitWest, ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
+	ball.y = mov.EnsureEntirelyWithinBounds(ball.y, ball.radius, 
+		ball.CellMin.Y, ball.CellMax.Y, ball.ExitSouth, ball.ExitNorth) //-1.0D, 1.0D)
 }
 
 
@@ -76,6 +85,19 @@ func putPlayerInRandomRoom () {
 	str.print("1st room has exits in:")
 	for i := 0; i < len(room.Exits); i++ {
 		str.print(geom.GetTextForDir(room.Exits[i]))
+		
+		if room.Exits[i] == geom.DIR_LEFT  {
+			ball.ExitWest = true
+		}else
+		if room.Exits[i] == geom.DIR_RIGHT {
+			ball.ExitEast = true
+		}else
+		if room.Exits[i] == geom.DIR_DOWN  {
+			ball.ExitSouth = true
+		}else
+		if room.Exits[i] == geom.DIR_UP    {
+			ball.ExitNorth = true
+		}
 	}
 	
 	var minX f32 = i32.f32(room.Pos.X) * map.CellSpan
