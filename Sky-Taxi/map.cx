@@ -28,6 +28,7 @@ import "geom"
 
 
 var NumCellsAcross i32 = 4 // in both dimensions 
+var WTh            f32 = 0.085 // wall thickness 
 var CellSpan       f32 = 2.0 / i32.f32(NumCellsAcross)
 var CellSpanHalf   f32 = CellSpan / 2.0
 var Cells          [4][4]Cell   // FIXME: use constants when we can 
@@ -40,13 +41,15 @@ type Cell struct {
 
 type CarvedRoom struct {
 	// insets (from room bounds) 
-	/*Top    f32
+	/*
+	Top    f32
 	Right  f32
 	Bottom f32
-	Left   f32*/
+	Left   f32
+	*/
 	
-	Pos       app.Vec2I
-	Exits     []i32
+	Pos    app.Vec2I
+	Exits  []i32
 }
 
 
@@ -100,23 +103,22 @@ func DrawQuads () {
 			
 			// connection rects 
 			draw.SetColorByRGB(0.0, 0.0, 0.0) // black 
-			var ins f32 = 0.085 // inset 
 			var ex i32 // exit 
 			
 			for j := 0; j < len(Carvs[i].Exits); j++ {
 				var ex i32 = Carvs[i].Exits[j]
 
 				if ex == geom.DIR_LEFT {
-					draw.Quad(t-ins, r-ins, b+ins, l)
+					draw.Quad(t-WTh, r-WTh, b+WTh, l)
 				}else	
 				if ex == geom.DIR_RIGHT {
-					draw.Quad(t-ins, r,     b+ins, l+ins)
+					draw.Quad(t-WTh, r,     b+WTh, l+WTh)
 				}else	
 				if ex == geom.DIR_DOWN {
-					draw.Quad(t-ins, r-ins, b,     l+ins)
+					draw.Quad(t-WTh, r-WTh, b,     l+WTh)
 				}else	
 				if ex == geom.DIR_UP {
-					draw.Quad(t,     r-ins, b+ins, l+ins)
+					draw.Quad(t,     r-WTh, b+WTh, l+WTh)
 				}
 			}
 		}

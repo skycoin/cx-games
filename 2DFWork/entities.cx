@@ -81,10 +81,10 @@ func putPlayerInRandomRoom () {
 	SetPos(pos)
 
 	// set boundaries (for limiting collision checks) 
-	ball.CellMin.X = minX
-	ball.CellMin.Y = minY
-	ball.CellMax.X = minX + map.CellSpan
-	ball.CellMax.Y = minY + map.CellSpan
+	ball.CellMin.X = minX + map.WTh
+	ball.CellMin.Y = minY + map.WTh
+	ball.CellMax.X = minX + map.CellSpan - map.WTh
+	ball.CellMax.Y = minY + map.CellSpan - map.WTh
 	
 	//printf("putPlayerInRandomRoom ball.x: %f \n", ball.x)
 	//printf("putPlayerInRandomRoom ball.y: %f \n", ball.y)
