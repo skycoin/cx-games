@@ -72,8 +72,11 @@ func getVelocity (velocity f32, negative bool, positive bool) (out f32) {
 }
 
 
-// position, velocity, radius, negative edge boundary, positive edge boundary 
-// returns: gridDelta is the change to the current index into the "Cells" grid array. 
+// args: 
+// position, velocity, radius, negative edge boundary, positive edge boundary, 
+// exit in negative direction, exit in positive direction 
+// returns: 
+// gridDelta is the change to the current index into the "Cells" grid array. 
 // (for when player crosses the boundary into an adjacent cell) 
 func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExit bool, posExit bool) (gridDelta i32, outPos f32, outVel f32) {
 	outPos = pos

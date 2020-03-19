@@ -34,16 +34,6 @@ var ball Entity
 
 func Init () {
 	str.print("entities.Init ()")
-	
-	ball = Entity{
-		radius:  0.05,
-		x:       0.0,
-		y:       0.0,
-		vx:      0.0,
-		vy:      0.0,
-		gravity: 0.01}
-
-	map.SetPlayerRoomBounds(i32.rand(0, map.GetNumCarvedOutRooms()), true)
 }
 
 
@@ -66,7 +56,7 @@ func Update () {
 	if gridDelta != 0 {
 		var x i32 = ball.GridPos.X + gridDelta
 		var y i32 = ball.GridPos.Y
-		var id i32 = map.GetCarvedIdAt(x, y)
+		var id i32 = map.GetCarvsIdAt(x, y)
 		printf("ABOUT TO CALL SetPlayerRoomBounds - x,y: %d,%d --- id: %d \n", x, y, id)
 		map.SetPlayerRoomBounds(id, false)
 	}
@@ -78,7 +68,7 @@ func Update () {
 	if gridDelta != 0 {
 		var x i32 = ball.GridPos.X
 		var y i32 = ball.GridPos.Y + gridDelta
-		var id i32 = map.GetCarvedIdAt(x, y)
+		var id i32 = map.GetCarvsIdAt(x, y)
 		printf("ABOUT TO CALL SetPlayerRoomBounds - x,y: %d,%d --- id: %d \n", x, y, id)
 		map.SetPlayerRoomBounds(id, false)
 	}
@@ -86,4 +76,15 @@ func Update () {
 	// position correction 
 	// 		when speed gets high enough, a simple velocity reversal isn't enough 
 	// 		(jitters back & forth without getting back in bounds)
+}
+
+
+func InitPlayer () {
+	ball = Entity{
+		radius:  0.05,
+		x:       0.0,
+		y:       0.0,
+		vx:      0.0,
+		vy:      0.0,
+		gravity: 0.01}
 }
