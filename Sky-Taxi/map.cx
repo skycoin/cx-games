@@ -55,6 +55,8 @@ type CarvedRoom struct {
 
 
 func Init () {
+	str.print("map.Init ()")
+	
 	setupPossibleExits()
 	carveOutConnectedRooms()
 }
@@ -63,9 +65,9 @@ func Init () {
 func GetNumCarvedOutRooms () (num i32) {
 	num = len(Carvs)	
 }
-func GetRoom (id i32) (room CarvedRoom) {
-	room = Carvs[id]
-}
+//func GetRoom (id i32) (room CarvedRoom) {
+//	room = Carvs[id]
+//}
 func GetCarvedIdAt (x i32, y i32) (id i32) {
 	id = Cells[y][x].CarvedId
 }
@@ -77,6 +79,70 @@ func GetExitAt (roomId i32, exitId i32) (num i32) {
 	num = len(Carvs[roomId].Exits[exitId])
 }
 */ 
+
+
+
+
+func SetPlayerPos (pos app.Vec2) {
+	entities.ball.x = pos.X
+	entities.ball.y = pos.Y
+	//printf("SetPlayerPos () ball.x: %f \n", ball.x)
+	//printf("SetPlayerPos () ball.y: %f \n", ball.y)
+}
+func SetPlayerRoomBounds (roomId i32, putInCenter bool) {
+	printf("SetPlayerRoomBounds (roomId: %d) =============================\n", roomId)
+	var room CarvedRoom = Carvs[roomId]
+	entities.ball.GridPos = room.Pos
+	printf("set ball.GridPos: %d,%d \n", entities.ball.GridPos.X, entities.ball.GridPos.Y)
+	
+	var minX f32 = i32.f32(room.Pos.X) * CellSpan
+	var minY f32 = i32.f32(room.Pos.Y) * CellSpan
+	
+	if putInCenter {
+		var pos app.Vec2
+		pos = app.Vec2{
+			X: minX + CellSpanHalf, 
+			Y: minY + CellSpanHalf}
+		SetPlayerPos(pos)
+	}
+
+	// set boundaries (for limiting collision checks) 
+	entities.ball.CellMin.X = minX + WTh
+	entities.ball.CellMin.Y = minY + WTh
+	entities.ball.CellMax.X = minX + CellSpan - WTh
+	entities.ball.CellMax.Y = minY + CellSpan - WTh
+	//entities.ball.Room    = room // CAN'T FIGURE OUT WHY THIS MAKES AVATAR DISAPPEAR 
+	
+	
+	// setup connection flags/boundaries 	
+	entities.ball.ExitWest  = false
+	entities.ball.ExitEast  = false
+	entities.ball.ExitSouth = false
+	entities.ball.ExitNorth = false
+	str.print("NEW room has exits in:")
+	for i := 0; i < len(room.Exits); i++ {
+		str.print(geom.GetTextForDir(room.Exits[i]))
+		
+		if room.Exits[i] == geom.DIR_LEFT  {
+			entities.ball.ExitWest = true
+			entities.ball.CellMin.X = minX
+		}else
+		if room.Exits[i] == geom.DIR_RIGHT {
+			entities.ball.ExitEast = true
+			entities.ball.CellMax.X = minX + CellSpan
+		}else
+		if room.Exits[i] == geom.DIR_DOWN  {
+			entities.ball.ExitSouth = true
+			entities.ball.CellMin.Y = minY
+		}else
+		if room.Exits[i] == geom.DIR_UP    {
+			entities.ball.ExitNorth = true
+			entities.ball.CellMax.Y = minY + CellSpan
+		}
+	}
+}
+
+
 // ideally, the below func would be in "sky-taxi/draw.cx", 
 // but moving it there would require the 3 funcs above PLUS more, 
 // in order to get all the data you'd need from the "map" package. 
