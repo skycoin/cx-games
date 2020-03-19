@@ -36,7 +36,7 @@ var Carvs          []CarvedRoom // used/carved-out locations of the Cells grid
 
 type Cell struct {
 	CarvedId i32 // MAX_I32 == solid rock 
-	Exits    []i32
+	Exits    []i32 // initial possibilities that point to all valid grid slot neighbor cells 
 }
 
 type CarvedRoom struct {
@@ -49,7 +49,7 @@ type CarvedRoom struct {
 	*/
 	
 	Pos    app.Vec2I
-	Exits  []i32
+	Exits  []i32 // the actual room connections after map generation 
 }
 
 
@@ -129,36 +129,36 @@ func DrawQuads () {
 
 
 func setupPossibleExits () {
-	for iY := 0; iY < NumCellsAcross; iY++ {
-	for iX := 0; iX < NumCellsAcross; iX++ {
-		var r Cell
-		r.CarvedId = app.MAX_I32
-		
-		if iX > 0 {
-			r.Exits = append(
-			r.Exits, geom.DIR_LEFT)
+	for     iY := 0; iY < NumCellsAcross; iY++ {
+		for iX := 0; iX < NumCellsAcross; iX++ {
+			var r Cell
+			r.CarvedId = app.MAX_I32
+			
+			if iX > 0 {
+				r.Exits = append(
+				r.Exits, geom.DIR_LEFT)
+			}
+			
+			if iX < i32.sub(NumCellsAcross, 1) {
+				r.Exits = append(
+				r.Exits, geom.DIR_RIGHT)
+			}
+			
+			if iY > 0 {
+				r.Exits = append(
+				r.Exits, geom.DIR_DOWN)
+			}
+			
+			if iY < i32.sub(NumCellsAcross, 1) {
+				r.Exits = append(
+				r.Exits, geom.DIR_UP)
+			}
+			
+			Cells[iY][iX] = r
+			//printf("setupPossibleExits() len(r.Exits): %d \n", len(r.Exits))
+			////var poss []i32 = Cells[iY][iX].Exits
+			////printf("Cells[iY][iX].Exits: %d \n", len(poss))
 		}
-		
-		if iX < i32.sub(NumCellsAcross, 1) {
-			r.Exits = append(
-			r.Exits, geom.DIR_RIGHT)
-		}
-		
-		if iY > 0 {
-			r.Exits = append(
-			r.Exits, geom.DIR_DOWN)
-		}
-		
-		if iY < i32.sub(NumCellsAcross, 1) {
-			r.Exits = append(
-			r.Exits, geom.DIR_UP)
-		}
-		
-		Cells[iY][iX] = r
-		//printf("setupPossibleExits() len(r.Exits): %d \n", len(r.Exits))
-		////var poss []i32 = Cells[iY][iX].Exits
-		////printf("Cells[iY][iX].Exits: %d \n", len(poss))
-	}
 	}
 }
 
@@ -211,29 +211,109 @@ func carveOutConnectedRooms () {
 			str.print("___________________________________________________________")
 			if e == geom.DIR_LEFT {
 				drillConnectingWallsAndMaybeRoom(x, y, e, x-1, y)
-				Carvs[orId].Exits = append(
-				Carvs[orId].Exits, e)
-				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}else			
 			if e == geom.DIR_RIGHT {
 				drillConnectingWallsAndMaybeRoom(x, y, e, x+1, y)
-				Carvs[orId].Exits = append(
-				Carvs[orId].Exits, e)
-				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}else			
 			if e == geom.DIR_DOWN {
 				drillConnectingWallsAndMaybeRoom(x, y, e, x, y-1)
-				Carvs[orId].Exits = append(
-				Carvs[orId].Exits, e)
-				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
 			}else			
 			if e == geom.DIR_UP {
 				drillConnectingWallsAndMaybeRoom(x, y, e, x, y+1)
-				Carvs[orId].Exits = append(
-				Carvs[orId].Exits, e)
-				printf("--------------------- Carvs[orId].Exits: %d \n", len(Carvs[orId].Exits))
+			}
+
+			Carvs[orId].Exits = append(
+			Carvs[orId].Exits, e)
+			printf("--------------------- Carvs[orId: %d].(len)Exits: %d \n", orId, len(Carvs[orId].Exits))
+			DrawAsciiGraphics()
+		}
+	}
+
+	//DrawAsciiGraphics()
+}
+
+
+func DrawAsciiGraphics () {
+	// XXXXXXXX
+	//    ^^ 
+	// << 11 >> 
+	//    vv
+	
+	for iY := NumCellsAcross - 1; iY >= 0; iY-- {
+		var s0 str
+		var s1 str
+		var s2 str
+		
+		for iX := 0; iX < NumCellsAcross; iX++ {
+			var carvId i32 = Cells[iY][iX].CarvedId
+			
+			if carvId == app.MAX_I32 {
+				s0 = s0 + "XXXXXXXX  "
+				s1 = s1 + "XXXXXXXX  "
+				s2 = s2 + "XXXXXXXX  "
+			}else{
+				var l bool
+				var r bool
+				var d bool
+				var u bool
+
+				for j := 0; j < len(Carvs[carvId].Exits); j++ {
+					var ex i32 = Carvs[carvId].Exits[j]
+
+					if ex == geom.DIR_LEFT {
+						l = true
+					}
+					
+					if ex == geom.DIR_RIGHT {
+						r = true
+					}
+					
+					if ex == geom.DIR_DOWN {
+						d = true
+					}
+					
+					if ex == geom.DIR_UP {
+						u = true
+					}
+				}
+				
+				if u {
+					s0 = s0 + "   ^^     "
+				}else{
+					s0 = s0 + "          "
+				}
+				
+				if l {
+					s1 = s1 + "<< "
+				}else{
+					s1 = s1 + "   "
+				}
+				
+				// id in the middle 
+				if carvId < 10 {
+					s1 = s1 + " "
+				}
+				var st str = sprintf("%d", carvId)
+				s1 = s1 + st
+				
+				if r {
+					s1 = s1 + " >>  "
+				}else{
+					s1 = s1 + "     "
+				}
+				
+				if d {
+					s2 = s2 + "   VV     "
+				}else{
+					s2 = s2 + "          "
+				}
 			}
 		}
+		
+		str.print("\n")
+		str.print(s0)
+		str.print(s1)
+		str.print(s2)
 	}
 }
 
@@ -247,13 +327,14 @@ func carveOutRoom (x i32, y i32, carvedId i32) (out CarvedRoom) {
 
 // old x,y, new x,y 
 func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) {
-	var tr CarvedRoom // target room (of wall drilling) 
+	var tr CarvedRoom // target/destination room (to connect to) 
 	var targId i32 = Cells[nY][nX].CarvedId
 
 	if targId == app.MAX_I32 {
 		str.print("CARVE ROOM")
 		
 		tr = carveOutRoom(nX, nY, len(Carvs))
+		printf("cell @ %d,%d .CarvedId: %d \n", nX, nY, Cells[nY][nX].CarvedId)
 		
 		tr.Exits = append(
 		tr.Exits, geom.GetInvertedDir(dir))

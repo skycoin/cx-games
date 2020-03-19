@@ -17,10 +17,11 @@ type Entity struct {
 	gravity   f32
 	radius    f32
 	
+	GridPos   app.Vec2I
 	// cell bounds/connections 
 	CellMin   app.Vec2 // boundaries of the current cell it's in 
 	CellMax   app.Vec2 // ^ 
-	//Room    map.CarvedRoom
+	//Room    map.CarvedRoom // CAN'T FIGURE OUT WHY THIS MAKES AVATAR DISAPPEAR 
 	ExitNorth bool
 	ExitSouth bool
 	ExitEast  bool
@@ -35,14 +36,14 @@ func Init () {
 	str.print("entities.Init ()")
 	
 	ball = Entity{
-		radius: 0.05,
-		x: 0.0,
-		y: 0.0,
-		vx: 0.0,
-		vy: 0.0,
+		radius:  0.05,
+		x:       0.0,
+		y:       0.0,
+		vx:      0.0,
+		vy:      0.0,
 		gravity: 0.01}
 		
-	putPlayerInRandomRoom()
+	SetPlayerRoomBounds(i32.rand(0, map.GetNumCarvedOutRooms()))
 }
 
 
@@ -55,11 +56,24 @@ func Update () {
 	ball.x = f32.add(ball.x, ball.vx)
 	ball.y = f32.add(ball.y, ball.vy)
 
-	//		by collision bounce 
-	ball.x, ball.vx = mov.BounceOffWalls(ball.x, ball.vx, ball.radius, 
+
+	// collision bounce 
+	var gridDelta i32 // for player crossing boundaries into adjacent grid cells 
+	
+	gridDelta, ball.x, ball.vx = mov.BounceOffWalls(ball.x, ball.vx, ball.radius, 
 		ball.CellMin.X, ball.CellMax.X, ball.ExitWest, ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
-	ball.y, ball.vy = mov.BounceOffWalls(ball.y, ball.vy, ball.radius, 
+	
+	if gridDelta != 0 {
+		SetPlayerRoomBounds(map.Cells[ball.GridPos.Y][ball.GridPos.X + gridDelta].CarvedId)
+	}
+
+	
+	gridDelta, ball.y, ball.vy = mov.BounceOffWalls(ball.y, ball.vy, ball.radius, 
 		ball.CellMin.Y, ball.CellMax.Y, ball.ExitSouth, ball.ExitNorth) //-1.0D, 1.0D)
+
+	if gridDelta != 0 {
+		SetPlayerRoomBounds(map.Cells[ball.GridPos.Y + gridDelta][ball.GridPos.X].CarvedId)
+	}
 
 	// position correction 
 	// 		when speed gets high enough, a simple velocity reversal isn't enough 
@@ -75,9 +89,11 @@ func SetPos (pos app.Vec2) {
 }
 
 
-func putPlayerInRandomRoom () {
-	var rand i32 = i32.rand(0, map.GetNumCarvedOutRooms())
-	var room CarvedRoom = map.GetRoom(rand)
+func SetPlayerRoomBounds (roomId i32) {
+	printf("SetPlayerRoomBounds (roomId: %d) \n", roomId)
+	var room CarvedRoom = map.GetRoom(roomId)
+	ball.GridPos = room.Pos
+	printf("setting ball.GridPos: %d,%d \n", ball.GridPos.X, ball.GridPos.Y)
 	
 	var minX f32 = i32.f32(room.Pos.X) * map.CellSpan
 	var minY f32 = i32.f32(room.Pos.Y) * map.CellSpan
@@ -93,7 +109,7 @@ func putPlayerInRandomRoom () {
 	ball.CellMin.Y = minY + map.WTh
 	ball.CellMax.X = minX + map.CellSpan - map.WTh
 	ball.CellMax.Y = minY + map.CellSpan - map.WTh
-	//ball.Room      = map.GetRoom(rand) //room
+	//ball.Room      = room // CAN'T FIGURE OUT WHY THIS MAKES AVATAR DISAPPEAR 
 	
 	
 	// setup connection flags/boundaries 	
@@ -101,7 +117,7 @@ func putPlayerInRandomRoom () {
 	ball.ExitEast  = false
 	ball.ExitSouth = false
 	ball.ExitNorth = false
-	str.print("1st room has exits in:")
+	str.print("NEW room has exits in:")
 	for i := 0; i < len(room.Exits); i++ {
 		str.print(geom.GetTextForDir(room.Exits[i]))
 		
