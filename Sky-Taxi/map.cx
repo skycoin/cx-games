@@ -60,20 +60,21 @@ func Init () {
 	setupPossibleExits()
 	carveOutConnectedRooms()
 	entities.InitPlayer()
-	SetPlayerRoomBounds(i32.rand(0, len(Carvs)), true)
+	var r i32 = i32.rand(0, len(Carvs))
+	SetPlayerRoomBounds(Carvs[r].Pos.X, Carvs[r].Pos.Y, true)
 }
 
 
-//func GetNumCarvedOutRooms () (num i32) {
-//	num = len(Carvs)
-//}
-//func GetRoom (id i32) (room CarvedRoom) {
-//	room = Carvs[id]
-//}
+/*
+func GetNumCarvedOutRooms () (num i32) {
+	num = len(Carvs)
+}
+func GetRoom (id i32) (room CarvedRoom) {
+	room = Carvs[id]
+}
 func GetCarvsIdAt (x i32, y i32) (id i32) {
 	id = Cells[y][x].CarvsId
 }
-/*
 func GetNumExitsAt (roomId i32) (num i32) {
 	num = len(Carvs[roomId].Exits)
 }
@@ -83,16 +84,17 @@ func GetExitAt (roomId i32, exitId i32) (num i32) {
 */ 
 
 
-
-
 func SetPlayerPos (pos app.Vec2) {
 	entities.ball.x = pos.X
 	entities.ball.y = pos.Y
 	//printf("SetPlayerPos () ball.x: %f \n", ball.x)
 	//printf("SetPlayerPos () ball.y: %f \n", ball.y)
 }
-func SetPlayerRoomBounds (roomId i32, putInCenter bool) {
+func SetPlayerRoomBounds (x i32, y i32, putInCenter bool) {
+	var roomId i32 = Cells[y][x].CarvsId
+
 	printf("SetPlayerRoomBounds (roomId: %d) =============================\n", roomId)
+	printf("    x,y: %d,%d \n", x, y)
 	var room CarvedRoom = Carvs[roomId]
 	entities.ball.GridPos = room.Pos
 	printf("set ball.GridPos: %d,%d \n", entities.ball.GridPos.X, entities.ball.GridPos.Y)
