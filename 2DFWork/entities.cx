@@ -90,10 +90,10 @@ func SetPos (pos app.Vec2) {
 
 
 func SetPlayerRoomBounds (roomId i32) {
-	printf("SetPlayerRoomBounds (roomId: %d) \n", roomId)
+	printf("SetPlayerRoomBounds (roomId: %d) =============================\n", roomId)
 	var room CarvedRoom = map.GetRoom(roomId)
 	ball.GridPos = room.Pos
-	printf("setting ball.GridPos: %d,%d \n", ball.GridPos.X, ball.GridPos.Y)
+	printf("set ball.GridPos: %d,%d \n", ball.GridPos.X, ball.GridPos.Y)
 	
 	var minX f32 = i32.f32(room.Pos.X) * map.CellSpan
 	var minY f32 = i32.f32(room.Pos.Y) * map.CellSpan

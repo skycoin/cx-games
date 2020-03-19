@@ -10,7 +10,9 @@ func drawAll () {
 	pre()
 	map.DrawQuads()
 
-	draw.SetColor4(draw.White, 0.2)
+	// the 2 lines below were a temporary debug measure, 
+	// but commenting them out makes EVERYthing invisible ATM 
+	draw.SetColor4(draw.White, 0.0)
 	draw.ScaledPic(draw.PicBackground, 0.0, 0.0, 1.0, 1.0)
 
 	draw.Ball(entities.ball)

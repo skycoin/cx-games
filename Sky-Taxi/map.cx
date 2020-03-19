@@ -328,9 +328,9 @@ func carveOutRoom (x i32, y i32, carvedId i32) (out CarvedRoom) {
 // old x,y, new x,y 
 func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) {
 	var tr CarvedRoom // target/destination room (to connect to) 
-	var targId i32 = Cells[nY][nX].CarvedId
+	var newId i32 = Cells[nY][nX].CarvedId
 
-	if targId == app.MAX_I32 {
+	if newId == app.MAX_I32 {
 		str.print("CARVE ROOM")
 		
 		tr = carveOutRoom(nX, nY, len(Carvs))
@@ -344,23 +344,23 @@ func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) 
 	}else{
 		str.print("DRILL WALL")
 		
-		tr = Carvs[targId]
+		tr = Carvs[newId]
 		
 		tr.Exits = append(
 		tr.Exits, geom.GetInvertedDir(dir))
 	}
 	
-	printf("OLD room %d, %d   %s \n", oX, oY, geom.GetTextForDir(dir))
+	printf("OLD room %d (%d,%d)   %s \n", Cells[oY][oX].CarvedId, oX, oY, geom.GetTextForDir(dir))
 	removeExitFromGrid(oX, oY, dir)
 	
-	printf("NEW room %d, %d   %s \n", nX, nY, geom.GetTextForDir(geom.GetInvertedDir(dir)))
+	printf("NEW room %d (%d,%d)   %s \n", newId, nX, nY, geom.GetTextForDir(geom.GetInvertedDir(dir)))
 	removeExitFromGrid(nX, nY, geom.GetInvertedDir(dir))
 
 	printf("--------------------- tr.Exits: %d \n", len(tr.Exits))
 	printf("len(Carvs): %d \n", len(Carvs))
 
-	//if targId != app.MAX_I32 {
-	//	Carvs[targId] = tr
+	//if newId != app.MAX_I32 {
+	//	Carvs[newId] = tr
 	//}
 }
 
