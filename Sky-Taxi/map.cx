@@ -66,6 +66,9 @@ func GetNumCarvedOutRooms () (num i32) {
 func GetRoom (id i32) (room CarvedRoom) {
 	room = Carvs[id]
 }
+func GetCarvedIdAt (x i32, y i32) (id i32) {
+	id = Cells[y][x].CarvedId
+}
 /*
 func GetNumExitsAt (roomId i32) (num i32) {
 	num = len(Carvs[roomId].Exits)

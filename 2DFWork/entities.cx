@@ -43,7 +43,7 @@ func Init () {
 		vy:      0.0,
 		gravity: 0.01}
 		
-	SetPlayerRoomBounds(i32.rand(0, map.GetNumCarvedOutRooms()))
+	SetPlayerRoomBounds(i32.rand(0, map.GetNumCarvedOutRooms()), true)
 }
 
 
@@ -64,7 +64,11 @@ func Update () {
 		ball.CellMin.X, ball.CellMax.X, ball.ExitWest, ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
 	
 	if gridDelta != 0 {
-		SetPlayerRoomBounds(map.Cells[ball.GridPos.Y][ball.GridPos.X + gridDelta].CarvedId)
+		var x i32 = ball.GridPos.X + gridDelta
+		var y i32 = ball.GridPos.Y
+		var id i32 = map.GetCarvedIdAt(x, y)
+		printf("ABOUT TO CALL SetPlayerRoomBounds - x,y: %d,%d --- id: %d \n", x, y, id)
+		SetPlayerRoomBounds(id, false)
 	}
 
 	
@@ -72,7 +76,11 @@ func Update () {
 		ball.CellMin.Y, ball.CellMax.Y, ball.ExitSouth, ball.ExitNorth) //-1.0D, 1.0D)
 
 	if gridDelta != 0 {
-		SetPlayerRoomBounds(map.Cells[ball.GridPos.Y + gridDelta][ball.GridPos.X].CarvedId)
+		var x i32 = ball.GridPos.X
+		var y i32 = ball.GridPos.Y + gridDelta
+		var id i32 = map.GetCarvedIdAt(x, y)
+		printf("ABOUT TO CALL SetPlayerRoomBounds - x,y: %d,%d --- id: %d \n", x, y, id)
+		SetPlayerRoomBounds(id, false)
 	}
 
 	// position correction 
@@ -89,7 +97,7 @@ func SetPos (pos app.Vec2) {
 }
 
 
-func SetPlayerRoomBounds (roomId i32) {
+func SetPlayerRoomBounds (roomId i32, putInCenter bool) {
 	printf("SetPlayerRoomBounds (roomId: %d) =============================\n", roomId)
 	var room CarvedRoom = map.GetRoom(roomId)
 	ball.GridPos = room.Pos
@@ -98,11 +106,13 @@ func SetPlayerRoomBounds (roomId i32) {
 	var minX f32 = i32.f32(room.Pos.X) * map.CellSpan
 	var minY f32 = i32.f32(room.Pos.Y) * map.CellSpan
 	
-	var pos app.Vec2
-	pos = app.Vec2{
-		X: minX + map.CellSpanHalf, 
-		Y: minY + map.CellSpanHalf}
-	SetPos(pos)
+	if putInCenter {
+		var pos app.Vec2
+		pos = app.Vec2{
+			X: minX + map.CellSpanHalf, 
+			Y: minY + map.CellSpanHalf}
+		SetPos(pos)
+	}
 
 	// set boundaries (for limiting collision checks) 
 	ball.CellMin.X = minX + map.WTh
