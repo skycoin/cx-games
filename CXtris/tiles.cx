@@ -1,4 +1,4 @@
-package map // the cells of the playfield 
+package tiles // the cells of the playfield 
 
 import "app"
 import "main"

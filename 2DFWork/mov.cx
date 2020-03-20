@@ -78,12 +78,12 @@ func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExi
 
 	if vel < 0.0 {
 		if negExit {
-			if /* (over neg edge) */ pos < negEdge {
+			if pos < negEdge {
 				str.print("passed [-] threshold")
 				gridDelta = -1
 			}
 		}else{
-			if /* (rad over neg edge) */ pos - rad < negEdge {
+			if pos - rad < negEdge {
 				outPos = f32.add(negEdge, rad)
 				outVel = f32.abs(vel)
 			}
@@ -91,12 +91,12 @@ func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExi
 	}else
 	if vel > 0.0 {
 		if posExit {
-			if /* (over pos edge) */ pos >= posEdge {
+			if pos >= posEdge {
 				str.print("passed [+] threshold")
 				gridDelta = 1
 			}
 		}else{
-			if /* (rad over pos edge) */ pos + rad >= posEdge {
+			if pos + rad >= posEdge {
 				outPos = f32.sub(posEdge, rad)
 				outVel = 0.0 - f32.abs(vel)
 			}

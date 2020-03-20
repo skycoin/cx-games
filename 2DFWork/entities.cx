@@ -3,7 +3,6 @@ package entities
 import "app"
 import "geom"
 import "inputs"
-import "map"
 import "mov"
 import "space"
 

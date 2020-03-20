@@ -1,9 +1,9 @@
 package shape
 
 import "app"
-import "map"
 import "main"
 import "menu"
+import "tiles"
 
 
 
@@ -61,7 +61,7 @@ func SpawnNew () {
 	setupSizesAndOffsetsForNext()
 	
 	var i i32 = Extents[PlayerShape][PlayerFacing][FACING_UP] + 1
-	PlayerPos = app.Vec2I{ X: 4, Y: map.NUM_CELLS_Y - i }
+	PlayerPos = app.Vec2I{ X: 4, Y: tiles.NUM_CELLS_Y - i }
 	PlayerPosPrev = PlayerPos // looked kinda cool before this reset... 
 	                          // ...fix, but it felt buggy to ME 
 	
@@ -143,7 +143,7 @@ func AttemptMoveByOffset (x i32, y i32) (moved bool) {
 		moved = true
 	} else
 	if /* going right */ x > 0 &&
-		PlayerPos.X < map.NUM_CELLS_X - 1 - Extents[PlayerShape][PlayerFacing][FACING_RIGHT] &&
+		PlayerPos.X < tiles.NUM_CELLS_X - 1 - Extents[PlayerShape][PlayerFacing][FACING_RIGHT] &&
 		enoughCellsOpenForMoveDeltaAndDir(x, y, PlayerFacing) {
 		
 		PlayerPosPrev = PlayerPos
@@ -167,7 +167,7 @@ func AttemptMoveByOffset (x i32, y i32) (moved bool) {
 		}
 	} else
 	if /* going up */ y > 0 && // UNWANTED/UNUSED IN CXTRIS 
-		PlayerPos.Y < map.NUM_CELLS_Y - 1 - Extents[PlayerShape][PlayerFacing][FACING_UP] {
+		PlayerPos.Y < tiles.NUM_CELLS_Y - 1 - Extents[PlayerShape][PlayerFacing][FACING_UP] {
 		
 		PlayerPos.Y = i32.add(PlayerPos.Y, y)
 	}
@@ -195,15 +195,15 @@ func enoughCellsOpenForMoveDeltaAndDir (xOff i32, yOff i32, facing i32) (out boo
 				//printf("mX, mY: %d, %d \n", mX, mY)
 				
 				if mX < 0 ||
-					mX >= map.NUM_CELLS_X ||
+					mX >= tiles.NUM_CELLS_X ||
 					mY < 0 ||
-					mY >= map.NUM_CELLS_Y {
+					mY >= tiles.NUM_CELLS_Y {
 					
 					out = false
 					return
 				}
 				
-				if map.Cells[mY][mX] != map.EMPTY_CELL {
+				if tiles.Cells[mY][mX] != tiles.EMPTY_CELL {
 					out = false
 				}
 			}
@@ -217,7 +217,7 @@ func freezeShape () {
 		for y := 0; y < 5; y++ {
 			for x := 0; x < 5; x++ {
 				if Cells[PlayerShape][PlayerFacing][y][x] {
-					map.Cells[PlayerPos.Y - 2 + y][PlayerPos.X - 2 + x] = PlayerShape
+					tiles.Cells[PlayerPos.Y - 2 + y][PlayerPos.X - 2 + x] = PlayerShape
 				}
 			}
 		}
@@ -232,10 +232,10 @@ func freezeShape () {
 		
 		var rowFull bool = true
 			
-		for x := 0; bool.and(rowFull, x < map.NUM_CELLS_X); x++ {
+		for x := 0; bool.and(rowFull, x < tiles.NUM_CELLS_X); x++ {
 			//printf("x: %d \n", x)
 			
-			if map.Cells[y][x] == map.EMPTY_CELL {
+			if tiles.Cells[y][x] == tiles.EMPTY_CELL {
 				rowFull = false
 			}
 		}
@@ -243,19 +243,19 @@ func freezeShape () {
 		//str.print("if rowFull")
 		
 		if rowFull {
-			map.CollapsingRows = append(map.CollapsingRows, y)
-			map.CollapseStartTime = main.CurrTime
+			tiles.CollapsingRows = append(tiles.CollapsingRows, y)
+			tiles.CollapseStartTime = main.CurrTime
 			numRowsFilled = i32.add(numRowsFilled, 1)
 		
 			// shift all-rows-above down by one 
-			for j := i32.add(y, 1); j < map.NUM_CELLS_Y; j++ {
-				for i := 0; i < map.NUM_CELLS_X; i++ {
+			for j := i32.add(y, 1); j < tiles.NUM_CELLS_Y; j++ {
+				for i := 0; i < tiles.NUM_CELLS_X; i++ {
 					var lj i32 = i32.sub(j, 1) // lesser j 
-					map.Cells[lj][i] =	
-					map.Cells[j][i]
+					tiles.Cells[lj][i] =	
+					tiles.Cells[j][i]
 				
-					if /* on the top row */ j == i32.sub(map.NUM_CELLS_Y, 1) {
-						map.Cells[j][i] = map.EMPTY_CELL // clear row 
+					if /* on the top row */ j == i32.sub(tiles.NUM_CELLS_Y, 1) {
+						tiles.Cells[j][i] = tiles.EMPTY_CELL // clear row 
 					}
 				}
 			}
