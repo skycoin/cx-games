@@ -46,36 +46,7 @@ func Update () {
 	ball.x = f32.add(ball.x, ball.vx)
 	ball.y = f32.add(ball.y, ball.vy)
 
-
-	// collision bounce 
-	var gridDelta i32 // for player crossing boundaries into adjacent grid cells 
-	
-	gridDelta, ball.x, ball.vx = mov.BounceOffWalls(ball.x, ball.vx, ball.radius, 
-		ball.CellMin.X, ball.CellMax.X, ball.ExitWest, ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
-	
-	if gridDelta != 0 {
-		var x i32 = ball.GridPos.X + gridDelta
-		var y i32 = ball.GridPos.Y
-		var id i32 = map.GetCarvsIdAt(x, y)
-		printf("ABOUT TO CALL SetPlayerRoomBounds - x,y: %d,%d --- id: %d \n", x, y, id)
-		map.SetPlayerRoomBounds(id, false)
-	}
-
-	
-	gridDelta, ball.y, ball.vy = mov.BounceOffWalls(ball.y, ball.vy, ball.radius, 
-		ball.CellMin.Y, ball.CellMax.Y, ball.ExitSouth, ball.ExitNorth) //-1.0D, 1.0D)
-
-	if gridDelta != 0 {
-		var x i32 = ball.GridPos.X
-		var y i32 = ball.GridPos.Y + gridDelta
-		var id i32 = map.GetCarvsIdAt(x, y)
-		printf("ABOUT TO CALL SetPlayerRoomBounds - x,y: %d,%d --- id: %d \n", x, y, id)
-		map.SetPlayerRoomBounds(id, false)
-	}
-
-	// position correction 
-	// 		when speed gets high enough, a simple velocity reversal isn't enough 
-	// 		(jitters back & forth without getting back in bounds)
+	mov.ConstrainPosByMap()
 }
 
 

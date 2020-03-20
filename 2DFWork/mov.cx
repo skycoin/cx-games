@@ -11,6 +11,7 @@ package mov
 import "app"
 import "entities"
 import "glfw"
+import "map"
 import "inputs"
 import "time"
 
@@ -20,54 +21,47 @@ var Force f32 = 0.08
 
 
 
-func dampenNegativeMovement (velocity f32, strength f32) (out f32) {
-	out = f32.add(velocity, Force * time.Delta * strength)
-
-	if out > 0.0 {
-		out = 0.0
-	}
-}
-
-
-func dampenPositiveMovement (velocity f32, strength f32) (out f32) {
-	out = f32.sub(velocity, Force * time.Delta * strength)
-
-	if out < 0.0 {
-		out = 0.0
-	}
-}
-
-
 func SetPlayerVelocityFromInput () {
 	entities.ball.vx = getVelocity(entities.ball.vx, inputs.HoldingGoLeft(), inputs.HoldingGoRight())
 	entities.ball.vy = getVelocity(entities.ball.vy, inputs.HoldingGoDown(), inputs.HoldingGoUp())
 }
 
 
-func getVelocity (velocity f32, negative bool, positive bool) (out f32) {
-	out = velocity
+func ConstrainPosByMap () {
+	// collision bounce 
+	var gridDelta i32 // for player crossing boundaries into adjacent grid cells 
+	
+	//		in X dimension 
+	gridDelta, entities.ball.x, entities.ball.vx = BounceOffWalls(
+		entities.ball.x, 
+		entities.ball.vx, 
+		entities.ball.radius, 
+		entities.ball.CellMin.X, 
+		entities.ball.CellMax.X, 
+		entities.ball.ExitWest, 
+		entities.ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
+	
+	if gridDelta != 0 {
+		var x i32 = entities.ball.GridPos.X + gridDelta
+		var y i32 = entities.ball.GridPos.Y
+		map.SetPlayerRoomBounds(x, y, false)
+	}
 
-	//____________________________________________ 
-	if positive { // _________ speed up positively 
-		if out < 0.0 {
-			out = dampenNegativeMovement(out, 4.0)
-		}
+	
+	//		in Y dimension 
+	gridDelta, entities.ball.y, entities.ball.vy = BounceOffWalls(
+		entities.ball.y, 
+		entities.ball.vy, 
+		entities.ball.radius, 
+		entities.ball.CellMin.Y, 
+		entities.ball.CellMax.Y, 
+		entities.ball.ExitSouth, 
+		entities.ball.ExitNorth) //-1.0D, 1.0D)
 
-		out = f32.add(out, Force * time.Delta)
-	} else
-	if negative { // _________ speed up negatively 
-		if out > 0.0 {
-			out = dampenPositiveMovement(out, 4.0)
-		}
-
-		out = f32.sub(out, Force * time.Delta)
-	} else { //_________________________ slow down 
-		if out > 0.0 {
-			out = dampenPositiveMovement(out, 1.0)
-		} else
-		if out < 0.0 {
-			out = dampenNegativeMovement(out, 1.0)
-		}
+	if gridDelta != 0 {
+		var x i32 = entities.ball.GridPos.X
+		var y i32 = entities.ball.GridPos.Y + gridDelta
+		map.SetPlayerRoomBounds(x, y, false)
 	}
 }
 
@@ -106,6 +100,52 @@ func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExi
 				outPos = f32.sub(posEdge, rad)
 				outVel = 0.0 - f32.abs(vel)
 			}
+		}
+	}
+}
+
+
+func dampenNegativeMovement (velocity f32, strength f32) (out f32) {
+	out = f32.add(velocity, Force * time.Delta * strength)
+
+	if out > 0.0 {
+		out = 0.0
+	}
+}
+
+
+func dampenPositiveMovement (velocity f32, strength f32) (out f32) {
+	out = f32.sub(velocity, Force * time.Delta * strength)
+
+	if out < 0.0 {
+		out = 0.0
+	}
+}
+
+
+func getVelocity (velocity f32, negative bool, positive bool) (out f32) {
+	out = velocity
+
+	//____________________________________________ 
+	if positive { // _________ speed up positively 
+		if out < 0.0 {
+			out = dampenNegativeMovement(out, 4.0)
+		}
+
+		out = f32.add(out, Force * time.Delta)
+	} else
+	if negative { // _________ speed up negatively 
+		if out > 0.0 {
+			out = dampenPositiveMovement(out, 4.0)
+		}
+
+		out = f32.sub(out, Force * time.Delta)
+	} else { //_________________________ slow down 
+		if out > 0.0 {
+			out = dampenPositiveMovement(out, 1.0)
+		} else
+		if out < 0.0 {
+			out = dampenNegativeMovement(out, 1.0)
 		}
 	}
 }
