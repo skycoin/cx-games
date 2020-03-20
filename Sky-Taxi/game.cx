@@ -7,15 +7,15 @@ import "inputs"
 func gameInit () {
 	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
 	draw.Init()
-	inputs.Init()
+	inputs.Init(false)
 	map.Init()
 	entities.Init()
 	
-	draw.BufferWid, 
-	draw.BufferHei = glfw.GetFramebufferSize(app.Name)
+	space.ViewWidInPixels, 
+	space.ViewHeiInPixels = glfw.GetFramebufferSize(app.Name)
 	draw.OnFramebufferSize(app.Name, 
-		draw.BufferWid, 
-		draw.BufferHei)
+		space.ViewWidInPixels, 
+		space.ViewHeiInPixels)
 }
 
 

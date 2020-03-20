@@ -19,9 +19,8 @@ func gameInit () {
 	space.Init()
 	menu.Init()
 
-	inputs.Init()
-	inputs.BufferingPointerSpots = true
 	inputs.BufferingNotchyDeltas = true
+	inputs.Init(true)
 	
 	menuInit()
 	shape.Init()
@@ -61,7 +60,9 @@ func startNewGameSession () {
 	// spawn any wanted random debris blocks 
 	for     y := 0; y < DebrisHeight; y++ {
 		for x := 0; x < tiles.NUM_CELLS_X;   x++ {
-			if x != 4 && y != 1 && y != 2 { //i32.rand(0, 2) == 0 {
+			// use below condition for testing collapsing 4 rows @ a time 
+			//x != 4 && y != 1 && y != 2 { 
+			if i32.rand(0, 2) == 0 {
 				tiles.Cells[y][x] = i32.rand(0, shape.SHAPE_MAX)
 			}
 		}
@@ -180,15 +181,15 @@ func respondToMenuDrags () {
 
 	/*
 	if s == menu.ItemText {
-		menu.Setting = menu.SetSliderValue(i, f64.f32(MousePointerX64))
+		menu.Setting = menu.SetSliderValue(i, f64.f32(MousePosInPixels.X))
 	} else
 	*/
 	if s == DebrisHeightText {
-		DebrisHeight = menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
+		DebrisHeight = menu.SetSliderValue(i, f64.f32(inputs.MousePosInPixels.X))
 		startNewGameSession()
 	} else
 	if s == SpeedText {
-		DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePointerX64))
+		DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePosInPixels.X))
 		CalcDropTime()
 	}
 }
