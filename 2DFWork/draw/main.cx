@@ -11,8 +11,6 @@ import "space"
 
 // general 
 var AspectRatio f32
-var BufferWid   i32
-var BufferHei   i32
 var AssetDir    str = "../2DFWork/draw/assets/"
 
 
@@ -31,8 +29,8 @@ func Init () {
 func OnFramebufferSize (window str, wid i32, hei i32) {
 	printf("onFramebufferSize() wid,hei: %d,%d \n", wid, hei)
 	
-	BufferWid = wid
-	BufferHei = hei
+	//BufferWid = wid
+	//BufferHei = hei
 	AspectRatio = f32.div(i32.f32(wid), i32.f32(hei))
 	space.ViewEdgeL = f32.f64(f32.mul(AspectRatio, -1.0))
 	space.ViewEdgeR = f32.f64(AspectRatio)

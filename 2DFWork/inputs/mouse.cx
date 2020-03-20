@@ -7,13 +7,12 @@ import "space"
 
 var BufferingNotchyDeltas bool // distance threshold triggers (for low-res/notchy/blocky/jumpy movement) 
 var BufferingPointerSpots bool // pointer event spots/positions 
-var MousePointer       Vec2
-var MousePointerX64    f64
-var MousePointerY64    f64
+var MousePointer       app.Vec2
+var MousePosInPixels     app.Vec2F64
 var HoldingLeftButton  bool
 
 var mouseMoveThreshold f64 = 85.0D // for blocky/notchy mouse movement (like CXtris uses) 
-var dist               Vec2F64 // distance since latest blocky mouse movement 
+var dist               app.Vec2F64 // distance since latest blocky mouse movement 
 var buttonEventCodes   []i32
 var buttonEventActions []i32
 var pointerEventSpots  []app.Vec2
@@ -69,8 +68,8 @@ func GetNotchyMouseDelta () (out app.Vec2I) {
 
 
 func PointerInYPixelRange (lesser f32, greater f32) (out bool) {
-	if MousePointerY64 < f32.f64(greater) &&
-		MousePointerY64 >= f32.f64(lesser) {
+	if MousePosInPixels.Y < f32.f64(greater) &&
+		MousePosInPixels.Y >= f32.f64(lesser) {
 			
 		out = true
 	}
@@ -157,18 +156,20 @@ var deltaX64 f64
 var deltaY64 f64
 var dist Vec2F64 // distance since latest piece movement 
 func onCursorPosEvent (window str, x f64, y f64) {
+	//str.print("onCursorPosEvent ()")
+
 	oldV.X = MousePointer.X
 	oldV.Y = MousePointer.Y
-	old64.X = MousePointerX64
-	old64.Y = MousePointerY64
-	MousePointerX64 = x
-	MousePointerY64 = y
+	old64.X = MousePosInPixels.X
+	old64.Y = MousePosInPixels.Y
+	MousePosInPixels.X = x
+	MousePosInPixels.Y = y
 
 	
-	//printf("space.PixelsAcross.X: %d \n", space.PixelsAcross.X)
-	//printf("space.PixelsAcross.Y: %d \n", space.PixelsAcross.Y)
+	printf("space.ViewWidInPixels: %d \n", space.ViewWidInPixels)
+	printf("space.ViewHeiInPixels: %d \n", space.ViewHeiInPixels)
 	var mX f32
-	mX = f32.div(f64.f32(x), i32.f32(space.PixelsAcross.X))
+	mX = f32.div(f64.f32(x), i32.f32(space.ViewWidInPixels))
 	/*
 	printf("x: %f \n", x)
 	mX = f32.mul(mX, f32.mul(f64.f32(space.ViewEdgeR), 2.0))
@@ -178,13 +179,13 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	MousePointer.X = f32.add(-1.0, mX)
 
 	var mY f32
-	mY = f32.div(f64.f32(y), i32.f32(space.PixelsAcross.Y))
+	mY = f32.div(f64.f32(y), i32.f32(space.ViewHeiInPixels))
 	mY = f32.mul(mY, 2.0)
 	MousePointer.Y = f32.sub(1.0, mY)
 
 
-	//printf("MousePointer.X: %f \n", MousePointer.X)
-	//printf("MousePointer.Y: %f \n", MousePointer.Y)
+	printf("MousePointer.X: %f \n", MousePointer.X)
+	printf("MousePointer.Y: %f \n", MousePointer.Y)
 	
 
 	deltaX = f32.sub(MousePointer.X, oldV.X)

@@ -12,21 +12,7 @@ import "mov"
 import "space"
 import "time"
 
-/*
 
-Name ideas:
-
-Pongolf
-Pong Golf
-Pong Putt
-Putt Pong
-
-if lining walls or populating rooms with bricks: 
-
-Ponganoid
-Puttanoid
-
-*/
 
 func main () {
 	gameInit()
