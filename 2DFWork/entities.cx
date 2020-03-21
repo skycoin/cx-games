@@ -60,6 +60,11 @@ func Update () {
 }
 
 
+func GetNumOfAll () (num i32) {
+	num = len(All)
+}
+
+
 func InitPlayer () {
 	ball = Entity{
 		radius:  0.05,

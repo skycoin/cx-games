@@ -5,8 +5,8 @@ import "glfw"
 
 
 var Previous f32 
-var Now f32
-var Delta f32
+var Now      f32
+var Delta    f32
 
 
 

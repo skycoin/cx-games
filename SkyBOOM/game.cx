@@ -6,12 +6,16 @@ import "inputs"
 
 
 
-// entity ids 
+// entities 
 var PLAYER          i32
 var DROPPER         i32 = 1 // coin DROPPER 
+var /* new...*/ ent entities.Entity
+	
 // dropper reverse logic 
 var reverseTarget   f32
 var numTargetGrains i32 = 100
+var nextDrop        f32
+var dropDelay       f32 = 0.3
 
 
 
@@ -22,14 +26,12 @@ func gameInit () {
 	entities.Init()
 	
 	// entities 
-	var ent entities.Entity
-	
-	// PLAYER 
+	// 		PLAYER 
 	ent = entities.Entity{ radius: 0.2, y: -1.0 }
 	entities.All = append(
 	entities.All, ent)
 	
-	// DROPPER 
+	// 		DROPPER 
 	ent = entities.Entity{ radius: 0.1, y:  1.0, vx: 0.03 }
 	entities.All = append(
 	entities.All, ent)
@@ -46,6 +48,20 @@ func gameUpdate () {
 	entities.Update()
 	entities.All[PLAYER].x = inputs.MousePointer.X
 	handleDropperReversing()
+	
+	if nextDrop <= time.Now {
+		nextDrop = time.Now + dropDelay
+		//str.print("drop\n")
+		
+		ent = entities.Entity{ 
+			radius:  0.03, 
+			x:       entities.All[DROPPER].x,
+			y:       0.9, 
+			vx:      0.0,
+			vy:     -0.02 }
+		entities.All = append(
+		entities.All, ent)
+	}
 }
 
 
