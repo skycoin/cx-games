@@ -9,14 +9,7 @@ func gameInit () {
 	app.Init("S k y B O O M", "Move with mouse.")
 	draw.Init()
 	inputs.Init(true)
-	map.Init()
 	entities.Init()
-	
-	space.ViewWidInPixels, 
-	space.ViewHeiInPixels = glfw.GetFramebufferSize(app.Name)
-	draw.OnFramebufferSize(app.Name, 
-		space.ViewWidInPixels, 
-		space.ViewHeiInPixels)
 }
 
 
@@ -33,7 +26,7 @@ func respondToPointerEvents () {
 	pos = inputs.GetPointerEvent()
 		
 	if pos.X != app.TOO_BIG_F32 {
-		printf("x,y: %f,%f \n", pos.X, pos.Y)
+		//printf("x,y: %f,%f \n", pos.X, pos.Y)
 	}
 }
 

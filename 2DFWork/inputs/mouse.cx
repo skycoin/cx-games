@@ -166,26 +166,24 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	MousePosInPixels.Y = y
 
 	
-	printf("space.ViewWidInPixels: %d \n", space.ViewWidInPixels)
-	printf("space.ViewHeiInPixels: %d \n", space.ViewHeiInPixels)
 	var mX f32
-	mX = f32.div(f64.f32(x), i32.f32(space.ViewWidInPixels))
+	var mY f32
+	// 1st get fraction from left to right edge 
+	mX = f64.f32(x) / i32.f32(space.ViewWidInPixels)
+	mY = f64.f32(y) / i32.f32(space.ViewHeiInPixels)
+	mX = mX * space.AspectRatio * 2.0
+	printf("mX,mY: %f, %f \n", mX, mY)
 	/*
-	printf("x: %f \n", x)
-	mX = f32.mul(mX, f32.mul(f64.f32(space.ViewEdgeR), 2.0))
 	MousePointer.X = f32.add(f64.f32(space.ViewEdgeL), mX)
 	*/
-	mX = f32.mul(mX, 2.0)
 	MousePointer.X = f32.add(-1.0, mX)
 
-	var mY f32
-	mY = f32.div(f64.f32(y), i32.f32(space.ViewHeiInPixels))
 	mY = f32.mul(mY, 2.0)
 	MousePointer.Y = f32.sub(1.0, mY)
 
 
-	printf("MousePointer.X: %f \n", MousePointer.X)
-	printf("MousePointer.Y: %f \n", MousePointer.Y)
+	//printf("MousePointer.X: %f \n", MousePointer.X)
+	//printf("MousePointer.Y: %f \n", MousePointer.Y)
 	
 
 	deltaX = f32.sub(MousePointer.X, oldV.X)
