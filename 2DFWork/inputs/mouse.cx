@@ -7,9 +7,9 @@ import "space"
 
 var BufferingNotchyDeltas bool // distance threshold triggers (for low-res/notchy/blocky/jumpy movement) 
 var BufferingPointerSpots bool // pointer event spots/positions 
-var MousePointer       app.Vec2
-var MousePosInPixels     app.Vec2F64
-var HoldingLeftButton  bool
+var MousePointer          app.Vec2
+var MousePosInPixels      app.Vec2F64
+var HoldingLeftButton     bool
 
 var mouseMoveThreshold f64 = 85.0D // for blocky/notchy mouse movement (like CXtris uses) 
 var dist               app.Vec2F64 // distance since latest blocky mouse movement 
@@ -166,20 +166,21 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	MousePosInPixels.Y = y
 
 	
-	var mX f32
-	var mY f32
 	// 1st get fraction from left to right edge 
-	mX = f64.f32(x) / i32.f32(space.ViewWidInPixels)
-	mY = f64.f32(y) / i32.f32(space.ViewHeiInPixels)
-	mX = mX * space.AspectRatio * 2.0
+	var mX f32 = f64.f32(x) / i32.f32(space.ViewWidInPixels)
+	var mY f32 = f64.f32(y) / i32.f32(space.ViewHeiInPixels)
+	// scale it to GL size 
+	mX = mX * space.ViewSizeInGL.X
+	mY = mY * space.ViewSizeInGL.Y
+	// offset it to start with negative edge value 
+	mX = mX - space.AspectRatio
+	//		also flip it around, since Y increases UPWARDS in GL 
+	mY = 1.0 - mY
+	
+	MousePointer.X = mX
+	MousePointer.Y = mY
 	printf("mX,mY: %f, %f \n", mX, mY)
-	/*
-	MousePointer.X = f32.add(f64.f32(space.ViewEdgeL), mX)
-	*/
-	MousePointer.X = f32.add(-1.0, mX)
 
-	mY = f32.mul(mY, 2.0)
-	MousePointer.Y = f32.sub(1.0, mY)
 
 
 	//printf("MousePointer.X: %f \n", MousePointer.X)
