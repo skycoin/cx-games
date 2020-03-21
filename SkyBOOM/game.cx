@@ -7,8 +7,11 @@ import "inputs"
 
 
 // entity ids 
-var PLAYER  i32
-var DROPPER i32 = 1 // coin DROPPER 
+var PLAYER          i32
+var DROPPER         i32 = 1 // coin DROPPER 
+// dropper reverse logic 
+var reverseTarget   f32
+var numTargetGrains i32 = 100
 
 
 
@@ -30,6 +33,8 @@ func gameInit () {
 	ent = entities.Entity{ radius: 0.1, y:  1.0, vx: 0.03 }
 	entities.All = append(
 	entities.All, ent)
+	
+	setReverseTarget()
 }
 
 
@@ -40,27 +45,63 @@ func gameUpdate () {
 	
 	entities.Update()
 	entities.All[PLAYER].x = inputs.MousePointer.X
-	
-	if entities.All[DROPPER].x < f64.f32(space.ViewEdgeL) {
-		reverseDropper()
-	}	
-	if entities.All[DROPPER].x > f64.f32(space.ViewEdgeR) {
-		reverseDropper()
+	handleDropperReversing()
+}
+
+
+func handleDropperReversing () {
+	if     entities.All[DROPPER].vx < 0.0 {
+		// going left 
+		if entities.All[DROPPER].x < reverseTarget {
+			reverseDropper()
+		}else
+		if entities.All[DROPPER].x < f64.f32(space.ViewEdgeL) {
+			reverseDropper()
+		}
+	}else{
+		// going right 
+		if entities.All[DROPPER].x > reverseTarget {
+			reverseDropper()
+		}else
+		if entities.All[DROPPER].x > f64.f32(space.ViewEdgeR) {
+			reverseDropper()
+		}
 	}
 }
 
 
 func reverseDropper () {
 	var vX f32 = entities.All[DROPPER].vx
-	entities.All[DROPPER].vx = -X
+	entities.All[DROPPER].vx = -vX
+	setReverseTarget()
+}
+
+
+func setReverseTarget () {
+	var pd f32 // potential distance 
+
+	if entities.All[DROPPER].vx > 0.0 { 
+		// going right 
+		pd = f32.sub(f64.f32(space.ViewEdgeR), entities.All[DROPPER].x)
+		printf("pd: %f \n", pd)
+	}else{ 
+		// going left 
+		pd = f32.sub(f64.f32(space.ViewEdgeL), entities.All[DROPPER].x)
+		printf("pd: %f \n", pd)
+	}
+	
+	var targetGrainSize f32 = f32.div(pd, i32.f32(numTargetGrains))
+	printf("targetGrainSize: %f \n", targetGrainSize)
+	var r i32 = i32.rand(0, numTargetGrains)
+	reverseTarget = f32.mul(i32.f32(r), targetGrainSize)
 }
 
 
 func respondToPointerEvents () {
 	var pos app.Vec2
-	pos = inputs.GetPointerEvent()
 		
-	if pos.X != app.TOO_BIG_F32 {
+	for pos.X != app.TOO_BIG_F32 {
+		pos = inputs.GetPointerEvent()
 		//printf("x,y: %f,%f \n", pos.X, pos.Y)
 	}
 }
