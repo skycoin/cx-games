@@ -4,6 +4,15 @@ import "gltext"
 
 
 
+var currColor       i32
+var nextColorTime   f64
+// for animation of "GAME OVER" text 
+var gameOverExtent  f32 = 25.0
+var gameOverOffset  f32
+var gameOverUpwards bool
+
+
+
 func allText () {
 	gl.Enable(gl.DEPTH_TEST)
 		/*
@@ -42,9 +51,45 @@ func allText () {
 			}
 		}else
 		if app.Mode == app.MODE_GAME_OVER {
-			draw.OutlinedText("GAME OVER", draw.COLOR_PURPLE,
-				18.0, i32.f32(app.START_WIDTH / 2), 1.0)
-		}		
+			var le /* left edge */ f32 = 21.0
+			
+			// bounce text up & down 
+			if gameOverUpwards {
+				gameOverOffset = f32.add(gameOverOffset, f64.f32(DeltaTime) * 125.0)
+				
+				if gameOverOffset > gameOverExtent {
+					gameOverUpwards = !gameOverUpwards
+				}
+			}else{ // downwards 
+				gameOverOffset = f32.sub(gameOverOffset, f64.f32(DeltaTime) * 125.0)
+
+				if gameOverOffset < -gameOverExtent {
+					gameOverUpwards = !gameOverUpwards
+				}
+			}
+
+
+
+			// darker chain of background text 
+			for f := f32.sub(0.0, le); f < 2.0; f = f = f32.add(f, 1.0) {
+				draw.OutlinedText("GAME OVER", draw.COLOR_GRAY_DARK,
+					le + f, f32.add(i32.f32(app.START_HEIGHT / 2), f) + gameOverOffset, 1.0)
+			}
+			
+			// cycling thru (mostly) bright colors on top 
+			var y f32 = f32.add(i32.f32(app.START_HEIGHT / 2), gameOverOffset)
+			draw.OutlinedText("GAME OVER", currColor, le, y, 1.0)
+			
+			if (nextColorTime <= CurrTime) {
+				nextColorTime  = CurrTime + 0.1D
+				currColor++			
+				
+				var max i32 = len(draw.Colors)
+				if currColor >= max {
+					currColor = 0
+				}
+			}
+		}
 	gl.Disable(gl.DEPTH_TEST)
 }
 

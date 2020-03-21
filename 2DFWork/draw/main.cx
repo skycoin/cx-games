@@ -3,6 +3,7 @@ package draw
 import "gl"
 import "glfw"
 import "gltext"
+
 import "app"
 import "geom"
 import "space"
@@ -10,9 +11,6 @@ import "space"
 
 
 // general 
-var AspectRatio f32
-var BufferWid   i32
-var BufferHei   i32
 var AssetDir    str = "../2DFWork/draw/assets/"
 
 
@@ -25,17 +23,28 @@ func Init () {
 	InitFonts()
 
 	glfw.SetFramebufferSizeCallback(app.Name, "OnFramebufferSize", "draw")
+	
+	// set initial values before events are triggered 
+	space.ViewWidInPixels, 
+	space.ViewHeiInPixels = glfw.GetFramebufferSize(app.Name)
+	OnFramebufferSize(app.Name, 
+		space.ViewWidInPixels, 
+		space.ViewHeiInPixels)
 }
 
 
 func OnFramebufferSize (window str, wid i32, hei i32) {
 	printf("onFramebufferSize() wid,hei: %d,%d \n", wid, hei)
 	
-	BufferWid = wid
-	BufferHei = hei
-	AspectRatio = f32.div(i32.f32(wid), i32.f32(hei))
-	space.ViewEdgeL = f32.f64(f32.mul(AspectRatio, -1.0))
-	space.ViewEdgeR = f32.f64(AspectRatio)
+	space.AspectRatio = f32.div(i32.f32(wid), i32.f32(hei))
+	space.ViewSizeInGL.X = 2.0 * space.AspectRatio
+	space.ViewSizeInGL.Y = 2.0
+	printf("space.ViewSizeInGL.X: %f \n", space.ViewSizeInGL.X)
+	space.ViewEdgeL = 0.0D - f32.f64(space.AspectRatio)
+	space.ViewEdgeR =        f32.f64(space.AspectRatio)
+	printf("space.ViewEdgeL: %f - space.ViewEdgeR: %f \n",
+		space.ViewEdgeL,
+		space.ViewEdgeR)
 	
 	//gl.Viewport(0, 0, wid, hei)
 }

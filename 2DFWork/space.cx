@@ -5,21 +5,24 @@ import "app"
 
 
 // FIXME: these should be updated from window change events 
-var PixelWid     f32
-var PixelHei     f32
-var PixelsAcross Vec2I
-var ViewEdgeL    f64 // viewport left 
-var ViewEdgeR    f64 // viewport right 
+var AspectRatio     f32 // horizontal FOV (field of view) NOT in degrees  
+                        // vertical will always be 1.0, horizontal is relative to that 
+var ViewWidInPixels i32 // separate values cuz *GetFramebuffer*() return format 
+var ViewHeiInPixels i32
+var ViewSizeInGL    app.Vec2
+var PixelSize       app.Vec2 //           in GL space 
+var ViewEdgeL       f64 // viewport left  in GL space 
+var ViewEdgeR       f64 // viewport right in GL space 
 
 
 
 func Init () {
 	str.print("space.Init ()")
 	
-	PixelsAcross.X = app.START_WIDTH
-	PixelsAcross.Y = app.START_HEIGHT
-	PixelWid = 2.0 / i32.f32(app.START_WIDTH)
-	PixelHei = 2.0 / i32.f32(app.START_HEIGHT)
+	ViewWidInPixels = app.START_WIDTH
+	ViewHeiInPixels = app.START_HEIGHT
+	PixelSize.X = 2.0 / i32.f32(app.START_WIDTH)
+	PixelSize.Y = 2.0 / i32.f32(app.START_HEIGHT)
 }
 
 

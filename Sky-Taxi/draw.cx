@@ -8,11 +8,8 @@ func drawAll () {
 	//str.print("drawAll")
 
 	pre()
+	gl.Disable(gl.TEXTURE_2D)
 	map.DrawQuads()
-
-	draw.SetColor4(draw.White, 0.2)
-	draw.ScaledPic(draw.PicBackground, 0.0, 0.0, 1.0, 1.0)
-
 	draw.Ball(entities.ball)
 }
 
@@ -22,7 +19,7 @@ func pre () {
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
 	gl.Ortho(space.ViewEdgeL, space.ViewEdgeR, -1.0D, 1.0D, 1.0D, -1.0D)
-	gl.Viewport(0, 0, draw.BufferWid, draw.BufferHei)
+	gl.Viewport(0, 0, space.ViewWidInPixels, space.ViewHeiInPixels)
 	gl.MatrixMode(gl.MODELVIEW)
 
 	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 

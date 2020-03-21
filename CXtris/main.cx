@@ -13,7 +13,10 @@ TODO:
 
 REQUIRED FEATURES:
 
-* game over state & overlay 
+* BORKED SHOWING NEXT PIECE, FIXME!!!
+* use Skycoin font 
+* make clicking on sliders (with no mouse movement) set handle position again 
+* game speed increases every ____ _____ 
 
 
 
@@ -21,8 +24,6 @@ PRIORITY FEATURES:
 
 * pad menu item text with marginally bigger backgrounds (or axe curr texture) 
 		if keeping texture, fix the 3-slicing in O
-* help screen or conditional text/icons showing (all 3?) controls 
-* remap control/alts 
 * sliders 
 	* mouse sensitivity
 
@@ -38,7 +39,6 @@ JUICE WISHLIST:
 * instadrop action 
 * Smooth motion interpolations (prioritized) 
 	* row collapsing
-	* player moves
 	* player rotations (problem: making the piece's movement look more like physical reality would make some valid moves look crazy.  But while smoothly turning, the piece could be drawn as a transparent white'ish ghost, which would go a long way towards making the "gear teeth"-passing-through-each-other look sensible)
 	
 * animate exploding the row blocks 
@@ -48,9 +48,9 @@ up to the total score printout
 
 * animate clearing old playfield and setting up the new one, between games.  maybe they all shoot out of a point on the screen (maybe logo) and fly/rotate to the final positions.  like dealing out cards 
 
-* when player tries an invalid rotation, auto-push the player piece away from collisions if possible.  would make the game feel a lot more fluid.  so that player doesn't have to scramble to move to valid position and then press rotate AGAIN.  which could easily result in the user pressing rotate at least 3 more times, ON TOP OF the movements in between.  like when controlling SHAPE_BEAM
-
-* error text when player tries invalid moves & rotations (probably JUST rotations, because invalid moves are too obvious).  maybe stifle any text popups that would be triggered by key repeat events
+* error text when player tries invalid moves & rotations (probably JUST 
+	rotations, because invalid moves are too obvious).  maybe stifle 
+	any text popups that would be triggered by key repeat events 
 
 * animated startup/menu screen
 		would be cool to show big versions of all the shapes/pieces, circularly rotating around the menu

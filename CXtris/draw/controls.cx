@@ -8,12 +8,13 @@ import "draw"
 var NUM_H_KEYS   i32 = 3 // horizontal 
 var NUM_V_KEYS   i32 = 2 // vertical 
 var SPAN         f32 = 2.0 / i32.f32(NUM_H_KEYS)
+var SPAN_V       f32     // vertical 
 var SPAN_HALF    f32 = SPAN / 2.0
+var SPAN_HALF_V  f32     // vertical 
 var SPAN_QUARTER f32 = SPAN / 3.4//4.0
-var SPAN_HALF_V  f32 // vertical 
 // pixel space 
-var psSpan     f32
-var psSpanHalf f32
+var psSpan       f32
+var psSpanHalf   f32
 
 // controls text 
 var keySetPri []draw.TextGL // primary 
@@ -23,8 +24,9 @@ var keySetSec []draw.TextGL // secondary
 
 func InitControlsText () {
 	// couldn't do next bits of math @ declaration 
-	//		gl space 
-	SPAN_HALF_V  = SPAN_HALF * HackyHeightFraction
+	// 		   gl space 
+	SPAN_V      = SPAN      * HackyHeightFraction
+	SPAN_HALF_V = SPAN_HALF * HackyHeightFraction
 	// 		pixel space 
 	psSpan     = f32.div(i32.f32(app.START_WIDTH), 3.0)
 	psSpanHalf = psSpan / 2.0
@@ -129,15 +131,12 @@ func drawKeyCapTexts () {
 
 
 func drawVirtualKeyBackdrops () {
-	//"mouse" icon/s needed 
-	//"mouse" icon/s needed 
-	//"mouse" icon/s needed 
-
 	if app.Mode == app.MODE_PLAYING {
 		draw.SetColor4(draw.White, 0.8)
 	}else{
 		draw.SetColor3(draw.White)
 	}
+	
 	var x f32 = -1.0 + SPAN_HALF
 	var y f32 = -1.0 + SPAN_HALF_V
 	

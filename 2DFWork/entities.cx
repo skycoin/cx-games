@@ -1,47 +1,76 @@
 package entities
 
+import "app"
+import "geom"
 import "inputs"
 import "mov"
 import "space"
 
 
 
-type Ball struct {
-	x f32
-	y f32
-	vx f32
-	vy f32
-	gravity f32
-	radius f32
+type Entity struct {
+	x         f32
+	y         f32
+	vx        f32
+	vy        f32
+	gravity   f32
+	radius    f32
+	
+	GridPos   app.Vec2I
+	// cell bounds/connections 
+	CellMin   app.Vec2 // boundaries of the current cell it's in 
+	CellMax   app.Vec2 // ^ 
+	//Room    map.CarvedRoom // CAN'T FIGURE OUT WHY THIS MAKES AVATAR DISAPPEAR 
+	ExitNorth bool
+	ExitSouth bool
+	ExitEast  bool
+	ExitWest  bool
 }
 
-var ball Ball
+var ball Entity
+var All  []Entity // all entities (except ball ATM: FIXME) 
 
 
 
 func Init () {
-	ball = Ball{
-		radius: 0.05,
-		x: 0.0,
-		y: 0.0,
-		vx: 0.0,
-		vy: 0.0,
-		gravity: 0.01}
+	str.print("entities.Init ()")
 }
 
 
 func Update () {
-		// ball velocity & position 
-		ball.vx = mov.GetVelocityChangesFromInput(ball.vx, inputs.GLFW_KEY_A, inputs.GLFW_KEY_D)
-		ball.vy = mov.GetVelocityChangesFromInput(ball.vy, inputs.GLFW_KEY_S, inputs.GLFW_KEY_W)
-		ball.vx = mov.GetVelocityChangesOnEdgeCollision(ball.x, ball.vx, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
-		ball.vy = mov.GetVelocityChangesOnEdgeCollision(ball.y, ball.vy, ball.radius, -1.0D, 1.0D)
-		// when speed gets high enough, a simple velocity reversal isn't enough 
-		// (jitters back & forth without getting back in bounds)
-		ball.x = mov.EnsureEntirelyWithinBounds(ball.x, ball.radius, space.ViewEdgeL, space.ViewEdgeR)
-		ball.y = mov.EnsureEntirelyWithinBounds(ball.y, ball.radius, -1.0D, 1.0D)
-		
-		// motion 
-		ball.x = f32.add(ball.x, ball.vx)
-		ball.y = f32.add(ball.y, ball.vy)
+	//str.print("entities.Update ()")
+
+	// velocity 
+	//		player desired 
+	mov.SetPlayerVelocityFromInput()
+	
+	// motion/position 
+	//		hardwired player (FIXME) 
+	ball.x = f32.add(ball.x, ball.vx)
+	ball.y = f32.add(ball.y, ball.vy)
+	//		all the rest 
+	for i := 0; i < len(All); i++ {
+		// FIXME to use time.Curr 
+		All[i].x = f32.add(All[i].x, All[i].vx)
+		All[i].y = f32.add(All[i].y, All[i].vy)
+	}
+
+	// back out of any penetration (FIXME for "All") 
+	mov.ConstrainPosByMap()
+}
+
+
+func GetNumOfAll () (num i32) {
+	num = len(All)
+}
+
+
+func InitPlayer () {
+	ball = Entity{
+		radius:  0.05,
+		x:       0.0,
+		y:       0.0,
+		vx:      0.0,
+		vy:      0.0,
+		gravity: 0.01}
 }

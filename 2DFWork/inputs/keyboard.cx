@@ -42,26 +42,30 @@ func CloseAppOnDeveloperShortcut (key i32) {
 
 // polling 
 func HoldingGoLeft () (out bool) {
-	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_A), 1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_LEFT), 1) {
+	if  i32.eq(glfw.GetKey(app.Name, GLFW_KEY_A),    1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_LEFT), 1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_Y),    1) {
 		out = true
 	}
 }
 func HoldingGoRight () (out bool) {
-	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_D), 1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_RIGHT), 1) {
+	if  i32.eq(glfw.GetKey(app.Name, GLFW_KEY_D),     1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_RIGHT), 1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_N),     1) {
 		out = true
 	}
 }
 func HoldingGoDown () (out bool) {
-	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_S), 1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_DOWN), 1) {
+	if  i32.eq(glfw.GetKey(app.Name, GLFW_KEY_S),    1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_DOWN), 1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_F2),   1) {
 		out = true
 	}
 }
 func HoldingGoUp () (out bool) {
-	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_W), 1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_UP), 1) {
+	if  i32.eq(glfw.GetKey(app.Name, GLFW_KEY_W),  1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_UP), 1) ||
+		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_F3), 1) {
 		out = true
 	}
 }

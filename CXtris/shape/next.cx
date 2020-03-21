@@ -1,7 +1,6 @@
 package shape
 
-//import "app"
-import "map"
+import "tiles"
 
 
 
@@ -15,8 +14,8 @@ var MostCellsInX    i32
 var MostCellsInY    i32
 
 var Next            i32
-var NextCellSpanX   f32 = f32.mul(map.CellWidth,  0.7)
-var NextCellSpanY   f32 = f32.mul(map.CellHeight, 0.7)
+var NextCellSpanX   f32 = f32.mul(tiles.CellWidth,  0.7)
+var NextCellSpanY   f32 = f32.mul(tiles.CellHeight, 0.7)
 var StartX          i32 // indices 
 var StartY          i32
 var StartPosX       f32

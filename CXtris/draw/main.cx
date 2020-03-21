@@ -61,51 +61,103 @@ func drawAll () {
 
 
 func PlayField () {
-	var fX f32 = map.LEdge + map.CellWidthHalf
-	var fY f32 =     -0.95 + map.CellHeightHalf
+	var fX f32 = tiles.LEdge + tiles.CellWidthHalf  // bottom left corner anchor 
+	var fY f32 =     -0.95 + tiles.CellHeightHalf //            ^ 
+	var osY /* offset in Y */ f32
 
-	for y := 0; y < map.NUM_CELLS_Y; y++ {
-	for x := 0; x < map.NUM_CELLS_X; x++ {
-		var c i32 = map.Cells[y][x]
-
-		if c == map.EMPTY_CELL {
-			c = shape.SHAPE_MAX
+	for     y := 0; y < tiles.NUM_CELLS_Y; y++ {
+		osY = getOffsetForWholeRow(y)
+		
+		for x := 0; x < tiles.NUM_CELLS_X; x++ {
+			var c i32 = tiles.Cells[y][x]
+			
+			if c == tiles.EMPTY_CELL {
+				c = shape.SHAPE_MAX // set to last color (dark gray) 
+			}
+			
+			gl.Color3f(
+				draw.Colors[c].R, 
+				draw.Colors[c].G, 
+				draw.Colors[c].B)
+			
+			draw.ScaledPic(
+				draw.PicShapeTile, 
+				f32.add(fX, f32.mul(i32.f32(x), tiles.CellWidth)),
+				f32.add(fY, f32.mul(i32.f32(y), tiles.CellHeight)) - osY, 
+				tiles.CellWidth, 
+				tiles.CellHeight)
 		}
-		
-		gl.Color3f(
-			draw.Colors[c].R, 
-			draw.Colors[c].G, 
-			draw.Colors[c].B)
-		
-		draw.ScaledPic(
-			draw.PicShapeTile, 
-			f32.add(fX, f32.mul(i32.f32(x), map.CellWidth)),
-			f32.add(fY, f32.mul(i32.f32(y), map.CellHeight)), 
-			map.CellWidth, 
-			map.CellHeight)
 	}
+}
+
+
+func getOffsetForWholeRow (y i32) (osY f32) {
+	osY = 0.0
+	
+	if len(tiles.CollapsingRows) != 0 {
+		var del f64 = CurrTime - tiles.CollapseStartTime // time delta 
+		var dura /* ...tion of smooth slide */ f64 = DropDelta * 0.2D
+
+		// calculate a potential offset for smooth sliding interpolation 
+		if del < dura {
+			for i := 0; i < len(tiles.CollapsingRows); i++ {
+				if tiles.CollapsingRows[i] <= y {
+					osY = f32.add(osY, f64.f32(del / dura) * tiles.CellHeight - tiles.CellHeight)
+				}
+			}
+		}else{
+			// transition time is up, clear slice 
+			for len(tiles.CollapsingRows) > 0 {
+				tiles.CollapsingRows = remove(tiles.CollapsingRows, 0)
+			}
+		}
 	}
 }
 
 
 func PlayerPiece () {
+	var fX  f32 = tiles.LEdge + tiles.CellWidthHalf
+	var fY  f32 =     -0.95 + tiles.CellHeightHalf
+	var del f64 = CurrTime - shape.PlayerMoveTime // time delta 
+	var osX f32 // offset 
+	var osY f32 //   ^ 
+	var dura /* ...tion of smooth slide */ f64 = DropDelta * 0.2D
+	
+	// calculate a potential offset for smooth sliding interpolation 
+	if del < dura {
+		if shape.PlayerPos.X == shape.PlayerPosPrev.X {
+			osX = 0.0
+		}else
+		if shape.PlayerPos.X >  shape.PlayerPosPrev.X {
+			osX = f64.f32(del / dura) * -tiles.CellWidth + tiles.CellWidth
+		}else{
+			osX = f64.f32(del / dura) * tiles.CellWidth - tiles.CellWidth
+		}
+
+		if shape.PlayerPos.Y == shape.PlayerPosPrev.Y {
+			osY = 0.0
+		}else{
+			osY = f64.f32(del / dura) * tiles.CellHeight - tiles.CellHeight
+		}
+	}else{
+		osX = 0.0
+		osY = 0.0
+	}
+				
 	gl.Color3f(
 		draw.Colors[shape.PlayerShape].R, 
 		draw.Colors[shape.PlayerShape].G, 
 		draw.Colors[shape.PlayerShape].B)
 	
-	var fX f32 = map.LEdge + map.CellWidthHalf
-	var fY f32 =     -0.95 + map.CellHeightHalf
-
-	for y := 0; y < 5; y++ {
+	for     y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
 			if shape.Cells[shape.PlayerShape][shape.PlayerFacing][y][x] {
 				draw.ScaledPic(
 					draw.PicShapeTile, 
-					f32.add(fX, f32.mul(i32.f32(x - 2 + shape.PlayerPos.X), map.CellWidth)),
-					f32.add(fY, f32.mul(i32.f32(y - 2 + shape.PlayerPos.Y), map.CellHeight)), 
-					map.CellWidth, 
-					map.CellHeight)
+					f32.add(fX, f32.mul(i32.f32(x - 2 + shape.PlayerPos.X), tiles.CellWidth))  - osX,
+					f32.add(fY, f32.mul(i32.f32(y - 2 + shape.PlayerPos.Y), tiles.CellHeight)) - osY,
+					tiles.CellWidth, 
+					tiles.CellHeight)
 			}
 		}
 	}
