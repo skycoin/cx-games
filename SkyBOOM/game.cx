@@ -1,7 +1,14 @@
 package main
 
 import "app"
+import "entities"
 import "inputs"
+
+
+
+// entity ids 
+var PLAYER  i32
+var DROPPER i32 = 1 // coin DROPPER 
 
 
 
@@ -10,6 +17,19 @@ func gameInit () {
 	draw.Init()
 	inputs.Init(true)
 	entities.Init()
+	
+	// entities 
+	var ent entities.Entity
+	
+	// PLAYER 
+	ent = entities.Entity{ radius: 0.2, y: -1.0 }
+	entities.All = append(
+	entities.All, ent)
+	
+	// DROPPER 
+	ent = entities.Entity{ radius: 0.1, y:  1.0, vx: 0.03 }
+	entities.All = append(
+	entities.All, ent)
 }
 
 
@@ -17,7 +37,22 @@ func gameUpdate () {
 	respondToPointerEvents()
 	respondToButtonEvents()
 	respondToKeyEvents()
+	
 	entities.Update()
+	entities.All[PLAYER].x = inputs.MousePointer.X
+	
+	if entities.All[DROPPER].x < f64.f32(space.ViewEdgeL) {
+		reverseDropper()
+	}	
+	if entities.All[DROPPER].x > f64.f32(space.ViewEdgeR) {
+		reverseDropper()
+	}
+}
+
+
+func reverseDropper () {
+	var vX f32 = entities.All[DROPPER].vx
+	entities.All[DROPPER].vx = -X
 }
 
 

@@ -28,6 +28,7 @@ type Entity struct {
 }
 
 var ball Entity
+var All  []Entity // all entities (except ball ATM: FIXME) 
 
 
 
@@ -37,14 +38,24 @@ func Init () {
 
 
 func Update () {
+	//str.print("entities.Update ()")
+
 	// velocity 
 	//		player desired 
 	mov.SetPlayerVelocityFromInput()
 	
 	// motion/position 
+	//		hardwired player (FIXME) 
 	ball.x = f32.add(ball.x, ball.vx)
 	ball.y = f32.add(ball.y, ball.vy)
+	//		all the rest 
+	for i := 0; i < len(All); i++ {
+		// FIXME to use time.Curr 
+		All[i].x = f32.add(All[i].x, All[i].vx)
+		All[i].y = f32.add(All[i].y, All[i].vy)
+	}
 
+	// back out of any penetration (FIXME for "All") 
 	mov.ConstrainPosByMap()
 }
 

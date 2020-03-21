@@ -1,6 +1,7 @@
 package main
 
 import "draw"
+import "entities"
 
 
 
@@ -13,15 +14,22 @@ func drawAll () {
 	
 	draw.QuadsBegin()
 		var f f32 = 0.1
-		draw.Quad(f, f, 0.0 - f, 0.0 - f)
+		var ent entities.Entity
+		
+		ent = entities.All[PLAYER]
 		draw.Quad(
-			f32.add(inputs.MousePointer.Y, f),
-			f32.add(inputs.MousePointer.X, f),
-			f32.sub(inputs.MousePointer.Y, f),
-			f32.sub(inputs.MousePointer.X, f))
-	draw.End()
+			ent.y + ent.radius, 
+			ent.x + ent.radius, 
+			ent.y - ent.radius, 
+			ent.x - ent.radius)
 
-	draw.Ball(entities.ball)
+		ent = entities.All[DROPPER]
+		draw.Quad(
+			ent.y + ent.radius, 
+			ent.x + ent.radius, 
+			ent.y - ent.radius, 
+			ent.x - ent.radius)
+	draw.End()
 }
 
 
