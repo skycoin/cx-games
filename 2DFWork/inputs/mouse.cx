@@ -154,7 +154,7 @@ var deltaX f32
 var deltaY f32
 var deltaX64 f64
 var deltaY64 f64
-var dist Vec2F64 // distance since latest piece movement 
+var dist Vec2F64 // distance since latest blocky movement 
 func onCursorPosEvent (window str, x f64, y f64) {
 	//str.print("onCursorPosEvent ()")
 
@@ -174,7 +174,7 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	mY = mY * space.ViewSizeInGL.Y
 	// offset it to start with negative edge value 
 	mX = mX - space.AspectRatio
-	//		also flip it around, since Y increases UPWARDS in GL 
+	//		also flip Y, since it increases UPWARDS in GL 
 	mY = 1.0 - mY
 	
 	MousePointer.X = mX

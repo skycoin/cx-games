@@ -36,8 +36,6 @@ func Init () {
 func OnFramebufferSize (window str, wid i32, hei i32) {
 	printf("onFramebufferSize() wid,hei: %d,%d \n", wid, hei)
 	
-	//BufferWid = wid
-	//BufferHei = hei
 	space.AspectRatio = f32.div(i32.f32(wid), i32.f32(hei))
 	space.ViewSizeInGL.X = 2.0 * space.AspectRatio
 	space.ViewSizeInGL.Y = 2.0
