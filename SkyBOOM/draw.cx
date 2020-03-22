@@ -16,19 +16,19 @@ func drawAll () {
 	gl.Disable(gl.TEXTURE_2D)
 	
 	var n i32 = entities.GetNumOfAll()
-	draw.QuadsBegin()
-		draw.SetColorById(draw.COLOR_YELLOW)
-		for i := DROPPER + 1; i < n; i++ {
-			//draw.Ball(entities.All[i], false)
-			ent = entities.All[i]
-			draw.Quad(
-				ent.y + ent.radius, 
-				ent.x + ent.radius, 
-				ent.y - ent.radius, 
-				ent.x - ent.radius)
-		}
+	for i := MAX_SPECIALS; i < n; i++ {
+		draw.Ball(entities.All[i], draw.COLOR_YELLOW, false)
+		/*
+		ent = entities.All[i]
+		draw.Quad(
+			ent.y + ent.radius, 
+			ent.x + ent.radius, 
+			ent.y - ent.radius, 
+			ent.x - ent.radius)
+		*/
+	}
 
-		
+	draw.QuadsBegin()
 		draw.SetColor3(draw.White)
 		ent = entities.All[PLAYER]
 		draw.Quad(

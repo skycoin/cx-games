@@ -9,6 +9,7 @@ import "inputs"
 // entities 
 var PLAYER          i32
 var DROPPER         i32 = 1 // coin DROPPER 
+var MAX_SPECIALS    i32 = 2 // how many special cases listed above 
 var /* new...*/ ent entities.Entity
 	
 // dropper reverse logic 
@@ -37,6 +38,29 @@ func gameInit () {
 	entities.All, ent)
 	
 	setReverseTarget()
+	showWorkHours()
+}
+
+
+func showWorkHours () {
+	var today       i32 = 21
+	var hoursWorked f32 = 14.5
+
+	var hourlyGoal  f32 = 100.0
+	var monthDays   i32 = 31
+	
+	
+	var daysLeft    i32 = monthDays - today + 3
+	var hoursLeft   f32 = hourlyGoal - hoursWorked
+	str.print("======================================")
+	str.print("======================================")
+	str.print("======================================")
+	printf("daysLeft: %d \n", daysLeft)
+	printf("hoursLeft: %f \n", hoursLeft)
+	printf("hours needed per day: %f \n", hoursLeft / i32.f32(daysLeft))
+	str.print("======================================")
+	str.print("======================================")
+	str.print("======================================")
 }
 
 
