@@ -31,6 +31,7 @@ type Color3 struct {
 	G f32
 	B f32
 }
+
 type Color4 struct {
 	R f32
 	G f32

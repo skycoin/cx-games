@@ -6,12 +6,12 @@ import "inputs"
 
 
 
+var pTop            f32     // player top edge 
 // entities 
 var PLAYER          i32
 var DROPPER         i32 = 1 // coin DROPPER 
 var MAX_SPECIALS    i32 = 2 // how many special cases listed above 
 var /* new...*/ ent entities.Entity
-	
 // dropper reverse logic 
 var reverseTarget   f32
 var numTargetGrains i32 = 100
@@ -37,27 +37,30 @@ func gameInit () {
 	entities.All = append(
 	entities.All, ent)
 	
+	pTop = entities.All[PLAYER].y +
+		   entities.All[PLAYER].radius
+
 	setReverseTarget()
-	showWorkHours()
+	showWorkHoursNeeded()
 }
 
 
-func showWorkHours () {
-	var today       i32 = 21
-	var hoursWorked f32 = 14.5
+func showWorkHoursNeeded () {
+	var today       i32 = 23
+	var hoursWorked f32 = 15.37
 
-	var hourlyGoal  f32 = 100.0
 	var monthDays   i32 = 31
+	var hourGoal    f32 = 100.0
 	
 	
-	var daysLeft    i32 = monthDays - today + 3
-	var hoursLeft   f32 = hourlyGoal - hoursWorked
+	var daysLeft    i32 = monthDays - today + 4
+	var hoursLeft   f32 = hourGoal - hoursWorked
 	str.print("======================================")
 	str.print("======================================")
 	str.print("======================================")
-	printf("daysLeft: %d \n", daysLeft)
+	printf("daysLeft: %d (includes today) \n", daysLeft)
 	printf("hoursLeft: %f \n", hoursLeft)
-	printf("hours needed per day: %f \n", hoursLeft / i32.f32(daysLeft))
+	printf("hours needed (to work per day): %f \n", hoursLeft / i32.f32(daysLeft))
 	str.print("======================================")
 	str.print("======================================")
 	str.print("======================================")
@@ -72,6 +75,7 @@ func gameUpdate () {
 	entities.Update()
 	entities.All[PLAYER].x = inputs.MousePointer.X
 	handleDropperReversing()
+	doCoinCollision()
 	
 	if nextDrop <= time.Now {
 		nextDrop = time.Now + dropDelay
@@ -216,4 +220,23 @@ func repeaters (key i32) {
 
 
 func respondToMenuClicks () {
+}
+
+
+func doCoinCollision () {
+	var n i32 = entities.GetNumOfAll()
+	for i := n - 1; i >= MAX_SPECIALS; i-- { // go backwards for removals 
+		if  entities.All[i].y > 1.0 { // went past top of viewport 
+			entities.All = remove(
+			entities.All, i)
+			printf("n: %d \n", n)
+		}else
+		if  entities.All[i].y < pTop + 
+			entities.All[i].radius { // went past top of bucket/s 
+				
+			entities.All[i].vx = entities.All[i].x * -0.05
+			entities.All[i].vy = 0.08 // fly up 
+			printf("coin < pTop: %f   %d \n", pTop, i)
+		}
+	}
 }
