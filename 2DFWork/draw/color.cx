@@ -13,6 +13,7 @@ var COLOR_CYAN      i32 = 6
 var COLOR_GRAY_DARK i32 = 7
 
 // 		self-contained 
+var Brown Color3
 var Black Color3
 var White Color3
 
@@ -81,8 +82,9 @@ func SetSequentiallyCycledColor (i i32) {
 
 
 func initColor () {
-	Black = Color3{ R: 0.0, G: 0.0, B: 0.0 }
-	White = Color3{ R: 1.0, G: 1.0, B: 1.0 }
+	Brown = Color3{ R: 0.375, G: 0.19, B: 0.004 }
+	Black = Color3{ R: 0.0,   G: 0.0,  B: 0.0 }
+	White = Color3{ R: 1.0,   G: 1.0,  B: 1.0 }
 	
 	addColor(0.9, 0.0, 0.0)          // red 
 	addColor(0.3, 0.3, 0.9)          // blue 
