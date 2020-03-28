@@ -6,7 +6,7 @@ import "inputs"
 
 
 
-var coinRadius      f32 = 0.03
+var coinRadius      f32 = 0.045
 var pTop            f32     // player top edge 
 var explodeLine     f32 = -1.0 + coinRadius // vertical pos that triggers explosion 
 // entities 
@@ -45,29 +45,6 @@ func gameInit () {
 		   entities.All[PLAYER].radius
 
 	setReverseTarget()
-	showWorkHoursNeeded()
-}
-
-
-func showWorkHoursNeeded () {
-	var today       i32 = 23
-	var hoursWorked f32 = 15.37
-
-	var monthDays   i32 = 31
-	var hourGoal    f32 = 100.0
-	
-	
-	var daysLeft    i32 = monthDays - today + 4
-	var hoursLeft   f32 = hourGoal - hoursWorked
-	str.print("======================================")
-	str.print("======================================")
-	str.print("======================================")
-	printf("daysLeft: %d (includes today) \n", daysLeft)
-	printf("hoursLeft: %f \n", hoursLeft)
-	printf("hours needed (to work per day): %f \n", hoursLeft / i32.f32(daysLeft))
-	str.print("======================================")
-	str.print("======================================")
-	str.print("======================================")
 }
 
 

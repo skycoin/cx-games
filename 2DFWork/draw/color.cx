@@ -2,7 +2,7 @@ package draw
 
 
 
-//		"id constants" 
+//		id "constants" 
 var COLOR_RED       i32
 var COLOR_BLUE      i32 = 1
 var COLOR_GREEN     i32 = 2
@@ -23,7 +23,7 @@ var Mid    f32 = 0.5
 var Dark   f32 = 0.3
 var Darker f32 = 0.2
 
-// 		rainbow spectrum slice 
+// 		rainbow spectrum 
 var Colors []Color3 
 
 
