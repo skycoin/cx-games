@@ -6,14 +6,18 @@ import "inputs"
 
 
 
-var coinRadius      f32 = 0.045
+var coinRadius      f32 = 0.045 // while dropping 
 var pTop            f32     // player top edge 
 var explodeLine     f32 = -1.0 + coinRadius // vertical pos that triggers explosion 
 // entities 
+var /* new...*/ ent entities.Entity
+//		"enums" of unique entities at beginning of entities.All 
 var PLAYER          i32
 var DROPPER         i32 = 1 // coin DROPPER 
-var MAX_SPECIALS    i32 = 2 // how many special cases listed above 
-var /* new...*/ ent entities.Entity
+var MAX_UNIQUES     i32 = 2 // how many special cases listed above 
+//		modes 
+var MODE_DROPPING   i32
+var MODE_FADING     i32 = 1
 // dropper reverse logic 
 var reverseTarget   f32
 var numTargetGrains i32 = 100
@@ -54,9 +58,7 @@ func gameUpdate () {
 	respondToKeyEvents()
 	
 	entities.Update()
-	entities.All[PLAYER].x = inputs.MousePointer.X
-	handleDropperReversing()
-	doCoinCollision()
+	updateGameEntities()
 	
 	if nextDrop <= time.Now {
 		nextDrop = time.Now + dropDelay
@@ -108,17 +110,17 @@ func setReverseTarget () {
 	if entities.All[DROPPER].vx > 0.0 { 
 		// going right 
 		pd = f32.sub(f64.f32(space.ViewEdgeR), entities.All[DROPPER].x)
-		printf("pd: %f \n", pd)
 	}else{ 
 		// going left 
 		pd = f32.sub(f64.f32(space.ViewEdgeL), entities.All[DROPPER].x)
-		printf("pd: %f \n", pd)
 	}
+
+	printf("potential distance: %f \n", pd)
 	
 	var targetGrainSize f32 = f32.div(pd, i32.f32(numTargetGrains))
-	printf("targetGrainSize: %f \n", targetGrainSize)
 	var r i32 = i32.rand(0, numTargetGrains)
 	reverseTarget = f32.mul(i32.f32(r), targetGrainSize)
+	//printf("targetGrainSize: %f \n", targetGrainSize)
 }
 
 
@@ -204,7 +206,10 @@ func respondToMenuClicks () {
 }
 
 
-func doCoinCollision () {
+func updateGameEntities () {
+	// player 
+	entities.All[PLAYER].x = inputs.MousePointer.X
+	
 	var pL f32 =  // player left  edge 
 		entities.All[PLAYER].x -
 		entities.All[PLAYER].radius
@@ -213,19 +218,21 @@ func doCoinCollision () {
 		entities.All[PLAYER].x +
 		entities.All[PLAYER].radius
 	
+	// dropper 
+	handleDropperReversing()
+	
+	// common 
 	var n i32 = entities.GetNumOfAll()
-	for i := n - 1; i >= MAX_SPECIALS; i-- { // go backwards for removals 
+	for i := n - 1; i >= MAX_UNIQUES; i-- { // go backwards for removals 
 		var e Entity = entities.All[i]
+		doFading(i)
 		
+		// collision 
 		if e.y > 1.0 { // (above top of viewport) 
-			entities.All = remove(
-			entities.All, i)
-			printf("n: %d \n", n)
+			killEntity(i)
 		}else
 		if e.y < explodeLine { // touched floor 
-			entities.All = remove(
-			entities.All, i)
-			printf("n: %d \n", n)
+			killEntity(i)
 		}else
 		if e.y < pTop + e.radius { // (below top of PLAYER bucket/s) 
 			if  caughtCoin(e, i, pL, pR, e.x - e.radius) { // coin left  edge 
@@ -239,11 +246,27 @@ func doCoinCollision () {
 }
 
 
+func killEntity (i i32) {
+	entities.All = remove(
+	entities.All, i)
+	printf("killed entity: %d \n", i)
+}
+
+
+func doFading (i i32) {
+	if  entities.All[i].Mode == MODE_FADING {
+		entities.All[i].radius = 
+		entities.All[i].radius + 0.01
+	}
+}
+
+
 // detect edge touching player 
 func caughtCoin (e Entity, i i32, pL f32, pR f32, edge f32) (out bool) {
 	if  edge < pR &&
 		edge > pL {
 			
+		entities.All[i].Mode = MODE_FADING
 		entities.All[i].vx = e.x * -0.05
 		entities.All[i].vy = 0.08 // fly up 
 		//printf("coin < pTop: %f   %d \n", pTop, i)

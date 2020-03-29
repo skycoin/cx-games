@@ -39,10 +39,10 @@ func OnFramebufferSize (window str, wid i32, hei i32) {
 	space.AspectRatio = f32.div(i32.f32(wid), i32.f32(hei))
 	space.ViewSizeInGL.X = 2.0 * space.AspectRatio
 	space.ViewSizeInGL.Y = 2.0
-	printf("space.ViewSizeInGL.X: %f \n", space.ViewSizeInGL.X)
+	printf("    space.ViewSizeInGL.X: %f \n", space.ViewSizeInGL.X)
 	space.ViewEdgeL = 0.0D - f32.f64(space.AspectRatio)
 	space.ViewEdgeR =        f32.f64(space.AspectRatio)
-	printf("space.ViewEdgeL: %f - space.ViewEdgeR: %f \n",
+	printf("    space.ViewEdgeL: %f\n    space.ViewEdgeR: %f \n",
 		space.ViewEdgeL,
 		space.ViewEdgeR)
 	

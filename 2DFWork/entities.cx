@@ -16,6 +16,7 @@ type Entity struct {
 	gravity   f32
 	radius    f32
 	
+	Mode      i32
 	GridPos   app.Vec2I
 	// cell bounds/connections 
 	CellMin   app.Vec2 // boundaries of the current cell it's in 

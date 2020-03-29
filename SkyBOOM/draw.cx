@@ -21,7 +21,7 @@ func drawAll () {
 	gl.Disable(gl.TEXTURE_2D)
 	
 	var n i32 = entities.GetNumOfAll()
-	for i := MAX_SPECIALS; i < n; i++ {
+	for i := MAX_UNIQUES; i < n; i++ {
 		if entities.All[i].vy > 0.0 {
 			draw.Ball(entities.All[i], draw.COLOR_ORANGE, false)
 		}else{

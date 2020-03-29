@@ -2,7 +2,7 @@ package draw
 
 
 
-//		id "constants" 
+//		spectrum id "constants" 
 var COLOR_RED       i32
 var COLOR_BLUE      i32 = 1
 var COLOR_GREEN     i32 = 2
