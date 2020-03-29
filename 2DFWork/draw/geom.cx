@@ -5,7 +5,7 @@ import "entities"
 
 
 
-func Ball (e entities.Entity, colorId i32, drawAt0 bool) {
+func Ball (e entities.Entity, colorId i32, alpha f32, drawAt0 bool) {
 	var x  f32
 	var y  f32
 	var eX f32
@@ -16,7 +16,7 @@ func Ball (e entities.Entity, colorId i32, drawAt0 bool) {
 		eY = e.y
 	}
 	
-	SetColorById(colorId)
+	SetColorAndAlpha(colorId, alpha)
 
 	gl.Begin(gl.POLYGON)
 		var i f32

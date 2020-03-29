@@ -42,11 +42,18 @@ type Color4 struct {
 
 
 
-func SetColorById (i i32) {
+func SetColor (i i32) {
 	gl.Color3f(
 		Colors[i].R, 
 		Colors[i].G, 
 		Colors[i].B)
+}
+func SetColorAndAlpha (i i32, alpha f32) {
+	gl.Color4f(
+		Colors[i].R, 
+		Colors[i].G, 
+		Colors[i].B,
+		alpha)
 }
 
 

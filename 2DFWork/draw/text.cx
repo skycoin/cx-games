@@ -55,8 +55,8 @@ func OutlinedText (s str, color i32, x f32, y f32, scale f32) {
 
 
 // x & y are offsets 
-func printTextWithColor (s str, x f32, y f32, color i32, a f32) {
-	SetColorById(color)
+func printTextWithColor (s str, x f32, y f32, color i32, alpha f32) {
+	SetColorAndAlpha(color, alpha)
 	gltext.Printf("Roboto100", x, y, s)
 }
 

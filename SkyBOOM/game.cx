@@ -41,7 +41,7 @@ func gameInit () {
 	entities.All, ent)
 	
 	// 		DROPPER 
-	ent = entities.Entity{ radius: 0.1, y:  1.0, vx: 0.03 }
+	ent = entities.Entity{ radius: 0.1, y:  1.0, vx: 1.2 }
 	entities.All = append(
 	entities.All, ent)
 	
@@ -57,22 +57,7 @@ func gameUpdate () {
 	respondToButtonEvents()
 	respondToKeyEvents()
 	
-	entities.Update()
 	updateGameEntities()
-	
-	if nextDrop <= time.Now {
-		nextDrop = time.Now + dropDelay
-		//str.print("drop\n")
-		
-		ent = entities.Entity{ 
-			radius:  coinRadius, 
-			x:       entities.All[DROPPER].x,
-			y:       0.9, 
-			vx:      0.0,
-			vy:     -0.02 }
-		entities.All = append(
-		entities.All, ent)
-	}
 }
 
 
@@ -219,7 +204,9 @@ func updateGameEntities () {
 		entities.All[PLAYER].radius
 	
 	// dropper 
+	entities.UpdateAt(DROPPER)
 	handleDropperReversing()
+	dropCoins()
 	
 	// common 
 	var n i32 = entities.GetNumOfAll()
@@ -256,7 +243,7 @@ func killEntity (i i32) {
 func doFading (i i32) {
 	if  entities.All[i].Mode == MODE_FADING {
 		entities.All[i].radius = 
-		entities.All[i].radius + 0.01
+		entities.All[i].radius + time.Delta
 	}
 }
 
@@ -268,10 +255,27 @@ func caughtCoin (e Entity, i i32, pL f32, pR f32, edge f32) (out bool) {
 			
 		entities.All[i].Mode = MODE_FADING
 		entities.All[i].vx = e.x * -0.05
-		entities.All[i].vy = 0.08 // fly up 
+		entities.All[i].vy = 2.6 // fly up 
 		//printf("coin < pTop: %f   %d \n", pTop, i)
 		return true
 	}
 	
 	return false
+}
+
+
+func dropCoins () {	
+	if nextDrop <= time.Now {
+		nextDrop = time.Now + dropDelay
+		//str.print("drop\n")
+		
+		ent = entities.Entity{ 
+			radius:  coinRadius, 
+			x:       entities.All[DROPPER].x,
+			y:       0.9, 
+			vx:      0.0,
+			vy:     -1.2 }
+		entities.All = append(
+		entities.All, ent)
+	}
 }
