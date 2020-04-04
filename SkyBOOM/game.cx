@@ -32,8 +32,8 @@ func gameInit () {
 	inputs.Init(true)
 	entities.Init()
 	
-	drawInit()
 	menuInit()
+	drawInit()
 	
 	// entities 
 	// 		PLAYER 

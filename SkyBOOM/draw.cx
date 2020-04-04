@@ -10,7 +10,10 @@ var ent entities.Entity
 
 
 func drawInit () {
+	str.print("drawInit ()")
+
 	gl.ClearColor(0.5, 0.7, 1.0, 0.0) // light blue 
+	draw.InitPics()
 }
 
 
@@ -22,22 +25,15 @@ func drawAll () {
 	
 	var n i32 = entities.GetNumOfAll()
 	for i := MAX_UNIQUES; i < n; i++ {
+		var e Entity = entities.All[i]
 		var ac f32 = 1.0 // alpha channel 
 		
-		if entities.All[i].Mode == MODE_FADING {
-			ac = 1.0 - entities.All[i].radius * 2.0
-			draw.Ball( entities.All[i], draw.COLOR_ORANGE, ac, false)
+		if e.Mode == MODE_FADING {
+			ac = 1.0 - e.radius * 2.0
+			draw.Ball( e, draw.COLOR_ORANGE, ac, false)
 		}else{
-			draw.Ball( entities.All[i], draw.COLOR_YELLOW, ac, false)
+			draw.Ball( e, draw.COLOR_YELLOW, ac, false)
 		}
-		/*
-		ent = entities.All[i]
-		draw.Quad(
-			ent.y + ent.radius, 
-			ent.x + ent.radius, 
-			ent.y - ent.radius, 
-			ent.x - ent.radius)
-		*/
 	}
 
 	// player & dropper 
@@ -61,6 +57,9 @@ func drawAll () {
 
 	// menu 
 	gl.Enable(gl.TEXTURE_2D)
+	gl.Color4f(1.0, 1.0, 1.0, 0.2)
+	draw.ScaledPic(draw.PicBackground, 0.0, 0.0, 1.0, 1.0)
+	gl.LoadIdentity()
 
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 
 		//menu.DrawRects()

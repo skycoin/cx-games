@@ -7,7 +7,7 @@ import "app"
 // FIXME: these should be updated from window change events 
 var AspectRatio     f32 // horizontal FOV (field of view) NOT in degrees  
                         // vertical will always be 1.0, horizontal is relative to that 
-var ViewWidInPixels i32 // separate values cuz *GetFramebuffer*() return format 
+var ViewWidInPixels i32 // separate i32s cuz *GetFramebuffer*() return format 
 var ViewHeiInPixels i32
 var ViewSizeInGL    app.Vec2
 var PixelSize       app.Vec2 //           in GL space 
@@ -19,7 +19,7 @@ var ViewEdgeR64     f64 // gl.Ortho() needs 64 bit
 
 
 func Init () {
-	str.print("space.Init ()")
+	str.print("ASDFASDFASDFASDFASDFASDFASD  space.Init () @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 	
 	ViewWidInPixels = app.START_WIDTH
 	ViewHeiInPixels = app.START_HEIGHT
@@ -48,6 +48,11 @@ func SetSize (wid i32, hei i32) () {
 	printf("    ViewEdgeL: %f\n    ViewEdgeR: %f \n",
 		ViewEdgeL,
 		ViewEdgeR)
+
+	ViewWidInPixels = wid
+	ViewHeiInPixels = hei
+	PixelSize.X = ViewSizeInGL.X / i32.f32(wid)
+	PixelSize.Y = ViewSizeInGL.Y / i32.f32(hei)
 }
 
 

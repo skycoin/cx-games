@@ -20,17 +20,17 @@ var PicMouseRMB   i32
 func InitPics () {
 	str.print("2DFWork/draw.InitPics ()")
 	
-	PicBackground = gl.NewTexture(AssetDir + "textures/background.jpg")
-	PicStar       = gl.NewTexture(AssetDir + "textures/star.png")
-	PicShapeTile  = gl.NewTexture(AssetDir + "textures/tile.png")
-	PicRotLeft    = gl.NewTexture(AssetDir + "textures/rotate-left.png")
-	PicRotRight   = gl.NewTexture(AssetDir + "textures/rotate-right.png")
-	PicArrowLeft  = gl.NewTexture(AssetDir + "textures/arrow-left.png")
-	PicArrowRight = gl.NewTexture(AssetDir + "textures/arrow-right.png")
-	PicArrowDown  = gl.NewTexture(AssetDir + "textures/arrow-down.png")
-	PicMouse      = gl.NewTexture(AssetDir + "textures/mouse.png")   
-	PicMouseLMB   = gl.NewTexture(AssetDir + "textures/mouse-lmb.png")
-	PicMouseRMB   = gl.NewTexture(AssetDir + "textures/mouse-rmb.png")
+	PicBackground = initPic("textures/background.jpg")
+	PicStar       = initPic("textures/star.png")
+	PicShapeTile  = initPic("textures/tile.png")
+	PicRotLeft    = initPic("textures/rotate-left.png")
+	PicRotRight   = initPic("textures/rotate-right.png")
+	PicArrowLeft  = initPic("textures/arrow-left.png")
+	PicArrowRight = initPic("textures/arrow-right.png")
+	PicArrowDown  = initPic("textures/arrow-down.png")
+	PicMouse      = initPic("textures/mouse.png")   
+	PicMouseLMB   = initPic("textures/mouse-lmb.png")
+	PicMouseRMB   = initPic("textures/mouse-rmb.png")
 }
 
 
@@ -112,4 +112,10 @@ func Scaled3SlicedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 		gl.TexCoord2d(0.66D, 1.0D)
 		gl.Vertex3f(ome, -0.5, 0.0)
 	gl.End()
+}
+
+
+func initPic (path str) (id i32) {
+	id = gl.NewTexture(AssetDir + path)
+	printf("    initPic (id: %d, path: %s) \n", id, path)
 }
