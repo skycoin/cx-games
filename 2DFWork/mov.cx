@@ -17,7 +17,7 @@ import "time"
 
 
 
-var Force f32 = 0.08
+var Force f32 = 4.0
 
 
 

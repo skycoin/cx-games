@@ -10,7 +10,7 @@ func drawAll () {
 	pre()
 	gl.Disable(gl.TEXTURE_2D)
 	map.DrawQuads()
-	draw.Ball(entities.ball, draw.COLOR_CYAN, true)
+	draw.Ball(entities.ball, draw.COLOR_CYAN, 1.0, true)
 }
 
 
