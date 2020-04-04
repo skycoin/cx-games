@@ -69,7 +69,7 @@ func handleDropperReversing () {
 		if entities.All[DROPPER].x < reverseTarget {
 			reverseDropper()
 		}else
-		if entities.All[DROPPER].x < f64.f32(space.ViewEdgeL) {
+		if entities.All[DROPPER].x < space.ViewEdgeL {
 			reverseDropper()
 		}
 	}else{
@@ -77,7 +77,7 @@ func handleDropperReversing () {
 		if entities.All[DROPPER].x > reverseTarget {
 			reverseDropper()
 		}else
-		if entities.All[DROPPER].x > f64.f32(space.ViewEdgeR) {
+		if entities.All[DROPPER].x > space.ViewEdgeR {
 			reverseDropper()
 		}
 	}
@@ -96,10 +96,10 @@ func setReverseTarget () {
 
 	if entities.All[DROPPER].vx > 0.0 { 
 		// going right 
-		pd = f32.sub(f64.f32(space.ViewEdgeR), entities.All[DROPPER].x)
+		pd = f32.sub(space.ViewEdgeR, entities.All[DROPPER].x)
 	}else{ 
 		// going left 
-		pd = f32.sub(f64.f32(space.ViewEdgeL), entities.All[DROPPER].x)
+		pd = f32.sub(space.ViewEdgeL, entities.All[DROPPER].x)
 	}
 
 	printf("potential distance: %f \n", pd)
@@ -227,6 +227,7 @@ func updateGameEntities () {
 	// player 
 	entities.All[PLAYER].x = inputs.MousePointer.X
 	
+	// 		cache edges 
 	var pL f32 =  // player left  edge 
 		entities.All[PLAYER].x -
 		entities.All[PLAYER].radius
@@ -235,12 +236,25 @@ func updateGameEntities () {
 		entities.All[PLAYER].x +
 		entities.All[PLAYER].radius
 	
+	// 		keep entirely within view 
+	//TODO TODO TODO TODO TODO setup edges again if player pos reigned in 
+	if pR > space.ViewEdgeR {
+		entities.All[PLAYER].x = space.ViewEdgeR -
+		entities.All[PLAYER].radius
+	}else
+	if pL < space.ViewEdgeL {
+		entities.All[PLAYER].x = space.ViewEdgeL +
+		entities.All[PLAYER].radius
+	}
+	
+	
 	// dropper 
 	entities.UpdateAt(DROPPER)
 	handleDropperReversing()
 	dropCoins()
 	
-	// common 
+	
+	// common entities (coins) 
 	var n i32 = entities.GetNumOfAll()
 	for i := n - 1; i >= MAX_UNIQUES; i-- { // go backwards for removals 
 		var e Entity = entities.All[i]

@@ -11,8 +11,10 @@ var ViewWidInPixels i32 // separate values cuz *GetFramebuffer*() return format
 var ViewHeiInPixels i32
 var ViewSizeInGL    app.Vec2
 var PixelSize       app.Vec2 //           in GL space 
-var ViewEdgeL       f64 // viewport left  in GL space 
-var ViewEdgeR       f64 // viewport right in GL space 
+var ViewEdgeL       f32 // viewport left  in GL space 
+var ViewEdgeR       f32 // viewport right in GL space 
+var ViewEdgeL64     f64 // gl.Ortho() needs 64 bit 
+var ViewEdgeR64     f64 // gl.Ortho() needs 64 bit 
 
 
 
@@ -26,18 +28,23 @@ func Init () {
 }
 
 
-func SetSize (wid f32, hei f32) () {
+// for full resolution ViewEdge64 vars (fed to gl.Ortho() ) 
+var AspectRatio64 f64
+func SetSize (wid i32, hei i32) () {
 	printf("space.SetSize () \n")
 
-	AspectRatio = wid / hei
+	AspectRatio64 = i32.f64(wid) / i32.f64(hei)
+	AspectRatio   = f64.f32(AspectRatio64)
 	printf("    AspectRatio: %f \n", AspectRatio)
 
 	ViewSizeInGL.X = 2.0 * AspectRatio
 	ViewSizeInGL.Y = 2.0
 	printf("    ViewSizeInGL.X: %f \n", ViewSizeInGL.X)
 
-	ViewEdgeL = 0.0D - f32.f64(AspectRatio)
-	ViewEdgeR =        f32.f64(AspectRatio)
+	ViewEdgeL   = 0.0  - AspectRatio
+	ViewEdgeR   =        AspectRatio
+	ViewEdgeL64 = 0.0D - AspectRatio64
+	ViewEdgeR64 =        AspectRatio64
 	printf("    ViewEdgeL: %f\n    ViewEdgeR: %f \n",
 		ViewEdgeL,
 		ViewEdgeR)

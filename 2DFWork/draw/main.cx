@@ -36,9 +36,7 @@ func Init () {
 func OnFramebufferSize (window str, wid i32, hei i32) {
 	printf("OnFramebufferSize() w,h: %d,%d \n", wid, hei)
 	
-	space.SetSize(
-		i32.f32(wid), 
-		i32.f32(hei))	
+	space.SetSize(wid, hei)
 	//gl.Viewport(0, 0, wid, hei)
 }
 

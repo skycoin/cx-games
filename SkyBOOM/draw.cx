@@ -82,8 +82,8 @@ func pre () {
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
 	gl.Ortho(
-		space.ViewEdgeL, 
-		space.ViewEdgeR, -1.0D, 1.0D, 1.0D, -1.0D)
+		space.ViewEdgeL64, 
+		space.ViewEdgeR64, -1.0D, 1.0D, 1.0D, -1.0D)
 	gl.Viewport(0, 0, 
 		space.ViewWidInPixels, 
 		space.ViewHeiInPixels)

@@ -18,7 +18,7 @@ func pre () {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
-	gl.Ortho(space.ViewEdgeL, space.ViewEdgeR, -1.0D, 1.0D, 1.0D, -1.0D)
+	gl.Ortho(space.ViewEdgeL64, space.ViewEdgeR64, -1.0D, 1.0D, 1.0D, -1.0D)
 	gl.Viewport(0, 0, space.ViewWidInPixels, space.ViewHeiInPixels)
 	gl.MatrixMode(gl.MODELVIEW)
 
