@@ -228,23 +228,20 @@ func updateGameEntities () {
 	entities.All[PLAYER].x = inputs.MousePointer.X
 	
 	// 		cache edges 
-	var pL f32 =  // player left  edge 
-		entities.All[PLAYER].x -
-		entities.All[PLAYER].radius
-		
-	var pR f32 = // player right edge 
-		entities.All[PLAYER].x +
-		entities.All[PLAYER].radius
+	var pL f32 // left  
+	var pR f32 // right 
+	pL, pR = getPlayerEdges()
 	
 	// 		keep entirely within view 
-	//TODO TODO TODO TODO TODO setup edges again if player pos reigned in 
 	if pR > space.ViewEdgeR {
 		entities.All[PLAYER].x = space.ViewEdgeR -
 		entities.All[PLAYER].radius
+		pL, pR = getPlayerEdges()
 	}else
 	if pL < space.ViewEdgeL {
 		entities.All[PLAYER].x = space.ViewEdgeL +
 		entities.All[PLAYER].radius
+		pL, pR = getPlayerEdges()
 	}
 	
 	
@@ -276,6 +273,17 @@ func updateGameEntities () {
 			b = caughtCoin(e, i, pL, pR, e.x + e.radius)   // coin right edge 
 		}
 	}
+}
+
+
+func getPlayerEdges () (l f32, r f32) {
+	l =  // left 
+		entities.All[PLAYER].x -
+		entities.All[PLAYER].radius
+		
+	r = // right 
+		entities.All[PLAYER].x +
+		entities.All[PLAYER].radius
 }
 
 
