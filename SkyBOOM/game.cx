@@ -56,6 +56,7 @@ func gameUpdate () {
 	respondToPointerEvents()
 	respondToButtonEvents()
 	respondToKeyEvents()
+	respondToMenuClicks()
 	
 	updateGameEntities()
 }
@@ -163,6 +164,7 @@ func respondToKeyEvents () {
 
 func oneTimeOnly (key i32) {
 	if inputs.OpenedMenu(key) {
+		inputs.UseMousePointer(false)
 	}else{
 		inputs.CloseAppOnDeveloperShortcut(key)
 	}
@@ -171,23 +173,52 @@ func oneTimeOnly (key i32) {
 
 func repeaters (key i32) {
 	if app.Mode == app.MODE_PLAYING {
-		if inputs.EventLeft(key) {
-		} else
-		if inputs.EventRight(key) {
-		} else
-		if inputs.EventUp(key) {
-		} else
-		if inputs.EventDown(key) {
-		} else
-		if inputs.EventRotateLeft(key) {
-		} else
-		if inputs.EventRotateRight(key) {
+		if inputs.EventMoveLeft(key) {
+		}else
+		if inputs.EventMoveRight(key) {
+		}else
+		if inputs.EventMoveUp(key) {
+		}else
+		if inputs.EventMoveDown(key) {
+		}else
+		if inputs.EventAbilityLeft(key) {
+		}else
+		if inputs.EventAbilityRight(key) {
 		}
 	}
 }
 
 
 func respondToMenuClicks () {
+	/*
+	var s str
+	var i i32
+	s, i = menu.GetHoveredItem(app.Mode)
+
+	if s == menu.Play {
+		inputs.UseMousePointer(false)
+		//PlayerScore    =  0
+		//PlayerScoreTxt = "0"
+		app.Mode = app.MODE_PLAYING
+	} else
+	if s == menu.Options {
+		app.Mode = app.MODE_MENU_OPTIONS
+	} else
+	if s == menu.Controls {
+		app.Mode = app.MODE_MENU_CONTROLS
+	} else
+	if s == menu.Quit {
+		glfw.SetShouldClose(app.Name, true)
+	} else
+	if s == ShowNextShapeText + "YES" {
+		    ShowNextShape = false
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "NO"
+	} else
+	if s == ShowNextShapeText + "NO" {
+		    ShowNextShape = true
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "YES"
+	}
+	*/
 }
 
 

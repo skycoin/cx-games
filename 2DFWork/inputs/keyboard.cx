@@ -79,39 +79,39 @@ func OpenedMenu (key i32) (out bool) {
 		key == GLFW_KEY_BACKSPACE { 
 
 		app.Mode = app.MODE_MENU_MAIN
-		SetMousePointer(true)
+		UseMousePointer(true)
 		out = true
 	}
 }
 
 
 // 		directions 
-func EventLeft (key i32) (out bool) {
+func EventMoveLeft (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_A) ||
     i32.eq(key, GLFW_KEY_LEFT) {
     out = true
   }
 }
-func EventRight (key i32) (out bool) {
+func EventMoveRight (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_D) ||
     i32.eq(key, GLFW_KEY_RIGHT) {
     out = true
   }
 }
-func EventDown (key i32) (out bool) {
+func EventMoveDown (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_S) ||
     i32.eq(key, GLFW_KEY_DOWN) {
     out = true
   }
 }
-func EventUp (key i32) (out bool) {
+func EventMoveUp (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_W) ||
     i32.eq(key, GLFW_KEY_UP) {
     out = true
   }
 }
 
-func EventRotateLeft (key i32) (out bool) {
+func EventAbilityLeft (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_Q) ||
   	i32.eq(key, GLFW_KEY_LEFT_CONTROL) ||
     i32.eq(key, GLFW_KEY_RIGHT_ALT) {
@@ -119,7 +119,7 @@ func EventRotateLeft (key i32) (out bool) {
   }
 }
 
-func EventRotateRight (key i32) (out bool) {
+func EventAbilityRight (key i32) (out bool) {
   if i32.eq(key, GLFW_KEY_E) ||
   	i32.eq(key, GLFW_KEY_LEFT_ALT) ||
     i32.eq(key, GLFW_KEY_RIGHT_CONTROL) {

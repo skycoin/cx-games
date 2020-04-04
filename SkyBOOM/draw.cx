@@ -25,7 +25,7 @@ func drawAll () {
 		var ac f32 = 1.0 // alpha channel 
 		
 		if entities.All[i].Mode == MODE_FADING {
-			ac = 1.0 - entities.All[i].radius
+			ac = 1.0 - entities.All[i].radius * 2.0
 			draw.Ball( entities.All[i], draw.COLOR_ORANGE, ac, false)
 		}else{
 			draw.Ball( entities.All[i], draw.COLOR_YELLOW, ac, false)

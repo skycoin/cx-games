@@ -76,7 +76,7 @@ func PointerInYPixelRange (lesser f32, greater f32) (out bool) {
 }
 
 
-func SetMousePointer (wanted bool) {
+func UseMousePointer (wanted bool) {
 	if wanted {
 		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorNormal)
 	} else {
