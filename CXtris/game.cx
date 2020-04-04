@@ -5,6 +5,7 @@ import "draw"
 import "gui"
 import "inputs"
 import "menu"
+import "shape"
 import "space"
 import "tiles"
 
@@ -17,7 +18,6 @@ func gameInit () {
 	
 	draw.Init()
 	space.Init()
-	menu.Init()
 
 	inputs.BufferingNotchyDeltas = true
 	inputs.Init(true)

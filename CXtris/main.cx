@@ -4,7 +4,6 @@ import "gl"
 import "glfw"
 import "app"
 import "inputs"
-import "shape"
 import "time"
 
 /* 

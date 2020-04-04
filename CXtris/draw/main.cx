@@ -49,11 +49,13 @@ func drawAll () {
 	}
 	
 	// cursor/pointer 
+	/*
 	draw.ScaledPic(draw.PicStar, 
 		inputs.MousePointer.X,
 		inputs.MousePointer.Y, 
 		0.1  * 0.3, 
 		0.07 * 0.3)
+	*/
 	
 	gl.LoadIdentity()
 	allText()
@@ -173,7 +175,7 @@ func NextShape () {
 	var fX f32 = shape.StartPosX
 	var fY f32 = shape.StartPosY
 	
-	for y := shape.StartY; y < 5; y++ {
+	for     y := shape.StartY; y < 5; y++ {
 		for x := shape.StartX; x < 5; x++ {
 			if shape.Cells[shape.Next][shape.FACING_UP][y][x] {
 				draw.ScaledPic(

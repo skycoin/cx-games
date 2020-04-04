@@ -33,6 +33,7 @@ func gameInit () {
 	entities.Init()
 	
 	drawInit()
+	menuInit()
 	
 	// entities 
 	// 		PLAYER 

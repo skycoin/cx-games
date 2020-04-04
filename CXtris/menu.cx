@@ -12,6 +12,8 @@ var DebrisHeight      i32  = 9
 
 
 func menuInit () {
+	menu.Init()
+
 	// app.MODE_MENU_OPTIONS
  	menu.MakeItem(1, menu.OptionsSize, ShowNextShapeText + "YES")
  	menu.MakeItem(1, menu.OptionsSize, SpeedText)

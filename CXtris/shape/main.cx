@@ -42,11 +42,6 @@ var PlayerScore    i32 =  0
 var PlayerScoreTxt str = "0"
 
 
-func Init () {		
-	str.print("shape.Init ()")
-	setupAllShapes()	
-}
-
 
 func SpawnNew () {
 	if app.Mode == app.MODE_GAME_OVER {
