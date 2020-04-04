@@ -60,19 +60,19 @@ func drawAll () {
 	draw.End()
 
 	// menu 
+	gl.Enable(gl.TEXTURE_2D)
+
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 
-		menu.DrawRects()
+		//menu.DrawRects()
 		
 		if app.Mode == app.MODE_MENU_CONTROLS {
 			//drawVirtualKeyBackdrops()
 		}
 	}else
 	if app.Mode == app.MODE_PLAYING {
-		/*
-		if gui.ShowControls {
-			drawVirtualKeyBackdrops()
-		}
-		*/
+		//if gui.ShowControls {
+		//	drawVirtualKeyBackdrops()
+		//}
 	}
 }
 

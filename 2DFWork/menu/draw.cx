@@ -8,18 +8,19 @@ import "space"
 
 var alpha f32 = 0.8
 func DrawRects () {
-	var m i32 = app.Mode	
-	gl.Color4f(draw.Dark, draw.Dark, draw.Dark, 0.9)
+	var m     i32 = app.Mode
 	var ySpan f32 = f32.mul(Items[m][0].Hei, space.PixelSize.Y)
-	var y f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
+	var y     f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
-	for i := i32.sub(len(Items[m]), 1); i >= 0; i-- {			
+	for i := i32.sub(len(Items[m]), 1); i >= 0; i-- {
+		printf("Items[m][i].Text: %s \n", Items[m][i].Text)
+				
 		var xSpan f32 = f32.mul(Items[m][i].Wid, space.PixelSize.X)
 	
 		if Items[m][i].Hover {
-			gl.Color4f(draw.Mid, draw.Mid, draw.Mid, alpha)
+			draw.SetColorToGrayShade(draw.Mid, alpha)
 		}else{
-			gl.Color4f(draw.Dark, draw.Dark, draw.Dark, alpha)
+			draw.SetColorToGrayShade(draw.Dark, alpha)
 		}
 		
 		draw.Scaled3SlicedPic(draw.PicShapeTile, 0.0, y, xSpan, ySpan)

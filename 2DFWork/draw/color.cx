@@ -55,6 +55,9 @@ func SetColorAndAlpha (i i32, alpha f32) {
 		Colors[i].B,
 		alpha)
 }
+func SetColorToGrayShade (shade f32, alpha f32) {
+	gl.Color4f(shade, shade, shade, alpha)
+}
 
 
 func SetColorByRGB (r f32, g f32, b f32) {
