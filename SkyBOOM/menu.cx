@@ -1,0 +1,33 @@
+package main
+
+import "menu"
+
+
+
+// options 
+var ShowNextShape     bool = true
+var ShowNextShapeText str  = "Show next shape: "
+var SpeedText         str  = "Speed"
+var DebrisHeightText  str  = "Debris height"
+var DebrisHeight      i32  = 9
+
+
+
+func menuInit () {
+	// app.MODE_MENU_OPTIONS
+ 	menu.MakeItem(1, menu.OptionsSize, ShowNextShapeText + "YES")
+ 	menu.MakeItem(1, menu.OptionsSize, SpeedText)
+ 	menu.MakeItem(1, menu.OptionsSize, DebrisHeightText)
+	// app.MODE_MENU_CONTROLS
+ 	menu.MakeItem(2, menu.OptionsSize, "")
+
+	// sliders (the only items that use these fields) 
+	/* EXAMPLES FROM CXTris 
+	menu.Items[1][1].Max   = DROP_SPEED_MAX
+	menu.Items[1][1].Value = DropSpeed
+	menu.Items[1][2].Max   = 11 // for debris height 
+	menu.Items[1][2].Value = DebrisHeight
+	*/
+
+	menu.BakeItemText()
+}

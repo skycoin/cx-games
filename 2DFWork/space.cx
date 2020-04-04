@@ -26,13 +26,21 @@ func Init () {
 }
 
 
-func Update (ratio f32) () {
-	printf("space.Update () - ratio: %f \n", ratio)
+func SetSize (wid f32, hei f32) () {
+	printf("space.SetSize () \n")
 
-	ViewEdgeL = f32.f64(f32.mul(ratio, -1.0))
-	ViewEdgeR = f32.f64(ratio)
+	AspectRatio = wid / hei
+	printf("    AspectRatio: %f \n", AspectRatio)
 
-	printf("ViewEdgeL, ViewEdgeR: %f, %f \n", ViewEdgeL, ViewEdgeR)
+	ViewSizeInGL.X = 2.0 * AspectRatio
+	ViewSizeInGL.Y = 2.0
+	printf("    ViewSizeInGL.X: %f \n", ViewSizeInGL.X)
+
+	ViewEdgeL = 0.0D - f32.f64(AspectRatio)
+	ViewEdgeR =        f32.f64(AspectRatio)
+	printf("    ViewEdgeL: %f\n    ViewEdgeR: %f \n",
+		ViewEdgeL,
+		ViewEdgeR)
 }
 
 

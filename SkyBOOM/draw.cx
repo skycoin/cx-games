@@ -40,6 +40,7 @@ func drawAll () {
 		*/
 	}
 
+	// player & dropper 
 	draw.QuadsBegin()
 		draw.SetColor3(draw.Brown)
 		ent = entities.All[PLAYER]
@@ -57,6 +58,22 @@ func drawAll () {
 			ent.y - ent.radius, 
 			ent.x - ent.radius)
 	draw.End()
+
+	// menu 
+	if app.Mode < app.MODE_MENU_MAX { // in a menu 
+		menu.DrawRects()
+		
+		if app.Mode == app.MODE_MENU_CONTROLS {
+			//drawVirtualKeyBackdrops()
+		}
+	}else
+	if app.Mode == app.MODE_PLAYING {
+		/*
+		if gui.ShowControls {
+			drawVirtualKeyBackdrops()
+		}
+		*/
+	}
 }
 
 

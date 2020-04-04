@@ -19,7 +19,7 @@ func Init (bufferingPointerSpots bool) {
 	if bufferingPointerSpots {
 		BufferingPointerSpots = 
 		bufferingPointerSpots
-		printf("   BufferingPointerSpots: %v \n", BufferingPointerSpots)
+		printf("    BufferingPointerSpots: %v \n", BufferingPointerSpots)
 		glfw.SetCursorPosCallback(app.Name, "onCursorPosEvent")
 	}
 }
