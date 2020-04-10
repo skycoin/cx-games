@@ -13,7 +13,6 @@ func drawInit () {
 	str.print("drawInit ()")
 
 	gl.ClearColor(0.5, 0.7, 1.0, 0.0) // light blue 
-	draw.GameAssetDir = "assets/" // "../2DFWork/draw/assets/" 
 	draw.AddPic("coin0001.png")
 	draw.AddPic("coin0002.png")
 	draw.AddPic("coin-gold_and_blue.png")

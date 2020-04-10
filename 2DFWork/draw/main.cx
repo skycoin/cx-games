@@ -12,7 +12,7 @@ import "space"
 
 
 var BaseAssetDir str = "../2DFWork/draw/assets/"
-var GameAssetDir str
+var GameAssetDir str = "assets/"
 
 
 

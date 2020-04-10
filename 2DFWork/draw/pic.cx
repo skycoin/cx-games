@@ -3,7 +3,6 @@ package draw
 
 
 // pics (textures) 
-var PicBackground i32
 var PicStar       i32
 var PicShapeTile  i32
 var PicRotLeft    i32
@@ -20,26 +19,33 @@ type Pic struct {
 	Id   i32
 }
 
-var pics []Pic
+var pics []Pic // ATM, only used for game specific pics 
 
 
 
 func InitPics () {
 	str.print("2DFWork.draw.InitPics ()")
 	
-	PicBackground = initPic("background.jpg")
-	PicStar       = initPic("star.png")
-	PicShapeTile  = initPic("tile.png")
-	PicRotLeft    = initPic("rotate-left.png")
-	PicRotRight   = initPic("rotate-right.png")
-	PicArrowLeft  = initPic("arrow-left.png")
-	PicArrowRight = initPic("arrow-right.png")
-	PicArrowDown  = initPic("arrow-down.png")
-	PicMouse      = initPic("mouse.png")   
-	PicMouseLMB   = initPic("mouse-lmb.png")
-	PicMouseRMB   = initPic("mouse-rmb.png")
+	var dir str = BaseAssetDir
 	
-	// intiPic hardwired for BaseAssetDir ATM 
+	PicStar       = initPic(dir, "star.png")
+	PicShapeTile  = initPic(dir, "tile.png")
+	PicRotLeft    = initPic(dir, "rotate-left.png")
+	PicRotRight   = initPic(dir, "rotate-right.png")
+	PicArrowLeft  = initPic(dir, "arrow-left.png")
+	PicArrowRight = initPic(dir, "arrow-right.png")
+	PicArrowDown  = initPic(dir, "arrow-down.png")
+	PicMouse      = initPic(dir, "mouse.png")   
+	PicMouseLMB   = initPic(dir, "mouse-lmb.png")
+	PicMouseRMB   = initPic(dir, "mouse-rmb.png")
+	
+	
+	dir = GameAssetDir
+	
+	// game specifics 
+	for i := 0; i < len(pics); i++ {
+		pics[i].Id = initPic(dir, pics[i].Name)
+	}
 }
 
 
@@ -141,7 +147,7 @@ func Scaled3SlicedPic (x f32, y f32, scaleX f32, scaleY f32) {
 }
 
 
-func initPic (name str) (id i32) {
-	id = gl.NewTexture(BaseAssetDir + "textures/" + name)
+func initPic (dir str, name str) (id i32) {
+	id = gl.NewTexture(dir + "textures/" + name)
 	printf("    initPic (id: %d, name: %s) \n", id, name)
 }
