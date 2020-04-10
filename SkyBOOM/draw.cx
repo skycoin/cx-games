@@ -72,7 +72,7 @@ func drawAll () {
 	gl.LoadIdentity()
 
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 
-		menu.DrawRects()
+		menu.Draw()
 		
 		if app.Mode == app.MODE_MENU_CONTROLS {
 			//drawVirtualKeyBackdrops()

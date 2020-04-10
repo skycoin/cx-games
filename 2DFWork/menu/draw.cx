@@ -1,13 +1,21 @@
 package menu
 
 import "gl"
+
 import "draw"
+import "inputs"
 import "space"
 
 
 
+func Draw () {
+	rects()
+	texts()
+}
+
+
 var alpha f32 = 0.8
-func DrawRects () {
+func rects () {
 	gl.BindTexture(gl.TEXTURE_2D, draw.PicShapeTile)
 
 	var m     i32 = app.Mode
@@ -39,5 +47,30 @@ func DrawRects () {
 		}
 		
 		y = f32.add(y, ySpan)
+	}
+}
+
+
+func texts () {
+	var m i32 = app.Mode
+	gl.LoadIdentity()
+
+	for i := i32.sub(len(Items[m]), 1); i >= 0; i-- {
+		if inputs.PointerInYPixelRange( // highlighted 
+			Items[m][i].Top, 
+			Items[m][i].Bottom) {
+							
+			Items[m][i].Hover = true			
+			gl.Color3f(1.0, 1.0, 1.0)
+		}else{
+			Items[m][i].Hover = false
+			gl.Color3f(draw.Mid, draw.Mid, draw.Mid)
+		}
+
+		gltext.Printf(
+			Items[m][i].FontId, 
+			Items[m][i].Left, 
+			Items[m][i].Top, 
+			Items[m][i].Text)
 	}
 }
