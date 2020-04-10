@@ -27,8 +27,8 @@ func InitFonts () {
 	//dir = os.GetWorkingDirectory()
 	//printf("os.GetWorkingDirectory(): '%s' \n", dir)
 
-	var sFile str = AssetDir + "fonts/Skycoin-Regular.ttf"
-	var rFile str = AssetDir + "fonts/roboto-light.ttf"
+	var sFile str = BaseAssetDir + "fonts/Skycoin-Regular.ttf"
+	var rFile str = BaseAssetDir + "fonts/roboto-light.ttf"
 
 	str.print("    Loading " + rFile)
 	loadFontSized(rFile, f32.i32(menu.MainSize))

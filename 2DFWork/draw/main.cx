@@ -6,12 +6,13 @@ import "gltext"
 
 import "app"
 import "geom"
+import "menu"
 import "space"
 
 
 
-// general 
-var AssetDir    str = "../2DFWork/draw/assets/"
+var BaseAssetDir str = "../2DFWork/draw/assets/"
+var GameAssetDir str
 
 
 
@@ -37,6 +38,7 @@ func OnFramebufferSize (window str, wid i32, hei i32) {
 	printf("OnFramebufferSize() w,h: %d,%d \n", wid, hei)
 	
 	space.SetSize(wid, hei)
+	menu.BakeItemText()
 	//gl.Viewport(0, 0, wid, hei)
 }
 

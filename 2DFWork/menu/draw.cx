@@ -8,14 +8,16 @@ import "space"
 
 var alpha f32 = 0.8
 func DrawRects () {
+	gl.BindTexture(gl.TEXTURE_2D, draw.PicShapeTile)
+
 	var m     i32 = app.Mode
-	var ySpan f32 = f32.mul(Items[m][0].Hei, space.PixelSize.Y)
+	var ySpan f32 = f32.mul(Items[m][0].Hei, space.PixelSize.Y) // of text 
 	var y     f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
 
 	for i := i32.sub(len(Items[m]), 1); i >= 0; i-- {
-		printf("Items[m][i].Text: %s \n", Items[m][i].Text)
+		//printf("Items[m][i].Text: %s \n", Items[m][i].Text)
 				
-		var xSpan f32 = f32.mul(Items[m][i].Wid, space.PixelSize.X)
+		var xSpan f32 = f32.mul(Items[m][i].Wid, space.PixelSize.X) // of text 
 	
 		if Items[m][i].Hover {
 			draw.SetColorToGrayShade(draw.Mid, alpha)
@@ -23,7 +25,7 @@ func DrawRects () {
 			draw.SetColorToGrayShade(draw.Dark, alpha)
 		}
 		
-		draw.Scaled3SlicedPic(draw.PicShapeTile, 0.0, y, xSpan, ySpan)
+		draw.Scaled3SlicedPic(0.0, y, xSpan, ySpan)
 		
 		if Items[m][i].Max != 0 { // (if it's a slider) 
 			gl.Color3f(1.0, 1.0, 1.0)
@@ -33,7 +35,7 @@ func DrawRects () {
 			var x   f32 = (val / max * xSpan)
 			x = f32.sub(x, f32.div(xSpan, 2.0))
 			x = f32.add(x, f32.div(wid, 2.0))
-			draw.Scaled3SlicedPic(draw.PicShapeTile, x, y, wid, ySpan)
+			draw.Scaled3SlicedPic(x, y, wid, ySpan)
 		}
 		
 		y = f32.add(y, ySpan)

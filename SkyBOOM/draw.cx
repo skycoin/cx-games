@@ -13,6 +13,10 @@ func drawInit () {
 	str.print("drawInit ()")
 
 	gl.ClearColor(0.5, 0.7, 1.0, 0.0) // light blue 
+	draw.GameAssetDir = "assets/" // "../2DFWork/draw/assets/" 
+	draw.AddPic("coin0001.png")
+	draw.AddPic("coin0002.png")
+	draw.AddPic("coin-gold_and_blue.png")
 	draw.InitPics()
 }
 
@@ -22,6 +26,7 @@ func drawAll () {
 
 	pre()
 	gl.Disable(gl.TEXTURE_2D)
+	gl.LoadIdentity()
 	
 	var n i32 = entities.GetNumOfAll()
 	for i := MAX_UNIQUES; i < n; i++ {
@@ -62,7 +67,7 @@ func drawAll () {
 	gl.LoadIdentity()
 
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 
-		//menu.DrawRects()
+		menu.DrawRects()
 		
 		if app.Mode == app.MODE_MENU_CONTROLS {
 			//drawVirtualKeyBackdrops()
