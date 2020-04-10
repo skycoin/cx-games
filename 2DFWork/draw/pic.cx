@@ -69,9 +69,17 @@ func GetPicId (name str) (out i32) {
 
 
 func ScaledPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
-	gl.LoadIdentity()
+	ScaledRotatedPic(picId, x, y, scaleX, scaleY, 0.0)
+}
 
+
+func ScaledRotatedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32, angle f32) {
+	gl.LoadIdentity()
 	gl.BindTexture(gl.TEXTURE_2D, picId)
+	
+	if angle != 0.0 {
+		gl.Rotatef(angle, 0.0, 0.0, 1.0)
+	}
 	gl.Translatef(x, y, 0.0)
 	gl.Scalef(scaleX, scaleY, 0.0)
 	

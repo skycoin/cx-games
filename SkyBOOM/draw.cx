@@ -2,6 +2,7 @@ package main
 
 import "draw"
 import "entities"
+import "time"
 
 
 
@@ -20,8 +21,12 @@ func drawInit () {
 }
 
 
+var angle f32
 func drawAll () {
 	//str.print("drawAll")
+	
+	var inc f32 = time.Delta * 50.0
+	angle = angle + inc
 
 	pre()
 	gl.Disable(gl.TEXTURE_2D)
@@ -61,8 +66,9 @@ func drawAll () {
 
 	// menu 
 	gl.Enable(gl.TEXTURE_2D)
-	gl.Color4f(1.0, 1.0, 1.0, 0.2)
-	draw.ScaledPic(draw.PicBackground, 0.0, 0.0, 1.0, 1.0)
+	gl.Color4f(1.0, 1.0, 1.0, 1.0)
+	var pic i32 = draw.GetPicId("coin0001.png")
+	draw.ScaledRotatedPic(pic, 0.0, 0.0, 1.0, 1.0, angle)
 	gl.LoadIdentity()
 
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 
