@@ -1,0 +1,75 @@
+package main
+
+
+
+// reverse logic 
+var reverseTarget   f32
+var numTargetGrains i32 = 100
+var nextDrop        f32
+var dropDelay       f32 = 0.3
+
+
+
+func dropCoins () {	
+	if nextDrop <= time.Now {
+		nextDrop = time.Now + dropDelay
+		//str.print("drop\n")
+		
+		ent = entities.Entity{ 
+			radius:  coinRadius, 
+			x:       entities.All[DROPPER].x,
+			y:       0.9, 
+			vx:      0.0,
+			vy:     -1.2 }
+		entities.All = append(
+		entities.All, ent)
+	}
+}
+
+
+func handleDropperReversing () {
+	if     entities.All[DROPPER].vx < 0.0 {
+		// going left 
+		if entities.All[DROPPER].x < reverseTarget {
+			reverseDropper()
+		}else
+		if entities.All[DROPPER].x < space.ViewEdgeL {
+			reverseDropper()
+		}
+	}else{
+		// going right 
+		if entities.All[DROPPER].x > reverseTarget {
+			reverseDropper()
+		}else
+		if entities.All[DROPPER].x > space.ViewEdgeR {
+			reverseDropper()
+		}
+	}
+}
+
+
+func reverseDropper () {
+	var vX f32 = entities.All[DROPPER].vx
+	entities.All[DROPPER].vx = -vX
+	setReverseTarget()
+}
+
+
+func setReverseTarget () {
+	var pd f32 // potential distance 
+
+	if entities.All[DROPPER].vx > 0.0 { 
+		// going right 
+		pd = f32.sub(space.ViewEdgeR, entities.All[DROPPER].x)
+	}else{ 
+		// going left 
+		pd = f32.sub(space.ViewEdgeL, entities.All[DROPPER].x)
+	}
+
+	printf("potential distance: %f \n", pd)
+	
+	var targetGrainSize f32 = f32.div(pd, i32.f32(numTargetGrains))
+	var r i32 = i32.rand(0, numTargetGrains)
+	reverseTarget = f32.mul(i32.f32(r), targetGrainSize)
+	//printf("targetGrainSize: %f \n", targetGrainSize)
+}

@@ -167,7 +167,7 @@ func respondToPointerEvents () {
 	// allow dragging a slider handle 
 	if inputs.HoldingLeftButton && 
 		v.X != app.TOO_BIG_F32 &&
-		app.Mode <= app.MODE_MENU_OPTIONS {
+		app.Mode < app.MODE_MENU_MAX {
 			
 		respondToMenuDrags()
 	}
