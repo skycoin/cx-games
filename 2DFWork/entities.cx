@@ -5,6 +5,7 @@ import "geom"
 import "inputs"
 import "mov"
 import "space"
+import "time"
 
 
 
@@ -16,6 +17,7 @@ type Entity struct {
 	gravity   f32
 	radius    f32
 	
+	Mode      i32
 	GridPos   app.Vec2I
 	// cell bounds/connections 
 	CellMin   app.Vec2 // boundaries of the current cell it's in 
@@ -37,7 +39,15 @@ func Init () {
 }
 
 
-func Update () {
+// each app/game probably has a few unique entities that are 
+// special cases, & updated uniquely at app level 
+// (such as player objects, which might be the current falling 
+// piece/shape in CXtris, or the player paddles/buckets in
+// SkyBOOM). 
+// SkyBOOM's coin dropper is another example. 
+// the rest can be handle generically, moving around based on 
+// their current velocity. 
+func Update (numUniques i32) {
 	//str.print("entities.Update ()")
 
 	// velocity 
@@ -46,22 +56,15 @@ func Update () {
 	
 	// motion/position 
 	//		hardwired player (FIXME) 
-	ball.x = f32.add(ball.x, ball.vx)
-	ball.y = f32.add(ball.y, ball.vy)
+	ball.x = f32.add(ball.x, ball.vx * time.Delta)
+	ball.y = f32.add(ball.y, ball.vy * time.Delta)
 	//		all the rest 
-	for i := 0; i < len(All); i++ {
-		// FIXME to use time.Curr 
-		All[i].x = f32.add(All[i].x, All[i].vx)
-		All[i].y = f32.add(All[i].y, All[i].vy)
+	for i := numUniques; i < len(All); i++ {
+		UpdateAt(i)
 	}
 
 	// back out of any penetration (FIXME for "All") 
 	mov.ConstrainPosByMap()
-}
-
-
-func GetNumOfAll () (num i32) {
-	num = len(All)
 }
 
 
@@ -73,4 +76,15 @@ func InitPlayer () {
 		vx:      0.0,
 		vy:      0.0,
 		gravity: 0.01}
+}
+
+
+func GetNumOfAll () (num i32) {
+	num = len(All)
+}
+
+
+func UpdateAt (i i32) {
+	All[i].x = f32.add(All[i].x, All[i].vx * time.Delta)
+	All[i].y = f32.add(All[i].y, All[i].vy * time.Delta)
 }

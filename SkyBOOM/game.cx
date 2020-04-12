@@ -6,11 +6,18 @@ import "inputs"
 
 
 
+var coinRadius      f32 = 0.045 // while dropping 
+var pTop            f32     // player top edge 
+var explodeLine     f32 = -1.0 + coinRadius // vertical pos that triggers explosion 
 // entities 
+var /* new...*/ ent entities.Entity
+//		"enums" of unique entities at beginning of entities.All 
 var PLAYER          i32
 var DROPPER         i32 = 1 // coin DROPPER 
-var /* new...*/ ent entities.Entity
-	
+var MAX_UNIQUES     i32 = 2 // how many special cases listed above 
+//		modes 
+var MODE_DROPPING   i32
+var MODE_FADING     i32 = 1
 // dropper reverse logic 
 var reverseTarget   f32
 var numTargetGrains i32 = 100
@@ -25,6 +32,9 @@ func gameInit () {
 	inputs.Init(true)
 	entities.Init()
 	
+	menuInit()
+	drawInit()
+	
 	// entities 
 	// 		PLAYER 
 	ent = entities.Entity{ radius: 0.2, y: -1.0 }
@@ -32,10 +42,13 @@ func gameInit () {
 	entities.All, ent)
 	
 	// 		DROPPER 
-	ent = entities.Entity{ radius: 0.1, y:  1.0, vx: 0.03 }
+	ent = entities.Entity{ radius: 0.1, y:  1.0, vx: 1.2 }
 	entities.All = append(
 	entities.All, ent)
 	
+	pTop = entities.All[PLAYER].y +
+		   entities.All[PLAYER].radius
+
 	setReverseTarget()
 }
 
@@ -44,24 +57,9 @@ func gameUpdate () {
 	respondToPointerEvents()
 	respondToButtonEvents()
 	respondToKeyEvents()
+	respondToMenuClicks()
 	
-	entities.Update()
-	entities.All[PLAYER].x = inputs.MousePointer.X
-	handleDropperReversing()
-	
-	if nextDrop <= time.Now {
-		nextDrop = time.Now + dropDelay
-		//str.print("drop\n")
-		
-		ent = entities.Entity{ 
-			radius:  0.03, 
-			x:       entities.All[DROPPER].x,
-			y:       0.9, 
-			vx:      0.0,
-			vy:     -0.02 }
-		entities.All = append(
-		entities.All, ent)
-	}
+	updateGameEntities()
 }
 
 
@@ -71,7 +69,7 @@ func handleDropperReversing () {
 		if entities.All[DROPPER].x < reverseTarget {
 			reverseDropper()
 		}else
-		if entities.All[DROPPER].x < f64.f32(space.ViewEdgeL) {
+		if entities.All[DROPPER].x < space.ViewEdgeL {
 			reverseDropper()
 		}
 	}else{
@@ -79,7 +77,7 @@ func handleDropperReversing () {
 		if entities.All[DROPPER].x > reverseTarget {
 			reverseDropper()
 		}else
-		if entities.All[DROPPER].x > f64.f32(space.ViewEdgeR) {
+		if entities.All[DROPPER].x > space.ViewEdgeR {
 			reverseDropper()
 		}
 	}
@@ -98,18 +96,18 @@ func setReverseTarget () {
 
 	if entities.All[DROPPER].vx > 0.0 { 
 		// going right 
-		pd = f32.sub(f64.f32(space.ViewEdgeR), entities.All[DROPPER].x)
-		printf("pd: %f \n", pd)
+		pd = f32.sub(space.ViewEdgeR, entities.All[DROPPER].x)
 	}else{ 
 		// going left 
-		pd = f32.sub(f64.f32(space.ViewEdgeL), entities.All[DROPPER].x)
-		printf("pd: %f \n", pd)
+		pd = f32.sub(space.ViewEdgeL, entities.All[DROPPER].x)
 	}
+
+	printf("potential distance: %f \n", pd)
 	
 	var targetGrainSize f32 = f32.div(pd, i32.f32(numTargetGrains))
-	printf("targetGrainSize: %f \n", targetGrainSize)
 	var r i32 = i32.rand(0, numTargetGrains)
 	reverseTarget = f32.mul(i32.f32(r), targetGrainSize)
+	//printf("targetGrainSize: %f \n", targetGrainSize)
 }
 
 
@@ -167,6 +165,7 @@ func respondToKeyEvents () {
 
 func oneTimeOnly (key i32) {
 	if inputs.OpenedMenu(key) {
+		inputs.UseMousePointer(false)
 	}else{
 		inputs.CloseAppOnDeveloperShortcut(key)
 	}
@@ -175,21 +174,162 @@ func oneTimeOnly (key i32) {
 
 func repeaters (key i32) {
 	if app.Mode == app.MODE_PLAYING {
-		if inputs.EventLeft(key) {
-		} else
-		if inputs.EventRight(key) {
-		} else
-		if inputs.EventUp(key) {
-		} else
-		if inputs.EventDown(key) {
-		} else
-		if inputs.EventRotateLeft(key) {
-		} else
-		if inputs.EventRotateRight(key) {
+		if inputs.EventMoveLeft(key) {
+		}else
+		if inputs.EventMoveRight(key) {
+		}else
+		if inputs.EventMoveUp(key) {
+		}else
+		if inputs.EventMoveDown(key) {
+		}else
+		if inputs.EventAbilityLeft(key) {
+		}else
+		if inputs.EventAbilityRight(key) {
 		}
 	}
 }
 
 
 func respondToMenuClicks () {
+	/*
+	var s str
+	var i i32
+	s, i = menu.GetHoveredItem(app.Mode)
+
+	if s == menu.Play {
+		inputs.UseMousePointer(false)
+		//PlayerScore    =  0
+		//PlayerScoreTxt = "0"
+		app.Mode = app.MODE_PLAYING
+	} else
+	if s == menu.Options {
+		app.Mode = app.MODE_MENU_OPTIONS
+	} else
+	if s == menu.Controls {
+		app.Mode = app.MODE_MENU_CONTROLS
+	} else
+	if s == menu.Quit {
+		glfw.SetShouldClose(app.Name, true)
+	} else
+	if s == ShowNextShapeText + "YES" {
+		    ShowNextShape = false
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "NO"
+	} else
+	if s == ShowNextShapeText + "NO" {
+		    ShowNextShape = true
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "YES"
+	}
+	*/
+}
+
+
+func updateGameEntities () {
+	// player 
+	entities.All[PLAYER].x = inputs.MousePointer.X
+	
+	// 		cache edges 
+	var pL f32 // left  
+	var pR f32 // right 
+	pL, pR = getPlayerEdges()
+	
+	// 		keep entirely within view 
+	if pR > space.ViewEdgeR {
+		entities.All[PLAYER].x = space.ViewEdgeR -
+		entities.All[PLAYER].radius
+		pL, pR = getPlayerEdges()
+	}else
+	if pL < space.ViewEdgeL {
+		entities.All[PLAYER].x = space.ViewEdgeL +
+		entities.All[PLAYER].radius
+		pL, pR = getPlayerEdges()
+	}
+	
+	
+	// dropper 
+	entities.UpdateAt(DROPPER)
+	handleDropperReversing()
+	dropCoins()
+	
+	
+	// common entities (coins) 
+	var n i32 = entities.GetNumOfAll()
+	for i := n - 1; i >= MAX_UNIQUES; i-- { // go backwards for removals 
+		var e Entity = entities.All[i]
+		doFading(i)
+		
+		// collision 
+		if e.y > 1.0 { // (above top of viewport) 
+			killEntity(i)
+		}else
+		if e.y < explodeLine { // touched floor 
+			killEntity(i)
+		}else
+		if e.y < pTop + e.radius { // (below top of PLAYER bucket/s) 
+			if  caughtCoin(e, i, pL, pR, e.x - e.radius) { // coin left  edge 
+				break // avoid catching twice 
+			}
+			
+			var b bool
+			b = caughtCoin(e, i, pL, pR, e.x + e.radius)   // coin right edge 
+		}
+	}
+}
+
+
+func getPlayerEdges () (l f32, r f32) {
+	l =  // left 
+		entities.All[PLAYER].x -
+		entities.All[PLAYER].radius
+		
+	r = // right 
+		entities.All[PLAYER].x +
+		entities.All[PLAYER].radius
+}
+
+
+func killEntity (i i32) {
+	entities.All = remove(
+	entities.All, i)
+	printf("killed entity: %d \n", i)
+}
+
+
+func doFading (i i32) {
+	if  entities.All[i].Mode == MODE_FADING {
+		entities.All[i].radius = 
+		entities.All[i].radius + time.Delta
+	}
+}
+
+
+// detect edge touching player 
+func caughtCoin (e Entity, i i32, pL f32, pR f32, edge f32) (out bool) {
+	if  edge < pR &&
+		edge > pL {
+			
+		entities.All[i].Mode = MODE_FADING
+		entities.All[i].vx = e.x * -0.05
+		entities.All[i].vy = 2.6 // fly up 
+		//printf("coin < pTop: %f   %d \n", pTop, i)
+		return true
+	}
+	
+	return false
+}
+
+
+func dropCoins () {	
+	if nextDrop <= time.Now {
+		nextDrop = time.Now + dropDelay
+		//str.print("drop\n")
+		
+		ent = entities.Entity{ 
+			radius:  coinRadius, 
+			x:       entities.All[DROPPER].x,
+			y:       0.9, 
+			vx:      0.0,
+			vy:     -1.2 }
+		entities.All = append(
+		entities.All, ent)
+	}
 }

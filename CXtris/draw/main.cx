@@ -13,6 +13,7 @@ func drawInit () {
 	// SO......HARDWIRED VALUE AT DECLARATION (FIXME when CX FIXES THIS) 
 	//HackyHeightFraction = f32.div(i32.f32(app.START_WIDTH), i32.f32(app.START_HEIGHT))
 
+	draw.AddPic("background.jpg")
 	draw.InitPics()
 	InitControlsText()
 }
@@ -27,7 +28,7 @@ func drawAll () {
 	//gl.MatrixMode(gl.MODELVIEW)
 
 	gl.Color3f(1.0, 1.0, 1.0)
-	draw.ScaledPic(draw.PicBackground, 0.0, 0.0, 2.0, 2.0)
+	draw.ScaledPic(draw.GetPicId("background.jpg"), 0.0, 0.0, 2.0, 2.0)
 	PlayField()
 	PlayerPiece()
 
@@ -36,7 +37,7 @@ func drawAll () {
 	}
 	
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 
-		menu.DrawRects()
+		menu.Draw()
 		
 		if app.Mode == app.MODE_MENU_CONTROLS {
 			drawVirtualKeyBackdrops()
@@ -49,11 +50,13 @@ func drawAll () {
 	}
 	
 	// cursor/pointer 
+	/*
 	draw.ScaledPic(draw.PicStar, 
 		inputs.MousePointer.X,
 		inputs.MousePointer.Y, 
 		0.1  * 0.3, 
 		0.07 * 0.3)
+	*/
 	
 	gl.LoadIdentity()
 	allText()
@@ -173,7 +176,7 @@ func NextShape () {
 	var fX f32 = shape.StartPosX
 	var fY f32 = shape.StartPosY
 	
-	for y := shape.StartY; y < 5; y++ {
+	for     y := shape.StartY; y < 5; y++ {
 		for x := shape.StartX; x < 5; x++ {
 			if shape.Cells[shape.Next][shape.FACING_UP][y][x] {
 				draw.ScaledPic(

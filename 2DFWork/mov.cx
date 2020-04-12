@@ -17,7 +17,7 @@ import "time"
 
 
 
-var Force f32 = 0.08
+var Force f32 = 4.0
 
 
 
@@ -39,7 +39,7 @@ func ConstrainPosByMap () {
 		entities.ball.CellMin.X, 
 		entities.ball.CellMax.X, 
 		entities.ball.ExitWest, 
-		entities.ball.ExitEast) //space.ViewEdgeL, space.ViewEdgeR)
+		entities.ball.ExitEast)
 	
 	if gridDelta != 0 {
 		var x i32 = entities.ball.GridPos.X + gridDelta

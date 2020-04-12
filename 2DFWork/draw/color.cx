@@ -2,7 +2,7 @@ package draw
 
 
 
-//		"id constants" 
+//		spectrum id "constants" 
 var COLOR_RED       i32
 var COLOR_BLUE      i32 = 1
 var COLOR_GREEN     i32 = 2
@@ -13,6 +13,7 @@ var COLOR_CYAN      i32 = 6
 var COLOR_GRAY_DARK i32 = 7
 
 // 		self-contained 
+var Brown Color3
 var Black Color3
 var White Color3
 
@@ -22,7 +23,7 @@ var Mid    f32 = 0.5
 var Dark   f32 = 0.3
 var Darker f32 = 0.2
 
-// 		rainbow spectrum slice 
+// 		rainbow spectrum 
 var Colors []Color3 
 
 
@@ -31,6 +32,7 @@ type Color3 struct {
 	G f32
 	B f32
 }
+
 type Color4 struct {
 	R f32
 	G f32
@@ -40,11 +42,21 @@ type Color4 struct {
 
 
 
-func SetColorById (i i32) {
+func SetColor (i i32) {
 	gl.Color3f(
 		Colors[i].R, 
 		Colors[i].G, 
 		Colors[i].B)
+}
+func SetColorAndAlpha (i i32, alpha f32) {
+	gl.Color4f(
+		Colors[i].R, 
+		Colors[i].G, 
+		Colors[i].B,
+		alpha)
+}
+func SetColorToGrayShade (shade f32, alpha f32) {
+	gl.Color4f(shade, shade, shade, alpha)
 }
 
 
@@ -80,8 +92,9 @@ func SetSequentiallyCycledColor (i i32) {
 
 
 func initColor () {
-	Black = Color3{ R: 0.0, G: 0.0, B: 0.0 }
-	White = Color3{ R: 1.0, G: 1.0, B: 1.0 }
+	Brown = Color3{ R: 0.375, G: 0.19, B: 0.004 }
+	Black = Color3{ R: 0.0,   G: 0.0,  B: 0.0 }
+	White = Color3{ R: 1.0,   G: 1.0,  B: 1.0 }
 	
 	addColor(0.9, 0.0, 0.0)          // red 
 	addColor(0.3, 0.3, 0.9)          // blue 

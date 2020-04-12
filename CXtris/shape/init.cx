@@ -2,6 +2,17 @@ package shape
 
 
 
+func Init () {		
+	str.print("shape.Init ()")
+	
+	setupAllShapes()	
+	NextCellSpanX = tiles.CellWidth  * 0.7
+	NextCellSpanY = tiles.CellHeight * 0.7
+	printf("    NextCellSpanX: %f \n", NextCellSpanX)
+	printf("    NextCellSpanY: %f \n", NextCellSpanY)
+}
+
+
 func setupAllShapes () {
 	setupAllPossibleRotations(
 		SHAPE_BEAM,

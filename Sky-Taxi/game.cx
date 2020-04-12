@@ -16,7 +16,7 @@ func gameInit () {
 func gameUpdate () {
 	respondToButtonEvents()
 	respondToKeyEvents()
-	entities.Update()
+	entities.Update(0)
 }
 
 
@@ -72,17 +72,17 @@ func oneTimeOnly (key i32) {
 
 func repeaters (key i32) {
 	if app.Mode == app.MODE_PLAYING {
-		if inputs.EventLeft(key) {
+		if inputs.EventMoveLeft(key) {
 		} else
-		if inputs.EventRight(key) {
+		if inputs.EventMoveRight(key) {
 		} else
-		if inputs.EventUp(key) {
+		if inputs.EventMoveUp(key) {
 		} else
-		if inputs.EventDown(key) {
+		if inputs.EventMoveDown(key) {
 		} else
-		if inputs.EventRotateLeft(key) {
+		if inputs.EventAbilityLeft(key) {
 		} else
-		if inputs.EventRotateRight(key) {
+		if inputs.EventAbilityRight(key) {
 		}
 	}
 }

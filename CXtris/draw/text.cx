@@ -13,7 +13,7 @@ var gameOverUpwards bool
 
 
 
-func allText () {
+func allText () { 
 	gl.Enable(gl.DEPTH_TEST)
 		/*
 		// testing a bottom edge anchored vertical span of texts 
@@ -42,8 +42,6 @@ func allText () {
 			if app.Mode == app.MODE_MENU_CONTROLS {
 				drawKeyCapTexts()
 			}
-			
-			menuTexts()
 		}else
 		if app.Mode == app.MODE_PLAYING {
 			if gui.ShowControls {
@@ -91,31 +89,6 @@ func allText () {
 			}
 		}
 	gl.Disable(gl.DEPTH_TEST)
-}
-
-
-func menuTexts () {
-	var m i32 = app.Mode
-	gl.LoadIdentity()
-
-	for i := i32.sub(len(menu.Items[m]), 1); i >= 0; i-- {
-		if inputs.PointerInYPixelRange(
-			menu.Items[m][i].Top, 
-			menu.Items[m][i].Bottom) {
-				
-			menu.Items[m][i].Hover = true			
-			gl.Color3f(1.0, 1.0, 1.0)
-		}else{
-			menu.Items[m][i].Hover = false
-			gl.Color3f(draw.Mid, draw.Mid, draw.Mid)
-		}
-
-		gltext.Printf(
-			menu.Items[m][i].FontId, 
-			menu.Items[m][i].Left, 
-			menu.Items[m][i].Top, 
-			menu.Items[m][i].Text)
-	}
 }
 
 

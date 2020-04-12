@@ -76,7 +76,7 @@ func PointerInYPixelRange (lesser f32, greater f32) (out bool) {
 }
 
 
-func SetMousePointer (wanted bool) {
+func UseMousePointer (wanted bool) {
 	if wanted {
 		glfw.SetInputMode(app.Name, glfw.Cursor, glfw.CursorNormal)
 	} else {
@@ -176,15 +176,9 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	mX = mX - space.AspectRatio
 	//		also flip Y, since it increases UPWARDS in GL 
 	mY = 1.0 - mY
-	
+	//printf("mX,mY: %f, %f \n", mX, mY)
 	MousePointer.X = mX
 	MousePointer.Y = mY
-	printf("mX,mY: %f, %f \n", mX, mY)
-
-
-
-	//printf("MousePointer.X: %f \n", MousePointer.X)
-	//printf("MousePointer.Y: %f \n", MousePointer.Y)
 	
 
 	deltaX = f32.sub(MousePointer.X, oldV.X)

@@ -3,7 +3,6 @@ package draw
 
 
 // pics (textures) 
-var PicBackground i32
 var PicStar       i32
 var PicShapeTile  i32
 var PicRotLeft    i32
@@ -15,29 +14,72 @@ var PicMouse      i32
 var PicMouseLMB   i32
 var PicMouseRMB   i32
 
+type Pic struct {
+	Name str
+	Id   i32
+}
+
+var pics []Pic // ATM, only used for game specific pics 
+
 
 
 func InitPics () {
-	str.print("2DFWork/draw.InitPics ()")
+	str.print("2DFWork.draw.InitPics ()")
 	
-	PicBackground = gl.NewTexture(AssetDir + "textures/background.jpg")
-	PicStar       = gl.NewTexture(AssetDir + "textures/star.png")
-	PicShapeTile  = gl.NewTexture(AssetDir + "textures/tile.png")
-	PicRotLeft    = gl.NewTexture(AssetDir + "textures/rotate-left.png")
-	PicRotRight   = gl.NewTexture(AssetDir + "textures/rotate-right.png")
-	PicArrowLeft  = gl.NewTexture(AssetDir + "textures/arrow-left.png")
-	PicArrowRight = gl.NewTexture(AssetDir + "textures/arrow-right.png")
-	PicArrowDown  = gl.NewTexture(AssetDir + "textures/arrow-down.png")
-	PicMouse      = gl.NewTexture(AssetDir + "textures/mouse.png")   
-	PicMouseLMB   = gl.NewTexture(AssetDir + "textures/mouse-lmb.png")
-	PicMouseRMB   = gl.NewTexture(AssetDir + "textures/mouse-rmb.png")
+	var dir str = BaseAssetDir
+	
+	PicStar       = initPic(dir, "star.png")
+	PicShapeTile  = initPic(dir, "tile.png")
+	PicRotLeft    = initPic(dir, "rotate-left.png")
+	PicRotRight   = initPic(dir, "rotate-right.png")
+	PicArrowLeft  = initPic(dir, "arrow-left.png")
+	PicArrowRight = initPic(dir, "arrow-right.png")
+	PicArrowDown  = initPic(dir, "arrow-down.png")
+	PicMouse      = initPic(dir, "mouse.png")   
+	PicMouseLMB   = initPic(dir, "mouse-lmb.png")
+	PicMouseRMB   = initPic(dir, "mouse-rmb.png")
+	
+	
+	dir = GameAssetDir
+	
+	// game specifics 
+	for i := 0; i < len(pics); i++ {
+		pics[i].Id = initPic(dir, pics[i].Name)
+	}
+}
+
+
+func AddPic (name str) {
+	printf("2DFWork.draw.AddPic (%s) \n", name)
+
+	var p Pic
+	p = Pic{ Name: name }
+	pics = append(pics, p)
+}
+
+
+func GetPicId (name str) (out i32) {
+	for i := 0; i < len(pics); i++ {
+		if name == pics[i].Name {
+			out =  pics[i].Id
+			break
+		}
+	}
 }
 
 
 func ScaledPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
-	gl.LoadIdentity()
+	ScaledRotatedPic(picId, x, y, scaleX, scaleY, 0.0)
+}
 
+
+func ScaledRotatedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32, angle f32) {
+	gl.LoadIdentity()
 	gl.BindTexture(gl.TEXTURE_2D, picId)
+	
+	if angle != 0.0 {
+		gl.Rotatef(angle, 0.0, 0.0, 1.0)
+	}
 	gl.Translatef(x, y, 0.0)
 	gl.Scalef(scaleX, scaleY, 0.0)
 	
@@ -57,7 +99,7 @@ func ScaledPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 }
 
 
-func Scaled3SlicedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
+func Scaled3SlicedPic (x f32, y f32, scaleX f32, scaleY f32) {
 	var tosy f32 = scaleY / 3.0 // 3rd of scale y 
 	var ome f32 // offset (to) middle (section) extent 
 	ome = scaleX - tosy
@@ -66,8 +108,6 @@ func Scaled3SlicedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 	ome = ome * 0.5
 	
 	gl.LoadIdentity()
-
-	gl.BindTexture(gl.TEXTURE_2D, picId)
 	gl.Translatef(x, y, 0.0)
 	gl.Scalef(scaleX, scaleY, 0.0)
 
@@ -112,4 +152,10 @@ func Scaled3SlicedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
 		gl.TexCoord2d(0.66D, 1.0D)
 		gl.Vertex3f(ome, -0.5, 0.0)
 	gl.End()
+}
+
+
+func initPic (dir str, name str) (id i32) {
+	id = gl.NewTexture(dir + "textures/" + name)
+	printf("    initPic (id: %d, name: %s) \n", id, name)
 }

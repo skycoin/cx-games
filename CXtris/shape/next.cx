@@ -1,7 +1,5 @@
 package shape
 
-import "tiles"
-
 
 
 var CenterOfBoxX f32 = 0.71
@@ -14,8 +12,8 @@ var MostCellsInX    i32
 var MostCellsInY    i32
 
 var Next            i32
-var NextCellSpanX   f32 = f32.mul(tiles.CellWidth,  0.7)
-var NextCellSpanY   f32 = f32.mul(tiles.CellHeight, 0.7)
+var NextCellSpanX   f32
+var NextCellSpanY   f32
 var StartX          i32 // indices 
 var StartY          i32
 var StartPosX       f32
