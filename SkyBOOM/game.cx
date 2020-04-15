@@ -4,7 +4,43 @@ import "app"
 import "entities"
 import "inputs"
 
+/*
 
+--- SPLASH SCREEN 
+
+Full Skycoin logo inc. text
+
+
+--- INITIAL MENU 
+
+whole background field of....
+random sized, placed, angled, angular velocity coins 
+	(try not only Z angles, but X or Y as well)
+random color shading even?
+
+
+--- GAMEPLAY BACKGROUND
+
+smaller skycoin cloud logos in a band across upper half(?) of screen
+		...kind of like a parallax starfield in space games 
+	random sized, random scaled (diff in x & y), 
+	random alpha value? 
+	random blueness & grayness (from white base) 
+
+
+--- DIFFICULTY SCALING FACTORS
+
+dropper can keep getting lower
+"        "  bounce up & down?
+" can start throwing angles on coins
+coins could come down in jiggly patterns or dodge slightly?
+dropper move speed
+drop rate
+dropper changing direction more
+total height of buckets
+fall speed
+
+*/
 
 // misc 
 var coinRadius      f32 = 0.045 // while dropping 

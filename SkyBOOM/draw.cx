@@ -6,7 +6,11 @@ import "time"
 
 
 
-var ent entities.Entity
+// pic ids 
+var CLOUD i32
+var COIN  i32
+
+var ent entities.Entity // current 
 
 
 
@@ -14,9 +18,10 @@ func drawInit () {
 	str.print("drawInit ()")
 
 	gl.ClearColor(0.5, 0.7, 1.0, 0.0) // light blue 
-	draw.AddPic("coin0001.png")
-	draw.AddPic("coin0002.png")
-	draw.AddPic("coin-gold_and_blue.png")
+	//"coin0001.png")
+	//"coin0002.png")
+	COIN  = draw.AddPic("coin-gold_and_blue.png")
+	CLOUD = draw.AddPic("Skycoin-Cloud-White.png")
 	draw.InitPics()
 }
 
@@ -46,10 +51,12 @@ func drawAll () {
 	}
 
 	// player & dropper 
+	gl.Enable(gl.TEXTURE_2D)
+	gl.BindTexture(gl.TEXTURE_2D, CLOUD)
 	draw.QuadsBegin()
 		draw.SetColor3(draw.Brown)
 		ent = entities.All[PLAYER]
-		draw.Quad(
+		draw.TexturedQuad(
 			ent.y + ent.radius, 
 			ent.x + ent.radius, 
 			ent.y - ent.radius, 
@@ -57,7 +64,7 @@ func drawAll () {
 
 		draw.SetColor(draw.COLOR_BLUE)
 		ent = entities.All[DROPPER]
-		draw.Quad(
+		draw.TexturedQuad(
 			ent.y + ent.radius, 
 			ent.x + ent.radius, 
 			ent.y - ent.radius, 
@@ -65,10 +72,8 @@ func drawAll () {
 	draw.End()
 
 	// menu 
-	gl.Enable(gl.TEXTURE_2D)
 	gl.Color4f(1.0, 1.0, 1.0, 1.0)
-	var pic i32 = draw.GetPicId("coin0001.png")
-	draw.ScaledRotatedPic(pic, 0.0, 0.0, 1.0, 1.0, angle)
+	draw.ScaledRotatedPic(CLOUD, 0.0, 0.0, 1.0, 1.0, angle)
 	gl.LoadIdentity()
 
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 

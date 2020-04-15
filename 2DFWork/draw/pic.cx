@@ -40,24 +40,29 @@ func InitPics () {
 	PicMouseRMB   = initPic(dir, "mouse-rmb.png")
 	
 	
+	/*
 	dir = GameAssetDir
 	
 	// game specifics 
 	for i := 0; i < len(pics); i++ {
 		pics[i].Id = initPic(dir, pics[i].Name)
 	}
+	*/
 }
 
 
-func AddPic (name str) {
+func AddPic (name str) (id i32) {
 	printf("2DFWork.draw.AddPic (%s) \n", name)
 
+	id = initPic(GameAssetDir, name)	
 	var p Pic
-	p = Pic{ Name: name }
+	p =   Pic{ Name: name, Id: id }
 	pics = append(pics, p)
 }
 
 
+// no need to use GetPicId() if you assign output of AddPic() to a var 
+// (recommended) 
 func GetPicId (name str) (out i32) {
 	for i := 0; i < len(pics); i++ {
 		if name == pics[i].Name {

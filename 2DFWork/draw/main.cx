@@ -61,6 +61,21 @@ func Quad (t f32, r f32, b f32, l f32) {
 }
 
 
+func TexturedQuad (t f32, r f32, b f32, l f32) {
+	gl.TexCoord2d(0.0D, 0.0D)
+	gl.Vertex2f(l, t)
+	
+	gl.TexCoord2d(1.0D, 0.0D)
+	gl.Vertex2f(r, t)
+	
+	gl.TexCoord2d(1.0D, 1.0D)
+	gl.Vertex2f(r, b)
+	
+	gl.TexCoord2d(0.0D, 1.0D)
+	gl.Vertex2f(l, b)
+}
+
+
 func initGL () {
 	glfw.Init()
 	glfw.CreateWindow(
