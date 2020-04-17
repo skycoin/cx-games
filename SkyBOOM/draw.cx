@@ -52,8 +52,8 @@ func drawAll () {
 
 	// player & dropper 
 	gl.Enable(gl.TEXTURE_2D)
-	gl.BindTexture(gl.TEXTURE_2D, CLOUD)
-	draw.QuadsBegin()
+
+	draw.BeginTexturedQuads(COIN)
 		draw.SetColor3(draw.Brown)
 		ent = entities.All[PLAYER]
 		draw.TexturedQuad(
@@ -61,8 +61,10 @@ func drawAll () {
 			ent.x + ent.radius, 
 			ent.y - ent.radius, 
 			ent.x - ent.radius)
+	draw.End()
 
-		draw.SetColor(draw.COLOR_BLUE)
+	draw.BeginTexturedQuads(CLOUD)
+		draw.SetColor3(draw.White)
 		ent = entities.All[DROPPER]
 		draw.TexturedQuad(
 			ent.y + ent.radius, 

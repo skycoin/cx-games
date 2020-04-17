@@ -43,8 +43,11 @@ func OnFramebufferSize (window str, wid i32, hei i32) {
 }
 
 
-func QuadsBegin () {
-	SetColor3(White)
+func BeginUntexturedQuads () {
+	gl.Begin(gl.QUADS)
+}
+func BeginTexturedQuads (picId i32) {
+	gl.BindTexture(gl.TEXTURE_2D, picId)
 	gl.Begin(gl.QUADS)
 }
 func End () {
@@ -53,15 +56,13 @@ func End () {
 
 
 // top, right, bottom, left 
-func Quad (t f32, r f32, b f32, l f32) {
+func UntexturedQuad (t f32, r f32, b f32, l f32) {
 	gl.Vertex2f(l, t)
 	gl.Vertex2f(r, t)
 	gl.Vertex2f(r, b)
 	gl.Vertex2f(l, b)
 }
-
-
-func TexturedQuad (t f32, r f32, b f32, l f32) {
+func TexturedQuad   (t f32, r f32, b f32, l f32) {
 	gl.TexCoord2d(0.0D, 0.0D)
 	gl.Vertex2f(l, t)
 	
