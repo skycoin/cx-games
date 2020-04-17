@@ -3,6 +3,7 @@ package main
 
 
 // reverse logic 
+var coinSpawnHeight f32
 var reverseTarget   f32
 var numTargetGrains i32 = 100
 var nextDrop        f32
@@ -18,7 +19,7 @@ func dropCoins () {
 		ent = entities.Entity{ 
 			radius:  coinRadius, 
 			x:       entities.All[DROPPER].x,
-			y:       0.9, 
+			y:       coinSpawnHeight, 
 			vx:      0.0,
 			vy:     -1.2 }
 		entities.All = append(

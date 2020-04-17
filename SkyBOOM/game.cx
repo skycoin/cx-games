@@ -44,7 +44,7 @@ fall speed
 
 // misc 
 var coinRadius      f32 = 0.045 // while dropping 
-var pTop            f32     // player top edge 
+var pTop            f32         // player top edge 
 var explodeLine     f32 = -1.0 + coinRadius // vertical pos that triggers explosion 
 // entities 
 var /* new...*/ ent entities.Entity
@@ -69,15 +69,18 @@ func gameInit () {
 	
 	// entities 
 	// 		PLAYER 
-	ent = entities.Entity{ radius: 0.2, y: -1.0 }
+	var r f32 =  0.2
+	var y f32 = -1.0 + r
+	ent = entities.Entity{ radius: r, y: y }
 	entities.All = append(
 	entities.All, ent)
 	
 	// 		DROPPER 
-	ent = entities.Entity{ radius: 0.1, y:  1.0, vx: 1.2 }
+	ent = entities.Entity{ radius: r, y: 1.0 - r, vx: 1.2 }
 	entities.All = append(
 	entities.All, ent)
 	
+	coinSpawnHeight = ent.y - ent.radius + coinRadius
 	pTop = entities.All[PLAYER].y +
 		   entities.All[PLAYER].radius
 
@@ -161,7 +164,7 @@ func getPlayerEdges () (l f32, r f32) {
 func killEntity (i i32) {
 	entities.All = remove(
 	entities.All, i)
-	printf("killed entity: %d \n", i)
+	//printf("killed entity: %d \n", i)
 }
 
 
