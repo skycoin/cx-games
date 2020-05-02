@@ -24,11 +24,17 @@ func dropperInit () {
 	ex =   app.Vec2{ X: eY * cloudAspectRatio, Y: eY }
 	
 	ent = entities.Entity{ Extents: ex, y: entY, vx: 1.2 }
-	entities.All = append(
-	entities.All, ent)
+	entities.All[DROPPER] = append(
+	entities.All[DROPPER], ent)
 	
 	coinDropHeight = ent.y - eY + coinExtents.Y
 	setDropperTarget()
+}
+
+
+func dropperUpdate () {
+	handleDropperReversing()
+	dropCoins()
 }
 
 
@@ -38,33 +44,33 @@ func dropCoins () {
 		//str.print("drop\n")
 		
 		ent = entities.Entity{ 
-			x:       entities.All[DROPPER].x,
+			x:       entities.All[DROPPER][0].x,
 			y:       coinDropHeight, 
 			vx:      0.0,
 			vy:     -1.2,
 			Type:    FALLING_COIN,
 			Extents: coinExtents}
-		entities.All = append(
-		entities.All, ent)
+		entities.All[FALLING_COIN] = append(
+		entities.All[FALLING_COIN], ent)
 	}
 }
 
 
 func handleDropperReversing () {
-	if     entities.All[DROPPER].vx < 0.0 {
+	if     entities.All[DROPPER][0].vx < 0.0 {
 		// going left 
-		if entities.All[DROPPER].x < reverseTarget {
+		if entities.All[DROPPER][0].x < reverseTarget {
 			reverseDropper()
 		}else
-		if entities.All[DROPPER].x < space.ViewEdgeL {
+		if entities.All[DROPPER][0].x < space.ViewEdgeL {
 			reverseDropper()
 		}
 	}else{
 		// going right 
-		if entities.All[DROPPER].x > reverseTarget {
+		if entities.All[DROPPER][0].x > reverseTarget {
 			reverseDropper()
 		}else
-		if entities.All[DROPPER].x > space.ViewEdgeR {
+		if entities.All[DROPPER][0].x > space.ViewEdgeR {
 			reverseDropper()
 		}
 	}
@@ -72,8 +78,9 @@ func handleDropperReversing () {
 
 
 func reverseDropper () {
-	var vX f32 = entities.All[DROPPER].vx
-	entities.All[DROPPER].vx = -vX
+	var vX f32 = 
+	entities.All[DROPPER][0].vx
+	entities.All[DROPPER][0].vx = -vX
 	setDropperTarget()
 }
 
@@ -81,12 +88,12 @@ func reverseDropper () {
 func setDropperTarget () {
 	var pd f32 // potential distance 
 
-	if entities.All[DROPPER].vx > 0.0 { 
+	if entities.All[DROPPER][0].vx > 0.0 { 
 		// going right 
-		pd = f32.sub(space.ViewEdgeR, entities.All[DROPPER].x)
+		pd = f32.sub(space.ViewEdgeR, entities.All[DROPPER][0].x)
 	}else{ 
 		// going left 
-		pd = f32.sub(space.ViewEdgeL, entities.All[DROPPER].x)
+		pd = f32.sub(space.ViewEdgeL, entities.All[DROPPER][0].x)
 	}
 
 	printf("potential distance: %f \n", pd)

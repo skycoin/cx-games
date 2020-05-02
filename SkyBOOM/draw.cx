@@ -46,7 +46,7 @@ func drawAll () {
 	draw.SetColor3(draw.White)
 
 	draw.BeginTexturedQuads(WALLET)
-		ent = entities.All[PLAYER]
+		ent = entities.All[PLAYER][0]
 		draw.TexturedQuad(
 			ent.y + ent.Extents.Y, 
 			ent.x + ent.Extents.X, 
@@ -55,7 +55,7 @@ func drawAll () {
 	draw.End()
 
 	draw.BeginTexturedQuads(CLOUD)
-		ent = entities.All[DROPPER]
+		ent = entities.All[DROPPER][0]
 		draw.TexturedQuad(
 			ent.y + ent.Extents.Y, 
 			ent.x + ent.Extents.X, 
@@ -101,14 +101,10 @@ func pre () {
 
 func drawTexturedBatches () {
 	draw.BeginTexturedQuads(CLOUD)
-		var n i32 = entities.GetNumOfAll()
-		for i := MAX_UNIQUES; i < n; i++ {
-			var e Entity = entities.All[i]
+		var n i32 = entities.GetLenOf(BACKDROP_CLOUD)
+		for i := 0; i < n; i++ {
+			var e Entity = entities.All[BACKDROP_CLOUD][i]
 			var ac f32 = 1.0 // alpha channel 
-			
-			if e.Type != SCROLLING_CLOUD {
-				continue
-			}
 			
 			draw.SetColor4(draw.White, ac)
 			draw.TexturedQuad(
@@ -120,13 +116,10 @@ func drawTexturedBatches () {
 	draw.End()
 	
 	draw.BeginTexturedQuads(COIN)
-		for i := MAX_UNIQUES; i < n; i++ {
-			var e Entity = entities.All[i]
+		n = entities.GetLenOf(FALLING_COIN)
+		for i := 0; i < n; i++ {
+			var e Entity = entities.All[FALLING_COIN][i]
 			var ac f32 = 1.0 // alpha channel 
-			
-			if e.Type != FALLING_COIN {
-				continue
-			}
 			
 			if e.Mode == MODE_FADING {
 				ac = 1.0 - e.Extents.Y * 2.0

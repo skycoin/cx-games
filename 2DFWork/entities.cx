@@ -16,7 +16,7 @@ type Entity struct {
 	vy        f32
 	gravity   f32
 	
-	Type      i32
+	Type      i32 // FIXME DELETE THIS, UNUSED!!!!!!!!! 
 	Mode      i32
 	Extents   app.Vec2
 	WrapView  bool // moving objects wrap/teleport to opposite side of viewport 
@@ -33,8 +33,8 @@ type Entity struct {
 	ExitWest  bool
 }
 
-var ball Entity
-var All  []Entity // all entities (except ball ATM: FIXME) 
+var ball Entity // FIXME: get rid of this hardwired carry-over player object 
+var All  [][]Entity // all entities (except ball ATM: FIXME) 
 
 
 
@@ -51,7 +51,7 @@ func Init () {
 // SkyBOOM's coin dropping cloud is another example. 
 // the rest can be handle generically, moving around based on 
 // their current velocity. 
-func Update (numUniques i32) {
+func Update () {
 	//str.print("entities.Update ()")
 
 	// velocity 
@@ -62,11 +62,14 @@ func Update (numUniques i32) {
 	//		hardwired player (FIXME) 
 	ball.x = f32.add(ball.x, ball.vx * time.Delta)
 	ball.y = f32.add(ball.y, ball.vy * time.Delta)
+	
 	//		all the rest 
-	for i := numUniques; i < len(All); i++ {
-		UpdateAt(i)
+	for     t := 0; t < len(All);    t++ {
+		for i := 0; i < len(All[t]); i++ {
+			UpdateAt(i, t)
+		}
 	}
-
+	
 	// back out of any penetration (FIXME for "All") 
 	mov.ConstrainPosByMap()
 }
@@ -88,28 +91,30 @@ func InitPlayer () {
 }
 
 
-func GetNumOfAll () (num i32) {
-	num = len(All)
+func GetLenOf (entType i32) (num i32) {
+	num = len(All[entType])
 }
 
 
-func UpdateAt (i i32) {
-	All[i].x = f32.add(All[i].x, All[i].vx * time.Delta)
-	All[i].y = f32.add(All[i].y, All[i].vy * time.Delta)
+func UpdateAt (i i32, et i32) { // entity type 
+	//printf("slice: %d   -   %d \n", et, i)
 	
-	if All[i].WrapView {
-		if  All[i].x > space.ViewEdgeR + All[i].Extents.X {
-			All[i].x = space.ViewEdgeL - All[i].Extents.X
+	All[et][i].x = f32.add(All[et][i].x, All[et][i].vx * time.Delta)
+	All[et][i].y = f32.add(All[et][i].y, All[et][i].vy * time.Delta)
+	
+	if All[et][i].WrapView {
+		if  All[et][i].x > space.ViewEdgeR + All[et][i].Extents.X {
+			All[et][i].x = space.ViewEdgeL - All[et][i].Extents.X
 		}else
-		if  All[i].x < space.ViewEdgeL - All[i].Extents.X {
-			All[i].x = space.ViewEdgeR + All[i].Extents.X
+		if  All[et][i].x < space.ViewEdgeL - All[et][i].Extents.X {
+			All[et][i].x = space.ViewEdgeR + All[et][i].Extents.X
 		}
 		
-		if  All[i].y >  1.0 + All[i].Extents.Y {
-			All[i].y = -1.0 - All[i].Extents.Y
+		if  All[et][i].y >  1.0 + All[et][i].Extents.Y {
+			All[et][i].y = -1.0 - All[et][i].Extents.Y
 		}else
-		if  All[i].y < -1.0 - All[i].Extents.Y {
-			All[i].y =  1.0 + All[i].Extents.Y
+		if  All[et][i].y < -1.0 - All[et][i].Extents.Y {
+			All[et][i].y =  1.0 + All[et][i].Extents.Y
 		}
 	}
 }

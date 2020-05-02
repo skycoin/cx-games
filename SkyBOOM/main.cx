@@ -19,7 +19,7 @@ func main () {
 
 	for bool.not(glfw.ShouldClose(app.Name)) {
 		time.Update()
-		entities.Update(MAX_UNIQUES)
+		entities.Update()
 		gameUpdate()
 		drawAll()
 		
