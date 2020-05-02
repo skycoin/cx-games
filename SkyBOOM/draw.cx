@@ -40,24 +40,7 @@ func drawAll () {
 	gl.LoadIdentity()
 	gl.Enable(gl.TEXTURE_2D)
 	
-	draw.BeginTexturedQuads(COIN)
-		var n i32 = entities.GetNumOfAll()
-		for i := MAX_UNIQUES; i < n; i++ {
-			var e Entity = entities.All[i]
-			var ac f32 = 1.0 // alpha channel 
-			
-			if e.Mode == MODE_FADING {
-				ac = 1.0 - e.radius * 2.0
-			}
-		
-			draw.SetColor4(draw.White, ac)
-			draw.TexturedQuad(
-				e.y + e.radius, 
-				e.x + e.radius, 
-				e.y - e.radius, 
-				e.x - e.radius)
-		}
-	draw.End()
+	drawTexturedBatches()
 
 	// player & dropper 
 	draw.SetColor3(draw.White)
@@ -113,4 +96,52 @@ func pre () {
 	gl.MatrixMode(gl.MODELVIEW)
 
 	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
+}
+
+
+func drawTexturedBatches () {
+	draw.BeginTexturedQuads(CLOUD)
+		var n i32 = entities.GetNumOfAll()
+		for i := MAX_UNIQUES; i < n; i++ {
+			var e Entity = entities.All[i]
+			var ac f32 = 1.0 // alpha channel 
+			
+			if e.Type != SCROLLING_CLOUD {
+				continue
+			}
+			
+			if e.Mode == MODE_FADING {
+				ac = 1.0 - e.radius * 2.0
+			}
+		
+			draw.SetColor4(draw.White, ac)
+			draw.TexturedQuad(
+				e.y + e.radius, 
+				e.x + e.radius, 
+				e.y - e.radius, 
+				e.x - e.radius)
+		}
+	draw.End()
+	
+	draw.BeginTexturedQuads(COIN)
+		for i := MAX_UNIQUES; i < n; i++ {
+			var e Entity = entities.All[i]
+			var ac f32 = 1.0 // alpha channel 
+			
+			if e.Type != FALLING_COIN {
+				continue
+			}
+			
+			if e.Mode == MODE_FADING {
+				ac = 1.0 - e.radius * 2.0
+			}
+		
+			draw.SetColor4(draw.White, ac)
+			draw.TexturedQuad(
+				e.y + e.radius, 
+				e.x + e.radius, 
+				e.y - e.radius, 
+				e.x - e.radius)
+		}
+	draw.End()
 }

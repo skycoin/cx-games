@@ -17,17 +17,17 @@ var dropDelay        f32 = 0.3
 
 
 func dropperInit () {
-	var /* extent */ y f32 = 0.2
-	var entY f32 = 1.0 - f32.add(y, 0.02) // margin from top edge 
+	var /* extent Y */ eY f32 = 0.17
+	var entY f32 = 1.0 - f32.add(eY, 0.02) // margin from top edge 
 	
 	var ex app.Vec2 
-	ex =   app.Vec2{ X: y * cloudAspectRatio, Y: y }
+	ex =   app.Vec2{ X: eY * cloudAspectRatio, Y: eY }
 	
 	ent = entities.Entity{ Extents: ex, y: entY, vx: 1.2 }
 	entities.All = append(
 	entities.All, ent)
 	
-	coinDropHeight = ent.y - y + coinRadius
+	coinDropHeight = ent.y - eY + coinRadius
 	setDropperTarget()
 }
 
