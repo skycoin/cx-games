@@ -59,9 +59,9 @@ var MODE_FADING     i32 = 1
 
 
 func gameInit () {
-	app.Init("S k y B O O M", "Move with mouse.")
-	draw.Init()
-	inputs.Init(true)
+	app.     Init("S k y B O O M", "Move with mouse.")
+	draw.    Init()
+	inputs.  Init(true)
 	entities.Init()
 	
 	menuInit()
@@ -75,16 +75,12 @@ func gameInit () {
 	entities.All = append(
 	entities.All, ent)
 	
-	// 		DROPPER 
-	ent = entities.Entity{ radius: r, y: 1.0 - r, vx: 1.2 }
-	entities.All = append(
-	entities.All, ent)
-	
-	coinSpawnHeight = ent.y - ent.radius + coinRadius
 	pTop = entities.All[PLAYER].y +
 		   entities.All[PLAYER].radius
-
-	setReverseTarget()
+		   
+	dropperInit()
+	spawnCloudsBackdrop()
+	spawnMenuCoinsBackdrop() // last, so we can skip them during gameplay 
 }
 
 
@@ -125,11 +121,15 @@ func updateGameEntities () {
 	dropCoins()
 	
 	
-	// common entities (coins) 
+	// falling coins 
 	var n i32 = entities.GetNumOfAll()
 	for i := n - 1; i >= MAX_UNIQUES; i-- { // go backwards for removals 
 		var e Entity = entities.All[i]
 		doFading(i)
+		
+		if e.Type != FALLING_COIN {
+			continue
+		}
 		
 		// collision 
 		if e.y > 1.0 { // (above top of viewport) 

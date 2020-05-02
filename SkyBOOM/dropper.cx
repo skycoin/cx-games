@@ -1,14 +1,35 @@
 package main
 
+import "app"
+
+// DROPPER CLOUD, which drops all the coins for player to catch 
 
 
+
+var cloudAspectRatio f32 = 1069.0 / 804.0 // multiply this with desired height 
+var coinDropHeight   f32
 // reverse logic 
-var coinSpawnHeight f32
-var reverseTarget   f32
-var numTargetGrains i32 = 100
-var nextDrop        f32
-var dropDelay       f32 = 0.3
+var reverseTarget    f32
+var numTargetGrains  i32 = 100
+var nextDrop         f32
+var dropDelay        f32 = 0.3
 
+
+
+func dropperInit () {
+	var /* extent */ y f32 = 0.2
+	var entY f32 = 1.0 - f32.add(y, 0.02) // margin from top edge 
+	
+	var ex app.Vec2 
+	ex =   app.Vec2{ X: y * cloudAspectRatio, Y: y }
+	
+	ent = entities.Entity{ Extents: ex, y: entY, vx: 1.2 }
+	entities.All = append(
+	entities.All, ent)
+	
+	coinDropHeight = ent.y - y + coinRadius
+	setDropperTarget()
+}
 
 
 func dropCoins () {	
@@ -19,9 +40,10 @@ func dropCoins () {
 		ent = entities.Entity{ 
 			radius:  coinRadius, 
 			x:       entities.All[DROPPER].x,
-			y:       coinSpawnHeight, 
+			y:       coinDropHeight, 
 			vx:      0.0,
-			vy:     -1.2 }
+			vy:     -1.2,
+			Type:    FALLING_COIN }
 		entities.All = append(
 		entities.All, ent)
 	}
@@ -52,11 +74,11 @@ func handleDropperReversing () {
 func reverseDropper () {
 	var vX f32 = entities.All[DROPPER].vx
 	entities.All[DROPPER].vx = -vX
-	setReverseTarget()
+	setDropperTarget()
 }
 
 
-func setReverseTarget () {
+func setDropperTarget () {
 	var pd f32 // potential distance 
 
 	if entities.All[DROPPER].vx > 0.0 { 

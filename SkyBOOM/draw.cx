@@ -38,22 +38,28 @@ func drawAll () {
 	pre()
 	gl.Disable(gl.TEXTURE_2D)
 	gl.LoadIdentity()
+	gl.Enable(gl.TEXTURE_2D)
 	
-	var n i32 = entities.GetNumOfAll()
-	for i := MAX_UNIQUES; i < n; i++ {
-		var e Entity = entities.All[i]
-		var ac f32 = 1.0 // alpha channel 
+	draw.BeginTexturedQuads(COIN)
+		var n i32 = entities.GetNumOfAll()
+		for i := MAX_UNIQUES; i < n; i++ {
+			var e Entity = entities.All[i]
+			var ac f32 = 1.0 // alpha channel 
+			
+			if e.Mode == MODE_FADING {
+				ac = 1.0 - e.radius * 2.0
+			}
 		
-		if e.Mode == MODE_FADING {
-			ac = 1.0 - e.radius * 2.0
-			draw.Ball( e, draw.COLOR_ORANGE, ac, false)
-		}else{
-			draw.Ball( e, draw.COLOR_YELLOW, ac, false)
+			draw.SetColor4(draw.White, ac)
+			draw.TexturedQuad(
+				e.y + e.radius, 
+				e.x + e.radius, 
+				e.y - e.radius, 
+				e.x - e.radius)
 		}
-	}
+	draw.End()
 
 	// player & dropper 
-	gl.Enable(gl.TEXTURE_2D)
 	draw.SetColor3(draw.White)
 
 	draw.BeginTexturedQuads(WALLET)
@@ -68,15 +74,15 @@ func drawAll () {
 	draw.BeginTexturedQuads(CLOUD)
 		ent = entities.All[DROPPER]
 		draw.TexturedQuad(
-			ent.y + ent.radius, 
-			ent.x + ent.radius, 
-			ent.y - ent.radius, 
-			ent.x - ent.radius)
+			ent.y + ent.Extents.Y, 
+			ent.x + ent.Extents.X, 
+			ent.y - ent.Extents.Y, 
+			ent.x - ent.Extents.X)
 	draw.End()
 
 	// menu 
 	gl.Color4f(1.0, 1.0, 1.0, 1.0)
-	draw.ScaledRotatedPic(COIN, 0.0, 0.0, 0.5, 0.5, angle)
+	//draw.ScaledRotatedPic(COIN, 0.0, 0.0, 0.5, 0.5, angle)
 	gl.LoadIdentity()
 
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 

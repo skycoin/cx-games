@@ -15,9 +15,13 @@ type Entity struct {
 	vx        f32
 	vy        f32
 	gravity   f32
-	radius    f32
+	radius    f32 // NON-square if set to 0.0 (then Extents used instead) 
 	
+	Extents   app.Vec2
+	
+	Type      i32
 	Mode      i32
+	WrapView  bool // moving objects wrap/teleport to opposite side of viewport 
 	GridPos   app.Vec2I
 	// cell bounds/connections 
 	CellMin   app.Vec2 // boundaries of the current cell it's in 
@@ -44,7 +48,7 @@ func Init () {
 // (such as player objects, which might be the current falling 
 // piece/shape in CXtris, or the player paddles/buckets in
 // SkyBOOM). 
-// SkyBOOM's coin dropper is another example. 
+// SkyBOOM's coin dropping cloud is another example. 
 // the rest can be handle generically, moving around based on 
 // their current velocity. 
 func Update (numUniques i32) {
@@ -87,4 +91,24 @@ func GetNumOfAll () (num i32) {
 func UpdateAt (i i32) {
 	All[i].x = f32.add(All[i].x, All[i].vx * time.Delta)
 	All[i].y = f32.add(All[i].y, All[i].vy * time.Delta)
+	
+	if All[i].WrapView {
+		if All[i].radius == 0.0 {
+			
+		}else{
+			if All[i].x > space.ViewEdgeR + All[i].radius {
+				All[i].x = space.ViewEdgeL - All[i].radius
+			}else
+			if All[i].x < space.ViewEdgeL - All[i].radius {
+				All[i].x = space.ViewEdgeR + All[i].radius
+			}
+			
+			if All[i].y > 1.0 + All[i].radius {
+				All[i].y = -1.0 - All[i].radius
+			}else
+			if All[i].y < -1.0 - All[i].radius {
+				All[i].y = 1.0 + All[i].radius
+			}
+		}
+	}
 }
