@@ -15,13 +15,13 @@ type Entity struct {
 	vx        f32
 	vy        f32
 	gravity   f32
-	radius    f32 // NON-square if set to 0.0 (then Extents used instead) 
-	
-	Extents   app.Vec2
 	
 	Type      i32
 	Mode      i32
+	Extents   app.Vec2
 	WrapView  bool // moving objects wrap/teleport to opposite side of viewport 
+
+	// FIXME: move these into Sky Taxi 
 	GridPos   app.Vec2I
 	// cell bounds/connections 
 	CellMin   app.Vec2 // boundaries of the current cell it's in 
@@ -73,8 +73,13 @@ func Update (numUniques i32) {
 
 
 func InitPlayer () {
+	var ex app.Vec2 // extents 
+	ex =   app.Vec2{ 
+		X: 0.05, 
+		Y: 0.05}	
+
 	ball = Entity{
-		radius:  0.05,
+		Extents: ex,
 		x:       0.0,
 		y:       0.0,
 		vx:      0.0,
@@ -93,22 +98,18 @@ func UpdateAt (i i32) {
 	All[i].y = f32.add(All[i].y, All[i].vy * time.Delta)
 	
 	if All[i].WrapView {
-		if All[i].radius == 0.0 {
-			
-		}else{
-			if All[i].x > space.ViewEdgeR + All[i].radius {
-				All[i].x = space.ViewEdgeL - All[i].radius
-			}else
-			if All[i].x < space.ViewEdgeL - All[i].radius {
-				All[i].x = space.ViewEdgeR + All[i].radius
-			}
-			
-			if All[i].y > 1.0 + All[i].radius {
-				All[i].y = -1.0 - All[i].radius
-			}else
-			if All[i].y < -1.0 - All[i].radius {
-				All[i].y = 1.0 + All[i].radius
-			}
+		if  All[i].x > space.ViewEdgeR + All[i].Extents.X {
+			All[i].x = space.ViewEdgeL - All[i].Extents.X
+		}else
+		if  All[i].x < space.ViewEdgeL - All[i].Extents.X {
+			All[i].x = space.ViewEdgeR + All[i].Extents.X
+		}
+		
+		if  All[i].y >  1.0 + All[i].Extents.Y {
+			All[i].y = -1.0 - All[i].Extents.Y
+		}else
+		if  All[i].y < -1.0 - All[i].Extents.Y {
+			All[i].y =  1.0 + All[i].Extents.Y
 		}
 	}
 }

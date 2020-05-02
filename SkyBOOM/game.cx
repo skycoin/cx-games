@@ -43,9 +43,9 @@ fall speed
 */
 
 // misc 
-var coinRadius      f32 = 0.045 // while dropping 
-var pTop            f32         // player top edge 
-var explodeLine     f32 = -1.0 + coinRadius // vertical pos that triggers explosion 
+var coinExtents     app.Vec2 // while dropping 
+var pTop            f32      // player top edge 
+var explodeLine     f32      // vertical pos that triggers explosion 
 // entities 
 var /* new...*/ ent entities.Entity
 //		"enums" of unique entities at beginning of entities.All 
@@ -68,15 +68,23 @@ func gameInit () {
 	drawInit()
 	
 	// entities 
+	//		COINS 
+	coinExtents = app.Vec2{
+		X: 0.045, 
+		Y: 0.045}	
 	// 		PLAYER 
-	var r f32 =  0.2
-	var y f32 = -1.0 + r
-	ent = entities.Entity{ radius: r, y: y }
+	var ex app.Vec2   // extents 
+	ex =   app.Vec2{ 
+		X: 0.2, 
+		Y: 0.2}	
+	var y f32 = -1.0 + ex.Y
+	ent = entities.Entity{ y: y, Extents: ex }
 	entities.All = append(
 	entities.All, ent)
 	
+	explodeLine = -1.0 + coinExtents.Y
 	pTop = entities.All[PLAYER].y +
-		   entities.All[PLAYER].radius
+		   entities.All[PLAYER].Extents.Y
 		   
 	dropperInit()
 	spawnCloudsBackdrop()
@@ -105,12 +113,12 @@ func updateGameEntities () {
 	// 		keep entirely within view 
 	if pR > space.ViewEdgeR {
 		entities.All[PLAYER].x = space.ViewEdgeR -
-		entities.All[PLAYER].radius
+		entities.All[PLAYER].Extents.X
 		pL, pR = getPlayerEdges()
 	}else
 	if pL < space.ViewEdgeL {
 		entities.All[PLAYER].x = space.ViewEdgeL +
-		entities.All[PLAYER].radius
+		entities.All[PLAYER].Extents.X
 		pL, pR = getPlayerEdges()
 	}
 	
@@ -138,13 +146,13 @@ func updateGameEntities () {
 		if e.y < explodeLine { // touched floor 
 			killEntity(i)
 		}else
-		if e.y < pTop + e.radius { // (below top of PLAYER bucket/s) 
-			if  caughtCoin(e, i, pL, pR, e.x - e.radius) { // coin left  edge 
+		if e.y < pTop + e.Extents.Y { // (below top of PLAYER bucket/s) 
+			if  caughtCoin(e, i, pL, pR, e.x - e.Extents.X) { // coin left  edge 
 				break // avoid catching twice 
 			}
 			
 			var b bool
-			b = caughtCoin(e, i, pL, pR, e.x + e.radius)   // coin right edge 
+			b = caughtCoin(e, i, pL, pR, e.x + e.Extents.X)   // coin right edge 
 		}
 	}
 }
@@ -153,11 +161,11 @@ func updateGameEntities () {
 func getPlayerEdges () (l f32, r f32) {
 	l =  // left 
 		entities.All[PLAYER].x -
-		entities.All[PLAYER].radius
+		entities.All[PLAYER].Extents.X
 		
 	r = // right 
 		entities.All[PLAYER].x +
-		entities.All[PLAYER].radius
+		entities.All[PLAYER].Extents.X
 }
 
 
@@ -170,8 +178,10 @@ func killEntity (i i32) {
 
 func doFading (i i32) {
 	if  entities.All[i].Mode == MODE_FADING {
-		entities.All[i].radius = 
-		entities.All[i].radius + time.Delta
+		entities.All[i].Extents.X = 
+		entities.All[i].Extents.X + time.Delta
+		entities.All[i].Extents.Y = 
+		entities.All[i].Extents.Y + time.Delta
 	}
 }
 

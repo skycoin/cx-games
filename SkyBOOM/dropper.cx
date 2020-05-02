@@ -27,7 +27,7 @@ func dropperInit () {
 	entities.All = append(
 	entities.All, ent)
 	
-	coinDropHeight = ent.y - eY + coinRadius
+	coinDropHeight = ent.y - eY + coinExtents.Y
 	setDropperTarget()
 }
 
@@ -38,12 +38,12 @@ func dropCoins () {
 		//str.print("drop\n")
 		
 		ent = entities.Entity{ 
-			radius:  coinRadius, 
 			x:       entities.All[DROPPER].x,
 			y:       coinDropHeight, 
 			vx:      0.0,
 			vy:     -1.2,
-			Type:    FALLING_COIN }
+			Type:    FALLING_COIN,
+			Extents: coinExtents}
 		entities.All = append(
 		entities.All, ent)
 	}

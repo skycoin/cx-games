@@ -48,10 +48,10 @@ func drawAll () {
 	draw.BeginTexturedQuads(WALLET)
 		ent = entities.All[PLAYER]
 		draw.TexturedQuad(
-			ent.y + ent.radius, 
-			ent.x + ent.radius, 
-			ent.y - ent.radius, 
-			ent.x - ent.radius)
+			ent.y + ent.Extents.Y, 
+			ent.x + ent.Extents.X, 
+			ent.y - ent.Extents.Y, 
+			ent.x - ent.Extents.X)
 	draw.End()
 
 	draw.BeginTexturedQuads(CLOUD)
@@ -110,16 +110,12 @@ func drawTexturedBatches () {
 				continue
 			}
 			
-			if e.Mode == MODE_FADING {
-				ac = 1.0 - e.radius * 2.0
-			}
-		
 			draw.SetColor4(draw.White, ac)
 			draw.TexturedQuad(
-				e.y + e.radius, 
-				e.x + e.radius, 
-				e.y - e.radius, 
-				e.x - e.radius)
+				e.y + e.Extents.Y, 
+				e.x + e.Extents.X, 
+				e.y - e.Extents.Y, 
+				e.x - e.Extents.X)
 		}
 	draw.End()
 	
@@ -133,15 +129,15 @@ func drawTexturedBatches () {
 			}
 			
 			if e.Mode == MODE_FADING {
-				ac = 1.0 - e.radius * 2.0
+				ac = 1.0 - e.Extents.Y * 2.0
 			}
 		
 			draw.SetColor4(draw.White, ac)
 			draw.TexturedQuad(
-				e.y + e.radius, 
-				e.x + e.radius, 
-				e.y - e.radius, 
-				e.x - e.radius)
+				e.y + e.Extents.Y, 
+				e.x + e.Extents.X, 
+				e.y - e.Extents.Y, 
+				e.x - e.Extents.X)
 		}
 	draw.End()
 }
