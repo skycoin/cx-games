@@ -40,6 +40,7 @@ func SetSize (wid i32, hei i32) () {
 	ViewSizeInGL.X = 2.0 * AspectRatio
 	ViewSizeInGL.Y = 2.0
 	printf("    ViewSizeInGL.X: %f \n", ViewSizeInGL.X)
+	printf("    ViewSizeInGL.Y: %f \n", ViewSizeInGL.Y)
 
 	ViewEdgeL   = 0.0  - AspectRatio
 	ViewEdgeR   =        AspectRatio
@@ -57,7 +58,7 @@ func SetSize (wid i32, hei i32) () {
 
 
 func PointInBox (p Vec2, box Vec2, extents Vec2) (out bool) {
-	if p.X > (box.X - extents.X) &&
+	if  p.X > (box.X - extents.X) &&
 		p.X < (box.X + extents.X) &&
 		p.Y > (box.Y - extents.Y) &&
 		p.Y < (box.Y + extents.Y) {

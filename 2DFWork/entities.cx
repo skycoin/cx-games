@@ -96,6 +96,14 @@ func GetLenOf (entType i32) (num i32) {
 }
 
 
+func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
+	t = All[entType][id].y + All[entType][id].Extents.Y
+	r = All[entType][id].x + All[entType][id].Extents.X
+	b = All[entType][id].y - All[entType][id].Extents.Y
+	l = All[entType][id].x - All[entType][id].Extents.X
+}
+
+
 func UpdateAt (i i32, et i32) { // entity type 
 	//printf("slice: %d   -   %d \n", et, i)
 	

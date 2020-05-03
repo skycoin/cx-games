@@ -101,7 +101,8 @@ func updateGameEntities () {
 	// falling coins 
 	var n i32 = entities.GetLenOf(FALLING_COIN)
 	for i := n - 1; i >= 0; i-- { // go backwards for removals 
-		var e Entity = entities.All[FALLING_COIN][i]
+		var e Entity 
+		e = entities.All[FALLING_COIN][i]
 		doFading(i)
 		
 		// collision 
