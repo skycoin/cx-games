@@ -34,13 +34,13 @@ func MakeItem(menuId i32, size f32, text str) {
 	for len(Items) <= menuId {
 	 	var nm []draw.TextGL // new menu 
 	 	nm = []TextGL{} // FIXME?!?!?  should need "draw." prefix 
-	 	Items = append(
- 		Items, nm)
+		Items = append(
+		Items, nm)
 	}
 	
  	var mIt draw.TextGL 
  	mIt = draw.TextGL{ Size: size, Text: text }
- 	Items[menuId] = append(
+	Items[menuId] = append(
 	Items[menuId], mIt)
 
 	//str.print("made item")

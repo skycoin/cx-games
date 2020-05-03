@@ -16,7 +16,6 @@ type Entity struct {
 	vy        f32
 	gravity   f32
 	
-	Type      i32 // FIXME DELETE THIS, UNUSED!!!!!!!!! 
 	Mode      i32
 	Extents   app.Vec2
 	WrapView  bool // moving objects wrap/teleport to opposite side of viewport 
@@ -33,8 +32,9 @@ type Entity struct {
 	ExitWest  bool
 }
 
-var ball Entity // FIXME: get rid of this hardwired carry-over player object 
-var All  [][]Entity // all entities (except ball ATM: FIXME) 
+var ball         Entity     // FIXME: get rid of this hardwired carry-over player object 
+var All          [][]Entity // all entities (except ball ATM: FIXME)  
+var ActiveCounts []i32      // corresponds with "All" slices (len - NumActive == num recyclables) 
 
 
 
@@ -52,7 +52,7 @@ func Init () {
 // the rest can be handle generically, moving around based on 
 // their current velocity. 
 func Update () {
-	//str.print("entities.Update ()")
+	//printf("entities.Update () \n")
 
 	// velocity 
 	//		player desired 
@@ -64,9 +64,11 @@ func Update () {
 	ball.y = f32.add(ball.y, ball.vy * time.Delta)
 	
 	//		all the rest 
-	for     t := 0; t < len(All);    t++ {
-		for i := 0; i < len(All[t]); i++ {
-			UpdateAt(i, t)
+	for     t := 0; t < len(All);        t++ {
+		printf("entities.Update () t:%d \n", t)
+		
+		for i := 0; i < ActiveCounts[t]; i++ {
+			UpdateAt(t, i)
 		}
 	}
 	
@@ -91,8 +93,83 @@ func InitPlayer () {
 }
 
 
-func GetLenOf (entType i32) (num i32) {
-	num = len(All[entType])
+func Spawn (eType i32, newEnt Entity) {
+	//str.print("Spawn ()")
+
+	var aC i32 // active count 
+	aC = ActiveCounts[eType]
+
+	var iC i32 // inclusive count (+ inactives)
+	iC = len(All[eType])
+	
+	if  aC < iC /* (can recycle an inactive) */ { 
+		str.print("Spawn ()     aC & iC differ, RECYCLING 1st inactive")
+		All[eType][aC].x        = newEnt.x
+		All[eType][aC].y        = newEnt.y        
+		All[eType][aC].vx       = newEnt.vx       
+		All[eType][aC].vy       = newEnt.vy       
+		All[eType][aC].gravity  = newEnt.gravity  
+		All[eType][aC].Mode     = newEnt.Mode     
+		All[eType][aC].Extents  = newEnt.Extents  
+		All[eType][aC].WrapView = newEnt.WrapView	
+	}else{
+		str.print("Spawn ()     appending")
+		All[eType] = append(
+		All[eType], newEnt)
+	}
+
+	printf("ActiveCounts[%d]: %d iC: %d BEFORE   \n", eType, ActiveCounts[eType], len(All[eType]))
+	ActiveCounts[eType] = 
+	ActiveCounts[eType] + 1
+	printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], len(All[eType]))
+}
+
+
+func Kill (eType i32, id i32) {
+	// i don't like inc/decrementing values at the top of a func, 
+	// since there could be errors that prevent the func from
+	// finishing the unit of work, but otherwise i'd be using  
+	// "aC - 1", and we need to decrement it anyways 
+	printf("ActiveCounts[%d]: %d iC: %d BEFORE \n", eType, ActiveCounts[eType], len(All[eType]))
+	ActiveCounts[eType] = 
+	ActiveCounts[eType] - 1
+	printf("ActiveCounts[%d]: %d iC: %d \n",        eType, ActiveCounts[eType], len(All[eType]))
+
+	var aC i32 // active count 
+	aC = ActiveCounts[eType]
+
+	var iC i32 // inclusive count (+ inactives)
+	iC = len(All[eType])
+	
+	var lS i32 // last slot (of actives) 
+	lS = aC - 1
+	
+	// the normal recycle process needs to operate on 2 slots. 
+	// it copies the values of the 
+	// last ActiveCounts slot to the slot being recycled 
+	// (also prevents having an inactive slot which would have 
+	// 		needed an extra var in order to be marked for skipping) 
+	printf("RECYCLE  eType: %d   id: %d   aC: %d BEFORE   \n", eType, id, aC)
+	if  aC > 1  /* (has 2 slots for copying) */ && 
+		id < lS /* (not last active, last needs no copy) */ {
+			
+		All[eType][lS].x        = All[eType][id].x
+		All[eType][lS].y        = All[eType][id].y
+		All[eType][lS].vx       = All[eType][id].vx
+		All[eType][lS].vy       = All[eType][id].vy
+		All[eType][lS].gravity  = All[eType][id].gravity
+		All[eType][lS].Mode     = All[eType][id].Mode
+		All[eType][lS].Extents  = All[eType][id].Extents
+		All[eType][lS].WrapView = All[eType][id].WrapView
+	}
+
+	//entities.All[FALLING_COIN] = remove(entities.All[FALLING_COIN], i)
+	printf("RECYCLED eType: %d   id: %d   aC: %d FINISHED \n", eType, id, aC)
+}
+
+
+func GetCountOf (entType i32) (c i32) {
+	c = ActiveCounts[entType]
 }
 
 
@@ -104,8 +181,10 @@ func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
 }
 
 
-func UpdateAt (i i32, et i32) { // entity type 
-	//printf("slice: %d   -   %d \n", et, i)
+func UpdateAt (et i32, i i32) { // entity type, id 
+	if et != 4 {
+		printf("entities.UpdateAt (et: %d    i: %d) \n", et, i)
+	}
 	
 	All[et][i].x = f32.add(All[et][i].x, All[et][i].vx * time.Delta)
 	All[et][i].y = f32.add(All[et][i].y, All[et][i].vy * time.Delta)

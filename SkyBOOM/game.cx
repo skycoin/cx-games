@@ -7,6 +7,27 @@ import "inputs"
 /*
 
 --------------- ISSUE REPORTS ----------------------------------------
+printf() can have more arguments than there is %codes for 
+
+
+
+
+len() should give an error message when used on non-collection vars 
+
+
+
+
+i seem to be having a problem with remove() not being able to selectively remove 1 item from a slice within a slice of slices.  just wondering if you ever do that @d2bug
+
+it seems to remove all of them instead of just the 1.
+
+entities.All[FALLING_COIN] = remove(entities.All[FALLING_COIN], i)
+
+actually it seems to remove all items the 1st time or 2, then after that it leaves 1 (out of around 7 items) remaining in the inner slice.
+
+
+
+
 hmmmm, it seems i can't get the correct values out of a struct which was returned by a function from a package.  i guess all the values i retrieve from a package have to be basic types.
 
 func Get (entType i32, id i32) (e Entity) {
@@ -21,7 +42,10 @@ that's INSIDE the package, and even INSIDE, "e" has default values instead of wh
 
 
 
-------------------------------- SkyBOOM ------------------------------
+
+
+
+------------------------------- SkyBOOM notes ----------------------------
 --- SPLASH SCREEN 
 
 Full Skycoin logo inc. text
@@ -119,32 +143,33 @@ func updateGameEntities () {
 	
 	// falling coin collisions 
 	var et i32 = FALLING_COIN // entity type 
-	var n  i32 = entities.GetLenOf(et)
+	var n  i32 = entities.GetCountOf(et)
 	for i := n - 1; i >= 0; i-- { // go backwards for removals 
 		var t f32 // rect edges 
 		var r f32
 		var b f32
 		var l f32
 		t, r, b, l = entities.GetRect(et, i)
-		
-		
+		printf("i: %d       b: %f \n", i, b)
 		
 		doFading(i)
 		
 		// collision 
 		if b > 1.0 { // (above top of viewport) 
-			killCoin(i)
+			printf("ABOUT TO Kill   *** EXITED TOP *** i: %d \n", i)
+			entities.Kill(et, i)
 		}else
 		if b < explodeLine { // touched floor/detonators/whatev 
-			killCoin(i)
+			printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
+			entities.Kill(et, i)
 		}else
 		if b < pTop { // (below top of PLAYER bucket/s) 
-			if  caughtCoin(i, pL, pR, l) { // coin left  edge 
-				break // avoid catching twice 
+			if      caughtCoin(i, pL, pR, l) { // coin left  edge 
+				//break // avoid catching twice 
+			}else{
+				var u /* (unused return) */ bool
+				u = caughtCoin(i, pL, pR, r)   // coin right edge 
 			}
-			
-			var q bool
-			q = caughtCoin(i, pL, pR, r)   // coin right edge 
 		}
 	}
 }
@@ -158,13 +183,6 @@ func getPlayerEdges () (l f32, r f32) {
 	r = // right 
 		entities.All[PLAYER][0].x +
 		entities.All[PLAYER][0].Extents.X
-}
-
-
-func killCoin (i i32) {
-	entities.All[FALLING_COIN] = remove(
-	entities.All[FALLING_COIN], i)
-	printf("killed coin: %d \n", i)
 }
 
 

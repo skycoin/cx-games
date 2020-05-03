@@ -238,7 +238,8 @@ func freezeShape () {
 		//str.print("if rowFull")
 		
 		if rowFull {
-			tiles.CollapsingRows = append(tiles.CollapsingRows, y)
+			tiles.CollapsingRows = append(
+			tiles.CollapsingRows, y)
 			tiles.CollapseStartTime = main.CurrTime
 			numRowsFilled = i32.add(numRowsFilled, 1)
 		

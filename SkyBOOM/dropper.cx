@@ -24,8 +24,7 @@ func dropperInit () {
 	ex =   app.Vec2{ X: eY * cloudAspectRatio, Y: eY }
 	
 	ent = entities.Entity{ Extents: ex, y: entY, vx: 1.2 }
-	entities.All[DROPPER] = append(
-	entities.All[DROPPER], ent)
+	entities.Spawn(DROPPER, ent)
 	
 	coinDropHeight = ent.y - eY + coinExtents.Y
 	setDropperTarget()
@@ -41,17 +40,15 @@ func dropperUpdate () {
 func dropCoins () {	
 	if nextDrop <= time.Now {
 		nextDrop = time.Now + dropDelay
-		//str.print("drop\n")
 		
 		ent = entities.Entity{ 
 			x:       entities.All[DROPPER][0].x,
 			y:       coinDropHeight, 
-			vx:      0.0,
-			vy:     -1.2,
-			Type:    FALLING_COIN,
+			vx:       0.0,
+			vy:      -1.2,
 			Extents: coinExtents}
-		entities.All[FALLING_COIN] = append(
-		entities.All[FALLING_COIN], ent)
+			
+		entities.Spawn(FALLING_COIN, ent)
 	}
 }
 

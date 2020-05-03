@@ -24,6 +24,8 @@ func entitiesInit () {
 		ents = []Entity{}
 		entities.All = append(
 		entities.All, ents)
+		entities.ActiveCounts = append(
+		entities.ActiveCounts, 0)
 	}
 	
 	coinExtents = app.Vec2{
@@ -37,8 +39,7 @@ func entitiesInit () {
 		Y: 0.2}	
 	var y f32 = -1.0 + ex.Y
 	ent = entities.Entity{ y: y, Extents: ex }
-	entities.All[PLAYER] = append(
-	entities.All[PLAYER], ent)
+	entities.Spawn(PLAYER, ent)
 
 	dropperInit()		   
 	spawnCloudsBackdrop()
@@ -68,8 +69,7 @@ func spawnMenuBackdropCoins () {
 				//vy: -0.1, 
 				Extents: ex, 
 				WrapView: true }
-			entities.All[BACKDROP_COIN] = append(
-			entities.All[BACKDROP_COIN], ent)
+			entities.Spawn(BACKDROP_COIN, ent)
 			
 			x = x + incX
 		}	
@@ -99,15 +99,13 @@ func spawnCloudsBackdrop () {
 		        	
 		for x < space.ViewEdgeR {
 			ent = entities.Entity{
-				Type: BACKDROP_CLOUD,
 				x: x, 
 				y: y, 
 				vx: y, 
 				//vy: -0.1, 
 				Extents: ex, 
 				WrapView: true }
-			entities.All[BACKDROP_CLOUD] = append(
-			entities.All[BACKDROP_CLOUD], ent)
+			entities.Spawn(BACKDROP_CLOUD, ent)
 			
 			x = x + incX
 		}	
