@@ -16,7 +16,7 @@ func gameInit () {
 func gameUpdate () {
 	respondToButtonEvents()
 	respondToKeyEvents()
-	entities.Update(0)
+	entities.Update()
 }
 
 

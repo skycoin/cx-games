@@ -62,7 +62,6 @@ func Update () {
 	//		hardwired player (FIXME) 
 	ball.x = f32.add(ball.x, ball.vx * time.Delta)
 	ball.y = f32.add(ball.y, ball.vy * time.Delta)
-	
 	//		all the rest 
 	for     t := 0; t < len(All);        t++ {
 		//printf("entities.Update () t:%d \n", t)
