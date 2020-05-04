@@ -1,0 +1,21 @@
+package main
+
+
+
+// "enums"               FIXME: when CX has enums or constants 
+var ENT_CUSTOMER    i32 = entities.ENT_2DFW_MAX
+var ENT_DESTINATION i32 = entities.ENT_2DFW_MAX + 1
+var ENT_GAME_MAX    i32 = entities.ENT_2DFW_MAX + 2
+
+
+
+func entitiesInit () {
+	entities.Init(ENT_GAME_MAX)
+}
+
+
+func entitiesUpdate () {
+	entities.Update()
+}
+
+

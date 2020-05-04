@@ -50,7 +50,7 @@ func drawAll () {
 	draw.SetColor3(draw.White)
 
 	draw.BeginTexturedQuads(WALLET)
-		t, r, b, l = entities.GetRect(PLAYER, 0)
+		t, r, b, l = entities.GetRect(ENT_PLAYER, 0)
 		draw.TexturedQuad(t, r, b, l)
 	draw.End()
 

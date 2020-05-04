@@ -9,14 +9,14 @@ func gameInit () {
 	draw.Init()
 	inputs.Init(false)
 	map.Init()
-	entities.Init()
+	entitiesInit()
 }
 
 
 func gameUpdate () {
 	respondToButtonEvents()
 	respondToKeyEvents()
-	entities.Update()
+	entitiesUpdate()
 }
 
 

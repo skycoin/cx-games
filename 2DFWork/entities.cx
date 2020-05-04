@@ -9,6 +9,14 @@ import "time"
 
 
 
+// "enums"                     FIXME: when CX has enums or constants 
+var ENT_PLAYER   i32
+var ENT_2DFW_MAX i32 = 1
+
+var ball         Entity     // FIXME: get rid of this hardwired carry-over player object 
+var All          [][]Entity // all entities (except ball ATM: FIXME)  
+var ActiveCounts []i32      // corresponds with "All" slices (len - NumActive == num recyclables) 
+
 type Entity struct {
 	x         f32
 	y         f32
@@ -32,14 +40,22 @@ type Entity struct {
 	ExitWest  bool
 }
 
-var ball         Entity     // FIXME: get rid of this hardwired carry-over player object 
-var All          [][]Entity // all entities (except ball ATM: FIXME)  
-var ActiveCounts []i32      // corresponds with "All" slices (len - NumActive == num recyclables) 
 
 
-
-func Init () {
+func Init (maxEntTypes i32) {
 	str.print("entities.Init ()")
+	
+	// add all slices needed for entity types 
+	var newEnts []Entity
+	for i := 0; i < maxEntTypes; i++ {
+		ents = []Entity{}
+		All = append(
+		All, newEnts)
+		ActiveCounts = append(
+		ActiveCounts, 0)
+	}
+	
+	printf("    Created %v slices (1 for each entity type) \n", maxEntTypes)
 }
 
 
