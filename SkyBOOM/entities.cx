@@ -2,8 +2,8 @@ package main
 
 
 
-var /* new entity */ ent entities.Entity
-var coinExtents      app.Vec2 // (while dropping) 
+var /* new......*/ ent entities.Entity
+var coinExtent     f32 = 0.07 // (while dropping) 
 // "enums" 
 var DROPPER        i32 = entities.ENT_2DFW_MAX     // coin DROPPER 
 var FALLING_COIN   i32 = entities.ENT_2DFW_MAX + 1
@@ -19,17 +19,12 @@ var MODE_FADING    i32 = 1
 func entitiesInit () {
 	entities.Init(ENT_GAME_MAX)
 	
-	coinExtents = app.Vec2{
-		X: 0.07, 
-		Y: 0.07}
-		
 	// ENT_PLAYER 
-	var ex app.Vec2   // extents 
-	ex =   app.Vec2{ 
-		X: 0.2, 
-		Y: 0.2}	
-	var y f32 = -1.0 + ex.Y
-	ent = entities.Entity{ y: y, Extents: ex }
+	var f f32 = 0.2
+	ent = entities.Entity{
+		y:       f - 1.0, 
+		ExtentX: f,
+		ExtentY: f}
 	entities.Spawn(entities.ENT_PLAYER, ent)
 
 	dropperInit()		   
@@ -73,28 +68,27 @@ func spawnMenuBackdropCoins () {
 
 
 func spawnCloudsBackdrop () {
-	var eY f32 = 0.07 // extent Y 
-	var ex app.Vec2   // extents 
-	ex =   app.Vec2{ 
-		X: eY * cloudAspectRatio, 
-		Y: eY }	
+	// extents 
+	var exX f32 = 0.07 * cloudAspectRatio
+	var exY f32 = 0.07
 	
-	var startX f32 = space.ViewEdgeL - ex.X
+	var startX f32 = space.ViewEdgeL - exX
 	var x f32 = startX
 	var y f32 = 0.1
-	var incX f32 = f32.mul(ex.X, 2.0) * 1.33 // 1/3 ratio gap tween them 
-	var incY f32 = f32.mul(ex.Y, 2.0) * 0.83
+	var incX f32 = f32.mul(exX, 2.0) * 1.33 // 1/3 ratio gap tween them 
+	var incY f32 = f32.mul(exY, 2.0) * 0.83
 	
 	for     y < entities.All[DROPPER][0].y -
-		        entities.All[DROPPER][0].Extents.Y {
+		        entities.All[DROPPER][0].ExtentY {
 		        	
 		for x < space.ViewEdgeR {
 			ent = entities.Entity{
 				x: x, 
 				y: y, 
+				ExtentX: exX, 
+				ExtentY: exY, 
 				vx: y, 
 				//vy: -0.1, 
-				Extents: ex, 
 				WrapView: true }
 			entities.Spawn(BACKDROP_CLOUD, ent)
 			

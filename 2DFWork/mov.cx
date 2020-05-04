@@ -35,7 +35,7 @@ func ConstrainPosByMap () {
 	gridDelta, entities.ball.x, entities.ball.vx = BounceOffWalls(
 		entities.ball.x, 
 		entities.ball.vx, 
-		entities.ball.Extents.X, 
+		entities.ball.ExtentX, 
 		entities.ball.CellMin.X, 
 		entities.ball.CellMax.X, 
 		entities.ball.ExitWest, 
@@ -52,7 +52,7 @@ func ConstrainPosByMap () {
 	gridDelta, entities.ball.y, entities.ball.vy = BounceOffWalls(
 		entities.ball.y, 
 		entities.ball.vy, 
-		entities.ball.Extents.Y, 
+		entities.ball.ExtentY, 
 		entities.ball.CellMin.Y, 
 		entities.ball.CellMax.Y, 
 		entities.ball.ExitSouth, 

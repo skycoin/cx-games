@@ -20,12 +20,13 @@ var ActiveCounts []i32      // corresponds with "All" slices (len - NumActive ==
 type Entity struct {
 	x         f32
 	y         f32
+	ExtentX   f32
+	ExtentY   f32
 	vx        f32
 	vy        f32
 	gravity   f32
 	
 	Mode      i32
-	Extents   app.Vec2
 	WrapView  bool // moving objects wrap/teleport to opposite side of viewport 
 
 	// FIXME: move these into Sky Taxi 
@@ -93,15 +94,11 @@ func Update () {
 
 
 func InitPlayer () {
-	var ex app.Vec2 // extents 
-	ex =   app.Vec2{ 
-		X: 0.05, 
-		Y: 0.05}	
-
 	ball = Entity{
-		Extents: ex,
 		x:       0.0,
 		y:       0.0,
+		ExtentX: 0.05,
+		ExtentY: 0.05,
 		vx:      0.0,
 		vy:      0.0,
 		gravity: 0.01}
@@ -121,11 +118,12 @@ func Spawn (eType i32, newEnt Entity) {
 		str.print("------------- Spawn ()     aC & iC differ, RECYCLING 1st inactive")
 		All[eType][aC].x        = newEnt.x
 		All[eType][aC].y        = newEnt.y        
+		All[eType][aC].ExtentX  = newEnt.ExtentX  
+		All[eType][aC].ExtentY  = newEnt.ExtentY  
 		All[eType][aC].vx       = newEnt.vx       
 		All[eType][aC].vy       = newEnt.vy       
 		All[eType][aC].gravity  = newEnt.gravity  
 		All[eType][aC].Mode     = newEnt.Mode     
-		All[eType][aC].Extents  = newEnt.Extents  
 		All[eType][aC].WrapView = newEnt.WrapView	
 	}else{
 		str.print("------------- Spawn ()     appending")
@@ -166,7 +164,8 @@ func Kill (eType i32, id i32) {
 		All[eType][id].vy       = All[eType][lS].vy
 		All[eType][id].gravity  = All[eType][lS].gravity
 		All[eType][id].Mode     = All[eType][lS].Mode
-		All[eType][id].Extents  = All[eType][lS].Extents
+		All[eType][id].ExtentX  = All[eType][lS].ExtentX
+		All[eType][id].ExtentY  = All[eType][lS].ExtentY
 		All[eType][id].WrapView = All[eType][lS].WrapView
 		printf("RECYCLED eType: %d   id: %d        \n", eType, id)
 		printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
@@ -185,10 +184,10 @@ func GetCountOf (entType i32) (c i32) {
 
 
 func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
-	t = All[entType][id].y + All[entType][id].Extents.Y
-	r = All[entType][id].x + All[entType][id].Extents.X
-	b = All[entType][id].y - All[entType][id].Extents.Y
-	l = All[entType][id].x - All[entType][id].Extents.X
+	t = All[entType][id].y + All[entType][id].ExtentY
+	r = All[entType][id].x + All[entType][id].ExtentX
+	b = All[entType][id].y - All[entType][id].ExtentY
+	l = All[entType][id].x - All[entType][id].ExtentX
 }
 
 
@@ -201,18 +200,18 @@ func UpdateAt (et i32, i i32) { // entity type, id
 	All[et][i].y = f32.add(All[et][i].y, All[et][i].vy * time.Delta)
 	
 	if All[et][i].WrapView {
-		if  All[et][i].x > space.ViewEdgeR + All[et][i].Extents.X {
-			All[et][i].x = space.ViewEdgeL - All[et][i].Extents.X
+		if  All[et][i].x > space.ViewEdgeR + All[et][i].ExtentX {
+			All[et][i].x = space.ViewEdgeL - All[et][i].ExtentX
 		}else
-		if  All[et][i].x < space.ViewEdgeL - All[et][i].Extents.X {
-			All[et][i].x = space.ViewEdgeR + All[et][i].Extents.X
+		if  All[et][i].x < space.ViewEdgeL - All[et][i].ExtentX {
+			All[et][i].x = space.ViewEdgeR + All[et][i].ExtentX
 		}
 		
-		if  All[et][i].y >  1.0 + All[et][i].Extents.Y {
-			All[et][i].y = -1.0 - All[et][i].Extents.Y
+		if  All[et][i].y >  1.0 + All[et][i].ExtentY {
+			All[et][i].y = -1.0 - All[et][i].ExtentY
 		}else
-		if  All[et][i].y < -1.0 - All[et][i].Extents.Y {
-			All[et][i].y =  1.0 + All[et][i].Extents.Y
+		if  All[et][i].y < -1.0 - All[et][i].ExtentY {
+			All[et][i].y =  1.0 + All[et][i].ExtentY
 		}
 	}
 }

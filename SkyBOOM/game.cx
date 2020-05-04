@@ -104,9 +104,9 @@ func gameInit () {
 	entitiesInit()
 	
 	pTop = entities.All[plr][0].y +
-		   entities.All[plr][0].Extents.Y
-	//printf("pTop: %f      [plr][0].y: %f        [plr][0].Extents.Y: %f \n", 
-	//	pTop, entities.All[plr][0].y, entities.All[plr][0].Extents.Y)
+		   entities.All[plr][0].ExtentY
+	//printf("pTop: %f      [plr][0].y: %f        [plr][0].ExtentY: %f \n", 
+	//	pTop, entities.All[plr][0].y, entities.All[plr][0].ExtentY)
 }
 
 
@@ -131,12 +131,12 @@ func updateGameEntities () {
 	// 		keep entirely within view 
 	if pR > space.ViewEdgeR {
 		entities.All[plr][0].x = space.ViewEdgeR -
-		entities.All[plr][0].Extents.X
+		entities.All[plr][0].ExtentX
 		pL, pR = getPlayerEdges()
 	}else
 	if pL < space.ViewEdgeL {
 		entities.All[plr][0].x = space.ViewEdgeL +
-		entities.All[plr][0].Extents.X
+		entities.All[plr][0].ExtentX
 		pL, pR = getPlayerEdges()
 	}
 	
@@ -183,20 +183,20 @@ func updateGameEntities () {
 func getPlayerEdges () (l f32, r f32) {
 	l = // left 
 		entities.All[plr][0].x -
-		entities.All[plr][0].Extents.X
+		entities.All[plr][0].ExtentX
 		
 	r = // right 
 		entities.All[plr][0].x +
-		entities.All[plr][0].Extents.X
+		entities.All[plr][0].ExtentX
 }
 
 
 func doFading (i i32) {
 	if  entities.All[FALLING_COIN][i].Mode == MODE_FADING {
-		entities.All[FALLING_COIN][i].Extents.X = 
-		entities.All[FALLING_COIN][i].Extents.X + time.Delta
-		entities.All[FALLING_COIN][i].Extents.Y = 
-		entities.All[FALLING_COIN][i].Extents.Y + time.Delta
+		entities.All[FALLING_COIN][i].ExtentX = 
+		entities.All[FALLING_COIN][i].ExtentX + time.Delta
+		entities.All[FALLING_COIN][i].ExtentY = 
+		entities.All[FALLING_COIN][i].ExtentY + time.Delta
 	}
 }
 
