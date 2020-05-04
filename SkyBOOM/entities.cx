@@ -74,8 +74,8 @@ func spawnCloudsBackdrop () {
 	
 	var startX f32 = space.ViewEdgeL - exX
 	var x f32 = startX
-	var y f32 = 0.1
-	var incX f32 = f32.mul(exX, 2.0) * 1.33 // 1/3 ratio gap tween them 
+	var y f32 = 0.15
+	var incX f32 = f32.mul(exX, 2.0) * 1.0 // 1.33 // 1/3 ratio gap tween them 
 	var incY f32 = f32.mul(exY, 2.0) * 0.83
 	
 	for     y < entities.All[DROPPER][0].y -
@@ -83,13 +83,14 @@ func spawnCloudsBackdrop () {
 		        	
 		for x < space.ViewEdgeR {
 			ent = entities.Entity{
-				x: x, 
-				y: y, 
-				ExtentX: exX, 
-				ExtentY: exY, 
-				vx: y, 
-				//vy: -0.1, 
-				WrapView: true }
+				x:        x, 
+				y:        y, 
+				ExtentX:  y * exX, 
+				ExtentY:  y * exY, 
+				vx:       y, 
+				//vy:     -0.1, 
+				WrapView: true}
+				
 			entities.Spawn(BACKDROP_CLOUD, ent)
 			
 			x = x + incX
