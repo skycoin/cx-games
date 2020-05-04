@@ -84,7 +84,6 @@ fall speed
 
 // misc 
 var pTop        f32 // player top edge 
-var explodeLine f32 // vertical pos that triggers explosion 
 
 
 
@@ -99,7 +98,6 @@ func gameInit () {
 	drawInit()
 	entitiesInit()
 	
-	explodeLine = -1.0 + coinExtents.Y
 	pTop = entities.All[PLAYER][0].y +
 		   entities.All[PLAYER][0].Extents.Y
 	//printf("pTop: %f      [PLAYER][0].y: %f        [PLAYER][0].Extents.Y: %f \n", 
@@ -144,7 +142,9 @@ func updateGameEntities () {
 	// falling coin collisions 
 	var et i32 = FALLING_COIN // entity type 
 	var n  i32 = entities.GetCountOf(et)
-	for i := n - 1; i >= 0; i-- { // go backwards for removals 
+	var st i32 = n - 1
+	printf("st: %v       n: %v \n", st, n)
+	for i := st; i >= 0; i-- { // go backwards for removals 
 		var t f32 // rect edges 
 		var r f32
 		var b f32
@@ -159,7 +159,7 @@ func updateGameEntities () {
 			printf("ABOUT TO Kill   *** EXITED TOP *** i: %d \n", i)
 			entities.Kill(et, i)
 		}else
-		if b < explodeLine { // touched floor/detonators/whatev 
+		if b < -1.0 { // touched floor/detonators/whatev 
 			printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
 			entities.Kill(et, i)
 		}else

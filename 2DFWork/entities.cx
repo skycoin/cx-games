@@ -65,7 +65,7 @@ func Update () {
 	
 	//		all the rest 
 	for     t := 0; t < len(All);        t++ {
-		printf("entities.Update () t:%d \n", t)
+		//printf("entities.Update () t:%d \n", t)
 		
 		for i := 0; i < ActiveCounts[t]; i++ {
 			UpdateAt(t, i)
@@ -103,7 +103,7 @@ func Spawn (eType i32, newEnt Entity) {
 	iC = len(All[eType])
 	
 	if  aC < iC /* (can recycle an inactive) */ { 
-		str.print("Spawn ()     aC & iC differ, RECYCLING 1st inactive")
+		str.print("------------- Spawn ()     aC & iC differ, RECYCLING 1st inactive")
 		All[eType][aC].x        = newEnt.x
 		All[eType][aC].y        = newEnt.y        
 		All[eType][aC].vx       = newEnt.vx       
@@ -113,7 +113,7 @@ func Spawn (eType i32, newEnt Entity) {
 		All[eType][aC].Extents  = newEnt.Extents  
 		All[eType][aC].WrapView = newEnt.WrapView	
 	}else{
-		str.print("Spawn ()     appending")
+		str.print("------------- Spawn ()     appending")
 		All[eType] = append(
 		All[eType], newEnt)
 	}
@@ -126,15 +126,6 @@ func Spawn (eType i32, newEnt Entity) {
 
 
 func Kill (eType i32, id i32) {
-	// i don't like inc/decrementing values at the top of a func, 
-	// since there could be errors that prevent the func from
-	// finishing the unit of work, but otherwise i'd be using  
-	// "aC - 1", and we need to decrement it anyways 
-	printf("ActiveCounts[%d]: %d iC: %d BEFORE \n", eType, ActiveCounts[eType], len(All[eType]))
-	ActiveCounts[eType] = 
-	ActiveCounts[eType] - 1
-	printf("ActiveCounts[%d]: %d iC: %d \n",        eType, ActiveCounts[eType], len(All[eType]))
-
 	var aC i32 // active count 
 	aC = ActiveCounts[eType]
 
@@ -149,22 +140,27 @@ func Kill (eType i32, id i32) {
 	// last ActiveCounts slot to the slot being recycled 
 	// (also prevents having an inactive slot which would have 
 	// 		needed an extra var in order to be marked for skipping) 
-	printf("RECYCLE  eType: %d   id: %d   aC: %d BEFORE   \n", eType, id, aC)
+	printf("(========== ABOUT TO copy values from lS: %v ---> id: %v    (aC: %v) \n", lS, id, aC)
 	if  aC > 1  /* (has 2 slots for copying) */ && 
 		id < lS /* (not last active, last needs no copy) */ {
 			
-		All[eType][lS].x        = All[eType][id].x
-		All[eType][lS].y        = All[eType][id].y
-		All[eType][lS].vx       = All[eType][id].vx
-		All[eType][lS].vy       = All[eType][id].vy
-		All[eType][lS].gravity  = All[eType][id].gravity
-		All[eType][lS].Mode     = All[eType][id].Mode
-		All[eType][lS].Extents  = All[eType][id].Extents
-		All[eType][lS].WrapView = All[eType][id].WrapView
+		printf("RECYCLE  eType: %d   id: %d BEFORE \n", eType, id)
+		All[eType][id].x        = All[eType][lS].x
+		All[eType][id].y        = All[eType][lS].y
+		All[eType][id].vx       = All[eType][lS].vx
+		All[eType][id].vy       = All[eType][lS].vy
+		All[eType][id].gravity  = All[eType][lS].gravity
+		All[eType][id].Mode     = All[eType][lS].Mode
+		All[eType][id].Extents  = All[eType][lS].Extents
+		All[eType][id].WrapView = All[eType][lS].WrapView
+		printf("RECYCLED eType: %d   id: %d        \n", eType, id)
+		printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
 	}
 
-	//entities.All[FALLING_COIN] = remove(entities.All[FALLING_COIN], i)
-	printf("RECYCLED eType: %d   id: %d   aC: %d FINISHED \n", eType, id, aC)
+	printf("ActiveCounts[%d]: %d iC: %d BEFORE \n",   eType, ActiveCounts[eType], len(All[eType]))
+	ActiveCounts[eType] = 
+	ActiveCounts[eType] - 1
+	printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], len(All[eType]))
 }
 
 
