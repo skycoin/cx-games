@@ -5,11 +5,11 @@ package main
 var /* new entity */ ent entities.Entity
 var coinExtents      app.Vec2 // (while dropping) 
 // "enums" 
-var DROPPER        i32 = ENT_2DFW_MAX     // coin DROPPER 
-var FALLING_COIN   i32 = ENT_2DFW_MAX + 1
-var BACKDROP_COIN  i32 = ENT_2DFW_MAX + 2 // for menu backdrop 
-var BACKDROP_CLOUD i32 = ENT_2DFW_MAX + 3 // gameplay backdrop 
-var ENT_GAME_MAX   i32 = ENT_2DFW_MAX + 4
+var DROPPER        i32 = entities.ENT_2DFW_MAX     // coin DROPPER 
+var FALLING_COIN   i32 = entities.ENT_2DFW_MAX + 1
+var BACKDROP_COIN  i32 = entities.ENT_2DFW_MAX + 2 // for menu backdrop 
+var BACKDROP_CLOUD i32 = entities.ENT_2DFW_MAX + 3 // gameplay backdrop 
+var ENT_GAME_MAX   i32 = entities.ENT_2DFW_MAX + 4
 // modes 
 var MODE_DROPPING  i32
 var MODE_FADING    i32 = 1
@@ -30,7 +30,7 @@ func entitiesInit () {
 		Y: 0.2}	
 	var y f32 = -1.0 + ex.Y
 	ent = entities.Entity{ y: y, Extents: ex }
-	entities.Spawn(ENT_PLAYER, ent)
+	entities.Spawn(entities.ENT_PLAYER, ent)
 
 	dropperInit()		   
 	spawnCloudsBackdrop()

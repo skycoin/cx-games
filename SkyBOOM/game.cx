@@ -88,7 +88,8 @@ fall speed
 */
 
 // misc 
-var pTop        f32 // player top edge 
+var plr  i32 = entities.ENT_PLAYER
+var pTop f32 // player top edge 
 
 
 
@@ -102,10 +103,10 @@ func gameInit () {
 	drawInit()
 	entitiesInit()
 	
-	pTop = entities.All[ENT_PLAYER][0].y +
-		   entities.All[ENT_PLAYER][0].Extents.Y
-	//printf("pTop: %f      [ENT_PLAYER][0].y: %f        [ENT_PLAYER][0].Extents.Y: %f \n", 
-	//	pTop, entities.All[ENT_PLAYER][0].y, entities.All[ENT_PLAYER][0].Extents.Y)
+	pTop = entities.All[plr][0].y +
+		   entities.All[plr][0].Extents.Y
+	//printf("pTop: %f      [plr][0].y: %f        [plr][0].Extents.Y: %f \n", 
+	//	pTop, entities.All[plr][0].y, entities.All[plr][0].Extents.Y)
 }
 
 
@@ -120,7 +121,7 @@ func gameUpdate () {
 
 func updateGameEntities () {
 	// player 
-	entities.All[ENT_PLAYER][0].x = inputs.MousePointer.X
+	entities.All[plr][0].x = inputs.MousePointer.X
 	
 	// 		cache edges 
 	var pL f32 // left  
@@ -129,13 +130,13 @@ func updateGameEntities () {
 	
 	// 		keep entirely within view 
 	if pR > space.ViewEdgeR {
-		entities.All[ENT_PLAYER][0].x = space.ViewEdgeR -
-		entities.All[ENT_PLAYER][0].Extents.X
+		entities.All[plr][0].x = space.ViewEdgeR -
+		entities.All[plr][0].Extents.X
 		pL, pR = getPlayerEdges()
 	}else
 	if pL < space.ViewEdgeL {
-		entities.All[ENT_PLAYER][0].x = space.ViewEdgeL +
-		entities.All[ENT_PLAYER][0].Extents.X
+		entities.All[plr][0].x = space.ViewEdgeL +
+		entities.All[plr][0].Extents.X
 		pL, pR = getPlayerEdges()
 	}
 	
@@ -167,7 +168,7 @@ func updateGameEntities () {
 			printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
 			entities.Kill(et, i)
 		}else
-		if b < pTop { // (below top of ENT_PLAYER bucket/s) 
+		if b < pTop { // (below top of plr bucket/s) 
 			if      caughtCoin(i, pL, pR, l) { // coin left  edge 
 				//break // avoid catching twice 
 			}else{
@@ -181,12 +182,12 @@ func updateGameEntities () {
 
 func getPlayerEdges () (l f32, r f32) {
 	l = // left 
-		entities.All[ENT_PLAYER][0].x -
-		entities.All[ENT_PLAYER][0].Extents.X
+		entities.All[plr][0].x -
+		entities.All[plr][0].Extents.X
 		
 	r = // right 
-		entities.All[ENT_PLAYER][0].x +
-		entities.All[ENT_PLAYER][0].Extents.X
+		entities.All[plr][0].x +
+		entities.All[plr][0].Extents.X
 }
 
 
