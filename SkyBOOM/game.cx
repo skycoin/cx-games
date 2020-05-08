@@ -4,52 +4,109 @@ import "app"
 import "entities"
 import "inputs"
 
+/*
+
+--------------- ISSUE REPORTS ----------------------------------------
+passing parameter to entities.Update () had no proper error 
 
 
-var coinRadius      f32 = 0.045 // while dropping 
-var pTop            f32     // player top edge 
-var explodeLine     f32 = -1.0 + coinRadius // vertical pos that triggers explosion 
-// entities 
-var /* new...*/ ent entities.Entity
-//		"enums" of unique entities at beginning of entities.All 
-var PLAYER          i32
-var DROPPER         i32 = 1 // coin DROPPER 
-var MAX_UNIQUES     i32 = 2 // how many special cases listed above 
-//		modes 
-var MODE_DROPPING   i32
-var MODE_FADING     i32 = 1
-// dropper reverse logic 
-var reverseTarget   f32
-var numTargetGrains i32 = 100
-var nextDrop        f32
-var dropDelay       f32 = 0.3
+
+
+printf() can have more arguments than there is %codes for 
+
+
+
+
+len() should give an error message when used on non-collection vars 
+
+
+
+
+i seem to be having a problem with remove() not being able to selectively remove 1 item from a slice within a slice of slices.  just wondering if you ever do that @d2bug
+
+it seems to remove all of them instead of just the 1.
+
+entities.All[FALLING_COIN] = remove(entities.All[FALLING_COIN], i)
+
+actually it seems to remove all items the 1st time or 2, then after that it leaves 1 (out of around 7 items) remaining in the inner slice.
+
+
+
+
+hmmmm, it seems i can't get the correct values out of a struct which was returned by a function from a package.  i guess all the values i retrieve from a package have to be basic types.
+
+func Get (entType i32, id i32) (e Entity) {
+  e = All[entType][id]
+  printf("INSIDE Get() All[entType][id].y: %f \n", All[entType][id].y)
+  printf("INSIDE Get()                e.y: %f \n", e.y)
+}
+
+that's INSIDE the package, and even INSIDE, "e" has default values instead of what i had just set it to.
+
+(the All[entType][id].y has the values i expected)
+
+
+
+
+
+
+------------------------------- SkyBOOM notes ----------------------------
+--- SPLASH SCREEN 
+
+Full Skycoin logo inc. text
+
+
+--- INITIAL MENU 
+
+whole background field of....
+random sized, placed, angled, angular velocity coins 
+	(try not only Z angles, but X or Y as well)
+random color shading even?
+
+
+--- GAMEPLAY BACKGROUND
+
+smaller skycoin cloud logos in a band across upper half(?) of screen
+		...kind of like a parallax starfield in space games 
+	random sized, random scaled (diff in x & y), 
+	random alpha value? 
+	random blueness & grayness (from white base) 
+
+
+--- DIFFICULTY SCALING FACTORS
+
+dropper can keep getting lower
+"        "  bounce up & down?
+" can start throwing angles on coins
+coins could come down in jiggly patterns or dodge slightly?
+dropper move speed
+drop rate
+dropper changing direction more
+total height of buckets
+fall speed
+
+*/
+
+// misc 
+var plr  i32 = entities.ENT_PLAYER
+var pTop f32 // player top edge 
 
 
 
 func gameInit () {
-	app.Init("S k y B O O M", "Move with mouse.")
-	draw.Init()
+	app.   Init("S k y B O O M", "Move with mouse.")
+	draw.  Init()
 	inputs.Init(true)
-	entities.Init()
 	
+	// game specific 
 	menuInit()
 	drawInit()
+	entitiesInit()
 	
-	// entities 
-	// 		PLAYER 
-	ent = entities.Entity{ radius: 0.2, y: -1.0 }
-	entities.All = append(
-	entities.All, ent)
-	
-	// 		DROPPER 
-	ent = entities.Entity{ radius: 0.1, y:  1.0, vx: 1.2 }
-	entities.All = append(
-	entities.All, ent)
-	
-	pTop = entities.All[PLAYER].y +
-		   entities.All[PLAYER].radius
-
-	setReverseTarget()
+	pTop = entities.All[plr][0].y +
+		   entities.All[plr][0].ExtentY
+	//printf("pTop: %f      [plr][0].y: %f        [plr][0].ExtentY: %f \n", 
+	//	pTop, entities.All[plr][0].y, entities.All[plr][0].ExtentY)
 }
 
 
@@ -57,175 +114,14 @@ func gameUpdate () {
 	respondToPointerEvents()
 	respondToButtonEvents()
 	respondToKeyEvents()
-	respondToMenuClicks()
 	
 	updateGameEntities()
 }
 
 
-func handleDropperReversing () {
-	if     entities.All[DROPPER].vx < 0.0 {
-		// going left 
-		if entities.All[DROPPER].x < reverseTarget {
-			reverseDropper()
-		}else
-		if entities.All[DROPPER].x < space.ViewEdgeL {
-			reverseDropper()
-		}
-	}else{
-		// going right 
-		if entities.All[DROPPER].x > reverseTarget {
-			reverseDropper()
-		}else
-		if entities.All[DROPPER].x > space.ViewEdgeR {
-			reverseDropper()
-		}
-	}
-}
-
-
-func reverseDropper () {
-	var vX f32 = entities.All[DROPPER].vx
-	entities.All[DROPPER].vx = -vX
-	setReverseTarget()
-}
-
-
-func setReverseTarget () {
-	var pd f32 // potential distance 
-
-	if entities.All[DROPPER].vx > 0.0 { 
-		// going right 
-		pd = f32.sub(space.ViewEdgeR, entities.All[DROPPER].x)
-	}else{ 
-		// going left 
-		pd = f32.sub(space.ViewEdgeL, entities.All[DROPPER].x)
-	}
-
-	printf("potential distance: %f \n", pd)
-	
-	var targetGrainSize f32 = f32.div(pd, i32.f32(numTargetGrains))
-	var r i32 = i32.rand(0, numTargetGrains)
-	reverseTarget = f32.mul(i32.f32(r), targetGrainSize)
-	//printf("targetGrainSize: %f \n", targetGrainSize)
-}
-
-
-func respondToPointerEvents () {
-	var pos app.Vec2
-		
-	for pos.X != app.TOO_BIG_F32 {
-		pos = inputs.GetPointerEvent()
-		//printf("x,y: %f,%f \n", pos.X, pos.Y)
-	}
-}
-
-
-func respondToButtonEvents () {
-	var button i32
-	var action i32
-	button, action = inputs.GetButtonEvent ()
-		
-	if action == glfw.Repeat { // (generated by buttons that are held longer than ___) 
-	}else
-	if action == glfw.Release {
-	}else 
-	if action == glfw.Press {
-		if button == glfw.MouseButtonLeft {
-			if app.Mode <= app.MODE_MENU_OPTIONS { // in a menu 
-				respondToMenuClicks()
-			}
-			
-			// do 
-		}else
-		if button == glfw.MouseButtonRight {
-		}else 
-		if button == glfw.MouseButtonMiddle {
-		}
-	}
-}
-
-
-func respondToKeyEvents () {
-	var key    i32
-	var action i32
-	key, action = inputs.GetKeyEvent ()
-
-	if action == glfw.Press {
-		oneTimeOnly(key)
-		repeaters(key)
-	}else
-	if action == glfw.Repeat { // (generated by keys that are held longer than ___) 
-		repeaters(key)
-	}else
-	if action == glfw.Release {
-	}
-}
-
-
-func oneTimeOnly (key i32) {
-	if inputs.OpenedMenu(key) {
-		inputs.UseMousePointer(false)
-	}else{
-		inputs.CloseAppOnDeveloperShortcut(key)
-	}
-}
-
-
-func repeaters (key i32) {
-	if app.Mode == app.MODE_PLAYING {
-		if inputs.EventMoveLeft(key) {
-		}else
-		if inputs.EventMoveRight(key) {
-		}else
-		if inputs.EventMoveUp(key) {
-		}else
-		if inputs.EventMoveDown(key) {
-		}else
-		if inputs.EventAbilityLeft(key) {
-		}else
-		if inputs.EventAbilityRight(key) {
-		}
-	}
-}
-
-
-func respondToMenuClicks () {
-	/*
-	var s str
-	var i i32
-	s, i = menu.GetHoveredItem(app.Mode)
-
-	if s == menu.Play {
-		inputs.UseMousePointer(false)
-		//PlayerScore    =  0
-		//PlayerScoreTxt = "0"
-		app.Mode = app.MODE_PLAYING
-	} else
-	if s == menu.Options {
-		app.Mode = app.MODE_MENU_OPTIONS
-	} else
-	if s == menu.Controls {
-		app.Mode = app.MODE_MENU_CONTROLS
-	} else
-	if s == menu.Quit {
-		glfw.SetShouldClose(app.Name, true)
-	} else
-	if s == ShowNextShapeText + "YES" {
-		    ShowNextShape = false
-		menu.Items[app.Mode][i].Text = ShowNextShapeText + "NO"
-	} else
-	if s == ShowNextShapeText + "NO" {
-		    ShowNextShape = true
-		menu.Items[app.Mode][i].Text = ShowNextShapeText + "YES"
-	}
-	*/
-}
-
-
 func updateGameEntities () {
 	// player 
-	entities.All[PLAYER].x = inputs.MousePointer.X
+	entities.All[plr][0].x = inputs.MousePointer.X
 	
 	// 		cache edges 
 	var pL f32 // left  
@@ -234,102 +130,88 @@ func updateGameEntities () {
 	
 	// 		keep entirely within view 
 	if pR > space.ViewEdgeR {
-		entities.All[PLAYER].x = space.ViewEdgeR -
-		entities.All[PLAYER].radius
+		entities.All[plr][0].x = space.ViewEdgeR -
+		entities.All[plr][0].ExtentX
 		pL, pR = getPlayerEdges()
 	}else
 	if pL < space.ViewEdgeL {
-		entities.All[PLAYER].x = space.ViewEdgeL +
-		entities.All[PLAYER].radius
+		entities.All[plr][0].x = space.ViewEdgeL +
+		entities.All[plr][0].ExtentX
 		pL, pR = getPlayerEdges()
 	}
 	
 	
-	// dropper 
-	entities.UpdateAt(DROPPER)
-	handleDropperReversing()
-	dropCoins()
+	dropperUpdate()
 	
 	
-	// common entities (coins) 
-	var n i32 = entities.GetNumOfAll()
-	for i := n - 1; i >= MAX_UNIQUES; i-- { // go backwards for removals 
-		var e Entity = entities.All[i]
+	// falling coin collisions 
+	var et i32 = FALLING_COIN // entity type 
+	var n  i32 = entities.GetCountOf(et)
+	var st i32 = n - 1
+	printf("st: %v       n: %v \n", st, n)
+	for i := st; i >= 0; i-- { // go backwards for removals 
+		var t f32 // rect edges 
+		var r f32
+		var b f32
+		var l f32
+		t, r, b, l = entities.GetRect(et, i)
+		printf("i: %d       b: %f \n", i, b)
+		
 		doFading(i)
 		
 		// collision 
-		if e.y > 1.0 { // (above top of viewport) 
-			killEntity(i)
+		if b > 1.0 { // (above top of viewport) 
+			printf("ABOUT TO Kill   *** EXITED TOP *** i: %d \n", i)
+			entities.Kill(et, i)
 		}else
-		if e.y < explodeLine { // touched floor 
-			killEntity(i)
+		if b < -1.0 { // touched floor/detonators/whatev 
+			printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
+			entities.Kill(et, i)
 		}else
-		if e.y < pTop + e.radius { // (below top of PLAYER bucket/s) 
-			if  caughtCoin(e, i, pL, pR, e.x - e.radius) { // coin left  edge 
-				break // avoid catching twice 
+		if b < pTop { // (below top of plr bucket/s) 
+			if      caughtCoin(i, pL, pR, l) { // coin left  edge 
+				//break // avoid catching twice 
+			}else{
+				var u /* (unused return) */ bool
+				u = caughtCoin(i, pL, pR, r)   // coin right edge 
 			}
-			
-			var b bool
-			b = caughtCoin(e, i, pL, pR, e.x + e.radius)   // coin right edge 
 		}
 	}
 }
 
 
 func getPlayerEdges () (l f32, r f32) {
-	l =  // left 
-		entities.All[PLAYER].x -
-		entities.All[PLAYER].radius
+	l = // left 
+		entities.All[plr][0].x -
+		entities.All[plr][0].ExtentX
 		
 	r = // right 
-		entities.All[PLAYER].x +
-		entities.All[PLAYER].radius
-}
-
-
-func killEntity (i i32) {
-	entities.All = remove(
-	entities.All, i)
-	printf("killed entity: %d \n", i)
+		entities.All[plr][0].x +
+		entities.All[plr][0].ExtentX
 }
 
 
 func doFading (i i32) {
-	if  entities.All[i].Mode == MODE_FADING {
-		entities.All[i].radius = 
-		entities.All[i].radius + time.Delta
+	if  entities.All[FALLING_COIN][i].Mode == MODE_FADING {
+		entities.All[FALLING_COIN][i].ExtentX = 
+		entities.All[FALLING_COIN][i].ExtentX + time.Delta
+		entities.All[FALLING_COIN][i].ExtentY = 
+		entities.All[FALLING_COIN][i].ExtentY + time.Delta
 	}
 }
 
 
 // detect edge touching player 
-func caughtCoin (e Entity, i i32, pL f32, pR f32, edge f32) (out bool) {
+func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
 	if  edge < pR &&
 		edge > pL {
 			
-		entities.All[i].Mode = MODE_FADING
-		entities.All[i].vx = e.x * -0.05
-		entities.All[i].vy = 2.6 // fly up 
+		entities.All[FALLING_COIN][i].Mode = MODE_FADING
+		entities.All[FALLING_COIN][i].vx = edge * -0.5
+		entities.All[FALLING_COIN][i].vy = 2.6 // fly up 
 		//printf("coin < pTop: %f   %d \n", pTop, i)
 		return true
 	}
 	
 	return false
-}
-
-
-func dropCoins () {	
-	if nextDrop <= time.Now {
-		nextDrop = time.Now + dropDelay
-		//str.print("drop\n")
-		
-		ent = entities.Entity{ 
-			radius:  coinRadius, 
-			x:       entities.All[DROPPER].x,
-			y:       0.9, 
-			vx:      0.0,
-			vy:     -1.2 }
-		entities.All = append(
-		entities.All, ent)
-	}
 }

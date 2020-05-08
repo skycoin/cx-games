@@ -1,22 +1,17 @@
 package main
 
-import "inputs"
 
 
-
-func gameInit () {
-	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
-	draw.Init()
-	inputs.Init(false)
-	map.Init()
-	entitiesInit()
-}
-
-
-func gameUpdate () {
-	respondToButtonEvents()
-	respondToKeyEvents()
-	entitiesUpdate()
+func respondToPointerEvents () {
+	var v app.Vec2 = inputs.GetPointerEvent ()
+		
+	// allow dragging a slider handle 
+	if inputs.HoldingLeftButton && 
+		v.X != app.TOO_BIG_F32 &&
+		app.Mode < app.MODE_MENU_MAX {
+			
+		//respondToMenuDrags()
+	}
 }
 
 
@@ -64,6 +59,7 @@ func respondToKeyEvents () {
 
 func oneTimeOnly (key i32) {
 	if inputs.OpenedMenu(key) {
+		inputs.UseMousePointer(true)
 	}else{
 		inputs.CloseAppOnDeveloperShortcut(key)
 	}
@@ -73,20 +69,16 @@ func oneTimeOnly (key i32) {
 func repeaters (key i32) {
 	if app.Mode == app.MODE_PLAYING {
 		if inputs.EventMoveLeft(key) {
-		} else
+		}else
 		if inputs.EventMoveRight(key) {
-		} else
+		}else
 		if inputs.EventMoveUp(key) {
-		} else
+		}else
 		if inputs.EventMoveDown(key) {
-		} else
+		}else
 		if inputs.EventAbilityLeft(key) {
-		} else
+		}else
 		if inputs.EventAbilityRight(key) {
 		}
 	}
-}
-
-
-func respondToMenuClicks () {
 }

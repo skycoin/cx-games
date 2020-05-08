@@ -9,15 +9,27 @@ import "time"
 
 
 
+// "enums"                     FIXME: when CX has enums or constants 
+var ENT_PLAYER   i32
+var ENT_2DFW_MAX i32 = 1
+
+var ball         Entity     // FIXME: get rid of this hardwired carry-over player object 
+var All          [][]Entity // all entities (except ball ATM: FIXME)  
+var ActiveCounts []i32      // corresponds with "All" slices (len - NumActive == num recyclables) 
+
 type Entity struct {
 	x         f32
 	y         f32
+	ExtentX   f32
+	ExtentY   f32
 	vx        f32
 	vy        f32
 	gravity   f32
-	radius    f32
 	
 	Mode      i32
+	WrapView  bool // moving objects wrap/teleport to opposite side of viewport 
+
+	// FIXME: move these into Sky Taxi 
 	GridPos   app.Vec2I
 	// cell bounds/connections 
 	CellMin   app.Vec2 // boundaries of the current cell it's in 
@@ -29,13 +41,22 @@ type Entity struct {
 	ExitWest  bool
 }
 
-var ball Entity
-var All  []Entity // all entities (except ball ATM: FIXME) 
 
 
-
-func Init () {
+func Init (maxEntTypes i32) {
 	str.print("entities.Init ()")
+	
+	// add all slices needed for entity types 
+	var newEnts []Entity
+	for i := 0; i < maxEntTypes; i++ {
+		ents = []Entity{}
+		All = append(
+		All, newEnts)
+		ActiveCounts = append(
+		ActiveCounts, 0)
+	}
+	
+	printf("    Created %v slices (1 for each entity type) \n", maxEntTypes)
 }
 
 
@@ -44,11 +65,11 @@ func Init () {
 // (such as player objects, which might be the current falling 
 // piece/shape in CXtris, or the player paddles/buckets in
 // SkyBOOM). 
-// SkyBOOM's coin dropper is another example. 
+// SkyBOOM's coin dropping cloud is another example. 
 // the rest can be handle generically, moving around based on 
 // their current velocity. 
-func Update (numUniques i32) {
-	//str.print("entities.Update ()")
+func Update () {
+	//printf("entities.Update () \n")
 
 	// velocity 
 	//		player desired 
@@ -59,10 +80,14 @@ func Update (numUniques i32) {
 	ball.x = f32.add(ball.x, ball.vx * time.Delta)
 	ball.y = f32.add(ball.y, ball.vy * time.Delta)
 	//		all the rest 
-	for i := numUniques; i < len(All); i++ {
-		UpdateAt(i)
+	for     t := 0; t < len(All);        t++ {
+		//printf("entities.Update () t:%d \n", t)
+		
+		for i := 0; i < ActiveCounts[t]; i++ {
+			UpdateAt(t, i)
+		}
 	}
-
+	
 	// back out of any penetration (FIXME for "All") 
 	mov.ConstrainPosByMap()
 }
@@ -70,21 +95,123 @@ func Update (numUniques i32) {
 
 func InitPlayer () {
 	ball = Entity{
-		radius:  0.05,
 		x:       0.0,
 		y:       0.0,
+		ExtentX: 0.05,
+		ExtentY: 0.05,
 		vx:      0.0,
 		vy:      0.0,
 		gravity: 0.01}
 }
 
 
-func GetNumOfAll () (num i32) {
-	num = len(All)
+func Spawn (eType i32, newEnt Entity) {
+	//str.print("Spawn ()")
+
+	var aC i32 // active count 
+	aC = ActiveCounts[eType]
+
+	var iC i32 // inclusive count (+ inactives)
+	iC = len(All[eType])
+	
+	if  aC < iC /* (can recycle an inactive) */ { 
+		str.print("------------- Spawn ()     aC & iC differ, RECYCLING 1st inactive")
+		All[eType][aC].x        = newEnt.x
+		All[eType][aC].y        = newEnt.y        
+		All[eType][aC].ExtentX  = newEnt.ExtentX  
+		All[eType][aC].ExtentY  = newEnt.ExtentY  
+		All[eType][aC].vx       = newEnt.vx       
+		All[eType][aC].vy       = newEnt.vy       
+		All[eType][aC].gravity  = newEnt.gravity  
+		All[eType][aC].Mode     = newEnt.Mode     
+		All[eType][aC].WrapView = newEnt.WrapView	
+	}else{
+		str.print("------------- Spawn ()     appending")
+		All[eType] = append(
+		All[eType], newEnt)
+	}
+
+	printf("ActiveCounts[%d]: %d iC: %d BEFORE   \n", eType, ActiveCounts[eType], len(All[eType]))
+	ActiveCounts[eType] = 
+	ActiveCounts[eType] + 1
+	printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], len(All[eType]))
 }
 
 
-func UpdateAt (i i32) {
-	All[i].x = f32.add(All[i].x, All[i].vx * time.Delta)
-	All[i].y = f32.add(All[i].y, All[i].vy * time.Delta)
+func Kill (eType i32, id i32) {
+	var aC i32 // active count 
+	aC = ActiveCounts[eType]
+
+	var iC i32 // inclusive count (+ inactives)
+	iC = len(All[eType])
+	
+	var lS i32 // last slot (of actives) 
+	lS = aC - 1
+	
+	// the normal recycle process needs to operate on 2 slots. 
+	// it copies the values of the 
+	// last ActiveCounts slot to the slot being recycled 
+	// (also prevents having an inactive slot which would have 
+	// 		needed an extra var in order to be marked for skipping) 
+	printf("(========== ABOUT TO copy values from lS: %v ---> id: %v    (aC: %v) \n", lS, id, aC)
+	if  aC > 1  /* (has 2 slots for copying) */ && 
+		id < lS /* (not last active, last needs no copy) */ {
+			
+		printf("RECYCLE  eType: %d   id: %d BEFORE \n", eType, id)
+		All[eType][id].x        = All[eType][lS].x
+		All[eType][id].y        = All[eType][lS].y
+		All[eType][id].vx       = All[eType][lS].vx
+		All[eType][id].vy       = All[eType][lS].vy
+		All[eType][id].gravity  = All[eType][lS].gravity
+		All[eType][id].Mode     = All[eType][lS].Mode
+		All[eType][id].ExtentX  = All[eType][lS].ExtentX
+		All[eType][id].ExtentY  = All[eType][lS].ExtentY
+		All[eType][id].WrapView = All[eType][lS].WrapView
+		printf("RECYCLED eType: %d   id: %d        \n", eType, id)
+		printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
+	}
+
+	printf("ActiveCounts[%d]: %d iC: %d BEFORE \n",   eType, ActiveCounts[eType], len(All[eType]))
+	ActiveCounts[eType] = 
+	ActiveCounts[eType] - 1
+	printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], len(All[eType]))
+}
+
+
+func GetCountOf (entType i32) (c i32) {
+	c = ActiveCounts[entType]
+}
+
+
+func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
+	t = All[entType][id].y + All[entType][id].ExtentY
+	r = All[entType][id].x + All[entType][id].ExtentX
+	b = All[entType][id].y - All[entType][id].ExtentY
+	l = All[entType][id].x - All[entType][id].ExtentX
+}
+
+
+func UpdateAt (et i32, i i32) { // entity type, id 
+	if et != 4 {
+		printf("entities.UpdateAt (et: %d    i: %d) \n", et, i)
+	}
+	
+	All[et][i].x = f32.add(All[et][i].x, All[et][i].vx * time.Delta)
+	All[et][i].y = f32.add(All[et][i].y, All[et][i].vy * time.Delta)
+	
+	if All[et][i].WrapView {
+		if  All[et][i].x > space.ViewEdgeR + All[et][i].ExtentX {
+			All[et][i].x = space.ViewEdgeL - All[et][i].ExtentX
+		}else
+		if  All[et][i].x < space.ViewEdgeL - All[et][i].ExtentX {
+			All[et][i].x = space.ViewEdgeR + All[et][i].ExtentX
+		}
+		
+		if  All[et][i].y >  1.0 + All[et][i].ExtentY {
+			All[et][i].y = -1.0 - All[et][i].ExtentY
+		}else
+		if  All[et][i].y < -1.0 - All[et][i].ExtentY {
+			All[et][i].y =  1.0 + All[et][i].ExtentY
+		}
+	}
 }

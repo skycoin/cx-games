@@ -160,7 +160,7 @@ func DrawQuads () {
 	var x f32
 	var y f32
 
-	draw.QuadsBegin()
+	draw.BeginUntexturedQuads()
 		var n i32 = len(Carvs)
 		//printf("len(Carvs): %d \n", n)
 		for i := 0; i < n; i++ {
@@ -173,7 +173,7 @@ func DrawQuads () {
 			var t f32 = b + CellSpan
 			
 			draw.SetSequentiallyCycledColor(i32.add(x, i32.mul(y, NumCellsAcross)))
-			draw.Quad(t, r, b, l)
+			draw.UntexturedQuad(t, r, b, l)
 			
 			// connection rects 
 			draw.SetColorByRGB(0.0, 0.0, 0.0) // black 
@@ -183,16 +183,16 @@ func DrawQuads () {
 				var ex i32 = Carvs[i].Exits[j]
 
 				if ex == geom.DIR_LEFT {
-					draw.Quad(t-WTh, r-WTh, b+WTh, l)
+					draw.UntexturedQuad(t-WTh, r-WTh, b+WTh, l)
 				}else	
 				if ex == geom.DIR_RIGHT {
-					draw.Quad(t-WTh, r,     b+WTh, l+WTh)
+					draw.UntexturedQuad(t-WTh, r,     b+WTh, l+WTh)
 				}else	
 				if ex == geom.DIR_DOWN {
-					draw.Quad(t-WTh, r-WTh, b,     l+WTh)
+					draw.UntexturedQuad(t-WTh, r-WTh, b,     l+WTh)
 				}else	
 				if ex == geom.DIR_UP {
-					draw.Quad(t,     r-WTh, b+WTh, l+WTh)
+					draw.UntexturedQuad(t,     r-WTh, b+WTh, l+WTh)
 				}
 			}
 		}

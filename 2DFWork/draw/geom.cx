@@ -21,8 +21,8 @@ func Ball (e entities.Entity, colorId i32, alpha f32, drawAt0 bool) {
 	gl.Begin(gl.POLYGON)
 		var i f32
 		for i = 0.0; f32.lt(i, 20.0); i = f32.add(i, 1.0) {
-			x = f32.add(eX, f32.mul(e.radius, f32.cos(f32.div(f32.mul(i, geom.TAU), 20.0))))
-			y = f32.add(eY, f32.mul(e.radius, f32.sin(f32.div(f32.mul(i, geom.TAU), 20.0))))
+			x = f32.add(eX, f32.mul(e.ExtentX, f32.cos(f32.div(f32.mul(i, geom.TAU), 20.0))))
+			y = f32.add(eY, f32.mul(e.ExtentY, f32.sin(f32.div(f32.mul(i, geom.TAU), 20.0))))
 
 			gl.Vertex2f(x, y)
 			//printf("\n %f,%f: ", x, y)
@@ -31,11 +31,11 @@ func Ball (e entities.Entity, colorId i32, alpha f32, drawAt0 bool) {
 }
 
 
-func AddRect (pos app.Vec2, extents app.Vec2) () {
-	var lX /* left   */ f32 = f32.sub(pos.X, extents.X)
-	var rX /* right  */ f32 = f32.add(pos.X, extents.X)
-	var bY /* bottom */ f32 = f32.sub(pos.Y, extents.Y)
-	var tY /* top    */ f32 = f32.add(pos.Y, extents.Y)
+func AddRect (pos app.Vec2, extentX f32, extentY f32) () {
+	var lX /* left   */ f32 = f32.sub(pos.X, extentX)
+	var rX /* right  */ f32 = f32.add(pos.X, extentX)
+	var bY /* bottom */ f32 = f32.sub(pos.Y, extentY)
+	var tY /* top    */ f32 = f32.add(pos.Y, extentY)
 
 	gl.Vertex3f(lX, bY, 0.0)
 	gl.Vertex3f(lX, tY, 0.0)

@@ -33,3 +33,25 @@ func menuInit () {
 
 	menu.BakeItemText()
 }
+
+
+func respondToMenuClicks () {
+	var s str
+	var i i32
+	s, i = menu.GetHoveredItem(app.Mode)
+	printf("GetHoveredItem() mode: %d s: %s i: %d\n", app.Mode, s, i)
+
+	if s == menu.Play {
+		inputs.UseMousePointer(false)
+		app.Mode = app.MODE_PLAYING
+	} else
+	if s == menu.Options {
+		app.Mode = app.MODE_MENU_OPTIONS
+	} else
+	if s == menu.Controls {
+		app.Mode = app.MODE_MENU_CONTROLS
+	} else
+	if s == menu.Quit {
+		glfw.SetShouldClose(app.Name, true)
+	}
+}

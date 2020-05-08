@@ -1,0 +1,102 @@
+package main
+
+
+
+var /* new......*/ ent entities.Entity
+var coinExtent     f32 = 0.07 // (while dropping) 
+// "enums" 
+var DROPPER        i32 = entities.ENT_2DFW_MAX     // coin DROPPER 
+var FALLING_COIN   i32 = entities.ENT_2DFW_MAX + 1
+var BACKDROP_COIN  i32 = entities.ENT_2DFW_MAX + 2 // for menu backdrop 
+var BACKDROP_CLOUD i32 = entities.ENT_2DFW_MAX + 3 // gameplay backdrop 
+var ENT_GAME_MAX   i32 = entities.ENT_2DFW_MAX + 4
+// modes 
+var MODE_DROPPING  i32
+var MODE_FADING    i32 = 1
+
+
+
+func entitiesInit () {
+	entities.Init(ENT_GAME_MAX)
+	
+	// ENT_PLAYER 
+	var f f32 = 0.2
+	ent = entities.Entity{
+		y:       f - 1.0, 
+		ExtentX: f,
+		ExtentY: f}
+	entities.Spawn(entities.ENT_PLAYER, ent)
+
+	dropperInit()		   
+	spawnCloudsBackdrop()
+	spawnMenuBackdropCoins()
+}
+
+
+func spawnMenuBackdropCoins () {
+	/*
+	for     y < 1.0 {
+		for x < space.ViewEdgeR {
+			var ex app.Vec2   // extents 
+			ex =   app.Vec2{ 
+				X: randExt, 
+				Y: randExt}	
+			var startX f32 = space.ViewEdgeL - randExt
+			var x f32 = startX
+			var y f32 = -0.8
+			var incX f32 = f32.mul(randExt, 2.0) * 1.33 // 1/3 ratio gap tween them 
+			var incY f32 = f32.mul(randExt, 2.0) * 0.83
+			
+			ent = entities.Entity{
+				Type: BACKDROP_COIN,
+				x: x, 
+				y: y, 
+				vx: y, 
+				//vy: -0.1, 
+				Extents: ex, 
+				WrapView: true }
+			entities.Spawn(BACKDROP_COIN, ent)
+			
+			x = x + incX
+		}	
+
+		x = startX
+		y = y + incY
+	}	
+	*/
+}
+
+
+func spawnCloudsBackdrop () {
+	// extents 
+	var exX f32 = 0.07 * cloudAspectRatio
+	var exY f32 = 0.07
+	
+	var startX f32 = space.ViewEdgeL - exX
+	var x f32 = startX
+	var y f32 = 0.15
+	var incX f32 = f32.mul(exX, 2.0) * 1.0 // 1.33 // 1/3 ratio gap tween them 
+	var incY f32 = f32.mul(exY, 2.0) * 0.83
+	
+	for     y < entities.All[DROPPER][0].y -
+		        entities.All[DROPPER][0].ExtentY {
+		        	
+		for x < space.ViewEdgeR {
+			ent = entities.Entity{
+				x:        x, 
+				y:        y, 
+				ExtentX:  y * exX, 
+				ExtentY:  y * exY, 
+				vx:       y, 
+				//vy:     -0.1, 
+				WrapView: true}
+				
+			entities.Spawn(BACKDROP_CLOUD, ent)
+			
+			x = x + incX
+		}	
+
+		x = startX
+		y = y + incY
+	}
+}

@@ -6,7 +6,12 @@ import "time"
 
 
 
-var ent entities.Entity
+// pic ids 
+var CLOUD  i32
+var COIN   i32
+var WALLET i32
+
+var ent entities.Entity // current 
 
 
 
@@ -14,9 +19,11 @@ func drawInit () {
 	str.print("drawInit ()")
 
 	gl.ClearColor(0.5, 0.7, 1.0, 0.0) // light blue 
-	draw.AddPic("coin0001.png")
-	draw.AddPic("coin0002.png")
-	draw.AddPic("coin-gold_and_blue.png")
+	//"coin0001.png")
+	//"coin0002.png")
+	COIN   = draw.AddPic("coin0001.png")
+	CLOUD  = draw.AddPic("Skycoin-Cloud-White.png")
+	WALLET = draw.AddPic("SkyWallet.png")
 	draw.InitPics()
 }
 
@@ -29,46 +36,32 @@ func drawAll () {
 	angle = angle + inc
 
 	pre()
-	gl.Disable(gl.TEXTURE_2D)
+	//gl.Disable(gl.TEXTURE_2D)
 	gl.LoadIdentity()
+	gl.Enable(gl.TEXTURE_2D)
 	
-	var n i32 = entities.GetNumOfAll()
-	for i := MAX_UNIQUES; i < n; i++ {
-		var e Entity = entities.All[i]
-		var ac f32 = 1.0 // alpha channel 
-		
-		if e.Mode == MODE_FADING {
-			ac = 1.0 - e.radius * 2.0
-			draw.Ball( e, draw.COLOR_ORANGE, ac, false)
-		}else{
-			draw.Ball( e, draw.COLOR_YELLOW, ac, false)
-		}
-	}
+	drawTexturedBatches()
 
 	// player & dropper 
-	draw.QuadsBegin()
-		draw.SetColor3(draw.Brown)
-		ent = entities.All[PLAYER]
-		draw.Quad(
-			ent.y + ent.radius, 
-			ent.x + ent.radius, 
-			ent.y - ent.radius, 
-			ent.x - ent.radius)
+	var t f32
+	var r f32
+	var b f32
+	var l f32
+	draw.SetColor3(draw.White)
 
-		draw.SetColor(draw.COLOR_BLUE)
-		ent = entities.All[DROPPER]
-		draw.Quad(
-			ent.y + ent.radius, 
-			ent.x + ent.radius, 
-			ent.y - ent.radius, 
-			ent.x - ent.radius)
+	draw.BeginTexturedQuads(WALLET)
+		t, r, b, l = entities.GetRect(entities.ENT_PLAYER, 0)
+		draw.TexturedQuad(t, r, b, l)
+	draw.End()
+
+	draw.BeginTexturedQuads(CLOUD)
+		t, r, b, l = entities.GetRect(DROPPER, 0)
+		draw.TexturedQuad(t, r, b, l)
 	draw.End()
 
 	// menu 
-	gl.Enable(gl.TEXTURE_2D)
 	gl.Color4f(1.0, 1.0, 1.0, 1.0)
-	var pic i32 = draw.GetPicId("coin0001.png")
-	draw.ScaledRotatedPic(pic, 0.0, 0.0, 1.0, 1.0, angle)
+	//draw.ScaledRotatedPic(COIN, 0.0, 0.0, 0.5, 0.5, angle)
 	gl.LoadIdentity()
 
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 
@@ -99,4 +92,43 @@ func pre () {
 	gl.MatrixMode(gl.MODELVIEW)
 
 	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
+}
+
+
+func drawTexturedBatches () {
+	var t  f32 // rect edges 
+	var r  f32
+	var b  f32
+	var l  f32
+	var et i32 // entity type 
+
+	draw.BeginTexturedQuads(CLOUD)
+		et = BACKDROP_CLOUD
+		var n i32 = entities.GetCountOf(et)
+
+		for i := 0; i < n; i++ {
+			var ac f32 = 1.0 // alpha channel 
+			
+			draw.SetColor4(draw.White, ac)
+			t, r, b, l = entities.GetRect(et, i)
+			draw.TexturedQuad(t, r, b, l)
+		}
+	draw.End()
+	
+	draw.BeginTexturedQuads(COIN)
+		et = FALLING_COIN
+		n = entities.GetCountOf(et)
+
+		for i := 0; i < n; i++ {
+			var ac f32 = 1.0 // alpha channel 
+			
+			if entities.All[et][i].Mode == MODE_FADING {
+				ac = 1.0 - entities.All[et][i].ExtentY * 1.0
+			}
+		
+			draw.SetColor4(draw.White, ac)
+			t, r, b, l = entities.GetRect(et, i)
+			draw.TexturedQuad(t, r, b, l)
+		}
+	draw.End()
 }
