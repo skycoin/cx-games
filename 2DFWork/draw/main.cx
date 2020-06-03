@@ -35,7 +35,7 @@ func Init () {
 
 
 func OnFramebufferSize (window str, wid i32, hei i32) {
-	printf("OnFramebufferSize() w,h: %d,%d \n", wid, hei)
+	printf("    OnFramebufferSize() w,h: %d,%d \n", wid, hei)
 	
 	space.SetSize(wid, hei)
 	menu.BakeItemText()

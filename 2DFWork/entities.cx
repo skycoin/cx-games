@@ -10,12 +10,12 @@ import "time"
 
 
 // "enums"                     FIXME: when CX has enums or constants 
-var ENT_PLAYER   i32
-var ENT_2DFW_MAX i32 = 1
+var ENT_PLAYER      i32
+var ENT_MAX_OF_2DFW i32 = 1
 
-var ball         Entity     // FIXME: get rid of this hardwired carry-over player object 
-var All          [][]Entity // all entities (except ball ATM: FIXME)  
-var ActiveCounts []i32      // corresponds with "All" slices (len - NumActive == num recyclables) 
+var All          [][]Entity // all entities (1st index is for ENT_* type) 
+var ActiveCounts []i32      // corresponds with "All" slices 
+                            //     (len(All[et]) - NumActive[et] == num dead) 
 
 type Entity struct {
 	x         f32
@@ -49,14 +49,30 @@ func Init (maxEntTypes i32) {
 	// add all slices needed for entity types 
 	var newEnts []Entity
 	for i := 0; i < maxEntTypes; i++ {
-		ents = []Entity{}
+		newEnts = []Entity{}
+		
 		All = append(
 		All, newEnts)
+		
 		ActiveCounts = append(
 		ActiveCounts, 0)
 	}
 	
 	printf("    Created %v slices (1 for each entity type) \n", maxEntTypes)
+
+
+	// ENT_PLAYER 
+	var ne Entity
+	  ne = Entity{
+		x:       0.0,
+		y:       0.0,
+		ExtentX: 0.05,
+		ExtentY: 0.05,
+		vx:      0.10,
+		vy:      0.10,
+		gravity: 0.01}
+		
+	Spawn(ENT_PLAYER, ne)
 }
 
 
@@ -66,42 +82,65 @@ func Init (maxEntTypes i32) {
 // piece/shape in CXtris, or the player paddles/buckets in
 // SkyBOOM). 
 // SkyBOOM's coin dropping cloud is another example. 
-// the rest can be handle generically, moving around based on 
+// the rest can be handled generically, moving around based on 
 // their current velocity. 
 func Update () {
 	//printf("entities.Update () \n")
 
-	// velocity 
-	//		player desired 
-	mov.SetPlayerVelocityFromInput()
-	
 	// motion/position 
-	//		hardwired player (FIXME) 
-	ball.x = f32.add(ball.x, ball.vx * time.Delta)
-	ball.y = f32.add(ball.y, ball.vy * time.Delta)
-	//		all the rest 
+	// cycle thru types (t) 
 	for     t := 0; t < len(All);        t++ {
 		//printf("entities.Update () t:%d \n", t)
 		
 		for i := 0; i < ActiveCounts[t]; i++ {
+			if t == ENT_PLAYER {
+				All[t][i].vx,
+				All[t][i].vy = mov.GetPlayerVelocityFromInput(
+				All[t][i].vx,
+				All[t][i].vy)
+			}
+			
 			UpdateAt(t, i)
+
+			if t == ENT_PLAYER {
+				// back out of any penetration 
+				/*
+				All[t][i].x,
+				All[t][i].y,
+				All[t][i].vx,
+				All[t][i].vy = mov.ConstrainPosByMap(All[t][i])
+				*/
+			}
 		}
 	}
-	
-	// back out of any penetration (FIXME for "All") 
-	mov.ConstrainPosByMap()
 }
 
 
-func InitPlayer () {
-	ball = Entity{
-		x:       0.0,
-		y:       0.0,
-		ExtentX: 0.05,
-		ExtentY: 0.05,
-		vx:      0.0,
-		vy:      0.0,
-		gravity: 0.01}
+func UpdateAt (et i32, i i32) { // entity type, id 
+	/*
+	if et != 4 {
+		printf("entities.UpdateAt (et: %d    i: %d) \n", et, i)
+	}
+	*/
+	
+	All[et][i].x = f32.add(All[et][i].x, All[et][i].vx * time.Delta)
+	All[et][i].y = f32.add(All[et][i].y, All[et][i].vy * time.Delta)
+	
+	if All[et][i].WrapView {
+		if  All[et][i].x > space.ViewEdgeR + All[et][i].ExtentX {
+			All[et][i].x = space.ViewEdgeL - All[et][i].ExtentX
+		}else
+		if  All[et][i].x < space.ViewEdgeL - All[et][i].ExtentX {
+			All[et][i].x = space.ViewEdgeR + All[et][i].ExtentX
+		}
+		
+		if  All[et][i].y >  1.0 + All[et][i].ExtentY {
+			All[et][i].y = -1.0 - All[et][i].ExtentY
+		}else
+		if  All[et][i].y < -1.0 - All[et][i].ExtentY {
+			All[et][i].y =  1.0 + All[et][i].ExtentY
+		}
+	}
 }
 
 
@@ -111,11 +150,11 @@ func Spawn (eType i32, newEnt Entity) {
 	var aC i32 // active count 
 	aC = ActiveCounts[eType]
 
-	var iC i32 // inclusive count (+ inactives)
+	var iC i32 // inclusive count (includes inactives) 
 	iC = len(All[eType])
 	
 	if  aC < iC /* (can recycle an inactive) */ { 
-		str.print("------------- Spawn ()     aC & iC differ, RECYCLING 1st inactive")
+		printf("------------- Spawn (eType: %v)     RECYCLing 1st inactive \n", eType)
 		All[eType][aC].x        = newEnt.x
 		All[eType][aC].y        = newEnt.y        
 		All[eType][aC].ExtentX  = newEnt.ExtentX  
@@ -126,15 +165,14 @@ func Spawn (eType i32, newEnt Entity) {
 		All[eType][aC].Mode     = newEnt.Mode     
 		All[eType][aC].WrapView = newEnt.WrapView	
 	}else{
-		str.print("------------- Spawn ()     appending")
+		printf("------------- Spawn (eType: %v)     APPENDing \n", eType)
 		All[eType] = append(
 		All[eType], newEnt)
 	}
 
-	printf("ActiveCounts[%d]: %d iC: %d BEFORE   \n", eType, ActiveCounts[eType], len(All[eType]))
 	ActiveCounts[eType] = 
 	ActiveCounts[eType] + 1
-	printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], len(All[eType]))
+	printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], iC)
 }
 
 
@@ -171,7 +209,6 @@ func Kill (eType i32, id i32) {
 		printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
 	}
 
-	printf("ActiveCounts[%d]: %d iC: %d BEFORE \n",   eType, ActiveCounts[eType], len(All[eType]))
 	ActiveCounts[eType] = 
 	ActiveCounts[eType] - 1
 	printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], len(All[eType]))
@@ -188,30 +225,4 @@ func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
 	r = All[entType][id].x + All[entType][id].ExtentX
 	b = All[entType][id].y - All[entType][id].ExtentY
 	l = All[entType][id].x - All[entType][id].ExtentX
-}
-
-
-func UpdateAt (et i32, i i32) { // entity type, id 
-	if et != 4 {
-		printf("entities.UpdateAt (et: %d    i: %d) \n", et, i)
-	}
-	
-	All[et][i].x = f32.add(All[et][i].x, All[et][i].vx * time.Delta)
-	All[et][i].y = f32.add(All[et][i].y, All[et][i].vy * time.Delta)
-	
-	if All[et][i].WrapView {
-		if  All[et][i].x > space.ViewEdgeR + All[et][i].ExtentX {
-			All[et][i].x = space.ViewEdgeL - All[et][i].ExtentX
-		}else
-		if  All[et][i].x < space.ViewEdgeL - All[et][i].ExtentX {
-			All[et][i].x = space.ViewEdgeR + All[et][i].ExtentX
-		}
-		
-		if  All[et][i].y >  1.0 + All[et][i].ExtentY {
-			All[et][i].y = -1.0 - All[et][i].ExtentY
-		}else
-		if  All[et][i].y < -1.0 - All[et][i].ExtentY {
-			All[et][i].y =  1.0 + All[et][i].ExtentY
-		}
-	}
 }
