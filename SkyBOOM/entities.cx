@@ -2,22 +2,22 @@ package main
 
 
 
-var /* new......*/ ent entities.Entity
-var coinExtent     f32 = 0.07 // (while dropping) 
+var /* new......*/  ent entities.Entity
+var coinExtent      f32 = 0.07 // (while dropping) 
 // "enums" 
-var DROPPER        i32 = entities.ENT_2DFW_MAX     // coin DROPPER 
-var FALLING_COIN   i32 = entities.ENT_2DFW_MAX + 1
-var BACKDROP_COIN  i32 = entities.ENT_2DFW_MAX + 2 // for menu backdrop 
-var BACKDROP_CLOUD i32 = entities.ENT_2DFW_MAX + 3 // gameplay backdrop 
-var ENT_GAME_MAX   i32 = entities.ENT_2DFW_MAX + 4
+var DROPPER         i32 = entities.ENT_MAX_OF_2DFW     // coin DROPPER 
+var FALLING_COIN    i32 = entities.ENT_MAX_OF_2DFW + 1
+var BACKDROP_COIN   i32 = entities.ENT_MAX_OF_2DFW + 2 // for menu backdrop 
+var BACKDROP_CLOUD  i32 = entities.ENT_MAX_OF_2DFW + 3 // gameplay backdrop 
+var ENT_MAX_OF_GAME i32 = entities.ENT_MAX_OF_2DFW + 4
 // modes 
-var MODE_DROPPING  i32
-var MODE_FADING    i32 = 1
+var MODE_DROPPING   i32
+var MODE_FADING     i32 = 1
 
 
 
 func entitiesInit () {
-	entities.Init(ENT_GAME_MAX)
+	entities.Init(ENT_MAX_OF_GAME)
 	
 	// ENT_PLAYER 
 	var f f32 = 0.2

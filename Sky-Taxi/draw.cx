@@ -10,7 +10,14 @@ func drawAll () {
 	pre()
 	gl.Disable(gl.TEXTURE_2D)
 	map.DrawQuads()
-	draw.Ball(entities.ball, draw.COLOR_CYAN, 1.0, true)
+	draw.OneCircle(
+		entities.All[entities.ENT_PLAYER][0].x, 
+		entities.All[entities.ENT_PLAYER][0].y, 
+		entities.All[entities.ENT_PLAYER][0].ExtentX, 
+		entities.All[entities.ENT_PLAYER][0].ExtentY, 
+		draw.COLOR_CYAN, 
+		1.0, 
+		true)
 }
 
 

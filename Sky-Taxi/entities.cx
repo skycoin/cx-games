@@ -3,14 +3,14 @@ package main
 
 
 // "enums"               FIXME: when CX has enums or constants 
-var ENT_CUSTOMER    i32 = entities.ENT_2DFW_MAX
-var ENT_DESTINATION i32 = entities.ENT_2DFW_MAX + 1
-var ENT_GAME_MAX    i32 = entities.ENT_2DFW_MAX + 2
+var ENT_CUSTOMER    i32 = entities.ENT_MAX_OF_2DFW
+var ENT_DESTINATION i32 = entities.ENT_MAX_OF_2DFW + 1
+var ENT_MAX_OF_GAME i32 = entities.ENT_MAX_OF_2DFW + 2
 
 
 
 func entitiesInit () {
-	entities.Init(ENT_GAME_MAX)
+	entities.Init(ENT_MAX_OF_GAME)
 }
 
 

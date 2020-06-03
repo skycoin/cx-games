@@ -5,15 +5,15 @@ import "entities"
 
 
 
-func Ball (e entities.Entity, colorId i32, alpha f32, drawAt0 bool) {
+func OneCircle (inX f32, inY f32, extX f32, extY f32, colorId i32, alpha f32, drawAt0 bool) {
 	var x  f32
 	var y  f32
 	var eX f32
 	var eY f32
 
 	if !drawAt0 {
-		eX = e.x
-		eY = e.y
+		eX = inX
+		eY = inY
 	}
 	
 	SetColorAndAlpha(colorId, alpha)
@@ -21,8 +21,8 @@ func Ball (e entities.Entity, colorId i32, alpha f32, drawAt0 bool) {
 	gl.Begin(gl.POLYGON)
 		var i f32
 		for i = 0.0; f32.lt(i, 20.0); i = f32.add(i, 1.0) {
-			x = f32.add(eX, f32.mul(e.ExtentX, f32.cos(f32.div(f32.mul(i, geom.TAU), 20.0))))
-			y = f32.add(eY, f32.mul(e.ExtentY, f32.sin(f32.div(f32.mul(i, geom.TAU), 20.0))))
+			x = f32.add(eX, f32.mul(extX, f32.cos(f32.div(f32.mul(i, geom.TAU), 20.0))))
+			y = f32.add(eY, f32.mul(extY, f32.sin(f32.div(f32.mul(i, geom.TAU), 20.0))))
 
 			gl.Vertex2f(x, y)
 			//printf("\n %f,%f: ", x, y)
