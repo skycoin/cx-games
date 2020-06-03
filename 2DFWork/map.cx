@@ -237,7 +237,7 @@ func setupPossibleExits () {
 
 func getRandomCarvedRoom () (x i32, y i32, c Cell, carvedRoomId i32) {
 	carvedRoomId = i32.rand(0, len(Carvs))
-	printf("getRandomCarvedRoom: %d \n", carvedRoomId)
+	//printf("getRandomCarvedRoom: %d \n", carvedRoomId)
 	x = Carvs[carvedRoomId].Pos.X
 	y = Carvs[carvedRoomId].Pos.Y
 	c = Cells[y][x]
@@ -398,35 +398,48 @@ func carveOutRoom (x i32, y i32, CarvsId i32) (out CarvedRoom) {
 
 // old x,y, new x,y 
 func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) {
+	var show bool
 	var nr CarvedRoom // new/target/destination room (to connect to) 
 	var newId i32 = Cells[nY][nX].CarvsId
 
 	if newId == app.MAX_I32 {
-		str.print("CARVE ROOM")
+		if show {
+			str.print("CARVE ROOM")
+		}
 		
 		nr = carveOutRoom(nX, nY, len(Carvs))
-		printf("cell @ %d,%d .CarvsId: %d \n", nX, nY, Cells[nY][nX].CarvsId)
-		
+		if show {
+			printf("cell @ %d,%d .CarvsId: %d \n", nX, nY, Cells[nY][nX].CarvsId)
+		}
+			
 		nr.Exits = append(
 		nr.Exits, geom.GetInvertedDir(dir))
 		
 		Carvs = append(
 		Carvs, nr)
 	}else{
-		str.print("DRILL WALL")
-		
+		if show {
+			str.print("DRILL WALL")
+		}	
+			
 		Carvs[newId].Exits = append(
 		Carvs[newId].Exits, geom.GetInvertedDir(dir))
 	}
 	
-	printf("OLD room %d (%d,%d)   %s \n", Cells[oY][oX].CarvsId, oX, oY, geom.GetTextForDir(dir))
+	if show {
+		printf("OLD room %d (%d,%d)   %s \n", Cells[oY][oX].CarvsId, oX, oY, geom.GetTextForDir(dir))
+	}
 	removeExitFromGrid(oX, oY, dir)
 	
-	printf("NEW room %d (%d,%d)   %s \n", newId, nX, nY, geom.GetTextForDir(geom.GetInvertedDir(dir)))
+	if show {
+		printf("NEW room %d (%d,%d)   %s \n", newId, nX, nY, geom.GetTextForDir(geom.GetInvertedDir(dir)))
+	}
 	removeExitFromGrid(nX, nY, geom.GetInvertedDir(dir))
-
-	printf("--------------------- nr.Exits: %d \n", len(nr.Exits))
-	printf("len(Carvs): %d \n", len(Carvs))
+	
+	if show {
+		printf("--------------------- nr.Exits: %d \n", len(nr.Exits))
+		printf("len(Carvs): %d \n", len(Carvs))
+	}
 
 	//if newId != app.MAX_I32 {
 	//	Carvs[newId] = nr

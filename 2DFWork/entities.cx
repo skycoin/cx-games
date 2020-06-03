@@ -104,12 +104,10 @@ func Update () {
 
 			if t == ENT_PLAYER {
 				// back out of any penetration 
-				/*
 				All[t][i].x,
 				All[t][i].y,
 				All[t][i].vx,
-				All[t][i].vy = mov.ConstrainPosByMap(All[t][i])
-				*/
+				All[t][i].vy = mov.ConstrainPosByMap(t, i)
 			}
 		}
 	}
