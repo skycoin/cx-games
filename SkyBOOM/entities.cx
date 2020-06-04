@@ -30,6 +30,8 @@ func entitiesInit () {
 
 
 func entitiesUpdate () {
+	entities.Update()
+
 	// player 
 	entities.All[plr][0].x = inputs.MousePointer.X
 	

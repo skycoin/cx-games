@@ -112,7 +112,6 @@ func gameInit () {
 
 func gameUpdate () {
 	time.Update()
-	entities.Update()
 	entitiesUpdate()
 	respondToPointerEvents()
 	respondToButtonEvents()
