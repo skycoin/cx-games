@@ -50,8 +50,17 @@ func drawAll () {
 	draw.SetColor3(draw.White)
 
 	draw.BeginTexturedQuads(WALLET)
-		t, r, b, l = entities.GetRect(entities.ENT_PLAYER, 0)
-		draw.TexturedQuad(t, r, b, l)
+		var num i32 = entities.GetLenOf(entities.ENT_PLAYER)
+		printf("GetLenOf() num: %v \n", num)
+		for i := 0; i < num; i++ {
+			t, r, b, l = entities.GetRect(entities.ENT_PLAYER, i)
+			draw.TexturedQuad(t, r, b, l)
+			
+			
+			
+			
+			printf("t,r: %v,%v \n", t, r)
+		}
 	draw.End()
 
 	draw.BeginTexturedQuads(CLOUD)
@@ -104,7 +113,7 @@ func drawTexturedBatches () {
 
 	draw.BeginTexturedQuads(CLOUD)
 		et = BACKDROP_CLOUD
-		var n i32 = entities.GetCountOf(et)
+		var n i32 = entities.GetLenOf(et)
 
 		for i := 0; i < n; i++ {
 			var ac f32 = 1.0 // alpha channel 
@@ -117,7 +126,7 @@ func drawTexturedBatches () {
 	
 	draw.BeginTexturedQuads(COIN)
 		et = FALLING_COIN
-		n = entities.GetCountOf(et)
+		n = entities.GetLenOf(et)
 
 		for i := 0; i < n; i++ {
 			var ac f32 = 1.0 // alpha channel 

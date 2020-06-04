@@ -2,14 +2,16 @@ package main
 
 
 
-var coinExtent      f32 = 0.07 // (while dropping) 
+var coinExtent        f32 = 0.07 // (while dropping) 
+var walletAspectRatio f32 = 828.0 / 364.0 // multiply this with desired height 
+
 // "enums" 
 var DROPPER         i32 = entities.ENT_MAX_OF_2DFW     // coin DROPPER 
 var FALLING_COIN    i32 = entities.ENT_MAX_OF_2DFW + 1
 var BACKDROP_COIN   i32 = entities.ENT_MAX_OF_2DFW + 2 // for menu backdrop 
 var BACKDROP_CLOUD  i32 = entities.ENT_MAX_OF_2DFW + 3 // gameplay backdrop 
 var ENT_MAX_OF_GAME i32 = entities.ENT_MAX_OF_2DFW + 4
-// modes 
+// 		modes 
 var MODE_DROPPING   i32
 var MODE_FADING     i32 = 1
 
@@ -18,11 +20,36 @@ var MODE_FADING     i32 = 1
 func entitiesInit () {
 	entities.Init(ENT_MAX_OF_GAME)
 	entities.AutoUpdatePlayers = false
-	var f f32 = 0.2
+	
+	// wallets/paddles/buckets 
+	var f f32 = 0.1
+	//		 1st player entity is autocreated 
 	entities.All[entities.ENT_PLAYER][0].y       = f - 1.0
-	entities.All[entities.ENT_PLAYER][0].ExtentX = f
+	entities.All[entities.ENT_PLAYER][0].ExtentX = f * walletAspectRatio
 	entities.All[entities.ENT_PLAYER][0].ExtentY = f
 	
+	entities.Spawn(entities.ENT_PLAYER, entities.All[entities.ENT_PLAYER][0])
+	entities.All[entities.ENT_PLAYER][1].y       = f32.sub(f, 0.7)
+	entities.All[entities.ENT_PLAYER][0].y       = f32.sub(f, 0.4)
+	//entities.ClonePlayerAt0()
+	var ne entities.Entity
+	
+	/*
+	ne = entities.Entity{
+		y:       f - 1.0, 
+		ExtentX: f,
+		ExtentY: f}
+	entities.Spawn(entities.ENT_PLAYER, ent)
+	*/
+	
+	/*
+	ne = entities.Entity{
+		y:       f - 1.0, 
+		ExtentX: f,
+		ExtentY: f}
+	entities.Spawn(entities.ENT_PLAYER, ent)
+	*/
+		
 	dropperInit()		   
 	spawnCloudsBackdrop()
 	spawnMenuBackdropCoins()
@@ -32,24 +59,29 @@ func entitiesInit () {
 func entitiesUpdate () {
 	entities.Update()
 
-	// player 
-	entities.All[plr][0].x = inputs.MousePointer.X
-	
+	// player entities 
 	// 		cache edges 
 	var pL f32 // left  
 	var pR f32 // right 
-	pL, pR = getPlayerEdges()
 	
-	// 		keep entirely within view 
-	if pR > space.ViewEdgeR {
-		entities.All[plr][0].x = space.ViewEdgeR -
-		entities.All[plr][0].ExtentX
+	var n i32 = entities.GetLenOf(plr)
+	
+	for i := 0; i < n; i++ {
+		entities.All[plr][i].x = inputs.MousePointer.X
+	
 		pL, pR = getPlayerEdges()
-	}else
-	if pL < space.ViewEdgeL {
-		entities.All[plr][0].x = space.ViewEdgeL +
-		entities.All[plr][0].ExtentX
-		pL, pR = getPlayerEdges()
+		
+		// 		keep entirely within view 
+		if pR > space.ViewEdgeR {
+			entities.All[plr][i].x = space.ViewEdgeR -
+			entities.All[plr][i].ExtentX
+			pL, pR = getPlayerEdges()
+		}else
+		if pL < space.ViewEdgeL {
+			entities.All[plr][i].x = space.ViewEdgeL +
+			entities.All[plr][i].ExtentX
+			pL, pR = getPlayerEdges()
+		}
 	}
 	
 	
@@ -58,16 +90,16 @@ func entitiesUpdate () {
 	
 	// falling coin collisions 
 	var et i32 = FALLING_COIN // entity type 
-	var n  i32 = entities.GetCountOf(et)
+	    n      = entities.GetLenOf(et)
 	var st i32 = n - 1
-	printf("st: %v       n: %v \n", st, n)
+	//printf("st: %v       n: %v \n", st, n)
 	for i := st; i >= 0; i-- { // go backwards for removals 
 		var t f32 // rect edges 
 		var r f32
 		var b f32
 		var l f32
 		t, r, b, l = entities.GetRect(et, i)
-		printf("i: %d       b: %f \n", i, b)
+		//printf("i: %d       b: %f \n", i, b)
 		
 		doFading(i)
 		
@@ -77,7 +109,7 @@ func entitiesUpdate () {
 			entities.Kill(et, i)
 		}else
 		if b < -1.0 { // touched floor/detonators/whatev 
-			printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
+			//printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
 			entities.Kill(et, i)
 		}else
 		if b < pTop { // (below top of plr bucket/s) 

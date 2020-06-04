@@ -154,7 +154,7 @@ func Spawn (eType i32, newEnt Entity) {
 	iC = len(All[eType])
 	
 	if  aC < iC /* (can recycle an inactive) */ { 
-		printf("------------- Spawn (eType: %v)     RECYCLing 1st inactive \n", eType)
+		//printf("------------- Spawn (eType: %v)     RECYCLing 1st inactive \n", eType)
 		All[eType][aC].x        = newEnt.x
 		All[eType][aC].y        = newEnt.y        
 		All[eType][aC].ExtentX  = newEnt.ExtentX  
@@ -165,14 +165,14 @@ func Spawn (eType i32, newEnt Entity) {
 		All[eType][aC].Mode     = newEnt.Mode     
 		All[eType][aC].WrapView = newEnt.WrapView	
 	}else{
-		printf("------------- Spawn (eType: %v)     APPENDing \n", eType)
+		//printf("------------- Spawn (eType: %v)     APPENDing \n", eType)
 		All[eType] = append(
 		All[eType], newEnt)
 	}
 
 	ActiveCounts[eType] = 
 	ActiveCounts[eType] + 1
-	printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], iC)
+	//printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], iC)
 }
 
 
@@ -191,11 +191,11 @@ func Kill (eType i32, id i32) {
 	// last ActiveCounts slot to the slot being recycled 
 	// (also prevents having an inactive slot which would have 
 	// 		needed an extra var in order to be marked for skipping) 
-	printf("(========== ABOUT TO copy values from lS: %v ---> id: %v    (aC: %v) \n", lS, id, aC)
+	//printf("(========== ABOUT TO copy values from lS: %v ---> id: %v    (aC: %v) \n", lS, id, aC)
 	if  aC > 1  /* (has 2 slots for copying) */ && 
 		id < lS /* (not last active, last needs no copy) */ {
 			
-		printf("RECYCLE  eType: %d   id: %d BEFORE \n", eType, id)
+		//printf("RECYCLE  eType: %d   id: %d BEFORE \n", eType, id)
 		All[eType][id].x        = All[eType][lS].x
 		All[eType][id].y        = All[eType][lS].y
 		All[eType][id].vx       = All[eType][lS].vx
@@ -205,17 +205,17 @@ func Kill (eType i32, id i32) {
 		All[eType][id].ExtentX  = All[eType][lS].ExtentX
 		All[eType][id].ExtentY  = All[eType][lS].ExtentY
 		All[eType][id].WrapView = All[eType][lS].WrapView
-		printf("RECYCLED eType: %d   id: %d        \n", eType, id)
-		printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
+		//printf("RECYCLED eType: %d   id: %d        \n", eType, id)
+		//printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
 	}
 
 	ActiveCounts[eType] = 
 	ActiveCounts[eType] - 1
-	printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], len(All[eType]))
+	//printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], len(All[eType]))
 }
 
 
-func GetCountOf (entType i32) (c i32) {
+func GetLenOf (entType i32) (c i32) {
 	c = ActiveCounts[entType]
 }
 
