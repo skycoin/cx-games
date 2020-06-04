@@ -9,7 +9,9 @@ import "time"
 
 
 
-// "enums"                     FIXME: when CX has enums or constants 
+var AutoUpdatePlayers bool = true // could be multiple entities 
+
+// "enums"   FIXME: when CX has enums or constants 
 var ENT_PLAYER      i32
 var ENT_MAX_OF_2DFW i32 = 1
 
@@ -68,8 +70,8 @@ func Init (maxEntTypes i32) {
 		y:       0.0,
 		ExtentX: 0.05,
 		ExtentY: 0.05,
-		vx:      0.10,
-		vy:      0.10,
+		//vx:      0.10,
+		//vy:      0.10,
 		gravity: 0.01}
 		
 	Spawn(ENT_PLAYER, ne)
@@ -93,21 +95,21 @@ func Update () {
 		//printf("entities.Update () t:%d \n", t)
 		
 		for i := 0; i < ActiveCounts[t]; i++ {
-			if t == ENT_PLAYER {
+			if t == ENT_PLAYER && AutoUpdatePlayers {
 				All[t][i].vx,
 				All[t][i].vy = mov.GetPlayerVelocityFromInput(
 				All[t][i].vx,
 				All[t][i].vy)
-			}
 			
-			UpdateAt(t, i)
+				UpdateAt(t, i)
 
-			if t == ENT_PLAYER {
-				// back out of any penetration 
+				// back out of any entity/entity penetration 
 				All[t][i].x,
 				All[t][i].y,
 				All[t][i].vx,
 				All[t][i].vy = mov.ConstrainPosByMap(t, i)
+			}else{
+				UpdateAt(t, i)
 			}
 		}
 	}

@@ -111,72 +111,12 @@ func gameInit () {
 
 
 func gameUpdate () {
+	time.Update()
+	entities.Update()
+	entitiesUpdate()
 	respondToPointerEvents()
 	respondToButtonEvents()
 	respondToKeyEvents()
-	
-	updateGameEntities()
-}
-
-
-func updateGameEntities () {
-	// player 
-	entities.All[plr][0].x = inputs.MousePointer.X
-	
-	// 		cache edges 
-	var pL f32 // left  
-	var pR f32 // right 
-	pL, pR = getPlayerEdges()
-	
-	// 		keep entirely within view 
-	if pR > space.ViewEdgeR {
-		entities.All[plr][0].x = space.ViewEdgeR -
-		entities.All[plr][0].ExtentX
-		pL, pR = getPlayerEdges()
-	}else
-	if pL < space.ViewEdgeL {
-		entities.All[plr][0].x = space.ViewEdgeL +
-		entities.All[plr][0].ExtentX
-		pL, pR = getPlayerEdges()
-	}
-	
-	
-	dropperUpdate()
-	
-	
-	// falling coin collisions 
-	var et i32 = FALLING_COIN // entity type 
-	var n  i32 = entities.GetCountOf(et)
-	var st i32 = n - 1
-	printf("st: %v       n: %v \n", st, n)
-	for i := st; i >= 0; i-- { // go backwards for removals 
-		var t f32 // rect edges 
-		var r f32
-		var b f32
-		var l f32
-		t, r, b, l = entities.GetRect(et, i)
-		printf("i: %d       b: %f \n", i, b)
-		
-		doFading(i)
-		
-		// collision 
-		if b > 1.0 { // (above top of viewport) 
-			printf("ABOUT TO Kill   *** EXITED TOP *** i: %d \n", i)
-			entities.Kill(et, i)
-		}else
-		if b < -1.0 { // touched floor/detonators/whatev 
-			printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
-			entities.Kill(et, i)
-		}else
-		if b < pTop { // (below top of plr bucket/s) 
-			if      caughtCoin(i, pL, pR, l) { // coin left  edge 
-				//break // avoid catching twice 
-			}else{
-				var u /* (unused return) */ bool
-				u = caughtCoin(i, pL, pR, r)   // coin right edge 
-			}
-		}
-	}
 }
 
 

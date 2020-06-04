@@ -18,8 +18,6 @@ func main () {
 	gameInit()
 
 	for bool.not(glfw.ShouldClose(app.Name)) {
-		time.Update()
-		entities.Update()
 		gameUpdate()
 		drawAll()
 		
