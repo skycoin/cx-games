@@ -3,7 +3,6 @@ package main
 
 
 var coinExtent        f32 = 0.07 // (while dropping) 
-var walletAspectRatio f32 = 828.0 / 364.0 // multiply this with desired height 
 
 // "enums" 
 var DROPPER         i32 = entities.ENT_MAX_OF_2DFW     // coin DROPPER 
@@ -19,37 +18,7 @@ var MODE_FADING     i32 = 1
 
 func entitiesInit () {
 	entities.Init(ENT_MAX_OF_GAME)
-	entities.AutoUpdatePlayers = false
-	
-	// wallets/paddles/buckets 
-	var f f32 = 0.1
-	//		 1st player entity is autocreated 
-	entities.All[entities.ENT_PLAYER][0].y       = f - 1.0
-	entities.All[entities.ENT_PLAYER][0].ExtentX = f * walletAspectRatio
-	entities.All[entities.ENT_PLAYER][0].ExtentY = f
-	
-	entities.Spawn(entities.ENT_PLAYER, entities.All[entities.ENT_PLAYER][0])
-	entities.All[entities.ENT_PLAYER][1].y       = f32.sub(f, 0.7)
-	entities.All[entities.ENT_PLAYER][0].y       = f32.sub(f, 0.4)
-	//entities.ClonePlayerAt0()
-	var ne entities.Entity
-	
-	/*
-	ne = entities.Entity{
-		y:       f - 1.0, 
-		ExtentX: f,
-		ExtentY: f}
-	entities.Spawn(entities.ENT_PLAYER, ent)
-	*/
-	
-	/*
-	ne = entities.Entity{
-		y:       f - 1.0, 
-		ExtentX: f,
-		ExtentY: f}
-	entities.Spawn(entities.ENT_PLAYER, ent)
-	*/
-		
+	playerEntsInit()
 	dropperInit()		   
 	spawnCloudsBackdrop()
 	spawnMenuBackdropCoins()
@@ -58,39 +27,12 @@ func entitiesInit () {
 
 func entitiesUpdate () {
 	entities.Update()
-
-	// player entities 
-	// 		cache edges 
-	var pL f32 // left  
-	var pR f32 // right 
-	
-	var n i32 = entities.GetLenOf(plr)
-	
-	for i := 0; i < n; i++ {
-		entities.All[plr][i].x = inputs.MousePointer.X
-	
-		pL, pR = getPlayerEdges()
-		
-		// 		keep entirely within view 
-		if pR > space.ViewEdgeR {
-			entities.All[plr][i].x = space.ViewEdgeR -
-			entities.All[plr][i].ExtentX
-			pL, pR = getPlayerEdges()
-		}else
-		if pL < space.ViewEdgeL {
-			entities.All[plr][i].x = space.ViewEdgeL +
-			entities.All[plr][i].ExtentX
-			pL, pR = getPlayerEdges()
-		}
-	}
-	
-	
-	dropperUpdate()
-	
+	playerEntsUpdate()
+	dropperUpdate()	
 	
 	// falling coin collisions 
 	var et i32 = FALLING_COIN // entity type 
-	    n      = entities.GetLenOf(et)
+	var n  i32 = entities.GetLenOf(et)
 	var st i32 = n - 1
 	//printf("st: %v       n: %v \n", st, n)
 	for i := st; i >= 0; i-- { // go backwards for removals 

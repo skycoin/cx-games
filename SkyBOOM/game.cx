@@ -87,10 +87,6 @@ fall speed
 
 */
 
-// misc 
-var plr  i32 = entities.ENT_PLAYER
-var pTop f32 // player top edge 
-
 
 
 func gameInit () {
