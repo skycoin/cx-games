@@ -42,32 +42,6 @@ func drawAll () {
 	
 	drawTexturedBatches()
 
-	// player & dropper 
-	var t f32
-	var r f32
-	var b f32
-	var l f32
-	draw.SetColor3(draw.White)
-
-	draw.BeginTexturedQuads(WALLET)
-		var num i32 = entities.GetLenOf(entities.ENT_PLAYER)
-		printf("GetLenOf() num: %v \n", num)
-		for i := 0; i < num; i++ {
-			t, r, b, l = entities.GetRect(entities.ENT_PLAYER, i)
-			draw.TexturedQuad(t, r, b, l)
-			
-			
-			
-			
-			printf("t,r: %v,%v \n", t, r)
-		}
-	draw.End()
-
-	draw.BeginTexturedQuads(CLOUD)
-		t, r, b, l = entities.GetRect(DROPPER, 0)
-		draw.TexturedQuad(t, r, b, l)
-	draw.End()
-
 	// menu 
 	gl.Color4f(1.0, 1.0, 1.0, 1.0)
 	//draw.ScaledRotatedPic(COIN, 0.0, 0.0, 0.5, 0.5, angle)
@@ -110,11 +84,14 @@ func drawTexturedBatches () {
 	var b  f32
 	var l  f32
 	var et i32 // entity type 
+	var n  i32
+
+
+	// clouds 
+	et = BACKDROP_CLOUD
+	n  = entities.GetLenOf(et)
 
 	draw.BeginTexturedQuads(CLOUD)
-		et = BACKDROP_CLOUD
-		var n i32 = entities.GetLenOf(et)
-
 		for i := 0; i < n; i++ {
 			var ac f32 = 1.0 // alpha channel 
 			
@@ -122,12 +99,18 @@ func drawTexturedBatches () {
 			t, r, b, l = entities.GetRect(et, i)
 			draw.TexturedQuad(t, r, b, l)
 		}
+		
+		// dropper SPECIALCASE 
+		t, r, b, l = entities.GetRect(DROPPER, 0)
+		draw.TexturedQuad(t, r, b, l)
 	draw.End()
 	
-	draw.BeginTexturedQuads(COIN)
-		et = FALLING_COIN
-		n = entities.GetLenOf(et)
+	
+	// coins 
+	et = FALLING_COIN
+	n  = entities.GetLenOf(et)
 
+	draw.BeginTexturedQuads(COIN)
 		for i := 0; i < n; i++ {
 			var ac f32 = 1.0 // alpha channel 
 			
@@ -136,6 +119,21 @@ func drawTexturedBatches () {
 			}
 		
 			draw.SetColor4(draw.White, ac)
+			t, r, b, l = entities.GetRect(et, i)
+			draw.TexturedQuad(t, r, b, l)
+		}
+	draw.End()
+	
+	
+	// player entities 
+	draw.SetColor3(draw.White)
+	
+	et = entities.ENT_PLAYER
+	n  = entities.GetLenOf(et)
+
+	draw.BeginTexturedQuads(WALLET)
+		printf("BeginTexturedQuads() GetLenOf() num: %v \n", n)
+		for i := 0; i < n; i++ {
 			t, r, b, l = entities.GetRect(et, i)
 			draw.TexturedQuad(t, r, b, l)
 		}
