@@ -115,14 +115,14 @@ func gameUpdate () {
 }
 
 
-func getPlayerEdges () (l f32, r f32) {
+func getPlayerEdges (i i32) (l f32, r f32) {
 	l = // left 
-		entities.All[plr][0].x -
-		entities.All[plr][0].ExtentX
+		entities.All[plr][i].x -
+		entities.All[plr][i].ExtentX
 		
 	r = // right 
-		entities.All[plr][0].x +
-		entities.All[plr][0].ExtentX
+		entities.All[plr][i].x +
+		entities.All[plr][i].ExtentX
 }
 
 

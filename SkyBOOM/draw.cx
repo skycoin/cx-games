@@ -132,7 +132,6 @@ func drawTexturedBatches () {
 	n  = entities.GetLenOf(et)
 
 	draw.BeginTexturedQuads(WALLET)
-		printf("BeginTexturedQuads() GetLenOf() num: %v \n", n)
 		for i := 0; i < n; i++ {
 			t, r, b, l = entities.GetRect(et, i)
 			draw.TexturedQuad(t, r, b, l)

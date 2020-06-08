@@ -9,6 +9,8 @@ var BufferingNotchyDeltas bool // distance threshold triggers (for low-res/notch
 var BufferingPointerSpots bool // pointer event spots/positions 
 var MousePointer          app.Vec2
 var MousePosInPixels      app.Vec2F64
+var MouseDeltaX           f32
+var MouseDeltaY           f32
 var HoldingLeftButton     bool
 
 var mouseMoveThreshold f64 = 85.0D // for blocky/notchy mouse movement (like CXtris uses) 
@@ -150,21 +152,14 @@ func onMouseButtonEvent (window str, button i32, action i32, mods i32) {
 // position 
 var oldV Vec2
 var old64 Vec2F64
-var deltaX f32
-var deltaY f32
 var deltaX64 f64
 var deltaY64 f64
 var dist Vec2F64 // distance since latest blocky movement 
 func onCursorPosEvent (window str, x f64, y f64) {
 	//str.print("onCursorPosEvent ()")
 
-	oldV.X = MousePointer.X
-	oldV.Y = MousePointer.Y
-	old64.X = MousePosInPixels.X
-	old64.Y = MousePosInPixels.Y
 	MousePosInPixels.X = x
 	MousePosInPixels.Y = y
-
 	
 	// 1st get fraction from left to right edge 
 	var mX f32 = f64.f32(x) / i32.f32(space.ViewWidInPixels)
@@ -181,8 +176,8 @@ func onCursorPosEvent (window str, x f64, y f64) {
 	MousePointer.Y = mY
 	
 
-	deltaX = f32.sub(MousePointer.X, oldV.X)
-	deltaY = f32.sub(MousePointer.Y, oldV.Y)
+	MouseDeltaX = f32.sub(MousePointer.X, oldV.X)
+	MouseDeltaY = f32.sub(MousePointer.Y, oldV.Y)
 	deltaX64 = f64.sub(x, old64.X)
 	deltaY64 = f64.sub(y, old64.Y)
 
@@ -199,6 +194,11 @@ func onCursorPosEvent (window str, x f64, y f64) {
 		blockyMouseMovement()
 	}
 		
-	//printf("onCursorPosEvent %f, %f \n", deltaX64, deltaY64)
+	//printf("onCursorPosEvent %f, %f \n", MouseDeltaX64, MouseDeltaY64)
 	//printf("onCursorPosEvent %f, %f \n", MousePointer.X, MousePointer.Y)
+	
+	oldV.X = MousePointer.X
+	oldV.Y = MousePointer.Y
+	old64.X = MousePosInPixels.X
+	old64.Y = MousePosInPixels.Y
 }

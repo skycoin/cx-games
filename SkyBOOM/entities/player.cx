@@ -49,20 +49,18 @@ func playerEntsUpdate () {
 	var n i32 = entities.GetLenOf(plr)
 	
 	for i := 0; i < n; i++ {
-		entities.All[plr][i].x = inputs.MousePointer.X
-	
-		pL, pR = getPlayerEdges()
+		pL, pR = getPlayerEdges(i)
 		
 		// 		keep entirely within view 
 		if pR > space.ViewEdgeR {
 			entities.All[plr][i].x = space.ViewEdgeR -
 			entities.All[plr][i].ExtentX
-			pL, pR = getPlayerEdges()
+			pL, pR = getPlayerEdges(i)
 		}else
 		if pL < space.ViewEdgeL {
 			entities.All[plr][i].x = space.ViewEdgeL +
 			entities.All[plr][i].ExtentX
-			pL, pR = getPlayerEdges()
+			pL, pR = getPlayerEdges(i)
 		}
 	}
 }
