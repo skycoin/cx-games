@@ -111,6 +111,7 @@ func drawTexturedBatches () {
 	n  = entities.GetLenOf(et)
 
 	draw.BeginTexturedQuads(COIN)
+		// game coins 
 		for i := 0; i < n; i++ {
 			var ac f32 = 1.0 // alpha channel 
 			
@@ -121,6 +122,19 @@ func drawTexturedBatches () {
 			draw.SetColor4(draw.White, ac)
 			t, r, b, l = entities.GetRect(et, i)
 			draw.TexturedQuad(t, r, b, l)
+		}
+
+		if app.Mode < app.MODE_MENU_MAX {
+			// menu coins 
+			draw.SetColor4(draw.White, 1.0)
+			
+			et = BACKDROP_COIN
+			n  = entities.GetLenOf(et)
+
+			for i := 0; i < n; i++ {
+				t, r, b, l = entities.GetRect(et, i)
+				draw.TexturedQuad(t, r, b, l)
+			}
 		}
 	draw.End()
 	
