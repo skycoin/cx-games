@@ -53,13 +53,15 @@ func entitiesUpdate () {
 		if b < -1.0 { // touched floor/detonators/whatev 
 			//printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
 			entities.Kill(et, i)
-		}else
-		if b < pTop { // (below top of plr bucket/s) 
-			if      caughtCoin(i, pL, pR, l) { // coin left  edge 
-				//break // avoid catching twice 
-			}else{
-				var u /* (unused return) */ bool
-				u = caughtCoin(i, pL, pR, r)   // coin right edge 
+		}else{
+			if  b < pT && // (below top of plr bucket/s) 
+				t > pB {
+
+				if      caughtCoin(i, pL, pR, l) { // coin left  edge 
+				}else{
+					var u /* (unused return) */ bool
+					u = caughtCoin(i, pL, pR, r)   // coin right edge 
+				}
 			}
 		}
 	}

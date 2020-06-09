@@ -98,11 +98,6 @@ func gameInit () {
 	menuInit()
 	drawInit()
 	entitiesInit()
-	
-	pTop = entities.All[plr][0].y +
-		   entities.All[plr][0].ExtentY
-	//printf("pTop: %f      [plr][0].y: %f        [plr][0].ExtentY: %f \n", 
-	//	pTop, entities.All[plr][0].y, entities.All[plr][0].ExtentY)
 }
 
 
@@ -142,9 +137,8 @@ func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
 		edge > pL {
 			
 		entities.All[FALLING_COIN][i].Mode = MODE_FADING
-		entities.All[FALLING_COIN][i].vx = edge * -0.5
-		entities.All[FALLING_COIN][i].vy = 2.6 // fly up 
-		//printf("coin < pTop: %f   %d \n", pTop, i)
+		entities.All[FALLING_COIN][i].vx   = edge * -0.5
+		entities.All[FALLING_COIN][i].vy   = 2.6 // fly up 
 		return true
 	}
 	

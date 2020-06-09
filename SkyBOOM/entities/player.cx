@@ -5,9 +5,10 @@ package main
 var walletAspectRatio f32 = 828.0 / 364.0 // multiply this with desired height 
 var plr  i32 = entities.ENT_PLAYER
 // cache edges 
-var pTop f32 // top 
-var pL   f32 // left  
-var pR   f32 // right 
+var pT f32 // top 
+var pB f32 // bottom 
+var pL f32 // left  
+var pR f32 // right 
 	
 
 
@@ -42,6 +43,9 @@ func playerEntsInit () {
 		ExtentX: f * walletAspectRatio,
 		ExtentY: f}
 	entities.Spawn(et, ne)
+
+	pT = f32.add(ne.y, ne.ExtentY)					
+	pB = -1.0
 }
 
 
