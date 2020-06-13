@@ -5,14 +5,16 @@ package main
 var coinExtent        f32 = 0.07 // (while dropping) 
 
 // "enums" 
-var DROPPER         i32 = entities.ENT_MAX_OF_2DFW     // coin DROPPER 
-var FALLING_COIN    i32 = entities.ENT_MAX_OF_2DFW + 1
-var BACKDROP_COIN   i32 = entities.ENT_MAX_OF_2DFW + 2 // for menu backdrop 
-var BACKDROP_CLOUD  i32 = entities.ENT_MAX_OF_2DFW + 3 // gameplay backdrop 
-var ENT_MAX_OF_GAME i32 = entities.ENT_MAX_OF_2DFW + 4
+var ENT_DROPPER        i32 = entities.ENT_MAX_OF_2DFW     // coin ENT_DROPPER 
+var ENT_GAME_COIN      i32 = entities.ENT_MAX_OF_2DFW + 1
+var ENT_BACKDROP_COIN  i32 = entities.ENT_MAX_OF_2DFW + 2 // for menu backdrop 
+var ENT_BACKDROP_CLOUD i32 = entities.ENT_MAX_OF_2DFW + 3 // gameplay backdrop 
+var ENT_PARTICLE_0     i32 = entities.ENT_MAX_OF_2DFW + 4
+var ENT_PARTICLE_1     i32 = entities.ENT_MAX_OF_2DFW + 5
+var ENT_MAX_OF_GAME    i32 = entities.ENT_MAX_OF_2DFW + 6
 // 		modes 
-var MODE_DROPPING   i32
-var MODE_FADING     i32 = 1
+var ENT_MODE_DROPPING  i32
+var ENT_MODE_FADING    i32 = 1
 
 
 
@@ -30,8 +32,8 @@ func entitiesUpdate () {
 	playerEntsUpdate()
 	dropperUpdate()	
 	
-	// falling coin collisions 
-	var et i32 = FALLING_COIN // entity type 
+	// game coin collisions 
+	var et i32 = ENT_GAME_COIN // entity type 
 	var n  i32 = entities.GetLenOf(et)
 	var st i32 = n - 1
 	//printf("st: %v       n: %v \n", st, n)
@@ -41,7 +43,7 @@ func entitiesUpdate () {
 		var b f32
 		var l f32
 		t, r, b, l = entities.GetRect(et, i)
-		//printf("i: %d       b: %f \n", i, b)
+		printf("i: %d       entities.All[et][i].WrapView: %v      b: %f \n", i, entities.All[et][i].WrapView, b)
 		
 		doFading(i)
 		
@@ -51,7 +53,9 @@ func entitiesUpdate () {
 			entities.Kill(et, i)
 		}else
 		if b < -1.0 { // touched floor/detonators/whatev 
-			//printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
+			printf("ABOUT TO spawnParticlePuffFrom(et: %v, i: %v) GetLenOf: %v \n", et, i, entities.GetLenOf(et))
+			spawnParticlePuffFrom(et, i)
+			printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
 			entities.Kill(et, i)
 		}else{
 			if  b < pT && // (below top of plr bucket/s) 
@@ -68,11 +72,33 @@ func entitiesUpdate () {
 }
 
 
+func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
+	for id := 0; id < 7; id++ {
+		var r i32 = i32.rand(-100, 100)
+		var v f32 = f32.mul(0.01, i32.f32(r))
+		
+		ent = entities.Entity{
+			x:        entities.All[et][i].x, 
+			y:        entities.All[et][i].y, 
+			vx:       v,
+			vy:       2.4,
+			ExtentX:  0.015, 
+			ExtentY:  0.03}				
+		
+		if i32.rand(0, 2) == 0 {
+			entities.Spawn(ENT_PARTICLE_0, ent)
+		}else{
+			entities.Spawn(ENT_PARTICLE_1, ent)
+		}
+	}
+}
+
+
 func spawnMenuBackdropCoins () {
 	for i := 0; i < 250; i++ {
 		// random extents 
-		var irX i32 = i32.rand(0, 64)
-		var irY i32 = i32.rand(0, 64)
+		var irX i32 = i32.rand(16, 128)
+		var irY i32 = i32.rand(16, 128)
 		var ex  f32 = f32.mul(i32.f32(irX), space.PixelSize.X)
 
 		// random pos 
@@ -90,7 +116,7 @@ func spawnMenuBackdropCoins () {
 			ExtentY:  ex, 
 			WrapView: true}
 			
-		entities.Spawn(BACKDROP_COIN, ent)
+		entities.Spawn(ENT_BACKDROP_COIN, ent)
 	}	
 }
 
@@ -106,8 +132,8 @@ func spawnCloudsBackdrop () {
 	var incX f32 = f32.mul(exX, 2.0) * 1.0 // 1.33 // 1/3 ratio gap tween them 
 	var incY f32 = f32.mul(exY, 2.0) * 0.83
 	
-	for     y < entities.All[DROPPER][0].y -
-		        entities.All[DROPPER][0].ExtentY {
+	for     y < entities.All[ENT_DROPPER][0].y -
+		        entities.All[ENT_DROPPER][0].ExtentY {
 		        	
 		for x < space.ViewEdgeR {
 			ent = entities.Entity{
@@ -119,7 +145,7 @@ func spawnCloudsBackdrop () {
 				//vy:     -0.1, 
 				WrapView: true}
 				
-			entities.Spawn(BACKDROP_CLOUD, ent)
+			entities.Spawn(ENT_BACKDROP_CLOUD, ent)
 			
 			x = x + incX
 		}	

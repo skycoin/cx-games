@@ -26,7 +26,7 @@ i seem to be having a problem with remove() not being able to selectively remove
 
 it seems to remove all of them instead of just the 1.
 
-entities.All[FALLING_COIN] = remove(entities.All[FALLING_COIN], i)
+entities.All[ENT_GAME_COIN] = remove(entities.All[ENT_GAME_COIN], i)
 
 actually it seems to remove all items the 1st time or 2, then after that it leaves 1 (out of around 7 items) remaining in the inner slice.
 
@@ -129,11 +129,11 @@ func getPlayerEdges (i i32) (l f32, r f32) {
 
 
 func doFading (i i32) {
-	if  entities.All[FALLING_COIN][i].Mode == MODE_FADING {
-		entities.All[FALLING_COIN][i].ExtentX = 
-		entities.All[FALLING_COIN][i].ExtentX + time.Delta
-		entities.All[FALLING_COIN][i].ExtentY = 
-		entities.All[FALLING_COIN][i].ExtentY + time.Delta
+	if  entities.All[ENT_GAME_COIN][i].Mode == ENT_MODE_FADING {
+		entities.All[ENT_GAME_COIN][i].ExtentX = 
+		entities.All[ENT_GAME_COIN][i].ExtentX + time.Delta
+		entities.All[ENT_GAME_COIN][i].ExtentY = 
+		entities.All[ENT_GAME_COIN][i].ExtentY + time.Delta
 	}
 }
 
@@ -143,9 +143,9 @@ func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
 	if  edge < pR &&
 		edge > pL {
 			
-		entities.All[FALLING_COIN][i].Mode = MODE_FADING
-		entities.All[FALLING_COIN][i].vx   = edge * -0.5
-		entities.All[FALLING_COIN][i].vy   = 2.6 // fly up 
+		entities.All[ENT_GAME_COIN][i].Mode = ENT_MODE_FADING
+		entities.All[ENT_GAME_COIN][i].vx   = edge * -0.5
+		entities.All[ENT_GAME_COIN][i].vy   = 2.6 // fly up 
 		return true
 	}
 	
