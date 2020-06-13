@@ -51,6 +51,13 @@ that's INSIDE the package, and even INSIDE, "e" has default values instead of wh
 
 
 ------------------------------- SkyBOOM notes ----------------------------
+--- GENERAL IMPROVEMENT 
+
+move CXtris texture loading out of 2DFWork
+add matrix partics to menu backdrop 
+add matrix partics to menu backdrop 
+
+
 --- SPLASH SCREEN 
 
 Full Skycoin logo inc. text

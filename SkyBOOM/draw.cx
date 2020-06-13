@@ -7,9 +7,11 @@ import "time"
 
 
 // pic ids 
-var CLOUD  i32
-var COIN   i32
-var WALLET i32
+var PIC_CLOUD  i32
+var PIC_COIN   i32
+var PIC_WALLET i32
+var PIC_0      i32
+var PIC_1      i32
 
 var ent entities.Entity // current 
 
@@ -21,9 +23,11 @@ func drawInit () {
 	gl.ClearColor(0.5, 0.7, 1.0, 0.0) // light blue 
 	//"coin0001.png")
 	//"coin0002.png")
-	COIN   = draw.AddPic("coin0001.png")
-	CLOUD  = draw.AddPic("Skycoin-Cloud-White.png")
-	WALLET = draw.AddPic("SkyWallet.png")
+	PIC_COIN   = draw.AddPic("coin0001.png")
+	PIC_CLOUD  = draw.AddPic("Skycoin-Cloud-White.png")
+	PIC_WALLET = draw.AddPic("SkyWallet.png")
+	PIC_0      = draw.AddPic("0.png")
+	PIC_1      = draw.AddPic("1.png")
 	draw.InitPics()
 }
 
@@ -44,7 +48,7 @@ func drawAll () {
 
 	// menu 
 	gl.Color4f(1.0, 1.0, 1.0, 1.0)
-	//draw.ScaledRotatedPic(COIN, 0.0, 0.0, 0.5, 0.5, angle)
+	//draw.ScaledRotatedPic(PIC_COIN, 0.0, 0.0, 0.5, 0.5, angle)
 	gl.LoadIdentity()
 
 	if app.Mode < app.MODE_MENU_MAX { // in a menu 
@@ -91,7 +95,7 @@ func drawTexturedBatches () {
 	et = BACKDROP_CLOUD
 	n  = entities.GetLenOf(et)
 
-	draw.BeginTexturedQuads(CLOUD)
+	draw.BeginTexturedQuads(PIC_CLOUD)
 		for i := 0; i < n; i++ {
 			var ac f32 = 1.0 // alpha channel 
 			
@@ -110,7 +114,7 @@ func drawTexturedBatches () {
 	et = FALLING_COIN
 	n  = entities.GetLenOf(et)
 
-	draw.BeginTexturedQuads(COIN)
+	draw.BeginTexturedQuads(PIC_COIN)
 		if app.Mode > app.MODE_MENU_MAX {
 			// game coins 
 			for i := 0; i < n; i++ {
@@ -145,7 +149,7 @@ func drawTexturedBatches () {
 	et = entities.ENT_PLAYER
 	n  = entities.GetLenOf(et)
 
-	draw.BeginTexturedQuads(WALLET)
+	draw.BeginTexturedQuads(PIC_WALLET)
 		for i := 0; i < n; i++ {
 			t, r, b, l = entities.GetRect(et, i)
 			draw.TexturedQuad(t, r, b, l)
