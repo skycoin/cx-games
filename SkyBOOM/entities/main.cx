@@ -73,8 +73,7 @@ func spawnMenuBackdropCoins () {
 		// random extents 
 		var irX i32 = i32.rand(0, 64)
 		var irY i32 = i32.rand(0, 64)
-		var exX f32 = f32.mul(i32.f32(irX), space.PixelSize.X)
-		var exY f32 = f32.mul(i32.f32(irY), space.PixelSize.Y)
+		var ex  f32 = f32.mul(i32.f32(irX), space.PixelSize.X)
 
 		// random pos 
 		irX = i32.rand(0, space.ViewWidInPixels)
@@ -85,10 +84,10 @@ func spawnMenuBackdropCoins () {
 		ent = entities.Entity{
 			x:        frX, 
 			y:        frY, 
-			vx:       frY * 0.1,
-			vy:       frY * 0.1,
-			ExtentX:  exX, 
-			ExtentY:  exY, 
+			vx:       frX * 0.2,
+			vy:       frY * 0.2,
+			ExtentX:  ex, 
+			ExtentY:  ex, 
 			WrapView: true}
 			
 		entities.Spawn(BACKDROP_COIN, ent)

@@ -103,10 +103,10 @@ func gameInit () {
 
 func gameUpdate () {
 	time.Update()
-	entitiesUpdate()
-	respondToPointerEvents()
+	respondToPointerEvents() // updates player paddles with deltas 
 	respondToButtonEvents()
 	respondToKeyEvents()
+	entitiesUpdate()
 }
 
 
