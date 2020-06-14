@@ -43,7 +43,7 @@ func entitiesUpdate () {
 		var b f32
 		var l f32
 		t, r, b, l = entities.GetRect(et, i)
-		printf("i: %d       entities.All[et][i].WrapView: %v      b: %f \n", i, entities.All[et][i].WrapView, b)
+		//printf("i: %d       entities.All[et][i].WrapView: %v      b: %f \n", i, entities.All[et][i].WrapView, b)
 		
 		doFading(i)
 		
@@ -72,23 +72,26 @@ func entitiesUpdate () {
 }
 
 
+var nTic /* new particle */ entities.Entity
 func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
-	for id := 0; id < 7; id++ {
-		var r i32 = i32.rand(-100, 100)
-		var v f32 = f32.mul(0.01, i32.f32(r))
+	for id := 0; id < 8; id++ {
+		var r   i32 = i32.rand(-100, 100)
+		var v   f32 = f32.mul(0.01, i32.f32(r))
+		var exp f32 = f32.add(time.Now, 0.3)
 		
-		ent = entities.Entity{
-			x:        entities.All[et][i].x, 
-			y:        entities.All[et][i].y, 
-			vx:       v,
-			vy:       2.4,
-			ExtentX:  0.015, 
-			ExtentY:  0.03}				
+		nTic = entities.Entity{
+			x:          entities.All[et][i].x, 
+			y:          entities.All[et][i].y, 
+			vx:         v,
+			vy:         2.4,
+			ExtentX:    0.015, 
+			ExtentY:    0.03,
+			ExpiryTime: exp}				
 		
 		if i32.rand(0, 2) == 0 {
-			entities.Spawn(ENT_PARTICLE_0, ent)
+			entities.Spawn(ENT_PARTICLE_0, nTic)
 		}else{
-			entities.Spawn(ENT_PARTICLE_1, ent)
+			entities.Spawn(ENT_PARTICLE_1, nTic)
 		}
 	}
 }

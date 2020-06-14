@@ -24,8 +24,8 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	y          f32
 	ExtentX    f32
 	ExtentY    f32
-	ExpiryDist f32 // 0.0 == not using (by distance travelled) 
-	ExpiryTime f32 // 0.0 == not using 
+	ExpiryDist f32 // expire by distance travelled (0.0 == not using) 
+	ExpiryTime f32 // expire by time passed        (0.0 == not using) 
 	vx         f32
 	vy         f32
 	gravity    f32
@@ -98,6 +98,9 @@ func Update () {
 		
 		for i := 0; i < ActiveCounts[t]; i++ {
 			if t == ENT_PLAYER && AutoUpdatePlayers {
+				// REQUIRES FIXME IF PLAYER ENTS EVER SHOULD 
+				// 		USE EXPIRYTIME/DIST FIELDS 
+				//		(CUZ NOW IT COLLIDES AFTER Kill() IN UpdateAt() )
 				All[t][i].vx,
 				All[t][i].vy = mov.GetPlayerVelocityFromInput(
 				All[t][i].vx,
@@ -128,6 +131,7 @@ func UpdateAt (et i32, i i32) { // entity type, id
 	All[et][i].x = f32.add(All[et][i].x, All[et][i].vx * time.Delta)
 	All[et][i].y = f32.add(All[et][i].y, All[et][i].vy * time.Delta)
 	
+	// maybe wrap/teleport to opposite edge of screen, when going OOB 
 	if All[et][i].WrapView {
 		if  All[et][i].x > space.ViewEdgeR + All[et][i].ExtentX {
 			All[et][i].x = space.ViewEdgeL - All[et][i].ExtentX
@@ -143,11 +147,18 @@ func UpdateAt (et i32, i i32) { // entity type, id
 			All[et][i].y =  1.0 + All[et][i].ExtentY
 		}
 	}
+	
+	// expire ents that timeout 
+	if All[et][i].ExpiryTime != 0.0 {
+		if All[et][i].ExpiryTime <= time.Now {
+			Kill(et, i)
+		}		
+	}
 }
 
 
 func Spawn (eType i32, newEnt Entity) {
-	//str.print("Spawn ()")
+	//printf("Spawn (eType: %d) newEnt.ExpiryTime: %f \n", eType, newEnt.ExpiryTime)
 
 	var aC i32 // active count 
 	aC = ActiveCounts[eType]
