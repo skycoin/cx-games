@@ -38,11 +38,12 @@ func dropperUpdate () {
 }
 
 
+var coin entities.Entity
 func dropCoins () {	
 	if nextDrop <= time.Now {
 		nextDrop = time.Now + dropDelay
 		
-		ent = entities.Entity{ 
+		coin = entities.Entity{ 
 			x:       entities.All[ENT_DROPPER][0].x,
 			y:       coinDropHeight, 
 			ExtentX: coinExtent,
@@ -50,7 +51,7 @@ func dropCoins () {
 			vx:       0.0,
 			vy:      -1.2}
 			
-		entities.Spawn(ENT_GAME_COIN, ent)
+		entities.Spawn(ENT_GAME_COIN, coin)
 	}
 }
 

@@ -7,6 +7,23 @@ import "inputs"
 /*
 
 --------------- ISSUE REPORTS ----------------------------------------
+THE FOLLOWING WASN'T RETURNING TRUE
+
+// detect edge touching player 
+func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
+	if  edge < pR &&
+		edge > pL {
+			
+		growAndFadeUpward(i)
+		return true
+	}
+	
+	return false
+}
+
+
+
+
 passing parameter to entities.Update () had no proper error 
 
 
@@ -143,11 +160,14 @@ func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
 	if  edge < pR &&
 		edge > pL {
 			
-		entities.All[ENT_GAME_COIN][i].Mode = ENT_MODE_FADING
-		entities.All[ENT_GAME_COIN][i].vx   = edge * -0.5
-		entities.All[ENT_GAME_COIN][i].vy   = 2.6 // fly up 
-		return true
+		out = true
+	}else{	
+		out = false
 	}
-	
-	return false
+}
+
+
+func growAndFadeUpward (i i32) () {
+	entities.All[ENT_GAME_COIN][i].Mode = ENT_MODE_FADING
+	entities.All[ENT_GAME_COIN][i].vy   = 2.6 // fly up 
 }

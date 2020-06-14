@@ -49,22 +49,22 @@ func entitiesUpdate () {
 		
 		// collision 
 		if b > 1.0 { // (above top of viewport) 
-			printf("ABOUT TO Kill   *** EXITED TOP *** i: %d \n", i)
 			entities.Kill(et, i)
 		}else
 		if b < -1.0 { // touched floor/detonators/whatev 
-			printf("ABOUT TO spawnParticlePuffFrom(et: %v, i: %v) GetLenOf: %v \n", et, i, entities.GetLenOf(et))
-			spawnParticlePuffFrom(et, i)
-			printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
-			entities.Kill(et, i)
+			growAndFadeUpward(i)
 		}else{
 			if  b < pT && // (below top of plr bucket/s) 
 				t > pB {
 
-				if      caughtCoin(i, pL, pR, l) { // coin left  edge 
+				if     caughtCoin(i, pL, pR, l) { // coin left  edge 
+						spawnParticlePuffFrom(et, i)
+						entities.Kill(et, i)
 				}else{
-					var u /* (unused return) */ bool
-					u = caughtCoin(i, pL, pR, r)   // coin right edge 
+					if caughtCoin(i, pL, pR, r) { // coin right edge 
+						spawnParticlePuffFrom(et, i)
+						entities.Kill(et, i)
+					}
 				}
 			}
 		}
@@ -76,14 +76,16 @@ var nTic /* new particle */ entities.Entity
 func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 	for id := 0; id < 8; id++ {
 		var r   i32 = i32.rand(-100, 100)
-		var v   f32 = f32.mul(0.01, i32.f32(r))
+		var vx  f32 = f32.mul(0.01, i32.f32(r))
+		r           = i32.rand(11, 250)
+		var vy  f32 = f32.mul(0.01, i32.f32(r))
 		var exp f32 = f32.add(time.Now, 0.3)
 		
 		nTic = entities.Entity{
 			x:          entities.All[et][i].x, 
 			y:          entities.All[et][i].y, 
-			vx:         v,
-			vy:         2.4,
+			vx:         vx,
+			vy:         vy,
 			ExtentX:    0.015, 
 			ExtentY:    0.03,
 			ExpiryTime: exp}				
