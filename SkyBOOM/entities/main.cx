@@ -2,9 +2,9 @@ package main
 
 
 
-var coinExtent        f32 = 0.07 // (while dropping) 
+var coinExtent         f32 = 0.07 // (while dropping) 
 
-// "enums" 
+// "enums"   FIXME: when CX has enums or constants 
 var ENT_DROPPER        i32 = entities.ENT_MAX_OF_2DFW     // coin ENT_DROPPER 
 var ENT_GAME_COIN      i32 = entities.ENT_MAX_OF_2DFW + 1
 var ENT_BACKDROP_COIN  i32 = entities.ENT_MAX_OF_2DFW + 2 // for menu backdrop 
@@ -13,8 +13,8 @@ var ENT_PARTICLE_0     i32 = entities.ENT_MAX_OF_2DFW + 4
 var ENT_PARTICLE_1     i32 = entities.ENT_MAX_OF_2DFW + 5
 var ENT_MAX_OF_GAME    i32 = entities.ENT_MAX_OF_2DFW + 6
 // 		modes 
-var ENT_MODE_DROPPING  i32
-var ENT_MODE_FADING    i32 = 1
+var ENT_MODE_DROPPING  i32 = entities.ENT_MODE_MAX_OF_2DFW
+var ENT_MODE_FADING    i32 = entities.ENT_MODE_MAX_OF_2DFW + 1
 
 
 
@@ -76,19 +76,24 @@ var nTic /* new particle */ entities.Entity
 func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 	for id := 0; id < 8; id++ {
 		var r   i32 = i32.rand(-100, 100)
-		var vx  f32 = f32.mul(0.01, i32.f32(r))
-		r           = i32.rand(11, 250)
-		var vy  f32 = f32.mul(0.01, i32.f32(r))
-		var exp f32 = f32.add(time.Now, 0.3)
+		var gX  f32 = f32.mul(0.01, i32.f32(r)) // goal offset 
+		    r       = i32.rand(11, 250)
+		var gY  f32 = f32.mul(0.01, i32.f32(r))
+		var exp f32 = f32.add(time.Now, 0.9)
 		
 		nTic = entities.Entity{
-			x:          entities.All[et][i].x, 
-			y:          entities.All[et][i].y, 
-			vx:         vx,
-			vy:         vy,
-			ExtentX:    0.015, 
-			ExtentY:    0.03,
-			ExpiryTime: exp}				
+			Mode:        entities.ENT_MODE_MOVING_TO_POS,
+			GoalEntType: plr,
+			GoalEntId:   0,
+			GoalX:       entities.All[et][i].x + gX,
+			GoalY:       entities.All[et][i].y + gY,
+			x:           entities.All[et][i].x, 
+			y:           entities.All[et][i].y, 
+			vx:          gX * 0.2, 
+			vy:          gY * 0.2,
+			ExtentX:     0.015, 
+			ExtentY:     0.03,
+			ExpiryTime:  exp}				
 		
 		if i32.rand(0, 2) == 0 {
 			entities.Spawn(ENT_PARTICLE_0, nTic)

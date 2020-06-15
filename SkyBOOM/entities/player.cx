@@ -3,7 +3,7 @@ package main
 
 
 var walletAspectRatio f32 = 828.0 / 364.0 // multiply this with desired height 
-var plr  i32 = entities.ENT_PLAYER
+var plr               i32 = entities.ENT_PLAYER
 // cache edges 
 var pT f32 // top 
 var pB f32 // bottom 
