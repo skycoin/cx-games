@@ -16,7 +16,7 @@ func Init (bufferingPointerSpots bool) {
 	glfw.SetKeyCallback        (app.Name, "onKeyEvent")
 	glfw.SetMouseButtonCallback(app.Name, "onMouseButtonEvent")
 	
-	if bufferingPointerSpots {
+	if  bufferingPointerSpots {
 		BufferingPointerSpots = 
 		bufferingPointerSpots
 		printf("    BufferingPointerSpots: %v \n", BufferingPointerSpots)

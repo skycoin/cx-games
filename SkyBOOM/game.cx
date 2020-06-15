@@ -7,6 +7,23 @@ import "inputs"
 /*
 
 --------------- ISSUE REPORTS ----------------------------------------
+THE FOLLOWING WASN'T RETURNING TRUE
+
+// detect edge touching player 
+func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
+	if  edge < pR &&
+		edge > pL {
+			
+		growAndFadeUpward(i)
+		return true
+	}
+	
+	return false
+}
+
+
+
+
 passing parameter to entities.Update () had no proper error 
 
 
@@ -26,7 +43,7 @@ i seem to be having a problem with remove() not being able to selectively remove
 
 it seems to remove all of them instead of just the 1.
 
-entities.All[FALLING_COIN] = remove(entities.All[FALLING_COIN], i)
+entities.All[ENT_GAME_COIN] = remove(entities.All[ENT_GAME_COIN], i)
 
 actually it seems to remove all items the 1st time or 2, then after that it leaves 1 (out of around 7 items) remaining in the inner slice.
 
@@ -51,6 +68,13 @@ that's INSIDE the package, and even INSIDE, "e" has default values instead of wh
 
 
 ------------------------------- SkyBOOM notes ----------------------------
+--- GENERAL IMPROVEMENT 
+
+move CXtris texture loading out of 2DFWork
+add matrix partics to menu backdrop 
+add matrix partics to menu backdrop 
+
+
 --- SPLASH SCREEN 
 
 Full Skycoin logo inc. text
@@ -87,10 +111,6 @@ fall speed
 
 */
 
-// misc 
-var plr  i32 = entities.ENT_PLAYER
-var pTop f32 // player top edge 
-
 
 
 func gameInit () {
@@ -102,101 +122,35 @@ func gameInit () {
 	menuInit()
 	drawInit()
 	entitiesInit()
-	
-	pTop = entities.All[plr][0].y +
-		   entities.All[plr][0].ExtentY
-	//printf("pTop: %f      [plr][0].y: %f        [plr][0].ExtentY: %f \n", 
-	//	pTop, entities.All[plr][0].y, entities.All[plr][0].ExtentY)
 }
 
 
 func gameUpdate () {
-	respondToPointerEvents()
+	time.Update()
+	respondToPointerEvents() // updates player paddles with deltas 
 	respondToButtonEvents()
 	respondToKeyEvents()
-	
-	updateGameEntities()
+	entitiesUpdate()
 }
 
 
-func updateGameEntities () {
-	// player 
-	entities.All[plr][0].x = inputs.MousePointer.X
-	
-	// 		cache edges 
-	var pL f32 // left  
-	var pR f32 // right 
-	pL, pR = getPlayerEdges()
-	
-	// 		keep entirely within view 
-	if pR > space.ViewEdgeR {
-		entities.All[plr][0].x = space.ViewEdgeR -
-		entities.All[plr][0].ExtentX
-		pL, pR = getPlayerEdges()
-	}else
-	if pL < space.ViewEdgeL {
-		entities.All[plr][0].x = space.ViewEdgeL +
-		entities.All[plr][0].ExtentX
-		pL, pR = getPlayerEdges()
-	}
-	
-	
-	dropperUpdate()
-	
-	
-	// falling coin collisions 
-	var et i32 = FALLING_COIN // entity type 
-	var n  i32 = entities.GetCountOf(et)
-	var st i32 = n - 1
-	printf("st: %v       n: %v \n", st, n)
-	for i := st; i >= 0; i-- { // go backwards for removals 
-		var t f32 // rect edges 
-		var r f32
-		var b f32
-		var l f32
-		t, r, b, l = entities.GetRect(et, i)
-		printf("i: %d       b: %f \n", i, b)
-		
-		doFading(i)
-		
-		// collision 
-		if b > 1.0 { // (above top of viewport) 
-			printf("ABOUT TO Kill   *** EXITED TOP *** i: %d \n", i)
-			entities.Kill(et, i)
-		}else
-		if b < -1.0 { // touched floor/detonators/whatev 
-			printf("ABOUT TO Kill   *** EXITED BOTTOM *** i: %d \n", i)
-			entities.Kill(et, i)
-		}else
-		if b < pTop { // (below top of plr bucket/s) 
-			if      caughtCoin(i, pL, pR, l) { // coin left  edge 
-				//break // avoid catching twice 
-			}else{
-				var u /* (unused return) */ bool
-				u = caughtCoin(i, pL, pR, r)   // coin right edge 
-			}
-		}
-	}
-}
-
-
-func getPlayerEdges () (l f32, r f32) {
+func getPlayerEdges (i i32) (l f32, r f32) {
 	l = // left 
-		entities.All[plr][0].x -
-		entities.All[plr][0].ExtentX
+		entities.All[plr][i].x -
+		entities.All[plr][i].ExtentX
 		
 	r = // right 
-		entities.All[plr][0].x +
-		entities.All[plr][0].ExtentX
+		entities.All[plr][i].x +
+		entities.All[plr][i].ExtentX
 }
 
 
 func doFading (i i32) {
-	if  entities.All[FALLING_COIN][i].Mode == MODE_FADING {
-		entities.All[FALLING_COIN][i].ExtentX = 
-		entities.All[FALLING_COIN][i].ExtentX + time.Delta
-		entities.All[FALLING_COIN][i].ExtentY = 
-		entities.All[FALLING_COIN][i].ExtentY + time.Delta
+	if  entities.All[ENT_GAME_COIN][i].Mode == ENT_MODE_FADING {
+		entities.All[ENT_GAME_COIN][i].ExtentX = 
+		entities.All[ENT_GAME_COIN][i].ExtentX + time.Delta
+		entities.All[ENT_GAME_COIN][i].ExtentY = 
+		entities.All[ENT_GAME_COIN][i].ExtentY + time.Delta
 	}
 }
 
@@ -206,12 +160,14 @@ func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
 	if  edge < pR &&
 		edge > pL {
 			
-		entities.All[FALLING_COIN][i].Mode = MODE_FADING
-		entities.All[FALLING_COIN][i].vx = edge * -0.5
-		entities.All[FALLING_COIN][i].vy = 2.6 // fly up 
-		//printf("coin < pTop: %f   %d \n", pTop, i)
-		return true
+		out = true
+	}else{	
+		out = false
 	}
-	
-	return false
+}
+
+
+func growAndFadeUpward (i i32) () {
+	entities.All[ENT_GAME_COIN][i].Mode = ENT_MODE_FADING
+	entities.All[ENT_GAME_COIN][i].vy   = 2.6 // fly up 
 }

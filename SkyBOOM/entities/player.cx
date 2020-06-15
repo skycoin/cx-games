@@ -1,0 +1,70 @@
+package main
+
+
+
+var walletAspectRatio f32 = 828.0 / 364.0 // multiply this with desired height 
+var plr               i32 = entities.ENT_PLAYER
+// cache edges 
+var pT f32 // top 
+var pB f32 // bottom 
+var pL f32 // left  
+var pR f32 // right 
+	
+
+
+func playerEntsInit () {
+	entities.AutoUpdatePlayers = false
+	
+	var f f32  = 0.1
+	var y f32  = f - 1.0
+	var et i32 = entities.ENT_PLAYER
+
+	// wallets/paddles/buckets 
+	//		bottom 
+	//		(1st player entity is autocreated) 
+	entities.All[et][0].y       = y
+	entities.All[et][0].ExtentX = f * walletAspectRatio
+	entities.All[et][0].ExtentY = f
+	
+	var ne entities.Entity	
+	
+	// middle 
+	y = f32.add(y, f32.mul(f, 3.0))
+	ne = entities.Entity{
+		y:       y,
+		ExtentX: f * walletAspectRatio,
+		ExtentY: f}
+	entities.Spawn(et, ne)
+
+	// top 
+	y = f32.add(y, f32.mul(f, 3.0))
+	ne = entities.Entity{
+		y:       y, 
+		ExtentX: f * walletAspectRatio,
+		ExtentY: f}
+	entities.Spawn(et, ne)
+
+	pT = f32.add(ne.y, ne.ExtentY)					
+	pB = -1.0
+}
+
+
+func playerEntsUpdate () {
+	var n i32 = entities.GetLenOf(plr)
+	
+	for i := 0; i < n; i++ {
+		pL, pR = getPlayerEdges(i)
+		
+		// 		keep entirely within view 
+		if pR > space.ViewEdgeR {
+			entities.All[plr][i].x = space.ViewEdgeR -
+			entities.All[plr][i].ExtentX
+			pL, pR = getPlayerEdges(i)
+		}else
+		if pL < space.ViewEdgeL {
+			entities.All[plr][i].x = space.ViewEdgeL +
+			entities.All[plr][i].ExtentX
+			pL, pR = getPlayerEdges(i)
+		}
+	}
+}

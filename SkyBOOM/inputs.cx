@@ -5,12 +5,15 @@ package main
 func respondToPointerEvents () {
 	var v app.Vec2 = inputs.GetPointerEvent ()
 		
-	// allow dragging a slider handle 
-	if inputs.HoldingLeftButton && 
-		v.X != app.TOO_BIG_F32 &&
-		app.Mode < app.MODE_MENU_MAX {
+	if v.X != app.TOO_BIG_F32 &&
+		app.Mode > app.MODE_MENU_MAX {
 			
-		//respondToMenuDrags()
+		var n i32 = entities.GetLenOf(plr)
+		
+		for i := 0; i < n; i++ {
+			entities.All[plr][i].x = 
+			entities.All[plr][i].x + inputs.MouseDeltaX
+		}
 	}
 }
 

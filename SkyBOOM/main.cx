@@ -5,8 +5,6 @@ import "glfw"
 
 import "app"
 import "draw"
-import "entities"
-import "inputs"
 import "map"
 import "mov"
 import "space"
@@ -18,8 +16,6 @@ func main () {
 	gameInit()
 
 	for bool.not(glfw.ShouldClose(app.Name)) {
-		time.Update()
-		entities.Update()
 		gameUpdate()
 		drawAll()
 		
