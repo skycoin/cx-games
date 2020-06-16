@@ -21,13 +21,13 @@ func dropperInit () {
 	var entY f32 = 1.0 - f32.add(exY, 0.02) // margin from top edge 
 	
 	ent = entities.Entity{
-		y:       entY, 
+		Y:       entY, 
 		ExtentX: exY * cloudAspectRatio, 
 		ExtentY: exY, 
-		vx:      1.2}
+		VelX:    1.2}
 	entities.Spawn(ENT_DROPPER, ent)
 	
-	coinDropHeight = ent.y - exY + coinExtent
+	coinDropHeight = ent.Y - exY + coinExtent
 	setDropperTarget()
 }
 
@@ -44,8 +44,8 @@ func dropCoins () {
 		nextDrop = time.Now + dropDelay
 		
 		coin = entities.Entity{ 
-			x:       entities.All[ENT_DROPPER][0].x,
-			y:       coinDropHeight, 
+			X:       entities.All[ENT_DROPPER][0].X,
+			Y:       coinDropHeight, 
 			ExtentX: coinExtent,
 			ExtentY: coinExtent,
 			VelX:     0.0,
@@ -59,18 +59,18 @@ func dropCoins () {
 func handleDropperReversing () {
 	if     entities.All[ENT_DROPPER][0].VelX < 0.0 {
 		// going left 
-		if entities.All[ENT_DROPPER][0].x < reverseTarget {
+		if entities.All[ENT_DROPPER][0].X < reverseTarget {
 			reverseDropper()
 		}else
-		if entities.All[ENT_DROPPER][0].x < space.ViewEdgeL {
+		if entities.All[ENT_DROPPER][0].X < space.ViewEdgeL {
 			reverseDropper()
 		}
 	}else{
 		// going right 
-		if entities.All[ENT_DROPPER][0].x > reverseTarget {
+		if entities.All[ENT_DROPPER][0].X > reverseTarget {
 			reverseDropper()
 		}else
-		if entities.All[ENT_DROPPER][0].x > space.ViewEdgeR {
+		if entities.All[ENT_DROPPER][0].X > space.ViewEdgeR {
 			reverseDropper()
 		}
 	}
@@ -90,10 +90,10 @@ func setDropperTarget () {
 
 	if entities.All[ENT_DROPPER][0].VelX > 0.0 { 
 		// going right 
-		pd = f32.sub(space.ViewEdgeR, entities.All[ENT_DROPPER][0].x)
+		pd = f32.sub(space.ViewEdgeR, entities.All[ENT_DROPPER][0].X)
 	}else{ 
 		// going left 
-		pd = f32.sub(space.ViewEdgeL, entities.All[ENT_DROPPER][0].x)
+		pd = f32.sub(space.ViewEdgeL, entities.All[ENT_DROPPER][0].X)
 	}
 
 	printf("potential distance: %f \n", pd)

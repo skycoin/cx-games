@@ -86,10 +86,10 @@ func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 			Mode:        entities.ENT_MODE_MOVING_TO_POS,
 			GoalEntType: plr,
 			GoalEntId:   0,
-			GoalX:       entities.All[et][i].x + gX,
-			GoalY:       entities.All[et][i].y + gY,
-			x:           entities.All[et][i].x, 
-			y:           entities.All[et][i].y, 
+			GoalX:       entities.All[et][i].X + gX,
+			GoalY:       entities.All[et][i].Y + gY,
+			X:           entities.All[et][i].X, 
+			Y:           entities.All[et][i].Y, 
 			VelX:        gX * 0.2, 
 			VelY:        gY * 0.2,
 			ExtentX:     0.015, 
@@ -119,8 +119,8 @@ func spawnMenuBackdropCoins () {
 		var frY f32 = f32.add(-1.0           , f32.mul(i32.f32(irY), space.PixelSize.Y))
 			
 		ent = entities.Entity{
-			x:        frX, 
-			y:        frY, 
+			X:        frX, 
+			Y:        frY, 
 			VelX:     frX * 0.2,
 			VelY:     frY * 0.2,
 			ExtentX:  ex, 
@@ -143,13 +143,13 @@ func spawnCloudsBackdrop () {
 	var incX f32 = f32.mul(exX, 2.0) * 1.0 // 1.33 // 1/3 ratio gap tween them 
 	var incY f32 = f32.mul(exY, 2.0) * 0.83
 	
-	for     y < entities.All[ENT_DROPPER][0].y -
+	for     y < entities.All[ENT_DROPPER][0].Y -
 		        entities.All[ENT_DROPPER][0].ExtentY {
 		        	
 		for x < space.ViewEdgeR {
 			ent = entities.Entity{
-				x:        x, 
-				y:        y, 
+				X:        x, 
+				Y:        y, 
 				ExtentX:  y * exX, 
 				ExtentY:  y * exY, 
 				VelX:     y, 

@@ -37,7 +37,7 @@ func ConstrainPosByMap (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 	
 	//		in X dimension 
 	gridDelta, x, velX = BounceOffWalls(
-		entities.All[t][i].x,
+		entities.All[t][i].X,
 		entities.All[t][i].VelX,
 		entities.All[t][i].ExtentX, 
 		entities.All[t][i].CellMin.X, 
@@ -53,7 +53,7 @@ func ConstrainPosByMap (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 
 	//		in Y dimension 
 	gridDelta, y, velY = BounceOffWalls(
-		entities.All[t][i].y, 
+		entities.All[t][i].Y, 
 		entities.All[t][i].VelY, 
 		entities.All[t][i].ExtentY, 
 		entities.All[t][i].CellMin.Y, 

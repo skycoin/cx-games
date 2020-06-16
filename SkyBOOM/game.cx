@@ -54,13 +54,13 @@ hmmmm, it seems i can't get the correct values out of a struct which was returne
 
 func Get (entType i32, id i32) (e Entity) {
   e = All[entType][id]
-  printf("INSIDE Get() All[entType][id].y: %f \n", All[entType][id].y)
-  printf("INSIDE Get()                e.y: %f \n", e.y)
+  printf("INSIDE Get() All[entType][id].Y: %f \n", All[entType][id].Y)
+  printf("INSIDE Get()                e.Y: %f \n", e.Y)
 }
 
 that's INSIDE the package, and even INSIDE, "e" has default values instead of what i had just set it to.
 
-(the All[entType][id].y has the values i expected)
+(the All[entType][id].Y has the values i expected)
 
 
 
@@ -136,11 +136,11 @@ func gameUpdate () {
 
 func getPlayerEdges (i i32) (l f32, r f32) {
 	l = // left 
-		entities.All[plr][i].x -
+		entities.All[plr][i].X -
 		entities.All[plr][i].ExtentX
 		
 	r = // right 
-		entities.All[plr][i].x +
+		entities.All[plr][i].X +
 		entities.All[plr][i].ExtentX
 }
 
