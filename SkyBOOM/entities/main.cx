@@ -64,34 +64,21 @@ func entitiesUpdate () {
 			entities.All[et][i].VelY = 2.6 // fly up 
 			
 			// remove 1 player paddle/wallet 
+			scoreAtLastLoss = score
 			var numP /* (paddles) */ i32 = entities.GetCountOf(plr)
 			entities.Kill(plr, numP - 1)
 			    numP                     = entities.GetCountOf(plr)
 					
-			// maybe end game 
+			// maybe end game or...
 			if numP < 1 {
 				app.Mode = app.MODE_GAME_OVER
-			}else{
+			}else{ // ...cache new top edge 
 				printf("numP - 1: %d \n", numP - 1)
 				pT = entities.All[plr][numP - 1].Y +
 					 entities.All[plr][numP - 1].ExtentY
 			}
 		}else{
-			if  b < pT && // (below top of player bucket/s) 
-				t > pB {
-
-				if     caughtCoin(i, pL, pR, l) { // coin left  edge 
-						score = score + 1
-						spawnParticlePuffFrom(et, i)
-						entities.Kill(et, i)
-				}else{
-					if caughtCoin(i, pL, pR, r) { // coin right edge 
-						score = score + 1
-						spawnParticlePuffFrom(et, i)
-						entities.Kill(et, i)
-					}
-				}
-			}
+			maybeCollideWithCoin(et, i, t, r, b, l)
 		}
 	}
 	}
