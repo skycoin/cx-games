@@ -200,20 +200,20 @@ func respondToMenuClicks () {
 	var i i32
 	s, i = menu.GetHoveredItem(app.Mode)
 
-	if s == menu.Play {
+	if s == menu.ItemPlay {
 		inputs.UseMousePointer(false)
 		shape.PlayerScore    =  0
 		shape.PlayerScoreTxt = "0"
 		startNewGameSession()
 		app.Mode = app.MODE_PLAYING
 	} else
-	if s == menu.Options {
+	if s == menu.ItemOptions {
 		app.Mode = app.MODE_MENU_OPTIONS
 	} else
-	if s == menu.Controls {
+	if s == menu.ItemControls {
 		app.Mode = app.MODE_MENU_CONTROLS
 	} else
-	if s == menu.Quit {
+	if s == menu.ItemQuit {
 		glfw.SetShouldClose(app.Name, true)
 	} else
 	if s == ShowNextShapeText + "YES" {

@@ -12,13 +12,17 @@ var DebrisHeight      i32  = 9
 
 
 func menuInit () {
-	menu.Init()
+ 	// app.MODE_MENU_MAIN
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemPlay)
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemOptions)
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemControls)
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemQuit)
 
 	// app.MODE_MENU_OPTIONS
  	menu.MakeItem(1, menu.OptionsSize, ShowNextShapeText + "YES")
  	menu.MakeItem(1, menu.OptionsSize, SpeedText)
  	menu.MakeItem(1, menu.OptionsSize, DebrisHeightText)
-	// app.MODE_MENU_CONTROLS
+	// app.MODE_MENU_CONTROLS (no items, just a mode for drawing) 
  	menu.MakeItem(2, menu.OptionsSize, "")
 
 	// sliders (the only items that use these fields) 

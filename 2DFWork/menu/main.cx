@@ -6,27 +6,18 @@ import "gltext"
 
 
 
-var OptionsSize f32 = 58.0
+// options 
+var OptionsSize  f32 = 58.0
 // main  
-var MainSize    f32 = 125.0
-var Play        str = "Play"
-var Options     str = "Options"
-var Controls    str = "Controls"
-var Quit        str = "Quit"
+var MainSize     f32 = 125.0
+//		items 
+var ItemPlay     str = "Play"
+var ItemOptions  str = "Options"
+var ItemControls str = "Controls"
+var ItemQuit     str = "Quit"
 
 var Items [][]draw.TextGL // 1st is menu id, 2nd is item id 
 
-
-
-func Init () {
- 	printf("menu.Init () \n")
- 	
- 	// app.MODE_MENU_MAIN
- 	MakeItem(0, MainSize, Play)
- 	MakeItem(0, MainSize, Options)
- 	MakeItem(0, MainSize, Controls)
- 	MakeItem(0, MainSize, Quit)
-}
 
 
 func MakeItem(menuId i32, size f32, text str) {

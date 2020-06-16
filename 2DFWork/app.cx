@@ -56,7 +56,7 @@ func Init (name str, controls str) {
 	Name = name
 	Controls = controls
 	CliIntro()
-	showWorkHoursNeeded() // calculate corpusc's current daily goal 
+	showWorkHoursNeeded() // calculate CorpusC's current daily goal 
 }
 
 
@@ -68,14 +68,14 @@ func CliIntro () {
 func showWorkHoursNeeded () {
 	// current "workmonth" (pay period) goes from the 5th to the 4th of following month 
 	var today       i32 = 15 // day of current month 
-	var hoursWorked f32 = 7.5
+	var hoursWorked f32 = 10.48
 
 	var daysInMonth i32 = 30 // current month that majority of days are in 
-	var hourGoal    f32 = 100.0 // ...to work this month (pay period) 
+	var hoursGoal   f32 = 100.0 // ...to work this month (pay period) 
 	
 	
 	var daysLeft    i32 = daysInMonth - today + 4
-	var hoursLeft   f32 = hourGoal - hoursWorked
+	var hoursLeft   f32 = hoursGoal - hoursWorked
 	printf("============================================================================\n")
 	printf("============================================================================\n")
 	printf("====                      CorpusC's daily time goal                     ====\n")

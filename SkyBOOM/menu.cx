@@ -4,33 +4,14 @@ import "menu"
 
 
 
-// options 
-var ShowNextShape     bool = true
-var ShowNextShapeText str  = "Show next shape: "
-var SpeedText         str  = "Speed"
-var DebrisHeightText  str  = "Debris height"
-var DebrisHeight      i32  = 9
-
-
-
 func menuInit () {
-	menu.Init()
+ 	// app.MODE_MENU_MAIN
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemPlay)
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemQuit)
 
-	// app.MODE_MENU_OPTIONS
- 	menu.MakeItem(1, menu.OptionsSize, ShowNextShapeText + "YES")
- 	menu.MakeItem(1, menu.OptionsSize, SpeedText)
- 	menu.MakeItem(1, menu.OptionsSize, DebrisHeightText)
-	// app.MODE_MENU_CONTROLS
- 	menu.MakeItem(2, menu.OptionsSize, "")
-
-	// sliders (the only items that use these fields) 
-	/* EXAMPLES FROM CXTris 
-	menu.Items[1][1].Max   = DROP_SPEED_MAX
-	menu.Items[1][1].Value = DropSpeed
-	menu.Items[1][2].Max   = 11 // for debris height 
-	menu.Items[1][2].Value = DebrisHeight
-	*/
-
+	// no need for Options or Controls menus, 
+	// but check CXtris for examples of those (including slider widgets) 
+	
 	menu.BakeItemText()
 }
 
@@ -41,17 +22,13 @@ func respondToMenuClicks () {
 	s, i = menu.GetHoveredItem(app.Mode)
 	printf("GetHoveredItem() mode: %d s: %s i: %d\n", app.Mode, s, i)
 
-	if s == menu.Play {
+	if s == menu.ItemPlay {
 		inputs.UseMousePointer(false)
 		app.Mode = app.MODE_PLAYING
+		score = 0
+		entities.ActiveCounts[plr] = 3
 	} else
-	if s == menu.Options {
-		app.Mode = app.MODE_MENU_OPTIONS
-	} else
-	if s == menu.Controls {
-		app.Mode = app.MODE_MENU_CONTROLS
-	} else
-	if s == menu.Quit {
+	if s == menu.ItemQuit {
 		glfw.SetShouldClose(app.Name, true)
 	}
 }

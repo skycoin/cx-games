@@ -29,6 +29,12 @@ func entitiesInit () {
 
 func entitiesUpdate () {
 	entities.Update()
+	
+	if app.Mode < app.MODE_MENU_MAX {
+		return ///////// return does nothing?! ///////////////////////
+		// (but func works as desired ATM, 
+		// cuz the rest is in the "else" block) 
+	}else{
 	playerEntsUpdate()
 	dropperUpdate()	
 	
@@ -52,23 +58,36 @@ func entitiesUpdate () {
 			entities.Kill(et, i)
 		}else
 		if b < -1.0 { // touched floor/detonators/whatev 
+			// change coin dir, size, fade 
 			entities.All[et][i].Mode = ENT_MODE_FADING
 			entities.All[et][i].VelY = 2.6 // fly up 
+			
+			// remove 1 player paddle/wallet 
+			var numP /* (paddles) */ i32 = entities.GetLenOf(plr)
+			entities.Kill(plr, numP - 1)	
+					
+			// maybe end game 
+			if numP < 1 {
+				app.Mode = app.MODE_GAME_OVER
+			}
 		}else{
-			if  b < pT && // (below top of plr bucket/s) 
+			if  b < pT && // (below top of player bucket/s) 
 				t > pB {
 
 				if     caughtCoin(i, pL, pR, l) { // coin left  edge 
+						score = score + 1
 						spawnParticlePuffFrom(et, i)
 						entities.Kill(et, i)
 				}else{
 					if caughtCoin(i, pL, pR, r) { // coin right edge 
+						score = score + 1
 						spawnParticlePuffFrom(et, i)
 						entities.Kill(et, i)
 					}
 				}
 			}
 		}
+	}
 	}
 }
 

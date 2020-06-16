@@ -71,8 +71,8 @@ that's INSIDE the package, and even INSIDE, "e" has default values instead of wh
 --- GENERAL IMPROVEMENT 
 
 move CXtris texture loading out of 2DFWork
-add matrix partics to menu backdrop 
-add matrix partics to menu backdrop 
+add matrix partics (straight downwards) to menu backdrop 
+wallet explosion upon loss  
 
 
 --- SPLASH SCREEN 
