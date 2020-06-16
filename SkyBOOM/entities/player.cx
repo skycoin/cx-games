@@ -99,18 +99,20 @@ func addToScore () {
 
 func maybeCollideWithCoin (et i32, i i32, coinTop f32, coinRight f32, coinBottom f32, coinLeft f32) {
 	if entities.All[et][i].Mode == ENT_MODE_DROPPING {
-		if coinBottom < pT && // (below top of player bucket/s) 
-		   coinTop    > pB {
+		if entities.ActiveCounts[plr] > 0 {
+			if coinBottom < pT && // (below top of player bucket/s) 
+			   coinTop    > pB {
 
-			if     caughtCoin(i, pL, pR, coinLeft) { // edge 
-					addToScore()
-					spawnParticlePuffFrom(et, i)
-					entities.Kill(et, i)
-			}else{
-				if caughtCoin(i, pL, pR, coinRight) { // edge 
-					addToScore()
-					spawnParticlePuffFrom(et, i)
-					entities.Kill(et, i)
+				if     caughtCoin(i, pL, pR, coinLeft) { // edge 
+						addToScore()
+						spawnParticlePuffFrom(et, i)
+						entities.Kill(et, i)
+				}else{
+					if caughtCoin(i, pL, pR, coinRight) { // edge 
+						addToScore()
+						spawnParticlePuffFrom(et, i)
+						entities.Kill(et, i)
+					}
 				}
 			}
 		}

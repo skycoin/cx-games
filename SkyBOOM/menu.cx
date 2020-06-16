@@ -27,6 +27,8 @@ func respondToMenuClicks () {
 		app.Mode = app.MODE_PLAYING
 		score = 0
 		
+		entities.All[ENT_DROPPER][0].X = 0.0
+		
 		// activate all wallet paddles 
 		entities.ActiveCounts[plr] = 3
 		pT = entities.All[plr][2].Y +
