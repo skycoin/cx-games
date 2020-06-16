@@ -31,14 +31,14 @@ func GetPlayerVelocityFromInput (ivX f32, ivY f32) (ovX f32, ovY f32) {
 
 // t = entity type 
 // i = entity id 
-func ConstrainPosByMap (t i32, i i32) (x f32, y f32, vx f32, vy f32) {
+func ConstrainPosByMap (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 	// collision bounce 
 	var gridDelta i32 // for player crossing boundaries into adjacent grid cells 
 	
 	//		in X dimension 
-	gridDelta, x, vx = BounceOffWalls(
+	gridDelta, x, velX = BounceOffWalls(
 		entities.All[t][i].x,
-		entities.All[t][i].vx,
+		entities.All[t][i].VelX,
 		entities.All[t][i].ExtentX, 
 		entities.All[t][i].CellMin.X, 
 		entities.All[t][i].CellMax.X, 
@@ -52,9 +52,9 @@ func ConstrainPosByMap (t i32, i i32) (x f32, y f32, vx f32, vy f32) {
 	}
 
 	//		in Y dimension 
-	gridDelta, y, vy = BounceOffWalls(
+	gridDelta, y, velY = BounceOffWalls(
 		entities.All[t][i].y, 
-		entities.All[t][i].vy, 
+		entities.All[t][i].VelY, 
 		entities.All[t][i].ExtentY, 
 		entities.All[t][i].CellMin.Y, 
 		entities.All[t][i].CellMax.Y, 

@@ -165,9 +165,3 @@ func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
 		out = false
 	}
 }
-
-
-func growAndFadeUpward (i i32) () {
-	entities.All[ENT_GAME_COIN][i].Mode = ENT_MODE_FADING
-	entities.All[ENT_GAME_COIN][i].vy   = 2.6 // fly up 
-}

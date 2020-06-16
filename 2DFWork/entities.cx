@@ -29,13 +29,13 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	y           f32
 	ExtentX     f32
 	ExtentY     f32
-	ExpiryDist  f32 // expire by distance travelled (0.0 == not using) 
-	ExpiryTime  f32 // expire by time passed        (0.0 == not using) 
-	vx          f32
-	vy          f32
-	gravity     f32
+	VelX        f32 // velocity 
+	VelY        f32 // velocity 
+	Gravity     f32
 	 
 	Mode        i32
+	ExpiryDist  f32 // expire by distance travelled (0.0 == not using) 
+	ExpiryTime  f32 // expire by time passed        (0.0 == not using) 
 	WrapView    bool // moving objects wrap/teleport to opposite side of viewport 
 
 	// FIXME: move these into Sky Taxi 
@@ -52,7 +52,7 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	// Goal/Target info. 
 	// 		by worldspace position (THIS HAS PRIORITY OVER ENTITY-BASED GOALS). 
 	//			these 2 are a unit, if both == 0.0, no ws pos goal set 
-	// 			non-zero values causes vx, vy to be ignored, 
+	// 			non-zero values causes VelX/Y to be ignored, 
 	// 			& instead move towards these values until close enough 
 	GoalX       f32
 	GoalY       f32
@@ -89,9 +89,9 @@ func Init (maxEntTypes i32) {
 		y:       0.0,
 		ExtentX: 0.05,
 		ExtentY: 0.05,
-		//vx:      0.10,
-		//vy:      0.10,
-		gravity: 0.01}
+		//VelX:      0.10,
+		//VelY:      0.10,
+		Gravity: 0.01}
 		
 	Spawn(ENT_PLAYER, ne)
 }
@@ -118,18 +118,18 @@ func Update () {
 				// REQUIRES FIXME IF PLAYER ENTS EVER SHOULD 
 				// 		USE EXPIRYTIME/DIST FIELDS 
 				//		(CUZ NOW IT COLLIDES AFTER Kill() IN UpdateAt() )
-				All[t][i].vx,
-				All[t][i].vy = mov.GetPlayerVelocityFromInput(
-				All[t][i].vx,
-				All[t][i].vy)
+				All[t][i].VelX,
+				All[t][i].VelY = mov.GetPlayerVelocityFromInput(
+				All[t][i].VelX,
+				All[t][i].VelY)
 			
 				UpdateAt(t, i)
 
 				// back out of any entity/entity penetration 
 				All[t][i].x,
 				All[t][i].y,
-				All[t][i].vx,
-				All[t][i].vy = mov.ConstrainPosByMap(t, i)
+				All[t][i].VelX,
+				All[t][i].VelY = mov.ConstrainPosByMap(t, i)
 			}else{
 				UpdateAt(t, i)
 			}
@@ -148,6 +148,8 @@ func UpdateAt (et i32, i i32) { // entity type, id
 	
 	
 	// move 
+	if All[et][i].Mode == ENT_MODE_MOVING_BY_VELOCITY {
+	}else
 	if All[et][i].Mode == ENT_MODE_MOVING_TO_POS {
 		if  All[et][i].x < All[et][i].GoalX + eps && // close enough to goal 
 			All[et][i].x > All[et][i].GoalX - eps && 
@@ -160,12 +162,12 @@ func UpdateAt (et i32, i i32) { // entity type, id
 		}
 	}else
 	if All[et][i].Mode == ENT_MODE_MOVING_TO_ENTITY {
-		str.print("going to paddle 0")
+		//str.print("zooming to paddle 0")
 		var entId i32 = All[et][i].GoalEntId
 		var fX    f32 = f32.sub(All[ENT_PLAYER][entId].x, All[et][i].x) * 1.3
 		var fY    f32 = f32.sub(All[ENT_PLAYER][entId].y, All[et][i].y) * 1.3
-		All[et][i].vx = fX
-		All[et][i].vy = fY
+		All[et][i].VelX = fX
+		All[et][i].VelY = fY
 	}
 	
 	moveByVelocity(et, i)
@@ -213,12 +215,12 @@ func Spawn (eType i32, newEnt Entity) {
 		All[eType][aC].y           = newEnt.y        
 		All[eType][aC].ExtentX     = newEnt.ExtentX  
 		All[eType][aC].ExtentY     = newEnt.ExtentY  
-		All[eType][aC].ExpiryDist  = newEnt.ExpiryDist
-		All[eType][aC].ExpiryTime  = newEnt.ExpiryTime
-		All[eType][aC].vx          = newEnt.vx       
-		All[eType][aC].vy          = newEnt.vy       
+		All[eType][aC].VelX          = newEnt.VelX       
+		All[eType][aC].VelY          = newEnt.VelY       
 		All[eType][aC].gravity     = newEnt.gravity  
 		All[eType][aC].Mode        = newEnt.Mode     
+		All[eType][aC].ExpiryDist  = newEnt.ExpiryDist
+		All[eType][aC].ExpiryTime  = newEnt.ExpiryTime
 		All[eType][aC].WrapView    = newEnt.WrapView	
 		All[eType][aC].GoalX       = newEnt.GoalX      
 		All[eType][aC].GoalY       = newEnt.GoalY      
@@ -258,12 +260,12 @@ func Kill (eType i32, id i32) {
 		//printf("RECYCLE  eType: %d   id: %d BEFORE \n", eType, id)
 		All[eType][id].x           = All[eType][lS].x
 		All[eType][id].y           = All[eType][lS].y
-		All[eType][id].vx          = All[eType][lS].vx
-		All[eType][id].vy          = All[eType][lS].vy
-		All[eType][id].gravity     = All[eType][lS].gravity
-		All[eType][id].Mode        = All[eType][lS].Mode
 		All[eType][id].ExtentX     = All[eType][lS].ExtentX
 		All[eType][id].ExtentY     = All[eType][lS].ExtentY
+		All[eType][id].VelX          = All[eType][lS].VelX
+		All[eType][id].VelY          = All[eType][lS].VelY
+		All[eType][id].gravity     = All[eType][lS].gravity
+		All[eType][id].Mode        = All[eType][lS].Mode
 		All[eType][id].ExpiryDist  = All[eType][lS].ExpiryDist
 		All[eType][id].ExpiryTime  = All[eType][lS].ExpiryTime
 		All[eType][id].WrapView    = All[eType][lS].WrapView
@@ -295,6 +297,6 @@ func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
 
 
 func moveByVelocity (et i32, i i32) {
-	All[et][i].x = f32.add(All[et][i].x, All[et][i].vx * time.Delta)
-	All[et][i].y = f32.add(All[et][i].y, All[et][i].vy * time.Delta)
+	All[et][i].x = f32.add(All[et][i].x, All[et][i].VelX * time.Delta)
+	All[et][i].y = f32.add(All[et][i].y, All[et][i].VelY * time.Delta)
 }

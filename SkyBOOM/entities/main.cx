@@ -52,7 +52,8 @@ func entitiesUpdate () {
 			entities.Kill(et, i)
 		}else
 		if b < -1.0 { // touched floor/detonators/whatev 
-			growAndFadeUpward(i)
+			entities.All[et][i].Mode = ENT_MODE_FADING
+			entities.All[et][i].VelY = 2.6 // fly up 
 		}else{
 			if  b < pT && // (below top of plr bucket/s) 
 				t > pB {
@@ -89,8 +90,8 @@ func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 			GoalY:       entities.All[et][i].y + gY,
 			x:           entities.All[et][i].x, 
 			y:           entities.All[et][i].y, 
-			vx:          gX * 0.2, 
-			vy:          gY * 0.2,
+			VelX:        gX * 0.2, 
+			VelY:        gY * 0.2,
 			ExtentX:     0.015, 
 			ExtentY:     0.03,
 			ExpiryTime:  exp}				
@@ -120,8 +121,8 @@ func spawnMenuBackdropCoins () {
 		ent = entities.Entity{
 			x:        frX, 
 			y:        frY, 
-			vx:       frX * 0.2,
-			vy:       frY * 0.2,
+			VelX:     frX * 0.2,
+			VelY:     frY * 0.2,
 			ExtentX:  ex, 
 			ExtentY:  ex, 
 			WrapView: true}
@@ -151,8 +152,8 @@ func spawnCloudsBackdrop () {
 				y:        y, 
 				ExtentX:  y * exX, 
 				ExtentY:  y * exY, 
-				vx:       y, 
-				//vy:     -0.1, 
+				VelX:     y, 
+				//VelY:   -0.1, 
 				WrapView: true}
 				
 			entities.Spawn(ENT_BACKDROP_CLOUD, ent)

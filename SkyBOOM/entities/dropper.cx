@@ -48,8 +48,8 @@ func dropCoins () {
 			y:       coinDropHeight, 
 			ExtentX: coinExtent,
 			ExtentY: coinExtent,
-			vx:       0.0,
-			vy:      -1.2}
+			VelX:     0.0,
+			VelY:    -1.2}
 			
 		entities.Spawn(ENT_GAME_COIN, coin)
 	}
@@ -57,7 +57,7 @@ func dropCoins () {
 
 
 func handleDropperReversing () {
-	if     entities.All[ENT_DROPPER][0].vx < 0.0 {
+	if     entities.All[ENT_DROPPER][0].VelX < 0.0 {
 		// going left 
 		if entities.All[ENT_DROPPER][0].x < reverseTarget {
 			reverseDropper()
@@ -79,8 +79,8 @@ func handleDropperReversing () {
 
 func reverseDropper () {
 	var vX f32 = 
-	entities.All[ENT_DROPPER][0].vx
-	entities.All[ENT_DROPPER][0].vx = -vX
+	entities.All[ENT_DROPPER][0].VelX
+	entities.All[ENT_DROPPER][0].VelX = -vX
 	setDropperTarget()
 }
 
@@ -88,7 +88,7 @@ func reverseDropper () {
 func setDropperTarget () {
 	var pd f32 // potential distance 
 
-	if entities.All[ENT_DROPPER][0].vx > 0.0 { 
+	if entities.All[ENT_DROPPER][0].VelX > 0.0 { 
 		// going right 
 		pd = f32.sub(space.ViewEdgeR, entities.All[ENT_DROPPER][0].x)
 	}else{ 
