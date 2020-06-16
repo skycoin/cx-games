@@ -31,7 +31,8 @@ func entitiesUpdate () {
 	entities.Update()
 	
 	if app.Mode < app.MODE_MENU_MAX {
-		return ///////// return does nothing?! ///////////////////////
+		str.print("in menu")
+		//return ///////// return does nothing?! ///////////////////////
 		// (but func works as desired ATM, 
 		// cuz the rest is in the "else" block) 
 	}else{
@@ -40,7 +41,7 @@ func entitiesUpdate () {
 	
 	// game coin collisions 
 	var et i32 = ENT_GAME_COIN // entity type 
-	var n  i32 = entities.GetLenOf(et)
+	var n  i32 = entities.GetCountOf(et)
 	var st i32 = n - 1
 	//printf("st: %v       n: %v \n", st, n)
 	for i := st; i >= 0; i-- { // go backwards for removals 
@@ -63,12 +64,17 @@ func entitiesUpdate () {
 			entities.All[et][i].VelY = 2.6 // fly up 
 			
 			// remove 1 player paddle/wallet 
-			var numP /* (paddles) */ i32 = entities.GetLenOf(plr)
-			entities.Kill(plr, numP - 1)	
+			var numP /* (paddles) */ i32 = entities.GetCountOf(plr)
+			entities.Kill(plr, numP - 1)
+			    numP                     = entities.GetCountOf(plr)
 					
 			// maybe end game 
 			if numP < 1 {
 				app.Mode = app.MODE_GAME_OVER
+			}else{
+				printf("numP - 1: %d \n", numP - 1)
+				pT = entities.All[plr][numP - 1].Y +
+					 entities.All[plr][numP - 1].ExtentY
 			}
 		}else{
 			if  b < pT && // (below top of player bucket/s) 

@@ -8,7 +8,7 @@ func respondToPointerEvents () {
 	if v.X != app.TOO_BIG_F32 &&
 		app.Mode > app.MODE_MENU_MAX {
 			
-		var n i32 = entities.GetLenOf(plr)
+		var n i32 = entities.GetCountOf(plr)
 		
 		for i := 0; i < n; i++ {
 			entities.All[plr][i].X = 

@@ -51,7 +51,7 @@ func playerEntsInit () {
 
 
 func playerEntsUpdate () {
-	var n i32 = entities.GetLenOf(plr)
+	var n i32 = entities.GetCountOf(plr)
 	
 	for i := 0; i < n; i++ {
 		pL, pR = getPlayerEdges(i)
