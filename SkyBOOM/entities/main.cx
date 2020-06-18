@@ -31,56 +31,54 @@ func entitiesUpdate () {
 	entities.Update()
 	
 	if app.Mode < app.MODE_MENU_MAX {
-		str.print("in menu")
-		//return ///////// return does nothing?! ///////////////////////
-		// (but func works as desired ATM, 
-		// cuz the rest is in the "else" block) 
-	}else{
-	playerEntsUpdate()
-	dropperUpdate()	
-	
-	// game coin collisions 
-	var et i32 = ENT_GAME_COIN // entity type 
-	var n  i32 = entities.GetCountOf(et)
-	var st i32 = n - 1
-	//printf("st: %v       n: %v \n", st, n)
-	for i := st; i >= 0; i-- { // go backwards for removals 
-		var t f32 // rect edges 
-		var r f32
-		var b f32
-		var l f32
-		t, r, b, l = entities.GetRect(et, i)
-		//printf("i: %d       entities.All[et][i].WrapView: %v      b: %f \n", i, entities.All[et][i].WrapView, b)
+		return ////////////////////////////////////////////////////////
+	}else{		
+		playerEntsUpdate()
+		dropperUpdate()	
 		
-		doFading(i)
-		
-		// collision 
-		if b > 1.0 { // (above top of viewport) 
-			entities.Kill(et, i)
-		}else
-		if b < -1.0 { // touched floor/detonators/whatev 
-			// change coin dir, size, fade 
-			entities.All[et][i].Mode = ENT_MODE_FADING
-			entities.All[et][i].VelY = 2.6 // fly up 
+		// game coin collisions 
+		var et i32 = ENT_GAME_COIN // entity type 
+		var n  i32 = entities.GetCountOf(et)
+		var st i32 = n - 1
+		//printf("st: %v       n: %v \n", st, n)
+		for i := st; i >= 0; i-- { // go backwards for removals 
+			var t f32 // rect edges 
+			var r f32
+			var b f32
+			var l f32
+			t, r, b, l = entities.GetRect(et, i)
+			//printf("i: %d       entities.All[et][i].WrapView: %v      b: %f \n", i, entities.All[et][i].WrapView, b)
 			
-			// remove 1 player paddle/wallet 
-			scoreAtLastLoss = score
-			var numP /* (paddles) */ i32 = entities.GetCountOf(plr)
-			entities.Kill(plr, numP - 1)
-			    numP                     = entities.GetCountOf(plr)
+			doFading(i)
+			
+			// collision 
+			if     b >  1.0 { // (above top of viewport) 
+				entities.Kill(et, i)
+			}else
+			if entities.All[et][i].Mode == ENT_MODE_DROPPING {
+				if b < -1.0 { // touched floor/detonators/whatev 
+					// change coin dir, size, fade 
+					entities.All[et][i].Mode = ENT_MODE_FADING
+					entities.All[et][i].VelY = 2.6 // fly up 
 					
-			// maybe end game or...
-			if numP < 1 {
-				app.Mode = app.MODE_GAME_OVER
-			}else{ // ...cache new top edge 
-				printf("numP - 1: %d \n", numP - 1)
-				pT = entities.All[plr][numP - 1].Y +
-					 entities.All[plr][numP - 1].ExtentY
+					// remove 1 player paddle/wallet 
+					scoreAtLastLoss = score
+					var numP /* (paddles) */ i32 = entities.GetCountOf(plr)
+					entities.Kill(plr, numP - 1)
+					    numP                     = entities.GetCountOf(plr)
+							
+					// maybe end game or...
+					if numP < 1 {
+						app.Mode = app.MODE_GAME_OVER
+					}else{ // ...cache new top edge 
+						pT = entities.All[plr][numP - 1].Y +
+							 entities.All[plr][numP - 1].ExtentY
+					}
+				}else{
+					maybeCollideWithCoin(et, i, t, r, b, l)
+				}
 			}
-		}else{
-			maybeCollideWithCoin(et, i, t, r, b, l)
 		}
-	}
 	}
 }
 

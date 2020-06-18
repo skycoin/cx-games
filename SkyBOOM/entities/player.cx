@@ -19,7 +19,7 @@ var pR /* right    */  f32
 func playerEntsInit () {
 	entities.AutoUpdatePlayers = false
 	
-	var f f32  = 0.1
+	var f f32  = 0.07
 	var y f32  = f - 1.0
 	var et i32 = entities.ENT_PLAYER
 
@@ -98,21 +98,19 @@ func addToScore () {
 
 
 func maybeCollideWithCoin (et i32, i i32, coinTop f32, coinRight f32, coinBottom f32, coinLeft f32) {
-	if entities.All[et][i].Mode == ENT_MODE_DROPPING {
-		if entities.ActiveCounts[plr] > 0 {
-			if coinBottom < pT && // (below top of player bucket/s) 
-			   coinTop    > pB {
+	if entities.ActiveCounts[plr] > 0 {
+		if coinBottom < pT && // (below top of player bucket/s) 
+		   coinTop    > pB {
 
-				if     caughtCoin(i, pL, pR, coinLeft) { // edge 
-						addToScore()
-						spawnParticlePuffFrom(et, i)
-						entities.Kill(et, i)
-				}else{
-					if caughtCoin(i, pL, pR, coinRight) { // edge 
-						addToScore()
-						spawnParticlePuffFrom(et, i)
-						entities.Kill(et, i)
-					}
+			if     caughtCoin(i, pL, pR, coinLeft) { // edge 
+					addToScore()
+					spawnParticlePuffFrom(et, i)
+					entities.Kill(et, i)
+			}else{
+				if caughtCoin(i, pL, pR, coinRight) { // edge 
+					addToScore()
+					spawnParticlePuffFrom(et, i)
+					entities.Kill(et, i)
 				}
 			}
 		}
