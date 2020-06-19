@@ -72,7 +72,8 @@ that's INSIDE the package, and even INSIDE, "e" has default values instead of wh
 
 move CXtris texture loading out of 2DFWork
 add matrix partics (straight downwards) to menu backdrop 
-wallet explosion upon loss  
+wallet explosion upon loss 
+remove space.Init from CXtris, as i think .SetSize always gets called in 2DFW games 
 
 
 --- SPLASH SCREEN 
