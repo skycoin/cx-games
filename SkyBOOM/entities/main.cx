@@ -100,8 +100,8 @@ func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 			GoalY:       entities.All[et][i].Y + gY,
 			X:           entities.All[et][i].X, 
 			Y:           entities.All[et][i].Y, 
-			VelX:        gX * 0.2, 
-			VelY:        gY * 0.2,
+			VelX:        gX * 0.4, 
+			VelY:        gY * 0.4,
 			ExtentX:     0.015, 
 			ExtentY:     0.03,
 			ExpiryTime:  exp}				
@@ -144,8 +144,8 @@ func spawnMenuBackdropCoins () {
 
 func spawnCloudsBackdrop () {
 	// extents 
-	var eX  f32
-	var eY  f32
+	var eX   f32
+	var eY   f32
 	 
 	// positional strides 
 	var sX   f32

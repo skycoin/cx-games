@@ -27,6 +27,8 @@ var ActiveCounts []i32      // corresponds with "All" slices
 type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN()! 
 	X           f32
 	Y           f32
+	OldX        f32
+	OldY        f32
 	ExtentX     f32
 	ExtentY     f32
 	VelX        f32 // velocity 
@@ -138,7 +140,6 @@ func Update () {
 }
 
 
-var eps /* epsilon */ f32 = 0.1
 func UpdateAt (et i32, i i32) { // entity type, id 
 	/*
 	if et != 4 {
@@ -149,15 +150,19 @@ func UpdateAt (et i32, i i32) { // entity type, id
 	
 	// move 
 	if All[et][i].Mode == ENT_MODE_MOVING_BY_VELOCITY {
+		// default motion 
 	}else
 	if All[et][i].Mode == ENT_MODE_MOVING_TO_POS {
-		if  All[et][i].X < All[et][i].GoalX + eps && // close enough to goal 
-			All[et][i].X > All[et][i].GoalX - eps && 
-			All[et][i].Y < All[et][i].GoalY + eps && 
-			All[et][i].Y < All[et][i].GoalY - eps {
+		if  justCrossedGoal(
+				All[et][i].OldX, 
+				All[et][i].X, 
+				All[et][i].GoalX) ||
+			justCrossedGoal(
+				All[et][i].OldY, 
+				All[et][i].Y, 
+				All[et][i].GoalY) {
 			
-			// FIXME? (NO MOVEMENT WILL HAPPEN THIS FRAME) 
-			str.print("REACHED GOAL")
+			str.print("CROSSED GOAL LINE")
 			All[et][i].Mode = ENT_MODE_MOVING_TO_ENTITY
 		}
 	}else
@@ -169,6 +174,7 @@ func UpdateAt (et i32, i i32) { // entity type, id
 		All[et][i].VelX = fX
 		All[et][i].VelY = fY
 	}
+	
 	
 	moveByVelocity(et, i)
 	
@@ -213,6 +219,8 @@ func Spawn (eType i32, newEnt Entity) {
 		//printf("------------- Spawn (eType: %v)     RECYCLing 1st inactive \n", eType)
 		All[eType][aC].X           = newEnt.X
 		All[eType][aC].Y           = newEnt.Y        
+		All[eType][aC].OldX        = newEnt.OldX
+		All[eType][aC].OldY        = newEnt.OldY
 		All[eType][aC].ExtentX     = newEnt.ExtentX  
 		All[eType][aC].ExtentY     = newEnt.ExtentY  
 		All[eType][aC].VelX        = newEnt.VelX       
@@ -260,6 +268,8 @@ func Kill (eType i32, id i32) {
 		//printf("RECYCLE  eType: %d   id: %d BEFORE \n", eType, id)
 		All[eType][id].X           = All[eType][lS].X
 		All[eType][id].Y           = All[eType][lS].Y
+		All[eType][id].OldX        = All[eType][lS].OldX
+		All[eType][id].OldY        = All[eType][lS].OldY
 		All[eType][id].ExtentX     = All[eType][lS].ExtentX
 		All[eType][id].ExtentY     = All[eType][lS].ExtentY
 		All[eType][id].VelX        = All[eType][lS].VelX
@@ -297,6 +307,19 @@ func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
 
 
 func moveByVelocity (et i32, i i32) {
+	All[et][i].OldX = All[et][i].X
+	All[et][i].OldY = All[et][i].Y
 	All[et][i].X = f32.add(All[et][i].X, All[et][i].VelX * time.Delta)
 	All[et][i].Y = f32.add(All[et][i].Y, All[et][i].VelY * time.Delta)
+}
+
+
+func justCrossedGoal (op f32, np f32, goal f32 /* positions */) (out bool) {
+	if  op < goal && np > goal ||
+		op > goal && np < goal {
+
+		out = true
+	}else{
+		out = false
+	}
 }
