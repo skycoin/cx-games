@@ -333,11 +333,11 @@ func justCrossedGoal (et i32, i i32 /* entity type, id */) (out bool) {
 	if  justCrossedGoalInAxis(
 			All[et][i].OldX,
 			All[et][i].X,
-			All[et][i].GoalX)   ||
+			All[et][i].GoalX ) ||
 		justCrossedGoalInAxis(
 			All[et][i].OldY,
 			All[et][i].Y,
-			All[et][i].GoalY) {
+			All[et][i].GoalY )  {
 		
 		out = true
 	}else{
@@ -346,18 +346,17 @@ func justCrossedGoal (et i32, i i32 /* entity type, id */) (out bool) {
 }
 
 
-func justCrossedGoalInAxis (op f32, np f32, goal f32 /* positions */) (out bool) {
-	if     op <  goal {
-		if np >= goal {
+func justCrossedGoalInAxis (o f32, n f32, g f32 /* old/new/goal positions */) (out bool) {
+	if     o <  g { // (previously less) 
+		if n >= g {
 			out = true
-		}else{ // old & new on same side of goal 
+		}else{      // (prev & curr on same side of goal) 
 			out = false
 		}
-	}else{
-		// op >= goal 
-		if  np <  goal {
+	}else{          // (previously same or more) 
+		if  n < g {
 			out = true
-		}else{ // old & new on same side of goal 
+		}else{      // (prev & curr on same side of goal) 
 			out = false
 		}
 	}
