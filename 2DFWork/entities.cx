@@ -153,6 +153,9 @@ func UpdateAt (et i32, i i32) { // entity type, id
 		// default motion 
 	}else
 	if All[et][i].Mode == ENT_MODE_MOVING_TO_POS {
+		// FIXME?  if travelling straight(ish)... 
+		// ...N/S/E/West it might trigger too soon? 
+		
 		if  justCrossedGoal(
 				All[et][i].OldX, 
 				All[et][i].X, 
@@ -162,7 +165,7 @@ func UpdateAt (et i32, i i32) { // entity type, id
 				All[et][i].Y, 
 				All[et][i].GoalY) {
 			
-			str.print("CROSSED GOAL LINE")
+			//str.print("CROSSED GOAL LINE")
 			All[et][i].Mode = ENT_MODE_MOVING_TO_ENTITY
 		}
 	}else
@@ -315,11 +318,18 @@ func moveByVelocity (et i32, i i32) {
 
 
 func justCrossedGoal (op f32, np f32, goal f32 /* positions */) (out bool) {
-	if  op < goal && np > goal ||
-		op > goal && np < goal {
-
-		out = true
+	if     op <  goal {
+		if np >= goal {
+			out = true
+		}else{ // old & new on same side of goal 
+			out = false
+		}
 	}else{
-		out = false
+		// op >= goal 
+		if  np <  goal {
+			out = true
+		}else{ // old & new on same side of goal 
+			out = false
+		}
 	}
 }

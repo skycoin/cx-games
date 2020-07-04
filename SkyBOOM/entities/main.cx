@@ -83,34 +83,57 @@ func entitiesUpdate () {
 }
 
 
-var nTic /* new particle */ entities.Entity
+var nTic      entities.Entity // new particle 
+var isOne     bool
+var distGrain f32 = 0.025
 func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 	for id := 0; id < 8; id++ {
-		var r   i32 = i32.rand(-100, 100)
-		var gX  f32 = f32.mul(0.01, i32.f32(r)) // goal offset 
-		    r       = i32.rand(11, 250)
-		var gY  f32 = f32.mul(0.01, i32.f32(r))
-		var exp f32 = f32.add(time.Now, 0.9)
+		var r  i32 = i32.rand(-16, 17)
+		var oX f32 = f32.mul(distGrain, i32.f32(r)) // goal offset/delta 
+		var gX f32 = f32.add(entities.All[et][i].X, oX)     // total goal pos 
+		
+		    r      = i32.rand(  2, 17)
+		var oY f32 = f32.mul(distGrain, i32.f32(r)) // ^ 
+		var gY f32 = f32.add(entities.All[et][i].Y, oY)     // ^ 
+		
+		//var exp f32 = f32.add(time.Now, 0.9)
 		
 		nTic = entities.Entity{
 			Mode:        entities.ENT_MODE_MOVING_TO_POS,
 			GoalEntType: plr,
 			GoalEntId:   0,
-			GoalX:       entities.All[et][i].X + gX,
-			GoalY:       entities.All[et][i].Y + gY,
+			GoalX:       gX,
+			GoalY:       gY,
+			OldX:        entities.All[et][i].X, 
+			OldY:        entities.All[et][i].Y, 
 			X:           entities.All[et][i].X, 
 			Y:           entities.All[et][i].Y, 
-			VelX:        gX * 0.4, 
-			VelY:        gY * 0.4,
+			VelX:        oX * 2.2, 
+			VelY:        oY * 2.2,
 			ExtentX:     0.015, 
-			ExtentY:     0.03,
-			ExpiryTime:  exp}				
+			ExtentY:     0.03}
+			//ExpiryTime:  exp}				
 		
-		if i32.rand(0, 2) == 0 {
-			entities.Spawn(ENT_PARTICLE_0, nTic)
-		}else{
+
+
+		//printf("r (for Y): %v   gY: %v \n", r, gY)
+		/*
+		printf("entities.All[et][i].Y: %f   oY: %f    gY: %f   nTic.GoalY: %f \n", 
+			entities.All[et][i].Y,
+			oY,
+			gY,
+			nTic.GoalY)
+		*/
+
+
+
+		if isOne {
 			entities.Spawn(ENT_PARTICLE_1, nTic)
+		}else{
+			entities.Spawn(ENT_PARTICLE_0, nTic)
 		}
+		
+		isOne = !isOne
 	}
 }
 
