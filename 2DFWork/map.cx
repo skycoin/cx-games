@@ -85,8 +85,8 @@ func GetExitAt (roomId i32, exitId i32) (num i32) {
 
 
 func SetPlayerPos (pos app.Vec2) {
-	entities.All[plr][0].x = pos.X
-	entities.All[plr][0].y = pos.Y
+	entities.All[plr][0].X = pos.X
+	entities.All[plr][0].Y = pos.Y
 }
 func SetPlayerRoomBounds (x i32, y i32, putInCenter bool) {
 	var roomId i32 = Cells[y][x].CarvsId
@@ -153,7 +153,7 @@ func SetPlayerRoomBounds (x i32, y i32, putInCenter bool) {
 // via "[package].*".  ATM CX gives lot's of unhelpful errors when 
 // such out-of-package data access attempts are made 
 func DrawQuads () {
-	gl.Translatef(0.0-entities.All[plr][0].x, 0.0-entities.All[plr][0].y, 0.0)
+	gl.Translatef(0.0-entities.All[plr][0].X, 0.0-entities.All[plr][0].Y, 0.0)
 	
 	var x f32
 	var y f32

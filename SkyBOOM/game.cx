@@ -54,13 +54,13 @@ hmmmm, it seems i can't get the correct values out of a struct which was returne
 
 func Get (entType i32, id i32) (e Entity) {
   e = All[entType][id]
-  printf("INSIDE Get() All[entType][id].y: %f \n", All[entType][id].y)
-  printf("INSIDE Get()                e.y: %f \n", e.y)
+  printf("INSIDE Get() All[entType][id].Y: %f \n", All[entType][id].Y)
+  printf("INSIDE Get()                e.Y: %f \n", e.Y)
 }
 
 that's INSIDE the package, and even INSIDE, "e" has default values instead of what i had just set it to.
 
-(the All[entType][id].y has the values i expected)
+(the All[entType][id].Y has the values i expected)
 
 
 
@@ -71,8 +71,9 @@ that's INSIDE the package, and even INSIDE, "e" has default values instead of wh
 --- GENERAL IMPROVEMENT 
 
 move CXtris texture loading out of 2DFWork
-add matrix partics to menu backdrop 
-add matrix partics to menu backdrop 
+add matrix partics (straight downwards) to menu backdrop 
+wallet explosion upon loss 
+remove space.Init from CXtris, as i think .SetSize always gets called in 2DFW games 
 
 
 --- SPLASH SCREEN 
@@ -136,11 +137,11 @@ func gameUpdate () {
 
 func getPlayerEdges (i i32) (l f32, r f32) {
 	l = // left 
-		entities.All[plr][i].x -
+		entities.All[plr][i].X -
 		entities.All[plr][i].ExtentX
 		
 	r = // right 
-		entities.All[plr][i].x +
+		entities.All[plr][i].X +
 		entities.All[plr][i].ExtentX
 }
 
@@ -164,10 +165,4 @@ func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
 	}else{	
 		out = false
 	}
-}
-
-
-func growAndFadeUpward (i i32) () {
-	entities.All[ENT_GAME_COIN][i].Mode = ENT_MODE_FADING
-	entities.All[ENT_GAME_COIN][i].vy   = 2.6 // fly up 
 }

@@ -29,42 +29,53 @@ func entitiesInit () {
 
 func entitiesUpdate () {
 	entities.Update()
-	playerEntsUpdate()
-	dropperUpdate()	
 	
-	// game coin collisions 
-	var et i32 = ENT_GAME_COIN // entity type 
-	var n  i32 = entities.GetLenOf(et)
-	var st i32 = n - 1
-	//printf("st: %v       n: %v \n", st, n)
-	for i := st; i >= 0; i-- { // go backwards for removals 
-		var t f32 // rect edges 
-		var r f32
-		var b f32
-		var l f32
-		t, r, b, l = entities.GetRect(et, i)
-		//printf("i: %d       entities.All[et][i].WrapView: %v      b: %f \n", i, entities.All[et][i].WrapView, b)
+	if app.Mode < app.MODE_MENU_MAX {
+		return ////////////////////////////////////////////////////////
+	}else{		
+		playerEntsUpdate()
+		dropperUpdate()	
 		
-		doFading(i)
-		
-		// collision 
-		if b > 1.0 { // (above top of viewport) 
-			entities.Kill(et, i)
-		}else
-		if b < -1.0 { // touched floor/detonators/whatev 
-			growAndFadeUpward(i)
-		}else{
-			if  b < pT && // (below top of plr bucket/s) 
-				t > pB {
-
-				if     caughtCoin(i, pL, pR, l) { // coin left  edge 
-						spawnParticlePuffFrom(et, i)
-						entities.Kill(et, i)
-				}else{
-					if caughtCoin(i, pL, pR, r) { // coin right edge 
-						spawnParticlePuffFrom(et, i)
-						entities.Kill(et, i)
+		// game coin collisions 
+		var et i32 = ENT_GAME_COIN // entity type 
+		var n  i32 = entities.GetCountOf(et)
+		var st i32 = n - 1
+		//printf("st: %v       n: %v \n", st, n)
+		for i := st; i >= 0; i-- { // go backwards for removals 
+			var t f32 // rect edges 
+			var r f32
+			var b f32
+			var l f32
+			t, r, b, l = entities.GetRect(et, i)
+			//printf("i: %d       entities.All[et][i].WrapView: %v      b: %f \n", i, entities.All[et][i].WrapView, b)
+			
+			doFading(i)
+			
+			// collision 
+			if     b >  1.0 { // (above top of viewport) 
+				entities.Kill(et, i)
+			}else
+			if entities.All[et][i].Mode == ENT_MODE_DROPPING {
+				if b < -1.0 { // touched floor/detonators/whatev 
+					// change coin dir, size, fade 
+					entities.All[et][i].Mode = ENT_MODE_FADING
+					entities.All[et][i].VelY = 2.6 // fly up 
+					
+					// remove 1 player paddle/wallet 
+					scoreAtLastLoss = score
+					var numP /* (paddles) */ i32 = entities.GetCountOf(plr)
+					entities.Kill(plr, numP - 1)
+					    numP                     = entities.GetCountOf(plr)
+							
+					// maybe end game or...
+					if numP < 1 {
+						app.Mode = app.MODE_GAME_OVER
+					}else{ // ...cache new top edge 
+						pT = entities.All[plr][numP - 1].Y +
+							 entities.All[plr][numP - 1].ExtentY
 					}
+				}else{
+					maybeCollideWithCoin(et, i, t, r, b, l)
 				}
 			}
 		}
@@ -72,34 +83,57 @@ func entitiesUpdate () {
 }
 
 
-var nTic /* new particle */ entities.Entity
+var nTic      entities.Entity // new particle 
+var isOne     bool
+var distGrain f32 = 0.025
 func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 	for id := 0; id < 8; id++ {
-		var r   i32 = i32.rand(-100, 100)
-		var gX  f32 = f32.mul(0.01, i32.f32(r)) // goal offset 
-		    r       = i32.rand(11, 250)
-		var gY  f32 = f32.mul(0.01, i32.f32(r))
-		var exp f32 = f32.add(time.Now, 0.9)
+		var r  i32 = i32.rand(-16, 17)
+		var oX f32 = f32.mul(distGrain, i32.f32(r)) // goal offset/delta 
+		var gX f32 = f32.add(entities.All[et][i].X, oX)     // total goal pos 
+		
+		    r      = i32.rand(  2, 17)
+		var oY f32 = f32.mul(distGrain, i32.f32(r)) // ^ 
+		var gY f32 = f32.add(entities.All[et][i].Y, oY)     // ^ 
+		
+		//var exp f32 = f32.add(time.Now, 0.9)
 		
 		nTic = entities.Entity{
 			Mode:        entities.ENT_MODE_MOVING_TO_POS,
 			GoalEntType: plr,
 			GoalEntId:   0,
-			GoalX:       entities.All[et][i].x + gX,
-			GoalY:       entities.All[et][i].y + gY,
-			x:           entities.All[et][i].x, 
-			y:           entities.All[et][i].y, 
-			vx:          gX * 0.2, 
-			vy:          gY * 0.2,
+			GoalX:       gX,
+			GoalY:       gY,
+			OldX:        entities.All[et][i].X, 
+			OldY:        entities.All[et][i].Y, 
+			X:           entities.All[et][i].X, 
+			Y:           entities.All[et][i].Y, 
+			VelX:        oX * 2.2, 
+			VelY:        oY * 2.2,
 			ExtentX:     0.015, 
-			ExtentY:     0.03,
-			ExpiryTime:  exp}				
+			ExtentY:     0.03}
+			//ExpiryTime:  exp}				
 		
-		if i32.rand(0, 2) == 0 {
-			entities.Spawn(ENT_PARTICLE_0, nTic)
-		}else{
+
+
+		//printf("r (for Y): %v   gY: %v \n", r, gY)
+		/*
+		printf("entities.All[et][i].Y: %f   oY: %f    gY: %f   nTic.GoalY: %f \n", 
+			entities.All[et][i].Y,
+			oY,
+			gY,
+			nTic.GoalY)
+		*/
+
+
+
+		if isOne {
 			entities.Spawn(ENT_PARTICLE_1, nTic)
+		}else{
+			entities.Spawn(ENT_PARTICLE_0, nTic)
 		}
+		
+		isOne = !isOne
 	}
 }
 
@@ -118,10 +152,10 @@ func spawnMenuBackdropCoins () {
 		var frY f32 = f32.add(-1.0           , f32.mul(i32.f32(irY), space.PixelSize.Y))
 			
 		ent = entities.Entity{
-			x:        frX, 
-			y:        frY, 
-			vx:       frX * 0.2,
-			vy:       frY * 0.2,
+			X:        frX, 
+			Y:        frY, 
+			VelX:     frX * 0.2,
+			VelY:     frY * 0.2,
 			ExtentX:  ex, 
 			ExtentY:  ex, 
 			WrapView: true}
@@ -133,34 +167,61 @@ func spawnMenuBackdropCoins () {
 
 func spawnCloudsBackdrop () {
 	// extents 
-	var exX f32 = 0.07 * cloudAspectRatio
-	var exY f32 = 0.07
+	var eX   f32
+	var eY   f32
+	 
+	// positional strides 
+	var sX   f32
+	var sY   f32
+	 
+	var x    f32 = space.ViewEdgeL
+	var y    f32 = 0.15
+	var maxY f32 = 1.0 // to prevent overlap with dropper cloud 
 	
-	var startX f32 = space.ViewEdgeL - exX
-	var x f32 = startX
-	var y f32 = 0.15
-	var incX f32 = f32.mul(exX, 2.0) * 1.0 // 1.33 // 1/3 ratio gap tween them 
-	var incY f32 = f32.mul(exY, 2.0) * 0.83
-	
-	for     y < entities.All[ENT_DROPPER][0].y -
-		        entities.All[ENT_DROPPER][0].ExtentY {
-		        	
+	for y < maxY {
+		eX, 
+		eY,
+		sX,
+		maxY = getCloudRowsSizeEtc(eY)
+			
 		for x < space.ViewEdgeR {
 			ent = entities.Entity{
-				x:        x, 
-				y:        y, 
-				ExtentX:  y * exX, 
-				ExtentY:  y * exY, 
-				vx:       y, 
-				//vy:     -0.1, 
+				X:        x, 
+				Y:        y, 
+				ExtentX:  eX, 
+				ExtentY:  eY, 
+				VelX:     y, 
 				WrapView: true}
 				
 			entities.Spawn(ENT_BACKDROP_CLOUD, ent)
 			
-			x = x + incX
+			var     i f32 = eX * 2.0 + sX
+			x = x + i // (increment) 
 		}	
 
-		x = startX
-		y = y + incY
+		    x = space.ViewEdgeL
+			var     i f32 = eY * 2.1
+		    y = y + i
 	}
+}
+
+
+	
+// returns: ---------------------- outExtentX/Y, strideX & maximumY 
+func getCloudRowsSizeEtc (eY f32) (oX f32, oY f32, sX f32, maxY f32) {
+	oY = eY + 0.03
+	oX = oY * cloudAspectRatio
+	
+	maxY = entities.All[ENT_DROPPER][0].Y -
+		   entities.All[ENT_DROPPER][0].ExtentY
+	maxY = maxY - oY
+	
+	var  numRowClouds f32 = space.ViewSizeInGL.X / (oX * 2.0)
+	printf("numRowClouds: %f \n", numRowClouds)
+
+	var  totalSpacing f32 = space.ViewSizeInGL.X - oX * 2.0 * i32.f32(f32.i32(numRowClouds))
+	printf("totalSpacing: %f \n", totalSpacing)
+
+	sX = totalSpacing / numRowClouds
+	printf("sX: %f \n", sX)
 }

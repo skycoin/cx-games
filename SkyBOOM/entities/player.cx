@@ -1,28 +1,32 @@
 package main
 
 
+// "enums" 
+var ONE_UP_SCORE_DELTA i32 = 10 // get this many to replace any missing wallet paddles 
 
-var walletAspectRatio f32 = 828.0 / 364.0 // multiply this with desired height 
-var plr               i32 = entities.ENT_PLAYER
-// cache edges 
-var pT f32 // top 
-var pB f32 // bottom 
-var pL f32 // left  
-var pR f32 // right 
+var walletAspectRatio  f32 = 828.0 / 364.0 // multiply this with desired height 
+var plr                i32 = entities.ENT_PLAYER
+var score              i32
+var scoreAtLastLoss    i32 // loss of a wallet paddle (from missing a coin) 
+// edges of wallet paddles 
+var pT /* top      */  f32
+var pB /* bottom   */  f32
+var pL /* left     */  f32
+var pR /* right    */  f32
 	
 
 
 func playerEntsInit () {
 	entities.AutoUpdatePlayers = false
 	
-	var f f32  = 0.1
+	var f f32  = 0.07
 	var y f32  = f - 1.0
 	var et i32 = entities.ENT_PLAYER
 
 	// wallets/paddles/buckets 
 	//		bottom 
 	//		(1st player entity is autocreated) 
-	entities.All[et][0].y       = y
+	entities.All[et][0].Y       = y
 	entities.All[et][0].ExtentX = f * walletAspectRatio
 	entities.All[et][0].ExtentY = f
 	
@@ -31,7 +35,7 @@ func playerEntsInit () {
 	// middle 
 	y = f32.add(y, f32.mul(f, 3.0))
 	ne = entities.Entity{
-		y:       y,
+		Y:       y,
 		ExtentX: f * walletAspectRatio,
 		ExtentY: f}
 	entities.Spawn(et, ne)
@@ -39,32 +43,76 @@ func playerEntsInit () {
 	// top 
 	y = f32.add(y, f32.mul(f, 3.0))
 	ne = entities.Entity{
-		y:       y, 
+		Y:       y, 
 		ExtentX: f * walletAspectRatio,
 		ExtentY: f}
 	entities.Spawn(et, ne)
 
-	pT = f32.add(ne.y, ne.ExtentY)					
+	pT = f32.add(ne.Y, ne.ExtentY)					
 	pB = -1.0
 }
 
 
 func playerEntsUpdate () {
-	var n i32 = entities.GetLenOf(plr)
+	var n i32 = entities.GetCountOf(plr)
 	
 	for i := 0; i < n; i++ {
 		pL, pR = getPlayerEdges(i)
 		
 		// 		keep entirely within view 
 		if pR > space.ViewEdgeR {
-			entities.All[plr][i].x = space.ViewEdgeR -
+			entities.All[plr][i].X = space.ViewEdgeR -
 			entities.All[plr][i].ExtentX
 			pL, pR = getPlayerEdges(i)
 		}else
 		if pL < space.ViewEdgeL {
-			entities.All[plr][i].x = space.ViewEdgeL +
+			entities.All[plr][i].X = space.ViewEdgeL +
 			entities.All[plr][i].ExtentX
 			pL, pR = getPlayerEdges(i)
+		}
+	}
+}
+
+
+func addToScore () {
+	score = score + 1
+	
+	if score - scoreAtLastLoss >= ONE_UP_SCORE_DELTA {
+		scoreAtLastLoss = score
+		
+		if  entities.ActiveCounts[plr] < 3 { // (missing any wallet) 
+			// restore a wallet paddle 
+			var nc /* new count */ i32 = 
+			entities.ActiveCounts[plr] + 1
+			entities.ActiveCounts[plr] = nc
+					
+			// ...cache new top edge 
+			pT = entities.All[plr][nc - 1].Y +
+				 entities.All[plr][nc - 1].ExtentY
+
+			entities.All[plr][nc - 1].X =
+			entities.All[plr][0     ].X
+		}
+	}
+}
+
+
+func maybeCollideWithCoin (et i32, i i32, coinTop f32, coinRight f32, coinBottom f32, coinLeft f32) {
+	if entities.ActiveCounts[plr] > 0 {
+		if coinBottom < pT && // (below top of player bucket/s) 
+		   coinTop    > pB {
+
+			if     caughtCoin(i, pL, pR, coinLeft) { // edge 
+					addToScore()
+					spawnParticlePuffFrom(et, i)
+					entities.Kill(et, i)
+			}else{
+				if caughtCoin(i, pL, pR, coinRight) { // edge 
+					addToScore()
+					spawnParticlePuffFrom(et, i)
+					entities.Kill(et, i)
+				}
+			}
 		}
 	}
 }

@@ -25,17 +25,19 @@ var ActiveCounts []i32      // corresponds with "All" slices
                             //     (len(All[et]) - NumActive[et] == num dead) 
 
 type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN()! 
-	x           f32
-	y           f32
+	X           f32
+	Y           f32
+	OldX        f32
+	OldY        f32
 	ExtentX     f32
 	ExtentY     f32
-	ExpiryDist  f32 // expire by distance travelled (0.0 == not using) 
-	ExpiryTime  f32 // expire by time passed        (0.0 == not using) 
-	vx          f32
-	vy          f32
-	gravity     f32
+	VelX        f32 // velocity 
+	VelY        f32 // velocity 
+	Gravity     f32
 	 
 	Mode        i32
+	ExpiryDist  f32 // expire by distance travelled (0.0 == not using) 
+	ExpiryTime  f32 // expire by time passed        (0.0 == not using) 
 	WrapView    bool // moving objects wrap/teleport to opposite side of viewport 
 
 	// FIXME: move these into Sky Taxi 
@@ -52,7 +54,7 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	// Goal/Target info. 
 	// 		by worldspace position (THIS HAS PRIORITY OVER ENTITY-BASED GOALS). 
 	//			these 2 are a unit, if both == 0.0, no ws pos goal set 
-	// 			non-zero values causes vx, vy to be ignored, 
+	// 			non-zero values causes VelX/Y to be ignored, 
 	// 			& instead move towards these values until close enough 
 	GoalX       f32
 	GoalY       f32
@@ -85,13 +87,13 @@ func Init (maxEntTypes i32) {
 	// ENT_PLAYER 
 	var ne Entity
 	  ne = Entity{
-		x:       0.0,
-		y:       0.0,
+		X:       0.0,
+		Y:       0.0,
 		ExtentX: 0.05,
 		ExtentY: 0.05,
-		//vx:      0.10,
-		//vy:      0.10,
-		gravity: 0.01}
+		//VelX:      0.10,
+		//VelY:      0.10,
+		Gravity: 0.01}
 		
 	Spawn(ENT_PLAYER, ne)
 }
@@ -118,18 +120,18 @@ func Update () {
 				// REQUIRES FIXME IF PLAYER ENTS EVER SHOULD 
 				// 		USE EXPIRYTIME/DIST FIELDS 
 				//		(CUZ NOW IT COLLIDES AFTER Kill() IN UpdateAt() )
-				All[t][i].vx,
-				All[t][i].vy = mov.GetPlayerVelocityFromInput(
-				All[t][i].vx,
-				All[t][i].vy)
+				All[t][i].VelX,
+				All[t][i].VelY = mov.GetPlayerVelocityFromInput(
+				All[t][i].VelX,
+				All[t][i].VelY)
 			
 				UpdateAt(t, i)
 
 				// back out of any entity/entity penetration 
-				All[t][i].x,
-				All[t][i].y,
-				All[t][i].vx,
-				All[t][i].vy = mov.ConstrainPosByMap(t, i)
+				All[t][i].X,
+				All[t][i].Y,
+				All[t][i].VelX,
+				All[t][i].VelY = mov.ConstrainPosByMap(t, i)
 			}else{
 				UpdateAt(t, i)
 			}
@@ -138,7 +140,6 @@ func Update () {
 }
 
 
-var eps /* epsilon */ f32 = 0.1
 func UpdateAt (et i32, i i32) { // entity type, id 
 	/*
 	if et != 4 {
@@ -148,43 +149,62 @@ func UpdateAt (et i32, i i32) { // entity type, id
 	
 	
 	// move 
+	if All[et][i].Mode == ENT_MODE_MOVING_BY_VELOCITY {
+		// default motion 
+	}else
 	if All[et][i].Mode == ENT_MODE_MOVING_TO_POS {
-		if  All[et][i].x < All[et][i].GoalX + eps && // close enough to goal 
-			All[et][i].x > All[et][i].GoalX - eps && 
-			All[et][i].y < All[et][i].GoalY + eps && 
-			All[et][i].y < All[et][i].GoalY - eps {
-			
-			// FIXME? (NO MOVEMENT WILL HAPPEN THIS FRAME) 
-			str.print("REACHED GOAL")
+		if  justCrossedGoal(et, i) {
+			//str.print("CROSSED GOAL LINE")
 			All[et][i].Mode = ENT_MODE_MOVING_TO_ENTITY
+		
+		
+		
+			//FIXME, COPYPASTA FROM NEXT CASE 
+			var entId i32 = All[et][i].GoalEntId
+			var fX    f32 = f32.sub(All[ENT_PLAYER][entId].X, All[et][i].X) * 1.3
+			var fY    f32 = f32.sub(All[ENT_PLAYER][entId].Y, All[et][i].Y) * 1.3
+			All[et][i].VelX  = fX
+			All[et][i].VelY  = fY
+			All[et][i].GoalX = All[ENT_PLAYER][entId].X
+			All[et][i].GoalY = All[ENT_PLAYER][entId].Y
 		}
 	}else
 	if All[et][i].Mode == ENT_MODE_MOVING_TO_ENTITY {
-		str.print("going to paddle 0")
+		//str.print("zooming to paddle 0")
 		var entId i32 = All[et][i].GoalEntId
-		var fX    f32 = f32.sub(All[ENT_PLAYER][entId].x, All[et][i].x) * 1.3
-		var fY    f32 = f32.sub(All[ENT_PLAYER][entId].y, All[et][i].y) * 1.3
-		All[et][i].vx = fX
-		All[et][i].vy = fY
+		var fX    f32 = f32.sub(All[ENT_PLAYER][entId].X, All[et][i].X) * 1.3
+		var fY    f32 = f32.sub(All[ENT_PLAYER][entId].Y, All[et][i].Y) * 1.3
+		/*
+		All[et][i].VelX = fX
+		All[et][i].VelY = fY
+		*/
+
+
+
+		if  justCrossedGoal(et, i) {
+			Kill(et, i)
+			str.print("CROSSED GOAL LINE")
+		}
 	}
+	
 	
 	moveByVelocity(et, i)
 	
 	
 	// wrap/teleport to opposite edge of screen (for any that go OOB) 
 	if All[et][i].WrapView {
-		if  All[et][i].x > space.ViewEdgeR + All[et][i].ExtentX {
-			All[et][i].x = space.ViewEdgeL - All[et][i].ExtentX
+		if  All[et][i].X > space.ViewEdgeR + All[et][i].ExtentX {
+			All[et][i].X = space.ViewEdgeL - All[et][i].ExtentX
 		}else
-		if  All[et][i].x < space.ViewEdgeL - All[et][i].ExtentX {
-			All[et][i].x = space.ViewEdgeR + All[et][i].ExtentX
+		if  All[et][i].X < space.ViewEdgeL - All[et][i].ExtentX {
+			All[et][i].X = space.ViewEdgeR + All[et][i].ExtentX
 		}
 		
-		if  All[et][i].y >  1.0 + All[et][i].ExtentY {
-			All[et][i].y = -1.0 - All[et][i].ExtentY
+		if  All[et][i].Y >  1.0 + All[et][i].ExtentY {
+			All[et][i].Y = -1.0 - All[et][i].ExtentY
 		}else
-		if  All[et][i].y < -1.0 - All[et][i].ExtentY {
-			All[et][i].y =  1.0 + All[et][i].ExtentY
+		if  All[et][i].Y < -1.0 - All[et][i].ExtentY {
+			All[et][i].Y =  1.0 + All[et][i].ExtentY
 		}
 	}
 	
@@ -209,16 +229,18 @@ func Spawn (eType i32, newEnt Entity) {
 	
 	if  aC < iC /* (can recycle an inactive) */ { 
 		//printf("------------- Spawn (eType: %v)     RECYCLing 1st inactive \n", eType)
-		All[eType][aC].x           = newEnt.x
-		All[eType][aC].y           = newEnt.y        
+		All[eType][aC].X           = newEnt.X
+		All[eType][aC].Y           = newEnt.Y        
+		All[eType][aC].OldX        = newEnt.OldX
+		All[eType][aC].OldY        = newEnt.OldY
 		All[eType][aC].ExtentX     = newEnt.ExtentX  
 		All[eType][aC].ExtentY     = newEnt.ExtentY  
+		All[eType][aC].VelX        = newEnt.VelX       
+		All[eType][aC].VelY        = newEnt.VelY       
+		All[eType][aC].Gravity     = newEnt.Gravity  
+		All[eType][aC].Mode        = newEnt.Mode     
 		All[eType][aC].ExpiryDist  = newEnt.ExpiryDist
 		All[eType][aC].ExpiryTime  = newEnt.ExpiryTime
-		All[eType][aC].vx          = newEnt.vx       
-		All[eType][aC].vy          = newEnt.vy       
-		All[eType][aC].gravity     = newEnt.gravity  
-		All[eType][aC].Mode        = newEnt.Mode     
 		All[eType][aC].WrapView    = newEnt.WrapView	
 		All[eType][aC].GoalX       = newEnt.GoalX      
 		All[eType][aC].GoalY       = newEnt.GoalY      
@@ -256,14 +278,16 @@ func Kill (eType i32, id i32) {
 		id < lS /* (not last active, last needs no copy) */ {
 			
 		//printf("RECYCLE  eType: %d   id: %d BEFORE \n", eType, id)
-		All[eType][id].x           = All[eType][lS].x
-		All[eType][id].y           = All[eType][lS].y
-		All[eType][id].vx          = All[eType][lS].vx
-		All[eType][id].vy          = All[eType][lS].vy
-		All[eType][id].gravity     = All[eType][lS].gravity
-		All[eType][id].Mode        = All[eType][lS].Mode
+		All[eType][id].X           = All[eType][lS].X
+		All[eType][id].Y           = All[eType][lS].Y
+		All[eType][id].OldX        = All[eType][lS].OldX
+		All[eType][id].OldY        = All[eType][lS].OldY
 		All[eType][id].ExtentX     = All[eType][lS].ExtentX
 		All[eType][id].ExtentY     = All[eType][lS].ExtentY
+		All[eType][id].VelX        = All[eType][lS].VelX
+		All[eType][id].VelY        = All[eType][lS].VelY
+		All[eType][id].Gravity     = All[eType][lS].Gravity
+		All[eType][id].Mode        = All[eType][lS].Mode
 		All[eType][id].ExpiryDist  = All[eType][lS].ExpiryDist
 		All[eType][id].ExpiryTime  = All[eType][lS].ExpiryTime
 		All[eType][id].WrapView    = All[eType][lS].WrapView
@@ -281,20 +305,59 @@ func Kill (eType i32, id i32) {
 }
 
 
-func GetLenOf (entType i32) (c i32) {
+func GetCountOf (entType i32) (c i32) {
 	c = ActiveCounts[entType]
 }
 
 
 func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
-	t = All[entType][id].y + All[entType][id].ExtentY
-	r = All[entType][id].x + All[entType][id].ExtentX
-	b = All[entType][id].y - All[entType][id].ExtentY
-	l = All[entType][id].x - All[entType][id].ExtentX
+	t = All[entType][id].Y + All[entType][id].ExtentY
+	r = All[entType][id].X + All[entType][id].ExtentX
+	b = All[entType][id].Y - All[entType][id].ExtentY
+	l = All[entType][id].X - All[entType][id].ExtentX
 }
 
 
 func moveByVelocity (et i32, i i32) {
-	All[et][i].x = f32.add(All[et][i].x, All[et][i].vx * time.Delta)
-	All[et][i].y = f32.add(All[et][i].y, All[et][i].vy * time.Delta)
+	All[et][i].OldX = All[et][i].X
+	All[et][i].OldY = All[et][i].Y
+	All[et][i].X = f32.add(All[et][i].X, All[et][i].VelX * time.Delta)
+	All[et][i].Y = f32.add(All[et][i].Y, All[et][i].VelY * time.Delta)
+}
+
+
+func justCrossedGoal (et i32, i i32 /* entity type, id */) (out bool) {
+	// FIXME?  if travelling straight(ish) in... 
+	// ...N/S/E/West it might trigger too soon? 
+	
+	if  justCrossedGoalInAxis(
+			All[et][i].OldX,
+			All[et][i].X,
+			All[et][i].GoalX ) ||
+		justCrossedGoalInAxis(
+			All[et][i].OldY,
+			All[et][i].Y,
+			All[et][i].GoalY )  {
+		
+		out = true
+	}else{
+		out = false
+	}
+}
+
+
+func justCrossedGoalInAxis (o f32, n f32, g f32 /* old/new/goal positions */) (out bool) {
+	if     o <  g { // (previously less) 
+		if n >= g {
+			out = true
+		}else{      // (prev & curr on same side of goal) 
+			out = false
+		}
+	}else{          // (previously same or more) 
+		if  n < g {
+			out = true
+		}else{      // (prev & curr on same side of goal) 
+			out = false
+		}
+	}
 }

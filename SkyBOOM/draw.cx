@@ -93,7 +93,7 @@ func drawTexturedBatches () {
 
 	// clouds 
 	et = ENT_BACKDROP_CLOUD
-	n  = entities.GetLenOf(et)
+	n  = entities.GetCountOf(et)
 
 	draw.BeginTexturedQuads(PIC_CLOUD)
 		for i := 0; i < n; i++ {
@@ -103,16 +103,12 @@ func drawTexturedBatches () {
 			t, r, b, l = entities.GetRect(et, i)
 			draw.TexturedQuad(t, r, b, l)
 		}
-		
-		// dropper SPECIALCASE 
-		t, r, b, l = entities.GetRect(ENT_DROPPER, 0)
-		draw.TexturedQuad(t, r, b, l)
 	draw.End()
 	
 	
 	// coins 
 	et = ENT_GAME_COIN
-	n  = entities.GetLenOf(et)
+	n  = entities.GetCountOf(et)
 
 	draw.BeginTexturedQuads(PIC_COIN)
 		if app.Mode > app.MODE_MENU_MAX {
@@ -133,7 +129,7 @@ func drawTexturedBatches () {
 			draw.SetColor4(draw.White, 1.0)
 			
 			et = ENT_BACKDROP_COIN
-			n  = entities.GetLenOf(et)
+			n  = entities.GetCountOf(et)
 
 			for i := 0; i < n; i++ {
 				t, r, b, l = entities.GetRect(et, i)
@@ -143,24 +139,34 @@ func drawTexturedBatches () {
 	draw.End()
 	
 	
-	// player entities 
-	draw.SetColor3(draw.White)
-	
-	et = entities.ENT_PLAYER
-	n  = entities.GetLenOf(et)
-
-	draw.BeginTexturedQuads(PIC_WALLET)
-		for i := 0; i < n; i++ {
-			t, r, b, l = entities.GetRect(et, i)
+	if app.Mode > app.MODE_MENU_MAX {
+		// dropper 
+		draw.BeginTexturedQuads(PIC_CLOUD)
+			t, r, b, l = entities.GetRect(ENT_DROPPER, 0)
 			draw.TexturedQuad(t, r, b, l)
-		}
-	draw.End()
+		draw.End()
+
+
+		// player entities 
+		draw.SetColor3(draw.White)
+		
+		et = entities.ENT_PLAYER
+		n  = entities.GetCountOf(et)
+
+		draw.BeginTexturedQuads(PIC_WALLET)
+			for i := 0; i < n; i++ {
+				t, r, b, l = entities.GetRect(et, i)
+				draw.TexturedQuad(t, r, b, l)
+			}
+		draw.End()
+	}
 	
 	
 	// 1s & 0s particles 
+	draw.SetColor(draw.COLOR_BLUE)
 	
 	et = ENT_PARTICLE_0
-	n  = entities.GetLenOf(et)
+	n  = entities.GetCountOf(et)
 
 	draw.BeginTexturedQuads(PIC_0)
 		for i := 0; i < n; i++ {
@@ -170,7 +176,7 @@ func drawTexturedBatches () {
 	draw.End()
 	
 	et = ENT_PARTICLE_1
-	n  = entities.GetLenOf(et)
+	n  = entities.GetCountOf(et)
 
 	draw.BeginTexturedQuads(PIC_1)
 		for i := 0; i < n; i++ {

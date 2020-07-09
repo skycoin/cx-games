@@ -19,7 +19,7 @@ var ViewEdgeR64     f64 // gl.Ortho() needs 64 bit
 
 
 func Init () {
-	str.print("ASDFASDFASDFASDFASDFASDFASD  space.Init () @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+	str.print("space.Init ()")
 	
 	ViewWidInPixels = app.START_WIDTH
 	ViewHeiInPixels = app.START_HEIGHT
@@ -39,16 +39,18 @@ func SetSize (wid i32, hei i32) () {
 
 	ViewSizeInGL.X = 2.0 * AspectRatio
 	ViewSizeInGL.Y = 2.0
-	printf("    ViewSizeInGL.X: %f \n", ViewSizeInGL.X)
-	printf("    ViewSizeInGL.Y: %f \n", ViewSizeInGL.Y)
+	printf("    ViewSizeInGL.X: %f \n", 
+	ViewSizeInGL.X)
+	printf("    ViewSizeInGL.Y: %f \n", 
+	ViewSizeInGL.Y)
 
 	ViewEdgeL   = 0.0  - AspectRatio
 	ViewEdgeR   =        AspectRatio
 	ViewEdgeL64 = 0.0D - AspectRatio64
 	ViewEdgeR64 =        AspectRatio64
 	printf("    ViewEdgeL: %f\n    ViewEdgeR: %f \n",
-		ViewEdgeL,
-		ViewEdgeR)
+	ViewEdgeL,
+	ViewEdgeR)
 
 	ViewWidInPixels = wid
 	ViewHeiInPixels = hei
