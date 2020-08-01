@@ -1,4 +1,4 @@
-# Snake
+# Snake v1.0
 <p float="left">
   <img height="425" width="425" src="assets/screenshots/snake-alive.png">
   <img height="425" width="425" src="assets/screenshots/score.png">

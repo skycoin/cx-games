@@ -76,25 +76,25 @@ func initGlfw(window str) {
 
 func initGl() {
 	gl.Init()
-    var prog i32 
+    var prog i32
     prog = gl.CreateProgram()
     gl.LinkProgram(prog)
 }
 
 /* Function     : initTextures
-   Input        : 
-   Output       : 
+   Input        :
+   Output       :
    Desctription : initializes the global texture variables
 */
 func initTextures() (){
 	var wd str
 	wd = os.GetWorkingDirectory()
-	
-	snakeHeadTex = gl.NewTexture(sprintf("%stextures/snake_new-head.png",wd))
-	snakeBodyTex = gl.NewTexture(sprintf("%stextures/snake_new-body.png",wd))
-	snakeTailTex = gl.NewTexture(sprintf("%stextures/snake-tail.png",wd))
-	foodTex = gl.NewTexture(sprintf("%stextures/food-white.png",wd))
-	backgroundTex = gl.NewTexture(sprintf("%stextures/background.png",wd))
+
+	snakeHeadTex = gl.NewTexture(sprintf("%s../assets/textures/snake_new-head.png",wd))
+	snakeBodyTex = gl.NewTexture(sprintf("%s../assets/textures/snake_new-body.png",wd))
+	snakeTailTex = gl.NewTexture(sprintf("%s../assets/textures/snake-tail.png",wd))
+	foodTex = gl.NewTexture(sprintf("%s../assets/textures/food-white.png",wd))
+	backgroundTex = gl.NewTexture(sprintf("%s../assets/textures/background.png",wd))
 }
 
 func setupCellSpecs() (){
@@ -108,9 +108,9 @@ func setupCellSpecs() (){
    Desctription : Initializes GL state
 */
 func initGlCommands() {
-	gl.DepthFunc(gl.LESS)	
+	gl.DepthFunc(gl.LESS)
 	gl.ClearColor(0.1, 0.1, 0.1, 0.0)
-	
+
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
 	gl.MatrixMode(gl.MODELVIEW)
@@ -126,8 +126,8 @@ func initScene() {
 }
 
 /* Function     : initGamefield
-   Input        : 
-   Output       : 
+   Input        :
+   Output       :
    Desctription : initializes the global gamefield variable
 */
 func initGamefield() {
@@ -171,8 +171,8 @@ func indexToPosition (line i32, column i32) (pos stuff.Position2D){
 }
 
 /* Function     : drawBoard
-   Input        : 
-   Output       : 
+   Input        :
+   Output       :
    Desctription : prints the gamefield to the Screen
 */
 func drawBoard()(){
@@ -187,8 +187,8 @@ func drawBoard()(){
 }
 
 /*	Function     : drawCell
-	Input        : 
-   	Output       : 
+	Input        :
+   	Output       :
    	Desctription : prints the Cell to the Screen
 */
 func drawCell(pos stuff.Position2D, dim stuff.Dimension2D, tex i32, rotation f32) (){
@@ -196,14 +196,14 @@ func drawCell(pos stuff.Position2D, dim stuff.Dimension2D, tex i32, rotation f32
 	gl.BindTexture(gl.TEXTURE_2D, tex)
 
 	gl.Translatef(pos.x, pos.y, 0.0)
-	
+
 	// scale (0.05 at time of writing)
 	var scX f32 = scale(dim.width, WINDOW_WIDTH)
 	var scY f32 = scale(dim.height, WINDOW_HEIGHT)
 	gl.Scalef(scX, scY, 0.0)
-	
+
 	gl.Rotatef(rotation, 0.0, 0.0, 1.0);
-	
+
 	gl.Begin(gl.QUADS)
 
 	gl.TexCoord2d(0.0D, 0.0D);
@@ -248,7 +248,7 @@ func createFood()(){
 /* 	Function     : onPlayer
 	Input		 : x(i32) = x-Position
 				 : y(i32) = y-Position
-	Output		 : answer(bool) 
+	Output		 : answer(bool)
    	Desctription : Checks if the x,y-Position is equal to a Player position
 */
 func onPlayer(x i32, y i32)(answer bool){
@@ -279,17 +279,17 @@ func onPlayer(x i32, y i32)(answer bool){
 }
 
 /* 	Function     : drawFood
-	Input		 : 
-	Output		 : 
-   	Desctription : Draws the food 
+	Input		 :
+	Output		 :
+   	Desctription : Draws the food
 */
 func drawFood()(){
 	drawCell(food.position, food.dimension, food.texture,0.0)
 }
 
 /* 	Function     : initPlayer
-	Input		 : 
-	Output		 : 
+	Input		 :
+	Output		 :
    	Desctription : Initializes the variables of the Player
 */
 func initPlayer()(){
@@ -298,14 +298,14 @@ func initPlayer()(){
 
     var dim stuff.Dimension2D
     dim = stuff.newDimension2D(CELLS_HEIGHT_PX,CELLS_WIDTH_PX)
-    
+
     player = stuff.newPlayer()
 	player.head = stuff.newCell(pos,dim,snakeHeadTex)
 }
 
 /* 	Function     : drawPlayer
-	Input		 : 
-	Output		 : 
+	Input		 :
+	Output		 :
    	Desctription : Draws the Head and its Body of the Snake
 */
 func drawPlayer()(){
@@ -326,8 +326,8 @@ func drawPlayer()(){
 }
 
 /* 	Function     : addElementToBody
-	Input		 : 
-	Output		 : 
+	Input		 :
+	Output		 :
    	Desctription : Adds a new body element to the body array
 */
 func addElementToBody()(){
@@ -335,7 +335,7 @@ func addElementToBody()(){
 	var dimension stuff.Dimension2D
 	var pos stuff.Position2D
 	var cell stuff.Cell
-	
+
 	if (playerSize == 0){
 		cell = player.head
 		pos = cell.position
@@ -349,19 +349,19 @@ func addElementToBody()(){
 
 		playerSize = i32.add(playerSize,1)
 	}
-	
+
 	dimension = stuff.newDimension2D(CELLS_HEIGHT_PX,CELLS_WIDTH_PX)
 
 	var newPart stuff.Cell
 	newPart = stuff.newCell(pos,dimension,snakeBodyTex)
-		
+
 	player.body[playerSize] = newPart
 	player.size = i32.add(player.size,1)
 }
 
 /* 	Function     : renderScreen
-	Input		 : 
-	Output		 : 
+	Input		 :
+	Output		 :
    	Desctription : Calls the draw functions of the Board,Player,Food
 */
 func renderScreen()(){
@@ -373,7 +373,7 @@ func renderScreen()(){
 
 /* 	Function     : keyControl
 	Input		 : ?!?
-	Output		 : 
+	Output		 :
    	Desctription : Calls the change direction method or restarts the game
 */
 func keyControl(window str, key i32, scancode i32, action i32, mods i32) {
@@ -398,7 +398,7 @@ func keyControl(window str, key i32, scancode i32, action i32, mods i32) {
 
 /* 	Function     : changeDir
 	Input		 : direction(i32) = direction of the player
-	Output		 : 
+	Output		 :
    	Desctription : Calls the draw functions of the Board,Player,Food
 */
 func changeDir(direction i32)(){
@@ -423,8 +423,8 @@ func changeDir(direction i32)(){
 }
 
 /* 	Function     : movePlayer
-	Input		 : 
-	Output		 : 
+	Input		 :
+	Output		 :
    	Desctription : Moves the head and the body parts of the player
 */
 func movePlayer() {
@@ -439,8 +439,8 @@ func movePlayer() {
 }
 
 /* 	Function     : moveHead
-	Input		 : 
-	Output		 : 
+	Input		 :
+	Output		 :
    	Desctription : Moves the head
 */
 func moveHead()(){
@@ -463,8 +463,8 @@ func moveHead()(){
 }
 
 /* 	Function     : moveBody
-	Input		 : 
-	Output		 : 
+	Input		 :
+	Output		 :
    	Desctription : Moves the body
 */
 func moveBody()(){
@@ -482,13 +482,13 @@ func moveBody()(){
 }
 
 /* 	Function     : allowedToMove
-	Input		 : 
+	Input		 :
 	Output		 : allowed(bool) = if the player is allowed to move
    	Desctription : Checks if the player is allowed to move
 */
 func allowedToMove()(allowed bool){
 	allowed = true
-	var currPart stuff.Cell 
+	var currPart stuff.Cell
 	var nextPos stuff.Position2D
 	var currDir i32
 	var currPos stuff.Position2D
@@ -497,7 +497,7 @@ func allowedToMove()(allowed bool){
 	nextPos = currPart.position
 	currDir = currPart.direction
 
-	
+
 	//set the variable nextPlayerPos to the position the player would go if he is allowed
 	if i32.eq(currDir, UP){
     	nextPos.realY = i32.sub(nextPos.realY,1)
@@ -511,7 +511,7 @@ func allowedToMove()(allowed bool){
     if i32.eq(currDir, LEFT){
 		nextPos.realX = i32.sub(nextPos.realX,1)
     }
-	
+
 	var tempBodyArr [99]stuff.Cell
 	tempBodyArr = player.body
 	//check if the player would collide with himself
@@ -520,7 +520,7 @@ func allowedToMove()(allowed bool){
 	for i=0; i<max;i++{
 		currPart = tempBodyArr[i]
 		currPos = currPart.position
-		if bool.and(i32.eq(nextPos.realY,currPos.realY),i32.eq(nextPos.realX,currPos.realX)){		
+		if bool.and(i32.eq(nextPos.realY,currPos.realY),i32.eq(nextPos.realX,currPos.realX)){
 			allowed = false
 			return allowed
 		}
@@ -534,15 +534,15 @@ func allowedToMove()(allowed bool){
 }
 
 /* 	Function     : checkForFood
-	Input		 : 
-	Output		 : 
+	Input		 :
+	Output		 :
    	Desctription : Checks if the player is on the same position as the food
 */
 func checkForFood() {
 	var foodPos stuff.Position2D = food.position
     var headPlayer stuff.Cell = player.head
 	var headPos stuff.Position2D = headPlayer.position
-	
+
 	if bool.and(i32.eq(foodPos.realX, headPos.realX), i32.eq(foodPos.realY, headPos.realY)) {
 		createFood()
 		addElementToBody()
@@ -554,12 +554,12 @@ func checkForFood() {
 func initFonts() {
 	var wd str
 	wd = os.GetWorkingDirectory()
-	fontFile := str.concat(wd, "fonts/roboto-light.ttf")
+	fontFile := str.concat(wd, "../assets/fonts/roboto-light.ttf")
 
 	os.Open(fontFile)
 	gltext.LoadTrueType("Roboto100", fontFile, 100, 32, 127, gltext.LeftToRight)
 	os.Close(fontFile)
-	
+
 	os.Open(fontFile)
 	gltext.LoadTrueType("Roboto50", fontFile, 50, 32, 127, gltext.LeftToRight)
 	os.Close(fontFile)
@@ -572,11 +572,11 @@ func initFonts() {
 
 func drawAllOutlinedGlText(scale f32) {
 	var alpha f32 = 0.25
-	
+
 	if (player.alive == false) {
 		alpha = 1.0
 	}
-	
+
 	gl.Scalef(scale, scale, 0.0)
 
 	printTextWithColor(1.0, 1.0, 0.0, 0.0, 0.0, alpha)
@@ -586,7 +586,7 @@ func drawAllOutlinedGlText(scale f32) {
 	printTextWithColor(0.0, 0.0, 1.0, 0.55, 0.0, alpha)
 }
 
-// x & y are offsets 
+// x & y are offsets
 func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
 	gl.Color4f(r, g, b, a)
 	var lm f32 // left margin (gap from left edge of window)
@@ -596,10 +596,10 @@ func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
 	if (player.alive == false) {
 		for i := 0; i32.lt(i, len(stuff.Texts)); i++ {
 			gltext.Printf(
-				stuff.Texts[i].font, 
+				stuff.Texts[i].font,
 				f32.add(stuff.Texts[i].x, x),
 				f32.add(stuff.Texts[i].y, y),
-				stuff.Texts[i].text)	
+				stuff.Texts[i].text)
 		}
 	}
 }
@@ -611,25 +611,25 @@ func main() {
 	initTextures()
 	initFonts()
 	stuff.initTextData()
-	
+
 	new_game:
 	restart = false
     setupCellSpecs()
     initScene()
 
     glfw.SetKeyCallback("window","keyControl")
-    
+
 	var timer f64 = glfw.GetTime()
-    for bool.not(glfw.ShouldClose("window")){		
+    for bool.not(glfw.ShouldClose("window")){
 		gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
 		gl.Disable(gl.DEPTH_TEST)
 		renderScreen()
 		gl.Enable(gl.DEPTH_TEST)
 		drawAllOutlinedGlText(20.0)
-    	
+
 		if (player.alive == true) {
 			checkForFood()
-			
+
 			//check if the time has passed to move again
 			if f64.lt(SPEED, f64.sub(glfw.GetTime(), timer)){
 				movePlayer()
@@ -640,7 +640,7 @@ func main() {
 				goto new_game
 			}
 		}
-		
+
         glfw.PollEvents()
         glfw.SwapBuffers("window")
     }
