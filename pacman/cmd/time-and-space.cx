@@ -1,18 +1,9 @@
 package main
 
-func blinkStatusOn () (out bool) {
-  var t f32 = f64.f32(glfw.GetTime())
-  t = getValueUnderMax(t, 0.15)
-  
-  if t < 0.075 {
-    out = true
-  }
-}
-
 func getTimeBasedOffset () (out f32) { // in the range of 0.0 to 0.5
   out = f64.f32(glfw.GetTime())
   out = getValueUnderMax(out, 0.5)
-  
+
   if out > 0.25 {
     out = f32.sub(0.25, out) // get oscillating range from -0.25 to +0.25
   }
@@ -22,7 +13,7 @@ func getValueUnderMax(in f32, max f32) (out f32) {
   for in >= max {
     in = f32.sub(in, max)
   }
-  
+
   out = in
 }
 
@@ -50,7 +41,7 @@ func checkPlayerGhostCollision(ghost Ghost) () {
       nextLifePos = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, PLAYER_LIVES - 1))
       GETREADY_TIMER = glfw.GetTime()
       gameMode = GAMEMODE_GETREADY
-      
+
       if i32.lteq(PLAYER_LIVES, 0) {
         GAME_OVER = true
         str.print("------ GAME OVER ------") // FIX ME add game over screen

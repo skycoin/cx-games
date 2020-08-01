@@ -42,45 +42,30 @@ var left f32 = -1.0
 var right f32 = 1.0
 func renderGhostEaterMeter() {
   if bool.not(isTimerOver(
-    GHOST_FRIGHTENED_TIMER, 
+    GHOST_FRIGHTENED_TIMER,
     GHOST_FRIGHTENED_LIMIT)) {
-    
-    var posL graphical2d.Position2D
-    var posR graphical2d.Position2D
+
+    var pos graphical2d.Position2D
     var dim graphical2d.Dimensions2D
     var col graphical2d.Color
 
     var f f64 = f64.sub(glfw.GetTime(), GHOST_FRIGHTENED_TIMER)
     f = f64.div(f, GHOST_FRIGHTENED_LIMIT)
     var fraction f32 = f64.f32(f)
-  
-    posL = graphical2d.Position2D{ x: f32.add(left, CELL_HALF_HEIGHT), y: 0.0 }
-    posR = graphical2d.Position2D{ x: f32.sub(right, CELL_HALF_HEIGHT), y: 0.0 }
-    
-    
-    // blinking red background
-    dim = graphical2d.Dimensions2D{ width: CELL_HALF_HEIGHT, height: 2.0 }
-    col = graphical2d.Color{ red: 1.0, green: 0.0, blue: 0.0 }
-    
-    if blinkStatusOn() {
-      if player.position.x < 0.0 {
-        graphical2d.drawRectangle(posL, dim, col)
-      }else{
-        graphical2d.drawRectangle(posR, dim, col)
-      }
-    }
 
+    // red background
+    pos = graphical2d.Position2D{ x: 0.0, y: 1.0 - CELL_HALF_HEIGHT }
+    dim = graphical2d.Dimensions2D{ width: 2.0, height: CELL_HALF_WIDTH }
+    col = graphical2d.Color{ red: 1.0, green: 0.0, blue: 0.0 }
+
+    graphical2d.drawRectangle(pos, dim, col)
 
     // shrinking green bar
-    dim.height = f32.sub(2.0, fraction * 2.0)
+    dim.width = f32.sub(2.0, fraction * 2.0)
     col.red = 0.0
     col.green = 1.0
 
-    if player.position.x < 0.0 {
-      graphical2d.drawRectangle(posL, dim, col)
-    }else{
-      graphical2d.drawRectangle(posR, dim, col)
-    }
+    graphical2d.drawRectangle(pos, dim, col)
   }
 }
 
@@ -101,8 +86,8 @@ func renderBoard() {
 func renderPlayer() {
   var pos Position2D
   pos = player.position
-  
-  if gameMode == GAMEMODE_GETREADY {    
+
+  if gameMode == GAMEMODE_GETREADY {
     var xDelta f32 = pos.x - nextLifePos.x
     var yDelta f32 = pos.y - nextLifePos.y
     var timeDelta f64 = glfw.GetTime() - GETREADY_TIMER
@@ -184,26 +169,14 @@ func renderPoint(point Point) () {
 */
 func renderLives() {
   var position graphical2d.Position2D
-  var heartCol Color
   var pacCol Color
-  var numHearts i32 = PLAYER_LIVES
   var numPacs   i32 = PLAYER_LIVES - 1
-  
-  if gameMode != GAMEMODE_GETREADY {
-    numHearts--
-  }
-  
-  heartCol = graphical2d.newColor(LIFE_COLOR_RED, LIFE_COLOR_GREEN, LIFE_COLOR_BLUE)
+
   pacCol   = graphical2d.newColor(1.0, 1.0, 0.0)
 
   for i:=0; i<numPacs; i++ {
     position = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, i))
     graphical2d.drawPacMan(position, CELL_HALF_WIDTH - 0.01, pacCol, true)
-  }
-
-  for i:=0; i<numHearts; i++ {
-    position = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, i))
-    graphical2d.drawLife(position, LIFE_RADIUS, heartCol)
   }
 }
 

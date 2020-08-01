@@ -52,7 +52,7 @@ var PLAYER_RADIUS f32 = 0.025
 var PLAYER_SPAWN_LINE i32 = 23
 var PLAYER_SPAWN_COLUMN i32 = 13
 
-// Player vars 
+// Player vars
 var SCORE i32 = 0
 var latestPlayerMoveEvent f64
 var nextLifePos graphical2d.Position2D
@@ -73,10 +73,6 @@ var POINT_ANIMATION_LIMIT f64 = 0.4D
 // Lives Variables
 var LIFE_SPAWN_LINE i32 = 30
 var LIFE_SPAWN_COLUMN i32 = 26
-var LIFE_COLOR_RED f32 = 1.0
-var LIFE_COLOR_GREEN f32 = 0.0
-var LIFE_COLOR_BLUE f32 = 0.0
-var LIFE_RADIUS f32 = 0.02
 
 // Declaration of structss
 type Player struct {

@@ -10,7 +10,7 @@ package main
 func initGLFW() () {
   glfw.Init()
 
-  glfw.CreateWindow("window", WIDTH_WINDOW, HEIGHT_WINDOW, "PAC-MAN CX 0.0.3")
+  glfw.CreateWindow("window", WIDTH_WINDOW, HEIGHT_WINDOW, "PAC-MAN CX - v1.0")
   glfw.MakeContextCurrent("window")
 
 	gl.Init()
@@ -156,4 +156,3 @@ func heldKeyforUp() (out bool) {
     out = true
   }
 }
-

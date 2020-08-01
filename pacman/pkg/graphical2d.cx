@@ -140,7 +140,7 @@ func drawCircle (position Position2D, radius f32, color Color) () {
   var y f32
 
   gl.Begin(gl.POLYGON)
-  
+
   gl.Color3f(color.red, color.green, color.blue)
 
   var i f32
@@ -150,7 +150,7 @@ func drawCircle (position Position2D, radius f32, color Color) () {
 
     gl.Vertex2f(x, y)
   }
-  
+
   gl.End()
 }
 
@@ -159,7 +159,7 @@ func drawPacMan(position Position2D, radius f32, color Color, forLives bool) {
   var x f32
   var y f32
   var facing i32 = main.PLAYER_FACING
-  
+
   if forLives {
     facing = main.LEFT
   }
@@ -167,7 +167,7 @@ func drawPacMan(position Position2D, radius f32, color Color, forLives bool) {
   // angles in degrees
   var start f32
   var end f32
-  
+
   if facing == main.UP {
     start = 22.5
   }else
@@ -180,7 +180,7 @@ func drawPacMan(position Position2D, radius f32, color Color, forLives bool) {
   if facing == main.LEFT {
     start = 292.5
   }
-  
+
   end = start + 315.0
 
   if bool.not(forLives) {
@@ -189,25 +189,25 @@ func drawPacMan(position Position2D, radius f32, color Color, forLives bool) {
     start = f32.add(start, offs)
     end = f32.sub(end, offs)
   }
-  
+
   gl.Begin(gl.TRIANGLE_FAN)
-  
+
     gl.Color3f(color.red, color.green, color.blue)
     gl.Vertex2f(position.x, position.y)
 
     for f := start; f32.lt(f, end); f = f32.add(f, 20.0) {
       var validAngle f32 = f
-      
+
       validAngle = main.getValueUnderMax(validAngle, 360.0)
-      
+
       validAngle = f32.div(validAngle, 360.0) // convert to fraction of full 360
       validAngle = f32.mul(validAngle, full_angle) // converted to radians
-      
+
       x = f32.add(position.x, f32.mul(radius, f32.sin(validAngle)))
       y = f32.add(position.y, f32.mul(radius, f32.cos(validAngle)))
       gl.Vertex2f(x, y)
     }
-  
+
   gl.End()
 }
 
@@ -253,26 +253,6 @@ func drawRectangle (position Position2D, dimensions Dimensions2D, color Color) {
   gl.Vertex3f(f32.add(position.x, f32.div(dimensions.width, 2.0)), f32.sub(position.y, f32.div(dimensions.height, 2.0)), 0.0)
   gl.Vertex3f(f32.add(position.x, f32.div(dimensions.width, 2.0)), f32.add(position.y, f32.div(dimensions.height, 2.0)), 0.0)
   gl.Vertex3f(f32.sub(position.x, f32.div(dimensions.width, 2.0)), f32.add(position.y, f32.div(dimensions.height, 2.0)), 0.0)
-
-  gl.End()
-}
-
-func drawLife(center Position2D, radius f32, color Color) () {
-  var position Position2D
-  var hr /* half radius */ f32 = f32.div(radius, 2.0)
-
-  position = newPosition2D(f32.sub(center.x, hr), center.y)
-  drawHalfCircle(position, hr, color)
-
-  position = newPosition2D(f32.add(center.x, hr), center.y)
-  drawHalfCircle(position, hr, color)
-
-  gl.Begin(gl.POLYGON)
-  gl.Color3f(color.red, color.green, color.blue)
-
-  gl.Vertex3f(f32.sub(center.x, radius), center.y, 0.0)
-  gl.Vertex3f(center.x, f32.sub(center.y, radius), 0.0)
-  gl.Vertex3f(f32.add(center.x, radius), center.y, 0.0)
 
   gl.End()
 }
