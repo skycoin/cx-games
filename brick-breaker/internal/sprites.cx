@@ -1,9 +1,11 @@
 package main
 
+import "app"
+
 type Sprite struct {
-    position Vector2D
-    lastPosition Vector2D
-    velocity Vector2D
+    position app.Vector2D
+    lastPosition app.Vector2D
+    velocity app.Vector2D
     acceleration f32
     maxVelocity f32
     width f32
@@ -27,7 +29,7 @@ func initSprites() {
 }
 
 func initBricks() {
-    var startPos Vector2D
+    var startPos app.Vector2D
     var increment f32
     increment = 128.0 / 1024.0
     startPos.x = -0.55
@@ -81,7 +83,7 @@ func createBackgroundSprite()(background Sprite) {
     background.width = 1600.0 / 1024.0
     background.height = 1600.0 / 768.0
 
-    background.frames = append(background.frames, getTexture("textures/background.png"))
+    background.frames = append(background.frames, getTexture("../assets/textures/background.png"))
 }
 
 func createSynthCatSprite()(synthCat Sprite) {
@@ -90,7 +92,7 @@ func createSynthCatSprite()(synthCat Sprite) {
     synthCat.width = 200.0 / 1024.0
     synthCat.height = 200.0 / 768.0
 
-    synthCat.frames = append(synthCat.frames, getTexture("textures/synth_cat.png"))
+    synthCat.frames = append(synthCat.frames, getTexture("../assets/textures/synth_cat.png"))
 }
 
 func createYarnBallSprite()(yarnBall Sprite) {
@@ -99,25 +101,25 @@ func createYarnBallSprite()(yarnBall Sprite) {
     yarnBall.width = 64.0 / 1024.0
     yarnBall.height = 64.0 / 768.0
 
-    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall0.png"))
-    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall1.png"))
-    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall2.png"))
-    yarnBall.frames = append(yarnBall.frames, getTexture("textures/yarnBall3.png"))
+    yarnBall.frames = append(yarnBall.frames, getTexture("../assets/textures/yarnBall0.png"))
+    yarnBall.frames = append(yarnBall.frames, getTexture("../assets/textures/yarnBall1.png"))
+    yarnBall.frames = append(yarnBall.frames, getTexture("../assets/textures/yarnBall2.png"))
+    yarnBall.frames = append(yarnBall.frames, getTexture("../assets/textures/yarnBall3.png"))
 }
 
-func createBrickSprite(position Vector2D)(brick Sprite) {
+func createBrickSprite(position app.Vector2D)(brick Sprite) {
     brick.position = position
     brick.width = 128.0 / 1024.0
     brick.height = 64.0 / 768.0
 
-    brick.frames = append(brick.frames, getTexture("textures/brick.png"))
+    brick.frames = append(brick.frames, getTexture("../assets/textures/brick.png"))
 }
 
 func updateSprite(sprite Sprite) (out Sprite) {
     // move deltas
     var dX f32 = f32.mul(sprite.velocity.x, f64.f32(loopTracker.deltaTime))
     var dY f32 = f32.mul(sprite.velocity.y, f64.f32(loopTracker.deltaTime))
-    
+
     sprite.position.x = sprite.position.x + dX
     sprite.position.y = sprite.position.y + dY
     out = sprite
@@ -136,7 +138,7 @@ func drawSprite(sprite Sprite) {
 
     width = sprite.width
     height = sprite.height
-    
+
     if animationLimiter.limitReached {
         if sprite.currentFrame < len(sprite.frames) - 1 {
             sprite.currentFrame = sprite.currentFrame + 1

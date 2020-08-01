@@ -22,7 +22,7 @@ var loopTracker LoopTracker.LoopTracker = LoopTracker.create(1.0D, "Main")
 func initGlfw(window Window) {
     glfw.Init()
     glfw.WindowHint(glfw.Resizable, glfw.False)
-    glfw.CreateWindow("window", window.Width, window.Height, "SynthCat Brick Breaker")
+    glfw.CreateWindow("window", window.Width, window.Height, "Brick Breaker")
     glfw.MakeContextCurrent("window")
     inputs.SetupCallbacks()
 }
@@ -67,14 +67,14 @@ func mainGameLoop()() {
             gl.Hint(gl.LINE_SMOOTH, gl.DONT_CARE)
             gl.Hint(gl.POLYGON_SMOOTH_HINT, gl.DONT_CARE)
             gl.Disable(gl.MULTISAMPLE_ARB)
-            
+
             gl.TexEnvi(gl.TEXTURE_ENV, gl.TEXTURE_ENV_MODE, gl.MODULATE)
             gl.Disable(gl.DEPTH_TEST)
 
             gl.ClearColor(1.0, 1.0, 1.0, 1.0)
             gl.ClearDepth(1.0D)
             gl.DepthFunc(gl.LEQUAL)
-            
+
             gl.Enable(gl.BLEND)
             gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
             gl.DepthMask(true)
@@ -97,7 +97,7 @@ func mainGameLoop()() {
                     drawSprite(brick)
                 }
             }
-                        
+
             glfw.PollEvents()
             glfw.SwapBuffers("window")
         }
@@ -115,7 +115,7 @@ func updateBall(ball Sprite)(out Sprite) {
             ball.position.x = -0.9
         }
     }
-    
+
     if ball.position.y >= 0.9 || ball.position.y <= -0.9 {
         ball.velocity.y = ball.velocity.y*-1.0
         if ball.position.y > 0.9 {
