@@ -6,71 +6,70 @@ var LARGEST_CHOOSABLE_NUMBER i32 = 9 //50
 var currentContestant i32 = 1
 var prompt str = "Press [ENTER] to ROLL DICE"
 var inputNumber str
-var randNum i32 
+var randNum i32
 
-// lists 
+// lists
 var eligibles []i32
 var rolls     []i32
 
 func main () {
 	eligibles = []i32{}
 	rolls     = []i32{}
-	
+
 	printTopText()
 	printf("| |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  | | \n")
 	printf("| |  ____________________________ Contest Elim __________________________  | | \n")
 	printBottomText()
 
 	for done() == false {
-		
+
 		printf("Contestant %d's chosen number? (or 'DONE') ", currentContestant)
 		inputNumber = read()
-		
+
 		if done() == false {
 			var num i32 = str.i32(inputNumber)
-			
-			eligibles = append(
-			eligibles, num)
+
+			eligibles = append(eligibles, num)
 		}
-		
+
 		currentContestant++
 	}
 
 
-	// start elimination rounds 
+	// start elimination rounds
 	str.print("\n\n\n\n ELIMINATION OF CONTESTANTS NOW BEGINS !!! \n\n")
-	
+
 	for len(eligibles) > 1 {
 		str.print(prompt)
 		var s str = read()
-		
-		randNum = getRand()		
+
+		randNum = getRand()
 		for numberHasAlreadyBeenRolled(randNum) {
 			randNum = getRand()
 		}
-		
+
 		printf("\n\n                                ROLLED a %d \n", randNum)
 		rolls = append(
 		rolls, randNum)
-		
+
 		for i := i32.sub(len(eligibles), 1); i >= 0; i-- {
 			if eligibles[i] == randNum {
 				printTopText()
 				printf("                                ELIMINATED CONTESTANT! \n")
 				printBottomText()
-				
+
 				eligibles = remove(eligibles, i)
 			}
 		}
-		
+
 		if len(eligibles) > 1 {
 			printf("------------------------------- (%d contestants remain) \n", len(eligibles))
 		}
 	}
-	
-	// show winner 
+
+	// show winner
 	str.print("")
-	
+
 	for i := 0; i < 6; i++ {
 		printf("                                WINNER chose # %d !!! \n", eligibles[0])
 	}
@@ -79,7 +78,7 @@ func main () {
 
 func getRand () (out i32) {
 	out = i32.rand(
-		SMALLEST_CHOOSABLE_NUMBER, 
+		SMALLEST_CHOOSABLE_NUMBER,
 		LARGEST_CHOOSABLE_NUMBER + 1)
 }
 
@@ -108,9 +107,8 @@ func printBottomText () {
 
 
 func done () (out bool) {
-	if inputNumber == "done" || 
-		inputNumber == "DONE" {
-		
+	if inputNumber == "Done" || inputNumber == "done" || inputNumber == "DONE" {
+
 		out = true
-	}	
+	}
 }
