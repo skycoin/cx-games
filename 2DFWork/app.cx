@@ -23,16 +23,30 @@ var Name     str
 var Controls str
 
 
-// modes 
+// app modes 
 var MODE_MENU_MAIN     i32
 var MODE_MENU_OPTIONS  i32 = 1
 var MODE_MENU_CONTROLS i32 = 2
-var MODE_MENU_MAX      i32 = 3 // anything < this == open menu 
-var MODE_PLAYING       i32 = 4
-var MODE_GAME_OVER     i32 = 5
-var MODE_MAX           i32 = 6
+var MODE_MENU_EDITOR   i32 = 3
+var MODE_MENU_MAX      i32 = 4 // anything < this == open menu 
+var MODE_PLAYING       i32 = 5
+var MODE_GAME_OVER     i32 = 6
+var MODE_MAX           i32 = 7
 var Mode               i32 = MODE_MENU_MAIN
 
+// 		editor 
+var EDITMODE_VERTICES    i32
+var EDITMODE_TRIANGLES   i32 = 1
+var EDITMODE_COLORS      i32 = 2
+var EDITMODE_MESH_PICKER i32 = 3
+var EDITMODE_MAX         i32 = 4
+var EditMode             i32 = EDITMODE_TRIANGLES
+
+
+type Vec2 struct {
+	X f32
+	Y f32
+}
 
 type Vec2I struct {
 	X i32
@@ -42,11 +56,6 @@ type Vec2I struct {
 type Vec2F64 struct {
 	X f64
 	Y f64
-}
-
-type Vec2 struct {
-	X f32
-	Y f32
 }
 
 

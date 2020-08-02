@@ -23,23 +23,21 @@ var BakedUIMeshes   []Mesh2D // full baked (world size/scale & pos) for menu/too
 var BakedMeshPicker []Mesh2D // full baked (world size/scale & pos) 
 var EditLayers      []Mesh2D // TODO: (just using 1 ATM) a slice (amongst other features) allows multiple vertices at the same position (but with different colors).  allows drastic color changes between adjacent triangle sides 
 
-var CurrLayer        i32
-var currMesh         Mesh2D
+var CurrLayer       i32
+var currMesh        Mesh2D
 
 // raw mesh ids 
-var ColorWheel       i32
-var GameOver         i32
-var RidgeBlasterLogo i32
+var ColorWheel      i32
+var GameOver        i32
 
-var PickedVerts      []i32
+var PickedVerts     []i32
 
 var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }
 
 
 
-/*
-func Setup () {
-	str.print("mesh.Setup()")
+func Init () {
+	str.print("mesh.Init()")
 	
 	
 	
@@ -51,12 +49,12 @@ func Setup () {
 
 
 
-	// toolbar icons 
-	
-	InitEditVerticesIconMesh()
-	InitEditTrianglesIconMesh()
+	// toolbar icons 	
+	MakeIconEditVertices()
+	MakeIconEditTriangles()
 
 	ColorWheel = len(RawMeshes)
+	/*
 	makeColorPickerWheelResource()
 
 	InitMeshPickerIconMesh()
@@ -93,15 +91,16 @@ func Setup () {
 	
 	/////// vertex pick/selection 
 	PickedVerts = []i32{}
+	*/
 }
 
 
-func makeAndReportOn (m Mesh2D, raw bool) () {
+func makeAndReportOn (m Mesh2D, raw bool) {
 	if raw {
 		printf("generating raw mesh:   %d   name: '%s' \n", len(RawMeshes), m.Name)
 		RawMeshes = append(
 		RawMeshes, m)
-	} else {
+	}else{
 		printf("generating sized mesh: %d   name: '%s' \n", len(SizedMeshes), m.Name)
 		SizedMeshes = append(
 		SizedMeshes, m)	
@@ -109,6 +108,7 @@ func makeAndReportOn (m Mesh2D, raw bool) () {
 }
 
 
+/*
 //func UNUSED_CopyFromEditorToGame () () {
 //	str.print("mesh.UNUSED_CopyFromEditorToGame ()")
 //	var m Mesh2D

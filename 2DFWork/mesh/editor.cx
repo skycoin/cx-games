@@ -1,6 +1,7 @@
 package mesh
 
-//import "app"
+import "app"
+import "draw"
 
 
 
@@ -90,9 +91,10 @@ func makeColorPickerWheelResource () {
 	
 	makeAndReportOn(m, true)
 }
+*/
 
 
-func InitEditTrianglesIconMesh () () {
+func MakeIconEditTriangles () {
     var m Mesh2D
     m = Mesh2D{ Name: "EditTrianglesIcon" }
 
@@ -361,6 +363,7 @@ func InitEditTrianglesIconMesh () () {
 
 
 
+/*
 // UNUSED CIRCLE 
 func InitEditColorsIconMesh () {
     var m Mesh2D
@@ -506,6 +509,7 @@ func InitEditColorsIconMesh () {
 
     makeAndReportOn(m, true)
 }
+*/
 
 
 
@@ -523,8 +527,7 @@ func InitEditColorsIconMesh () {
 
 
 
-
-func InitEditVerticesIconMesh () () {
+func MakeIconEditVertices () {
     var m Mesh2D
     m = Mesh2D{ Name: "Edit vertices icon" }
 
@@ -943,8 +946,7 @@ func InitEditVerticesIconMesh () () {
 
 
 
-
-
+/*
 func InitGenerateFuncIconMesh () () {
     var m Mesh2D
     m = Mesh2D{ Name: "GenerateFuncIcon" }
@@ -2385,21 +2387,6 @@ func InitWipeCanvasIconMesh () {
     m.TriangleIndices, 40)
     makeAndReportOn(m, true)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
