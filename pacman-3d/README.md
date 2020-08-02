@@ -1,6 +1,7 @@
-# PACMAN CX 3D - Version 1.0
+# PACMAN CX 3D
 
-![pacman cx 3d](https://github.com/galah4d/pacman-3d/blob/master/assets/screenshots/screenshot1.png)
+![pacman cx 3d](https://github.com/SkycoinProject/cx-games/blob/master/pacman-3d/assets/screenshots/screenshot1.png)
+![pacman cx 3d](https://github.com/SkycoinProject/cx-games/blob/master/pacman/assets/screenshot-main.png)
 
 PacMan CX 3D is a simple 3D game powered by the CX programming language.
 This game is being developed with the following objectives:
@@ -17,20 +18,20 @@ You can find more info on:
   - The github repo of CX - https://github.com/SkycoinProject/cx
 
 # Installation
-PacMan CX 3D supports [CX v0.7.0](https://github.com/skycoin/cx/releases/tag/v0.6.2).
+PacMan CX 3D supports [CX v0.7.0](https://github.com/SkycoinProject/cx/releases/tag/v0.7.0).
 The binaries for CX are available at:
-  - [linux-x64](https://github.com/skycoin/cx/releases/download/v0.6.2/cx-0.6.2-bin-linux-x64.zip)
-  - [mac-os-x64](https://github.com/skycoin/cx/releases/download/v0.6.2/cx-0.6.2-bin-macos-x64.zip)
-  - [windows-x64](https://github.com/skycoin/cx/releases/download/v0.6.2/cx-0.6.2-bin-windows-x64.zip)
+  - [linux-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-linux-x64.zip)
+  - [mac-os-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-macos-x64.zip)
+  - [windows-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-windows-x64.zip)
 
 ```sh
-$ git clone https://github.com/galah4d/pacman-3d.git
+$ git clone https://github.com/SkycoinProject/cx-games.git
 ```
 
 Wait for the cloning process to finish and navigate to the cloned directory...
 
 ```sh
-$ cd pacman-3d/
+$ cd cx-games/pacman-3d
 ```
 
 The game should be ready to run.
@@ -39,14 +40,14 @@ The game should be ready to run.
 In order to run the game type the following command:
 
 ```sh
-$ make run
+$ make
 ```
 
 Use the arrows to move the player.
 Press (2 or 3) to toggle between 2D and 3D during the game.
 
 # Screenshots
-![screenshot 1](https://github.com/galah4d/pacman-3d/blob/master/assets/screenshots/screenshot1.png)
-![screenshot 2](https://github.com/galah4d/pacman-3d/blob/master/assets/screenshots/screenshot2.png)
-![screenshot 3](https://github.com/galah4d/pacman-3d/blob/master/assets/screenshots/screenshot3.png)
-![screenshot 4](https://github.com/galah4d/pacman-3d/blob/master/assets/screenshots/screenshot4.png)
+![screenshot 1](https://github.com/SkycoinProject/cx-games/blob/master/pacman-3d/assets/screenshots/screenshot1.png)
+![screenshot 2](https://github.com/SkycoinProject/cx-games/blob/master/pacman-3d/assets/screenshots/screenshot2.png)
+![screenshot 3](https://github.com/SkycoinProject/cx-games/blob/master/pacman-3d/assets/screenshots/screenshot3.png)
+![screenshot 4](https://github.com/SkycoinProject/cx-games/blob/master/pacman-3d/assets/screenshots/screenshot4.png)
