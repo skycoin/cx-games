@@ -37,14 +37,18 @@ var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A"
 
 
 func Init () {
-	str.print("mesh.Init()")
+	str.print("mesh.Init ()")
 	
 	
 	
 	// characters 
+	str.print("    Later, we might make meshes for: ")
+	str.print("        ")
+
 	for i := 0; i < len(charMap); i++ {
 		printf("%s", charMap[i])
 	}
+	
 	str.print("")
 
 
@@ -97,11 +101,11 @@ func Init () {
 
 func makeAndReportOn (m Mesh2D, raw bool) {
 	if raw {
-		printf("generating raw mesh:   %d   name: '%s' \n", len(RawMeshes), m.Name)
+		printf("    Making raw mesh:   %d  '%s' \n", len(RawMeshes), m.Name)
 		RawMeshes = append(
 		RawMeshes, m)
 	}else{
-		printf("generating sized mesh: %d   name: '%s' \n", len(SizedMeshes), m.Name)
+		printf("    Making sized mesh: %d  '%s' \n", len(SizedMeshes), m.Name)
 		SizedMeshes = append(
 		SizedMeshes, m)	
 	}

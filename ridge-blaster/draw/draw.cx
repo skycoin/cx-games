@@ -3,16 +3,10 @@ package draw
 import "gl"
 
 import "app"
-import "ccInput"
-import "collision"
 import "entity"
-import "environs"
 import "mesh"
 
 
-var rngCol          Color3
-var NEG_UNIT_SPAN   f32 // negative... 
-var CRUST_THICKNESS f32
 var currX           f32
 var span            f32
 
@@ -28,31 +22,8 @@ var pickG           f32 = 0.6 // picked/selected green channel
 var pickedNodesAreBright bool
 var timeLocalToDraw      f32
 var nextBlinkFlip        f32
-var blinkDelay           f32
+var blinkDelay           f32 =  0.1
 
-
-
-func Setup () {
-	str.print("draw.Setup()")
-	mesh.Setup()
-	
-	NEG_UNIT_SPAN   = -1.0
-	CRUST_THICKNESS =  0.015
-	blinkDelay      =  0.1
-	
-	// colors 
-	var r f32
-	var g f32
-	var b f32
-
-	/*
-	r = getRandomForColorChannel()
-	g = getRandomForColorChannel()
-	b = getRandomForColorChannel()
-
-	rngCol = Color3{ R: r, G: g, B: b }
-	*/
-}
 
 
 /*
@@ -371,96 +342,6 @@ func EntitiesMesh () () {
 			}
 		
 			trianglesForOneWithPos(mesh.SizedMeshes, e.Type, e.Pos)
-		}
-	}
-}
-
-
-func Terrain (currTime f32) () {
-	var num i32
-	num = len(environs.Terrain)
-	num = i32.sub(num, 1)
-	span = f32.div(f64.f32(collision.ScreenEdgeR) * 2.0, i32.f32(num))
-	currGreen = 0.2
-	currX = f64.f32(collision.ScreenEdgeL)
-
-	for i := 0; i < num; i++ {
-		// draw filling (lavender/cyan gradient) 
-		feedTerrainQuadToGL(i, false, currTime)
-
-		// draw crust (random color) 
-		feedTerrainQuadToGL(i, true, currTime)
-		
-		currGreen = f32.add(currGreen, 0.01)
-		currX     = f32.add(currX,     span)
-	}
-	
-	environs.PopulatedWithEntities = true
-}
-
-
-func feedTerrainQuadToGL(i i32, drawingCrust bool, currTime f32) () {
-	var up f32 // upper y edge of quad 
-	var lo f32 // lower y edge of quad 
-	z := 0.0
-	
-	// 2 left points of quad 
-	up = environs.Terrain[i].Floo
-	if drawingCrust {
-		lo = environs.Terrain[i].Floo - CRUST_THICKNESS
-		gl.Color3f(rngCol.R, rngCol.G, rngCol.B)
-	} else {
-		lo = NEG_UNIT_SPAN	
-		gl.Color3f(0.6, currGreen, 1.0)
-	}
-	
-	
-	// left edge 
-	gl.Vertex3f(currX, lo, z)
-	gl.Vertex3f(currX, up, z)
-
-	
-	// 2 right points of quad 
-	up =  environs.Terrain[i+1].Floo
-	if drawingCrust {
-		lo =  environs.Terrain[i+1].Floo - CRUST_THICKNESS
-	} else {
-		lo = NEG_UNIT_SPAN	
-	}
-
-
-	// right edge 
-	gl.Vertex3f(currX + span, up, z)
-	gl.Vertex3f(currX + span, lo, z)
-
-
-	if bool.not(environs.PopulatedWithEntities) {
-		if i32.eq(i32.rand(0, 8), 0) {			
-			var time f32
-			time = i32.f32(i32.rand(0, 20))
-			time = f32.mul(time, 0.5)
-			time = f32.add(currTime, time)
-			
-			var pos Vec2
-			pos = Vec2{ 
-				X: currX + span, 
-				Y: f32.add(up, entity.RocketExtents.Y) }
-			
-			var vel Vec2
-			vel = Vec2{ Y: 0.005 }
-			
-			var ent Entity
-			ent = Entity{
-				Type: entity.TYPE_ROCKET,
-				StartPos: pos,
-				Pos: pos,
-				Vel: vel,
-				Mode: entity.ENTMODE_STATIONARY,
-				NextMode: entity.ENTMODE_MOVING_STRAIGHT,
-				TimeToNextMode: time,
-				Extents: entity.RocketExtents }
-			
-			entity.Add(ent)
 		}
 	}
 }

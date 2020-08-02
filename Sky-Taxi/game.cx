@@ -1,6 +1,7 @@
 package main
 
 import "inputs"
+import "mesh"
 
 
 
@@ -8,6 +9,7 @@ func gameInit () {
 	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
 	draw.Init()
 	inputs.Init(false)
+	mesh.Init()
 	entitiesInit()
 	map.Init()
 }
