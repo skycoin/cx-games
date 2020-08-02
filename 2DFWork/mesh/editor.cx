@@ -96,7 +96,7 @@ func makeColorPickerWheelResource () {
 
 func MakeIconEditTriangles () {
     var m Mesh2D
-    m = Mesh2D{ Name: "EditTrianglesIcon" }
+    m = Mesh2D{ Name: "Edit triangles" }
 
     var c Color3
     var v Vec2
@@ -529,7 +529,7 @@ func InitEditColorsIconMesh () {
 
 func MakeIconEditVertices () {
     var m Mesh2D
-    m = Mesh2D{ Name: "Edit vertices icon" }
+    m = Mesh2D{ Name: "Edit vertices" }
 
     var c Color3
     var v Vec2

@@ -42,8 +42,7 @@ func Init () {
 	
 	
 	// characters 
-	str.print("    Later, we might make meshes for: ")
-	str.print("        ")
+	printf("    Later, we might make meshes for: ")
 
 	for i := 0; i < len(charMap); i++ {
 		printf("%s", charMap[i])

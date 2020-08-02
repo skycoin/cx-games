@@ -1,10 +1,9 @@
-package draw
+package mesh
 
 import "gl"
 
 import "app"
-import "entity"
-import "mesh"
+//import ""
 
 
 var currX           f32
@@ -26,43 +25,42 @@ var blinkDelay           f32 =  0.1
 
 
 
-/*
-func All (currTime f32, deltaTime f32) {
-	//str.print("draw.All()")
+func Draw (currTime f32, deltaTime f32) {
+	//str.print("mesh.Draw ()")
 
 	blinkTiming(deltaTime)
 
-	if app.Mode == app.APPMODE_EDITOR {		
+	if app.Mode == app.MODE_EDITOR {		
 		if app.EditMode != app.EDITMODE_COLORS &&
 			app.EditMode != app.EDITMODE_MESH_PICKER {
 			
 			gl.Begin(gl.LINES)
-				gridLines()
+				//gridLines()
 			gl.End()
 		}
 
 		gl.Begin(gl.TRIANGLES) //////////////
 			if app.EditMode == app.EDITMODE_COLORS {
-				trianglesForOne(mesh.RawMeshes, mesh.ColorWheel)
-			} else 
+				//trianglesForOne(mesh.RawMeshes, mesh.ColorWheel)
+			}else 
 			if true == true { //app.EditMode == app.EDITMODE_MESH_PICKER {
-				trianglesForMenu(mesh.BakedUIMeshes, ccInput.MESH_PICKER)
-			} else {
-				trianglesForAll(mesh.EditLayers)
+				//trianglesForMenu(mesh.BakedUIMeshes, ccInput.MESH_PICKER)
+			}else{
+				//trianglesForAll(mesh.EditLayers)
 			}			
 			
-			trianglesForMenu(mesh.BakedUIMeshes, ccInput.EDIT_TOOLBAR)
+			//trianglesForMenu(mesh.BakedUIMeshes, ccInput.EDIT_TOOLBAR)
 		gl.End()
 
 		if app.EditMode != app.EDITMODE_COLORS &&
 			app.EditMode != app.EDITMODE_MESH_PICKER {
 			
 			gl.Begin(gl.QUADS) //////////////////
-				editorQuads()
+				//editorQuads()
 			gl.End()
 			
 			gl.Begin(gl.LINES)
-				maybeDragBox()				
+				//maybeDragBox()				
 			gl.End()
 		}
 		
@@ -74,17 +72,16 @@ func All (currTime f32, deltaTime f32) {
 		// gl.Begin(gl.LINE_LOOP) //////////////
 		// 	simpleVertexSequence(0.5)
 		// gl.End()
-	} else { // playing (& the rest) 
-		gl.Begin(gl.QUADS) //////////////////	
-			Terrain(currTime)
+	}else{ // playing (& the rest) 
+		//gl.Begin(gl.QUADS) //////////////////	
 			//EntitiesBox()
-		gl.End()
+		//gl.End()
 		
 		gl.Begin(gl.TRIANGLES)
-			EntitiesMesh()
+			//EntitiesMesh()
 			
-			if app.Mode == app.APPMODE_GAME_OVER {
-				trianglesForOne(mesh.RawMeshes, mesh.GameOver)
+			if app.Mode == app.MODE_GAME_OVER {
+				//trianglesForOne(mesh.RawMeshes, mesh.GameOver)
 			}
 		gl.End()
 	}
@@ -103,7 +100,8 @@ func blinkTiming(deltaTime f32) {
 }
 
 
-func maybeDragBox() () {
+/*
+func maybeDragBox() {
 	if ccInput.Dragging { //&&
 		//app.EditMode != app.EDITMODE_TRIANGLES {
 		
