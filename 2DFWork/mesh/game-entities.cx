@@ -216,7 +216,7 @@ func InitPlayerShipMesh () {
 
 
 
-func InitMissileMesh () () {
+func InitMissileMesh () {
     var m Mesh2D
     m = Mesh2D{ Name: "Missile" }
 
