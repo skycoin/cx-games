@@ -183,7 +183,7 @@ func UpdateAt (et i32, i i32) { // entity type, id
 
 		if  justCrossedGoal(et, i) {
 			Kill(et, i)
-			str.print("CROSSED GOAL LINE")
+			//str.print("CROSSED GOAL LINE")
 		}
 	}
 	
