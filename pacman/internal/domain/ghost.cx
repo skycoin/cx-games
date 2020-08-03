@@ -1,0 +1,242 @@
+package main
+
+// Ghost constants
+var GHOST_RADIUS f32 = 0.025
+var GHOST_SPAWN_LINE f32 = 11.0
+var GHOST_SPAWN_COLUMN f32 = 13.0
+
+// Ghost Types
+var SHADOW_GHOST i32 = 0
+var SPEEDY_GHOST i32 = 1
+var BASHFUL_GHOST i32 = 2
+var POKEY_GHOST i32 = 3
+
+// Ghost Scatter Points
+var SHADOW_SCATTER_LINE     i32 = 2
+var SHADOW_SCATTER_COLUMN  i32 = 26
+var SPEEDY_SCATTER_LINE     i32 = 2
+var SPEEDY_SCATTER_COLUMN  i32 = 1
+var BASHFUL_SCATTER_LINE    i32 = 28
+var BASHFUL_SCATTER_COLUMN i32 = 26
+var POKEY_SCATTER_LINE      i32 = 28
+var POKEY_SCATTER_COLUMN   i32 = 1
+
+// Ghost modes
+var GHOST_MODE_CHASE i32 = 0
+var GHOST_MODE_SCATTER i32 = 1
+var GHOST_MODE_FRIGHTENED i32 = 2
+var GHOST_MODE_IN_HOUSE i32 = 3
+
+// Game timers
+var GHOST_CHASE_TIMER f64 = 0.0D
+var GHOST_CHASE_LIMIT f64 = 20.0D
+
+var GHOST_SCATTER_TIMER f64 = 0.0D
+var GHOST_SCATTER_LIMIT f64 = 5.0D
+
+var GHOST_FRIGHTENED_TIMER f64 = -999.0D
+var GHOST_FRIGHTENED_SEMI_LIMIT f64 = 2.0D
+var GHOST_FRIGHTENED_LIMIT f64 = 5.0D
+
+var GHOST_RELEASE_TIMER f64 = 0.0D
+var GHOST_RELEASE_LIMIT f64 = 5.0D
+
+var GHOST_MOVEMENT_TIMER f64 = 0.0D
+var GHOST_MOVEMENT_LIMIT f64 = 0.25D
+var GHOST_MOVEMENT_HALF_OF_LIMIT f64 = GHOST_MOVEMENT_LIMIT / 2.0D
+
+// Timer modifiers
+var GHOST_RELESE_MODIFIER f64 = 0.5D
+var GHOST_MOVEMENT_MODIFIER f64 = 0.05D
+var GHOST_FRIGHTENED_SEMI_MODIFIER f64 = 0.2D
+var GHOST_FRIGHTENED_MODIFIER f64 = 0.5D
+var GHOST_RELEASE_MODIFIER f64 = 0.5D
+var GHOST_CHASE_MODIFIER f64 = 2.0D
+var GHOST_SCATTER_MODIFIER f64 = 0.5D
+
+/* Function     : canMove
+   Input        : Ghost to move (ghost Ghost)
+   Description  : Manages the player movement.
+*/
+func moveGhost(ghost Ghost) () {
+  var direction i32
+
+  // Calculates the ghost moving direction depending on the current mode mode
+  if i32.eq(ghost.status, GHOST_MODE_CHASE) {
+    direction = ghostChaseDirection(ghost)
+  }
+  if i32.eq(ghost.status, GHOST_MODE_SCATTER) {
+    direction = ghostScatterDirection(ghost)
+  }
+  if bool.or(i32.eq(ghost.status, GHOST_MODE_FRIGHTENED), i32.eq(ghost.status, GHOST_MODE_IN_HOUSE)) {
+    direction = randomGhostDirection(ghost)
+  }
+  ghosts[ghost.gtype].direction = direction
+
+  if i32.eq(direction, UP) {
+    ghosts[ghost.gtype].index_y = i32.sub(ghost.index_y, 1)
+  }
+  if i32.eq(direction, DOWN) {
+    ghosts[ghost.gtype].index_y = i32.add(ghost.index_y, 1)
+  }
+  if i32.eq(direction, LEFT) {
+    ghosts[ghost.gtype].index_x = i32.sub(ghost.index_x, 1)
+  }
+  if i32.eq(direction, RIGHT) {
+    ghosts[ghost.gtype].index_x = i32.add(ghost.index_x, 1)
+  }
+  // Update ghost position
+  ghosts[ghost.gtype].position = coords2position(ghosts[ghost.gtype].index_y, ghosts[ghost.gtype].index_x)
+}
+
+/* Function     : calculateGhostDirection
+   Input        : Ghost in scatter or chase mode (ghost Ghost)
+                : Target line for the ghost (target_line i32)
+                : Target column for the ghost (target_column i32)
+   Output       : Best direction (direction i32)
+   Description  : Returns the direction of the shortest path between the ghost
+                  and the target board position.
+*/
+func calculateGhostDirection(ghost Ghost, target_line i32, target_column i32) (direction i32) { // FIX ME no spaghetti code
+  var min_distance i32 = 100 // Infinite
+
+  var distance_left i32
+  if bool.and(bool.not(i32.eq(ghost.direction, RIGHT)), canMove(LEFT, ghost.index_y, ghost.index_x)) {
+    distance_left = i32.add(i32.abs(i32.sub(target_column, i32.sub(ghost.index_x, 1))), i32.abs(i32.sub(target_line, ghost.index_y)))
+    if i32.lt(distance_left, min_distance) {
+      min_distance = distance_left
+      direction = LEFT
+    }
+  }
+
+  var distance_right i32
+  if bool.and(bool.not(i32.eq(ghost.direction, LEFT)), canMove(RIGHT, ghost.index_y, ghost.index_x)) {
+    distance_right = i32.add(i32.abs(i32.sub(target_column, i32.add(ghost.index_x, 1))), i32.abs(i32.sub(target_line, ghost.index_y)))
+    if i32.lt(distance_right, min_distance) {
+      min_distance = distance_right
+      direction = RIGHT
+    }
+  }
+
+  var distance_up i32
+  if bool.and(bool.not(i32.eq(ghost.direction, DOWN)), canMove(UP, ghost.index_y, ghost.index_x)) {
+    distance_up = i32.add(i32.abs(i32.sub(target_column, ghost.index_x)), i32.abs(i32.sub(target_line, i32.sub(ghost.index_y, 1))))
+    if i32.lt(distance_up, min_distance) {
+      min_distance = distance_up
+      direction = UP
+    }
+  }
+
+  var distance_down i32
+  if bool.and(bool.not(i32.eq(ghost.direction, UP)), canMove(DOWN, ghost.index_y, ghost.index_x)) {
+    distance_down = i32.add(i32.abs(i32.sub(target_column, ghost.index_x)), i32.abs(i32.sub(target_line, i32.add(ghost.index_y, 1))))
+    if i32.lt(distance_down, min_distance) {
+      min_distance = distance_down
+      direction = DOWN
+    }
+  }
+}
+
+/* Function     : calculateGhostDirection
+   Input        : Ghost in chase mode (ghost Ghost)
+   Output       : Best direction (direction i32)
+   Description  : Returns the direction of the shortest path between the ghost
+                  and the player.
+*/
+func ghostChaseDirection(ghost Ghost) (direction i32) {
+  direction = calculateGhostDirection(ghost, player.index_y, player.index_x)
+}
+
+/* Function     : calculateGhostDirection
+   Input        : Ghost in scatter mode (ghost Ghost)
+   Output       : Best direction (direction i32)
+   Description  : Returns the direction of the shortest path between the ghost
+                  and the corresponding scatter board position.
+*/
+func ghostScatterDirection(ghost Ghost) (direction i32) {
+  if i32.eq(ghost.gtype, SHADOW_GHOST) {
+    direction = calculateGhostDirection(ghost, SHADOW_SCATTER_LINE, SHADOW_SCATTER_COLUMN)
+  }
+  if i32.eq(ghost.gtype, SPEEDY_GHOST) {
+    direction = calculateGhostDirection(ghost, SPEEDY_SCATTER_LINE, SPEEDY_SCATTER_COLUMN)
+  }
+  if i32.eq(ghost.gtype, BASHFUL_GHOST) {
+    direction = calculateGhostDirection(ghost, BASHFUL_SCATTER_LINE, BASHFUL_SCATTER_COLUMN)
+  }
+  if i32.eq(ghost.gtype, POKEY_GHOST) {
+    direction = calculateGhostDirection(ghost, POKEY_SCATTER_LINE, POKEY_SCATTER_COLUMN)
+  }
+}
+
+/* Function     : randomGhostDirection
+   Input        : Ghost in frightened or caged (ghost Ghost)
+   Output       : Random direction (direction i32)
+   Description  : Returns a random possible direction for the ghost.
+*/
+func randomGhostDirection(ghost Ghost) (direction i32) {
+  direction = i32.rand(0, 4)
+
+  for bool.not(bool.and(bool.not(i32.eq(direction, reverseDirection(ghost.direction))), canMove(direction, ghost.index_y, ghost.index_x))) {
+    direction = i32.rand(0, 4)
+  }
+}
+
+
+
+/***************************************
+ * Ghost behavior functions.
+***************************************/
+
+func updateGhostMode(ghost Ghost) {
+  if i32.eq(ghost.status, GHOST_MODE_CHASE) {
+    if isTimerOver(GHOST_CHASE_TIMER, GHOST_CHASE_LIMIT) {
+      ghosts[ghost.gtype].status = GHOST_MODE_SCATTER
+      GHOST_SCATTER_TIMER = glfw.GetTime()
+    }
+  }
+
+  if i32.eq(ghost.status, GHOST_MODE_SCATTER) {
+    if isTimerOver(GHOST_SCATTER_TIMER, GHOST_SCATTER_LIMIT) {
+      ghosts[ghost.gtype].status = GHOST_MODE_CHASE
+      GHOST_CHASE_TIMER = glfw.GetTime()
+    }
+  }
+
+  if i32.eq(ghost.status, GHOST_MODE_FRIGHTENED) {
+    if isTimerOver(GHOST_FRIGHTENED_TIMER, GHOST_FRIGHTENED_LIMIT) {
+      ghosts[ghost.gtype].status = GHOST_MODE_CHASE
+      GHOST_CHASE_TIMER = glfw.GetTime()
+    }
+  }
+}
+
+func releaseGhost() {
+  for i:=0; i<4; i++ {
+    if i32.eq(ghosts[i].status, GHOST_MODE_IN_HOUSE) {
+      ghosts[i].index_x = f32.i32(GHOST_SPAWN_COLUMN)
+      ghosts[i].index_y = f32.i32(GHOST_SPAWN_LINE)
+      ghosts[i].status = GHOST_MODE_CHASE
+      break
+    }
+  }
+}
+
+/* Function     : reverseDirection
+   Input        : Current direction (direction i32)
+   Output       : Opposite direction (reverse i32)
+   Description  : Returns the opposite direction of the input.
+*/
+func reverseDirection(direction i32) (reverse i32) {
+  if i32.eq(direction, UP) {
+    reverse = DOWN
+  }
+  if i32.eq(direction, DOWN) {
+    reverse = UP
+  }
+  if i32.eq(direction, LEFT) {
+    reverse = RIGHT
+  }
+  if i32.eq(direction, RIGHT) {
+    reverse = LEFT
+  }
+}

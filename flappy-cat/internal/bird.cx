@@ -1,0 +1,46 @@
+package main
+
+var BIRD_START_X f32 = -0.75
+var BIRD_START_Y f32 = 0.5
+var BIRD_RADIUS f32 = 0.2
+var BIRD_GRAVITY f32 = 0.001
+
+var BIRD_SCALE_X f32 = 0.07
+var BIRD_SCALE_Y f32 = 0.07
+
+var g_bird Bird
+
+type Bird struct{
+    x f32
+    y f32
+    vx f32
+    vy f32
+    gravity f32
+    radius f32
+
+    animation [4]Sprite
+}
+
+func NewBird() (bird Bird) {
+  bird = Bird{
+      x: BIRD_START_X,
+      y: BIRD_START_Y,
+      vx: 0.00, // Velocity in x direction
+      vy: 0.00, // Velocity in y direction
+      gravity: BIRD_GRAVITY,
+      radius: BIRD_RADIUS}
+
+  bird.animation[0] = NewSprite(167, 232, 17, 62)
+  bird.animation[1] = NewSprite(167, 227, 67, 113)
+  bird.animation[2] = NewSprite(248, 313, 17, 63)
+  bird.animation[3] = NewSprite(248, 313, 67, 113)
+}
+
+func UpdateBird(bird Bird) (bird Bird) {
+  bird.vy = f32.sub(bird.vy, bird.gravity)
+  bird.y = f32.add(bird.y, bird.vy)
+}
+
+func RenderBird(bird Bird) {
+  RenderSprite(bird.x, bird.y, BIRD_SCALE_X, BIRD_SCALE_Y, bird.animation[0])
+}

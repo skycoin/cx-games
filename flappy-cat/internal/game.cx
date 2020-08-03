@@ -1,0 +1,86 @@
+package main
+
+var BACKGROUND_START_X f32 = 0.0
+var BACKGROUND_START_Y f32 = -0.4
+var BACKGROUND_SCALE_X f32 = 1.0
+var BACKGROUND_SCALE_Y f32 = 0.4
+
+var SKY_START_X f32 = 0.0
+var SKY_START_Y f32 = 1.0
+var SKY_SCALE_X f32 = 1.0
+var SKY_SCALE_Y f32 = 1.0
+
+var GRASS_START_X f32 = 1.0
+var GRASS_START_Y f32 = -0.9
+var GRASS_SCALE_X f32 = 2.0
+var GRASS_SCALE_Y f32 = 0.1
+
+var g_game Game
+
+type Game struct {
+  background Sprite
+  sky Sprite
+  grass Sprite
+}
+
+func NewGame() (game Game) {
+  game.background = NewSprite(0, 136, 0, 43)
+  game.sky = NewSprite(0, 1, 0, 1)
+  game.grass = NewSprite(0, 165, 43, 54)
+
+  // init bird
+  g_bird = NewBird()
+
+  // init pipes
+  for i:=0; i<len(g_top_pipes); i++ {
+    pipe_h := randNumGenerator()
+    pipe_x := f32.add(PIPE_START_X, f32.mul(i32.f32(i), PIPE_GAP_X))
+    g_top_pipes[i] = NewPipe(pipe_x, pipe_h, true)
+    g_bottom_pipes[i] = NewPipe(pipe_x, f32.sub(2.0,f32.add(pipe_h, PIPE_GAP)), false)
+  }
+}
+
+func UpdateGame(game Game) (game Game) {
+  for i:=0; i<len(g_top_pipes); i++ {
+   if bool.or(checkCollision(g_bird, g_top_pipes[i]), checkCollision(g_bird, g_bottom_pipes[i])) {
+     bool.print(true)
+     game = NewGame()
+   }
+  }
+
+  g_bird = UpdateBird(g_bird)
+  if g_bird.y <= -1.0 {
+    game = NewGame()
+  }
+
+  for i:=0; i<len(g_top_pipes); i++ {
+    entropy := randNumGenerator()
+    g_top_pipes[i] = UpdatePipe(g_top_pipes[i], entropy)
+    g_bottom_pipes[i] = UpdatePipe(g_bottom_pipes[i], entropy)
+  }
+}
+
+func checkCollision(bird Bird, pipe Pipe) (collision bool) {
+  collision = false
+  if pipe.topPipe {
+    if bird.x >= pipe.x && bird.x <= (pipe.x + pipe.w) && f32.sub(f32.add(bird.y,1.0),pSkullHeightTop) >= f32.sub(2.0, pipe.h) {
+      collision = true
+    }
+  } else {
+    if bird.x >= pipe.x && bird.x <= (pipe.x + pipe.w) && f32.sub(f32.add(bird.y, 1.0),pSkullHeightBottom) <= pipe.h {
+      collision = true
+    }
+  }
+}
+
+func RenderGame(game Game) {
+  RenderSprite(BACKGROUND_START_X, BACKGROUND_START_Y, BACKGROUND_SCALE_X, BACKGROUND_SCALE_Y, game.background)
+  RenderSprite(SKY_START_X, SKY_START_Y, SKY_SCALE_X, SKY_SCALE_Y, game.sky)
+  RenderSprite(GRASS_START_X, GRASS_START_Y, GRASS_SCALE_X, GRASS_SCALE_Y, game.grass)
+
+  RenderBird(g_bird)
+  for i:=0; i<len(g_top_pipes); i++ {
+    RenderPipe(g_top_pipes[i])
+    RenderPipe(g_bottom_pipes[i])
+  }
+}

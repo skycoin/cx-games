@@ -1,0 +1,6 @@
+package main
+
+type Window struct {
+    Height i32
+    Width i32
+}

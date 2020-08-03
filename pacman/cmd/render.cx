@@ -1,0 +1,192 @@
+package main
+
+// Game Object render functions
+
+/* Function     : renderGame
+   Input        : OpenGL program (program i32)
+   Description  : Responsible for managing the rendering process of all the game
+                  objects.
+*/
+func renderGame(program i32) {
+  var i i32
+  var j i32
+
+  gl.Clear(gl.COLOR_BUFFER_BIT)
+  gl.Enable(gl.TEXTURE_2D)
+  gl.UseProgram(program)
+
+  renderBoard()  // Render Board
+  renderPlayer() // Render Player
+
+  // Render Points
+  for i=0; i<points_count; i++ {
+    if bool.eq(points[i].active, true) {
+      renderPoint(points[i])
+    }
+  }
+
+  // Render Ghosts
+  for i=0; i<4; i++ {
+      renderGhost(ghosts[i])
+  }
+
+  renderLives() // Render Lives
+  renderLevel()
+  renderGhostEaterMeter()
+}
+
+/* Function     : renderGhostEaterMeter
+   Description  : makes it clear how much time you have to eat ghosts
+*/
+var left f32 = -1.0
+var right f32 = 1.0
+func renderGhostEaterMeter() {
+  if bool.not(isTimerOver(
+    GHOST_FRIGHTENED_TIMER,
+    GHOST_FRIGHTENED_LIMIT)) {
+
+    var pos graphical2d.Position2D
+    var dim graphical2d.Dimensions2D
+    var col graphical2d.Color
+
+    var f f64 = f64.sub(glfw.GetTime(), GHOST_FRIGHTENED_TIMER)
+    f = f64.div(f, GHOST_FRIGHTENED_LIMIT)
+    var fraction f32 = f64.f32(f)
+
+    // red background
+    pos = graphical2d.Position2D{ x: 0.0, y: 1.0 - CELL_HALF_HEIGHT }
+    dim = graphical2d.Dimensions2D{ width: 2.0, height: CELL_HALF_WIDTH }
+    col = graphical2d.Color{ red: 1.0, green: 0.0, blue: 0.0 }
+
+    graphical2d.drawRectangle(pos, dim, col)
+
+    // shrinking green bar
+    dim.width = f32.sub(2.0, fraction * 2.0)
+    col.red = 0.0
+    col.green = 1.0
+
+    graphical2d.drawRectangle(pos, dim, col)
+  }
+}
+
+/* Function     : renderBoard
+   Description  : Renders the game board
+*/
+func renderBoard() {
+  for i:=0; i<y_cells; i++ {
+    for j:=0; j<x_cells; j++ {
+      graphical2d.drawRectangle(cells[i][j].position, cells[i][j].dimensions, cells[i][j].color)
+    }
+  }
+}
+
+/* Function     : renderPlayer
+   Description  : Renders the player
+*/
+func renderPlayer() {
+  var pos Position2D
+  pos = player.position
+
+  if gameMode == GAMEMODE_GETREADY {
+    var xDelta f32 = pos.x - nextLifePos.x
+    var yDelta f32 = pos.y - nextLifePos.y
+    var timeDelta f64 = glfw.GetTime() - GETREADY_TIMER
+    var frac f32 = f64.f32(timeDelta / GETREADY_LIMIT)
+    pos.x = f32.add(nextLifePos.x, f32.mul(frac, xDelta))
+    pos.y = f32.add(nextLifePos.y, f32.mul(frac, yDelta))
+  }
+
+  graphical2d.drawPacMan(pos, player.radius, player.color, false)
+  return
+
+  // LEAVING THE ORIGINAL CODE, but bypassing it because
+  // now the mouth smoothly animates.  no more need to....
+
+
+
+  // ....bounce back & forth between just 2 frames
+  // (completely closed, or completely open)
+  if isTimerOver(PLAYER_ANIMATION_TIMER, PLAYER_ANIMATION_SEMI_LIMIT) {
+    graphical2d.drawPacMan(player.position, player.radius, player.color, false)
+  } else {
+    graphical2d.drawCircle(player.position, player.radius, player.color)
+  }
+
+  if isTimerOver(PLAYER_ANIMATION_TIMER, PLAYER_ANIMATION_LIMIT) {
+    PLAYER_ANIMATION_TIMER = glfw.GetTime()
+  }
+}
+
+/* Function     : renderGhost
+   Description  : Renders a ghost
+*/
+func renderGhost(ghost Ghost) () {
+  var color graphical2d.Color
+
+  if i32.eq(ghost.status, GHOST_MODE_FRIGHTENED) {
+    if bool.and(isTimerOver(GHOST_ANIMATION_TIMER, GHOST_ANIMATION_SEMI_LIMIT), isTimerOver(GHOST_FRIGHTENED_TIMER, GHOST_FRIGHTENED_SEMI_LIMIT)) {
+      color = graphical2d.newColor(1.0, 1.0, 1.0)
+    } else {
+      color = graphical2d.newColor(0.0, 0.0, 1.0)
+    }
+  } else {
+    color = ghost.color
+  }
+
+  if isTimerOver(GHOST_ANIMATION_TIMER, GHOST_ANIMATION_SEMI_LIMIT) {
+    graphical2d.drawGhost(ghost.position, ghost.radius, color, 0.5) // FIX ME DrawGhost()
+  } else {
+    graphical2d.drawGhost(ghost.position, ghost.radius, color, 1.5) // FIX ME DrawGhost2()
+  }
+
+  if isTimerOver(GHOST_ANIMATION_TIMER, GHOST_ANIMATION_LIMIT) {
+    GHOST_ANIMATION_TIMER = glfw.GetTime()
+  }
+}
+
+/* Function     : renderPoint
+   Description  : Renders a point
+*/
+func renderPoint(point Point) () {
+  if isTimerOver(POINT_ANIMATION_TIMER, POINT_ANIMATION_SEMI_LIMIT) {
+    if i32.eq(point.ptype, PATH_CELL_WITH_SUPER_POINT) {
+      graphical2d.drawCircle(point.position, f32.add(point.radius, 0.005), point.color)
+    }
+    if i32.eq(point.ptype, PATH_CELL_WITH_SIMPLE_POINT) {
+      graphical2d.drawCircle(point.position, point.radius, point.color)
+    }
+  } else {
+    graphical2d.drawCircle(point.position, point.radius, point.color)
+  }
+
+  if isTimerOver(POINT_ANIMATION_TIMER, POINT_ANIMATION_LIMIT) {
+    POINT_ANIMATION_TIMER = glfw.GetTime()
+  }
+}
+
+/* Function     : renderLives
+   Description  : Renders the player lives
+*/
+func renderLives() {
+  var position graphical2d.Position2D
+  var pacCol Color
+  var numPacs   i32 = PLAYER_LIVES - 1
+
+  pacCol   = graphical2d.newColor(1.0, 1.0, 0.0)
+
+  for i:=0; i<numPacs; i++ {
+    position = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, i))
+    graphical2d.drawPacMan(position, CELL_HALF_WIDTH - 0.01, pacCol, true)
+  }
+}
+
+func renderLevel() {
+  var color Color
+  color = graphical2d.newColor(0.0, 0.0, 1.0)
+
+  var position graphical2d.Position2D
+  for i:=0; i<GAME_LEVEL; i++ {
+    position = coords2position(30, i32.add(1, i))
+    graphical2d.drawSkycoin(position, 0.025, 0.0125, color)
+  }
+}

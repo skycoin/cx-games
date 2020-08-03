@@ -1,0 +1,70 @@
+package main
+
+var PIPE_GAP f32 = 0.7
+var PIPE_GAP_X f32 = 0.7
+var PIPE_START_X f32 = 0.5
+var PIPE_WIDTH f32 = 0.10
+var PIPE_SPEED f32 = -0.009
+
+var pSkullHeightTop f32 = -0.07 // TODO rename
+var pSkullHeightBottom f32 = 0.07 // TODO rename
+
+var g_top_pipes [3]Pipe // Set value to change number of pipes per row
+var g_bottom_pipes [3]Pipe // Set value to change number of pipes per row
+
+type Pipe struct {
+    x f32
+    y f32
+    vx f32
+    vy f32
+    h f32
+    w f32
+    topPipe bool
+
+    body Sprite
+    head Sprite
+}
+
+func NewPipe(x f32, height f32, top bool) (pipe Pipe) {
+  pipe = Pipe{
+      x: x,
+      y: 1.0,
+      vx: PIPE_SPEED, // Velocity in x direction
+      vy: 0.0,
+      h: height,
+      w: PIPE_WIDTH,
+      topPipe: top}
+
+    if (top) {
+      pipe.y = 1.0
+    } else {
+      pipe.y = -1.0
+    }
+
+    pipe.body = NewSprite(136, 157, 16, 19)
+    pipe.head = NewSprite(192, 216, 0, 14)
+}
+
+func UpdatePipe(pipe Pipe, randNum f32) (pipe Pipe) {
+  if (pipe.x <= f32.sub(-1.0, PIPE_WIDTH)) {
+    pipe.x = 1.0
+    if (pipe.topPipe) {
+      pipe.h = randNum
+    } else {
+      pipe.h = f32.sub(2.0,f32.add(randNum, PIPE_GAP))
+    }
+
+  } else {
+    pipe.x = f32.add(pipe.x, pipe.vx)
+  }
+}
+
+func RenderPipe(pipe Pipe) {
+  RenderSprite(pipe.x, pipe.y, pipe.w, pipe.h, pipe.body)
+  if pipe.topPipe {
+    RenderSprite(pipe.x, f32.sub(pipe.y, pipe.h), f32.add(pipe.w, 0.01), pSkullHeightTop, pipe.body)
+  } else {
+    RenderSprite(pipe.x, f32.add(pipe.y, pipe.h), f32.add(pipe.w, 0.01), pSkullHeightBottom, pipe.body)
+
+  }
+}
