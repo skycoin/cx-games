@@ -37,9 +37,7 @@ func drawAll () {
 		NextShape()
 	}
 	
-	if app.Mode < app.MODE_MENU_MAX { // in a menu 
-		menu.Draw()
-		
+	if menu.IsOpenThenDrewIt() {
 		if app.Mode == app.MODE_MENU_CONTROLS {
 			drawVirtualKeyBackdrops()
 		}

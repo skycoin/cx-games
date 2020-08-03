@@ -9,6 +9,8 @@ func drawAll () {
 
 	pre()
 	gl.Disable(gl.TEXTURE_2D)
+	
+	// game 
 	map.DrawQuads()
 	draw.OneCircle(
 		entities.All[entities.ENT_PLAYER][0].X, 
@@ -18,6 +20,10 @@ func drawAll () {
 		draw.COLOR_CYAN, 
 		1.0, 
 		true)
+		
+	mesh.DrawEditorMaybe(time.Now, time.Delta)
+	if menu.IsOpenThenDrewIt() {		
+	}
 }
 
 

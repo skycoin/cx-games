@@ -51,9 +51,7 @@ func drawAll () {
 	//draw.ScaledRotatedPic(PIC_COIN, 0.0, 0.0, 0.5, 0.5, angle)
 	gl.LoadIdentity()
 
-	if app.Mode < app.MODE_MENU_MAX { // in a menu 
-		menu.Draw()
-		
+	if menu.IsOpenThenDrewIt() {
 		if app.Mode == app.MODE_MENU_CONTROLS {
 			//drawVirtualKeyBackdrops()
 		}

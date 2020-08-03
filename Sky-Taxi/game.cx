@@ -9,7 +9,9 @@ func gameInit () {
 	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
 	draw.Init()
 	inputs.Init(false)
+	//space.Init()
 	mesh.Init()
+	menuInit()
 	entitiesInit()
 	map.Init()
 }
@@ -87,8 +89,4 @@ func repeaters (key i32) {
 		if inputs.EventAbilityRight(key) {
 		}
 	}
-}
-
-
-func respondToMenuClicks () {
 }
