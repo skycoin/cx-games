@@ -3,7 +3,7 @@ package mesh
 import "gl"
 
 import "app"
-//import ""
+import "draw"
 
 
 var currX           f32
@@ -31,7 +31,7 @@ func DrawEditorMaybe (currTime f32, deltaTime f32) {
 	blinkTiming(deltaTime)
 
 	if app.Mode == app.MODE_EDITOR {		
-		if app.EditMode != app.EDITMODE_COLORS &&
+		if  app.EditMode != app.EDITMODE_COLORS &&
 			app.EditMode != app.EDITMODE_MESH_PICKER {
 			
 			gl.Begin(gl.LINES)
@@ -41,15 +41,15 @@ func DrawEditorMaybe (currTime f32, deltaTime f32) {
 
 		gl.Begin(gl.TRIANGLES) //////////////
 			if app.EditMode == app.EDITMODE_COLORS {
-				//trianglesForOne(mesh.RawMeshes, mesh.ColorWheel)
+				//trianglesForOne(RawMeshes, ColorWheel)
 			}else 
 			if true == true { //app.EditMode == app.EDITMODE_MESH_PICKER {
-				//trianglesForMenu(mesh.BakedUIMeshes, ccInput.MESH_PICKER)
+				//trianglesForMenu(BakedUIMeshes, ccInput.MESH_PICKER)
 			}else{
-				//trianglesForAll(mesh.EditLayers)
+				//trianglesForAll(EditLayers)
 			}			
 			
-			//trianglesForMenu(mesh.BakedUIMeshes, ccInput.EDIT_TOOLBAR)
+			//trianglesForMenu(BakedUIMeshes, ccInput.EDIT_TOOLBAR)
 		gl.End()
 
 		if  app.EditMode != app.EDITMODE_COLORS &&
@@ -79,15 +79,13 @@ func DrawEditorMaybe (currTime f32, deltaTime f32) {
 		
 		gl.Begin(gl.TRIANGLES)
 			//EntitiesMesh()
+			trianglesForOne(RawMeshes, 0)
 			
 			if app.Mode == app.MODE_GAME_OVER {
-				//trianglesForOne(mesh.RawMeshes, mesh.GameOver)
+				//trianglesForOne(RawMeshes, GameOver)
 			}
 		gl.End()
 	}
-
-	// hero 
-	//Circle(entity.Ents[0])
 }
 
 
@@ -154,15 +152,15 @@ func trianglesForMenu (meshes []Mesh2D, menuId i32) () {
 		trianglesForOne(meshes, bi)
 	}
 }
+*/
 
-
-func trianglesForOne (meshes []Mesh2D, i i32) () {
+func trianglesForOne (meshes []Mesh2D, i i32) {
 	//printf("trianglesForOne () id of given []Mesh2D: %d \n", i)
 	
 	var m Mesh2D
 	m = meshes[i]
 
-	mesh.ReportBadTriCount("trianglesForOne", len(m.TriangleIndices))
+	ReportBadTriCount("trianglesForOne", len(m.TriangleIndices))
 
 	for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
 		var pId i32 // point id (from tri ids) 
@@ -180,13 +178,14 @@ func trianglesForOne (meshes []Mesh2D, i i32) () {
 }
 
 
+/*
 func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) () {
 	//str.print("trianglesForOneWithPos ()")
 	
 	var m Mesh2D
 	m = meshes[i]
 
-	mesh.ReportBadTriCount("trianglesForOneWithPos", len(m.TriangleIndices))
+	ReportBadTriCount("trianglesForOneWithPos", len(m.TriangleIndices))
 
 	for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
 		var pId i32 // point id (from tri ids) 
@@ -268,23 +267,23 @@ func setColor (i i32) {
 /*
 func editorQuads () () {
 	var li i32
-	for li = 0; i32.lt(li, len(mesh.EditLayers)); li++ {
+	for li = 0; i32.lt(li, len(EditLayers)); li++ {
 		var cols []Color3
-		cols = mesh.EditLayers[li].Colors
+		cols = EditLayers[li].Colors
 		
 		for i := 0; i32.lt(i, len(cols)); i++ {
 			//gl.Color3f(cols[i].R, cols[i].G, cols[i].B)  TODO: oscillate between this and black?  or just blink to halfway in between? 
 			gl.Color3f(darkCI, darkCI, darkCI)
 
 			if pickedNodesAreBright {
-				for j := 0; j < len(mesh.PickedVerts); j++ {
-					if i == mesh.PickedVerts[j] {
+				for j := 0; j < len(PickedVerts); j++ {
+					if i == PickedVerts[j] {
 						gl.Color3f(pickR, pickG, minCI)
 					}
 				}
 			}
 			
-			drawRect(mesh.EditLayers[li].Points[i], entity.NodeExtents)
+			drawRect(EditLayers[li].Points[i], entity.NodeExtents)
 		}
 	}
 }
@@ -340,7 +339,7 @@ func EntitiesMesh () () {
 				gl.Color3f(1.0, 0.5, 0.0)
 			}
 		
-			trianglesForOneWithPos(mesh.SizedMeshes, e.Type, e.Pos)
+			trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
 		}
 	}
 }

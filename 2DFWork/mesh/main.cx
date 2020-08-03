@@ -666,6 +666,7 @@ func getValidId (trashVert i32, currVert i32) (out i32) {
 		out = currVert
 	}
 }
+*/
 
 
 func ReportBadTriCount (s str, num i32) () {
@@ -675,4 +676,3 @@ func ReportBadTriCount (s str, num i32) () {
 		printf("********* BAD NUM OF TRI INDICES! in %s () - leftover: %d \n", s, leftover)
 	}
 }
-*/
