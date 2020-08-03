@@ -44,7 +44,7 @@ Use the arrows to move the player and try to eat the food, while not eating your
 
 ## Contribute
 This game was originally developed by Lunier, a member of the Skycoin community,
-if you want to show your appreciation for Lunier's work fell free to send a
+if you want to show your appreciation for Lunier's work feel free to send a
 contribution in Skycoin to the address below. <br/>
 
 Skycoin Address: shAih4RfkkS9yKF2ULouWdE6pfXdikb6i6<br/>
