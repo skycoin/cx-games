@@ -26,6 +26,7 @@ func Init () {
 	glfw.SetFramebufferSizeCallback(app.Name, "OnFramebufferSize", "draw")
 	
 	// set initial values before events are triggered 
+	space.Init()
 	space.ViewWidInPixels, 
 	space.ViewHeiInPixels = glfw.GetFramebufferSize(app.Name)
 	OnFramebufferSize(app.Name, 

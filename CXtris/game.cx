@@ -1,12 +1,12 @@
 package main
 
 import "app"
-import "draw"
 import "gui"
 import "inputs"
 import "shape"
 import "space"
 import "tiles"
+import "time"
 
 
 
@@ -15,7 +15,7 @@ func gameInit () {
 	app.START_HEIGHT = 960
 	app.Init("C X t r i s", getControlsText() )
 	
-	draw.Init()
+	drawInit()
 	space.Init()
 
 	inputs.BufferingNotchyDeltas = true
@@ -23,7 +23,6 @@ func gameInit () {
 	
 	menuInit()
 	shape.Init()
-	drawInit()
 	startNewGameSession()
 }
 
