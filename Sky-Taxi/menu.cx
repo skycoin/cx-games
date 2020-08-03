@@ -9,8 +9,9 @@ func menuInit () {
 	
  	// app.MODE_MENU_MAIN
 	menu.MakeItem(0, menu.MainSize, menu.ItemPlay)
-	menu.MakeItem(0, menu.MainSize, menu.ItemOptions)
-	menu.MakeItem(0, menu.MainSize, menu.ItemControls)
+	menu.MakeItem(0, menu.MainSize, "Edit Mesh")
+	//menu.MakeItem(0, menu.MainSize, menu.ItemOptions)
+	//menu.MakeItem(0, menu.MainSize, menu.ItemControls)
 	menu.MakeItem(0, menu.MainSize, menu.ItemQuit)
 
 	// no need for Options or Controls menus... 
@@ -33,8 +34,8 @@ func respondToMenuClicks () {
 		//startNewGameSession()
 		app.Mode = app.MODE_PLAYING
 	}else
-	if s == menu.ItemOptions {
-		app.Mode = app.MODE_MENU_OPTIONS
+	if s == "Edit Mesh" {
+		app.Mode = app.MODE_EDITOR
 	}else
 	if s == menu.ItemControls {
 		app.Mode = app.MODE_MENU_CONTROLS

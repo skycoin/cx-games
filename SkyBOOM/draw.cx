@@ -20,15 +20,15 @@ var ent entities.Entity // current
 func drawInit () {
 	str.print("drawInit ()")
 
+	draw.Init()
 	gl.ClearColor(0.5, 0.7, 1.0, 0.0) // light blue 
-	//"coin0001.png")
-	//"coin0002.png")
-	PIC_COIN   = draw.AddPic("coin0001.png")
+
+	PIC_COIN   = draw.AddPic("coin0001.png") // coin0002.png 
 	PIC_CLOUD  = draw.AddPic("Skycoin-Cloud-White.png")
 	PIC_WALLET = draw.AddPic("SkyWallet.png")
 	PIC_0      = draw.AddPic("0.png")
 	PIC_1      = draw.AddPic("1.png")
-	draw.InitPics()
+	             draw.InitPics()
 }
 
 

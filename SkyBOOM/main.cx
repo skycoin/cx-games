@@ -7,8 +7,6 @@ import "app"
 import "draw"
 import "map"
 import "mov"
-import "space"
-import "time"
 
 
 

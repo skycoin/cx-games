@@ -1,15 +1,18 @@
 package main
 
+import "app"
 import "inputs"
 import "mesh"
+import "space"
+import "time"
 
 
 
 func gameInit () {
 	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
-	draw.Init()
-	inputs.Init(false)
 	//space.Init()
+	drawInit()
+	inputs.Init(true)
 	mesh.Init()
 	menuInit()
 	entitiesInit()
@@ -18,9 +21,22 @@ func gameInit () {
 
 
 func gameUpdate () {
+	time.Update()
+	respondToPointerEvents()
 	respondToButtonEvents()
 	respondToKeyEvents()
 	entitiesUpdate()
+}
+
+
+func respondToPointerEvents () {
+	var v app.Vec2 = inputs.GetPointerEvent ()
+		
+	if  v.X != app.TOO_BIG_F32 && // (event in queue &... 
+		app.Mode < app.MODE_MENU_MAX { // ...in menus 
+			
+		printf("respondToPointerEvents \n")
+	}
 }
 
 
