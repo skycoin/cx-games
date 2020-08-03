@@ -53,18 +53,18 @@ func Init () {
 
 
 	// toolbar icons 	
-	MakeIconEditVertices()
-	MakeIconEditTriangles()
+	makeIconEditVertices()
+	makeIconEditTriangles()
 
 	ColorWheel = len(RawMeshes)
-	/*
-	makeColorPickerWheelResource()
+	makeColorPickerWheelResource() // not JUST for icon? 
 
-	InitMeshPickerIconMesh()
-	InitGenerateFuncIconMesh()
-	InitSnapToGridIconMesh()
-	InitWipeCanvasIconMesh()
+	makeIconMeshPicker()
+	makeIconGenerateFunc()
+	makeIconSnapToGrid()
+	makeIconWipeCanvas()
 	
+	/*
 	InitPlayerShipMesh()
 	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.HeroExtents)
 	
@@ -112,7 +112,7 @@ func makeAndReportOn (m Mesh2D, raw bool) {
 
 
 /*
-//func UNUSED_CopyFromEditorToGame () () {
+//func UNUSED_CopyFromEditorToGame () {
 //	str.print("mesh.UNUSED_CopyFromEditorToGame ()")
 //	var m Mesh2D
 //	m = Mesh2D{ Name: "Copy of UserGenMesh" }
@@ -142,7 +142,7 @@ func makeAndReportOn (m Mesh2D, raw bool) {
 func GenerateMeshInitFunc (s str) () {
 	printf("___________________________________________________________ \n")
 	printf("Init%sMesh() \n\n", s)
-	printf("func Init%sMesh () () { \n", s)
+	printf("func Init%sMesh () { \n", s)
 	printf("    var m Mesh2D \n")
 	printf("    m = Mesh2D{ Name: Raw } \n")
 	printf(" \n")
@@ -427,7 +427,7 @@ func sizeGameMeshFromRaw (rawId i32, extents Vec2) () {
 }
 
 
-func makeEditorRectResource () () {
+func makeEditorRectResource () {
 	var m Mesh2D
 	m = Mesh2D{ Name: "makeEditorRectResource" }
 	
@@ -528,7 +528,7 @@ func makeEditorRectResource () () {
 //}
 
 
-func AddNewTriangleInEditor () () { // just tri indices to existing global (ATM) EditorMesh 
+func AddNewTriangleInEditor () { // just tri indices to existing global (ATM) EditorMesh 
 	str.print("mesh.AddNewTriangleInEditor(1st 3 PickedVerts)")
 	
 	

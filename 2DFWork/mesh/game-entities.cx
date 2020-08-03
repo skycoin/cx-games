@@ -471,7 +471,7 @@ func InitMissileMesh () {
 
 
 
-func InitRocketMesh () () {
+func InitRocketMesh () {
     var m Mesh2D
     m = Mesh2D{ Name: "Rocket" }
 

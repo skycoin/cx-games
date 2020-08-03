@@ -34,9 +34,7 @@ func DrawEditorMaybe (currTime f32, deltaTime f32) {
 		if  app.EditMode != app.EDITMODE_COLORS &&
 			app.EditMode != app.EDITMODE_MESH_PICKER {
 			
-			gl.Begin(gl.LINES)
-				gridLines()
-			gl.End()
+			gridLines()
 		}
 
 		gl.Begin(gl.TRIANGLES) //////////////
@@ -73,17 +71,10 @@ func DrawEditorMaybe (currTime f32, deltaTime f32) {
 		// 	simpleVertexSequence(0.5)
 		// gl.End()
 	}else{ // playing (& the rest) 
-		//gl.Begin(gl.QUADS) //////////////////	
-			//EntitiesBox()
-		//gl.End()
-		
 		gl.Begin(gl.TRIANGLES)
-			//EntitiesMesh()
 			trianglesForOne(RawMeshes, 0)
-			
-			if app.Mode == app.MODE_GAME_OVER {
-				//trianglesForOne(RawMeshes, GameOver)
-			}
+			trianglesForOne(RawMeshes, 1)
+			//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
 		gl.End()
 	}
 }
@@ -218,6 +209,8 @@ func simpleVertexSequence (colorChanIntensity f32) () {
 */
 
 func gridLines () {
+	gl.Begin(gl.LINES)
+
 	var l f32
 	l = -1.0
 	
@@ -251,6 +244,8 @@ func gridLines () {
 		
 		fy = f32.add(fy, unitSpan)
 	}
+	
+	gl.End()
 }
 
 
@@ -265,7 +260,7 @@ func setColor (i i32) {
 
 
 /*
-func editorQuads () () {
+func editorQuads () {
 	var li i32
 	for li = 0; i32.lt(li, len(EditLayers)); li++ {
 		var cols []Color3
@@ -286,73 +281,5 @@ func editorQuads () () {
 			drawRect(EditLayers[li].Points[i], entity.NodeExtents)
 		}
 	}
-}
-
-
-func EntitiesBox () () {
-	for i := 0; i32.lt(i, len(entity.Ents)); i++ {
-		var e Entity
-		e = entity.Ents[i]
-		
-		//        ______==___________________
-		if i32.eq(e.Mode, entity.ENTMODE_DEAD) {
-			printf("skip DEAD %d     ", i)
-			//continue
-		} else {		
-			// colors 
-			if e.Type == entity.TYPE_HERO {
-				c := 0.4
-				gl.Color3f(c, c, c)
-			}else
-			if e.Type == entity.TYPE_BULLET {
-				gl.Color3f(1.0, 1.0, 0.0)
-			}else
-			if e.Type == entity.TYPE_ROCKET {
-				gl.Color3f(1.0, 0.5, 0.0)
-			}
-		
-			drawRect(e.Pos, e.Extents)
-		}
-	}
-}
-
-
-func EntitiesMesh () () {
-	for i := 0; i32.lt(i, len(entity.Ents)); i++ {
-		var e Entity
-		e = entity.Ents[i]
-		
-		//        ______==___________________
-		if i32.eq(e.Mode, entity.ENTMODE_DEAD) {
-			printf("skip DEAD %d     ", i)
-			//continue
-		} else {		
-			// colors 
-			if e.Type == entity.TYPE_HERO {
-				c := 0.4
-				gl.Color3f(c, c, c)
-			}else
-			if e.Type == entity.TYPE_BULLET {
-				gl.Color3f(1.0, 1.0, 0.0)
-			}else
-			if e.Type == entity.TYPE_ROCKET {
-				gl.Color3f(1.0, 0.5, 0.0)
-			}
-		
-			trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
-		}
-	}
-}
-
-
-func getRandomForColorChannel () (out f32) {
-	// 257, cuz without the +1 it can never reach value of 1.0 
-	var colSpan f32
-	colSpan = f32.div(1.0, 257.0)
-	
-	var f f32
-	f = i32.f32(i32.rand(0, 257))
-	
-	out = f32.mul(f, colSpan)
 }
 */

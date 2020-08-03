@@ -112,3 +112,17 @@ func addColor (r f32, g f32, b f32) {
 	col = Color3{R: r, G: g, B: b}
 	Colors = append(Colors, col)
 }
+
+
+/*
+func getRandomForColorChannel () (out f32) {
+	// 257, cuz without the +1 it can never reach value of 1.0 
+	var colSpan f32
+	colSpan = f32.div(1.0, 257.0)
+	
+	var f f32
+	f = i32.f32(i32.rand(0, 257))
+	
+	out = f32.mul(f, colSpan)
+}
+*/

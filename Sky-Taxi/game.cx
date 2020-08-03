@@ -35,7 +35,7 @@ func respondToPointerEvents () {
 	if  v.X != app.TOO_BIG_F32 && // (event in queue &... 
 		app.Mode < app.MODE_MENU_MAX { // ...in menus 
 			
-		printf("respondToPointerEvents \n")
+		//printf("respondToPointerEvents \n")
 	}
 }
 
