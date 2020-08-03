@@ -25,8 +25,8 @@ var blinkDelay           f32 =  0.1
 
 
 
-func Draw (currTime f32, deltaTime f32) {
-	//str.print("mesh.Draw ()")
+func DrawEditorMaybe (currTime f32, deltaTime f32) {
+	//str.print("mesh.DrawEditorMaybe ()")
 
 	blinkTiming(deltaTime)
 
@@ -35,7 +35,7 @@ func Draw (currTime f32, deltaTime f32) {
 			app.EditMode != app.EDITMODE_MESH_PICKER {
 			
 			gl.Begin(gl.LINES)
-				//gridLines()
+				gridLines()
 			gl.End()
 		}
 
@@ -52,7 +52,7 @@ func Draw (currTime f32, deltaTime f32) {
 			//trianglesForMenu(mesh.BakedUIMeshes, ccInput.EDIT_TOOLBAR)
 		gl.End()
 
-		if app.EditMode != app.EDITMODE_COLORS &&
+		if  app.EditMode != app.EDITMODE_COLORS &&
 			app.EditMode != app.EDITMODE_MESH_PICKER {
 			
 			gl.Begin(gl.QUADS) //////////////////
@@ -216,7 +216,7 @@ func simpleVertexSequence (colorChanIntensity f32) () {
 		gl.Vertex2f(e.Pos.X, e.Pos.Y)
 	}
 }
-
+*/
 
 func gridLines () {
 	var l f32
@@ -265,6 +265,7 @@ func setColor (i i32) {
 }
 
 
+/*
 func editorQuads () () {
 	var li i32
 	for li = 0; i32.lt(li, len(mesh.EditLayers)); li++ {

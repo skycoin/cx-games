@@ -19,20 +19,20 @@ var START_HEIGHT i32 = 720
 var MAX_I32      i32 = 2147483647
 var TOO_BIG_F32  f32 = 999777.999777
 
-var Name     str
-var Controls str
+var Name         str
+var Controls     str
 
 
 // app modes 
-var MODE_MENU_MAIN     i32
-var MODE_MENU_OPTIONS  i32 = 1
-var MODE_MENU_CONTROLS i32 = 2
-var MODE_MENU_MAX      i32 = 3 // anything < this == open menu 
-var MODE_EDITOR        i32 = 4
-var MODE_PLAYING       i32 = 5
-var MODE_GAME_OVER     i32 = 6
-var MODE_MAX           i32 = 7
-var Mode               i32 = MODE_MENU_MAIN
+var MODE_MENU_MAIN       i32
+var MODE_MENU_OPTIONS    i32 = 1
+var MODE_MENU_CONTROLS   i32 = 2
+var MODE_MENU_MAX        i32 = 3 // anything < this == open menu 
+var MODE_EDITOR          i32 = 4
+var MODE_PLAYING         i32 = 5
+var MODE_GAME_OVER       i32 = 6
+var MODE_MAX             i32 = 7
+var Mode                 i32 = MODE_MENU_MAIN
 
 // 		editor 
 var EDITMODE_VERTICES    i32
