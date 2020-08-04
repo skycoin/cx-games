@@ -1,6 +1,7 @@
 package mesh
 
 import "app"
+import "space"
 
 
 
@@ -21,11 +22,11 @@ type Menu struct {
 }
 
 // menu ids 
-var EDIT_TOOLBAR i32 = 0
-var MESH_PICKER  i32 = 1
+var EDIT_TOOLBAR   i32 = 0
+var MESH_PICKER    i32 = 1
 
-var Menus       []Menu
-var ButtonSpan  f32 = 0.2
+var Menus          []Menu
+var ToolButtonSpan f32 = 0.2
 
 // toolbar 
 // (Menu item button ids... 
@@ -38,8 +39,7 @@ var TOOLBAR_MAINMENU     i32 = app.EDITMODE_MAX + 3
 
 
 
-/*
-func SetupMenu (id i32, numItems i32) { // menu id 
+func InitToolBar (id i32, numItems i32) { // menu id 
 	// append to menus until menu id exists 
 	for id >= len(Menus) {
 		var m Menu
@@ -55,10 +55,10 @@ func SetupMenu (id i32, numItems i32) { // menu id
 			if 0 == len(Menus[id].Items) {
 				var mi MenuItem
 				for j := 0; j < numItems; j++ {
-					mi = MenuItem{ BakedBackground: app.I32_MAX, Name: "common init string" }
+					mi = MenuItem{ BakedBackground: app.MAX_I32, Name: "common init string" }
 					Menus[id].Items = append(
 					Menus[id].Items, mi)
-					str.print("+ menu item")
+					str.print("    + toolbar item")
 				}
 			}
 		}
@@ -79,4 +79,169 @@ func SetupMenu (id i32, numItems i32) { // menu id
 	//	"Wipe Layer"
 	//	"PLAY"
 }
-*/
+
+
+func BakeToolButtonArray (menu i32, minimumEdge bool, vertical bool) {	
+	/*
+	var numItems i32
+	numItems = len(Menus[menu].Items)
+	
+	printf("BakeToolButtonArray () - numItems: %d \n", numItems)
+	
+	var extent f32 // of a button 
+	extent = f32.div(ToolButtonSpan, 2.0)
+	
+	var longSpan f32 // span across the longest dimension 
+	longSpan = f32.mul(ToolButtonSpan, i32.f32(numItems))
+
+	printf("BakeToolButtonArray () - longSpan: %f \n", longSpan)
+
+	var x f32	
+	var y f32
+
+	if vertical {
+		if minimumEdge {
+			x = space.ViewEdgeL + extent
+		}else{
+			x = space.ViewEdgeR - extent
+		}
+		
+		y = f32.div(longSpan, 2.0)
+		y = f32.sub(y, extent)
+	} else { // horizontal 
+		x = f32.div(longSpan, 2.0)
+		x = -x
+		x = f32.add(x, extent)
+
+		if minimumEdge {
+			y = -1.0 + extent
+		} else {
+			y = 1.0 - extent
+		}
+	}
+
+	var pos Vec2
+	var ext Vec2
+	pos = Vec2{ X: x,      Y: y      }
+	ext = Vec2{ X: extent, Y: extent }
+
+	printf("BakeToolButtonArray () - pos.X: %f \n", pos.X)
+
+	for i := 0; i32.lt(i, numItems); i++ {
+		Menus[menu].Items[i].Pos = pos
+		Menus[menu].Items[i].Extents = ext
+		
+		var id i32 = i32.mul(i, 2) // baked id 
+		printf("BakeToolButtonArray () - id: %d \n", id)
+		
+		// rect background 
+		Menus[menu].Items[i].BakedBackground = id
+		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, id)
+		id = i32.add(id, 1)
+		printf("BakeToolButtonArray () - id: %d (+1) \n", id)
+		
+		// icon 
+		Menus[menu].Items[i].BakedIcon = id
+		bakeUICellFromRaw(pos, ext, i, id)
+			
+		if vertical {
+			pos.Y = f32.sub(pos.Y, ToolButtonSpan)
+		} else { // horizontal 
+			pos.X = f32.add(pos.X, ToolButtonSpan)
+		}
+	}
+	*/
+}
+
+
+func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
+	// FIXME: color & tri data GENERALLY needs no changes
+	//			(when bakedId exists),
+	//			but would when GenFunc expands to also updating
+	//			in-game raw mesh data  
+	var existed bool
+	
+	printf("bakeUICellFromRaw ()   -   bakedId: %d \n", bakedId)
+			
+	// setup currMesh by bakedId's existence 
+	/*
+	if bakedId < len(BakedUIMeshes) {
+		existed = true
+		
+		printf("    recalculating BakedUIMeshes[%d] \n", bakedId)
+		
+		currMesh = BakedUIMeshes[bakedId]
+		
+		if len(RawMeshes[rawId].Colors) != 
+			len(currMesh.Colors) {
+			str.print(".Colors count is diff between RAW & BAKED")
+			str.print(".Colors count is diff between RAW & BAKED")
+			str.print(".Colors count is diff between RAW & BAKED")
+		}
+		if len(RawMeshes[rawId].Points) != 
+			len(currMesh.Points) {
+			str.print(".Points count is diff between RAW & BAKED")
+			str.print(".Points count is diff between RAW & BAKED")
+			str.print(".Points count is diff between RAW & BAKED")
+		}
+		if len(RawMeshes[rawId].TriangleIndices) != 
+			len(currMesh.TriangleIndices) {
+			str.print(".TriangleIndices count is diff between RAW & BAKED")
+			str.print(".TriangleIndices count is diff between RAW & BAKED")
+			str.print(".TriangleIndices count is diff between RAW & BAKED")
+		}
+	} else {
+		printf("    appending NEW @ BakedUIMeshes[%d] \n", len(BakedUIMeshes))
+
+		currMesh = Mesh2D{ Name: RawMeshes[rawId].Name }
+		BakedUIMeshes = append(
+		BakedUIMeshes, currMesh)
+	}
+	
+
+	// colors/verts 
+	for i := 0; i32.lt(i, len(RawMeshes[rawId].Points)); i++ {
+	var c Color3
+	var p Vec2
+		c = RawMeshes[rawId].Colors[i]
+		p = RawMeshes[rawId].Points[i]
+		
+		// scale 
+		p.X = f32.mul(p.X, extents.X)
+		p.Y = f32.mul(p.Y, extents.Y)
+		
+		// position 
+		p.X = f32.add(pos.X, p.X)
+		p.Y = f32.add(pos.Y, p.Y)
+		
+		if existed {
+			currMesh.Colors[i] = c
+			currMesh.Points[i] = p
+		} else {
+			currMesh.Colors = append(
+			currMesh.Colors, c)
+			currMesh.Points = append(
+			currMesh.Points, p)
+		}
+	}
+
+	// triangles 
+	if bool.eq(existed, false) {
+		for j := 0; i32.lt(j, len(RawMeshes[rawId].TriangleIndices)); j++ {
+			var id i32
+			id = RawMeshes[rawId].TriangleIndices[j]
+			currMesh.TriangleIndices = append(
+			currMesh.TriangleIndices, id)
+		}
+
+		printf("new baked mesh, num tris: %d \n", len(RawMeshes[rawId].TriangleIndices))
+	}
+	
+	//var nnn i32 = 3
+	printf("at the end len cm.TriInds: %d \n", len(currMesh.TriangleIndices))
+	//num = len(currMesh.TriangleIndices)
+	//ReportBadTriCount("bakeUICellFromRaw", num)
+	*/
+}
+
+
