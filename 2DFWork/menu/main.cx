@@ -58,10 +58,10 @@ func BakeItemText () {
 		// print CLI info 
 		if pmi != m {
 			pmi = m
-			printf("menu %d \n", m)
+			printf("    menu %d \n", m)
 		}
 		
-		printf("   fontId: %s --- size: %d,%d --- item: '%s' \n", 
+		printf("        fontId: %s --- size: %d,%d --- item: '%s' \n", 
 			font, w, h, Items[m][i].Text)
 	}
 	}

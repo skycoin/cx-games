@@ -39,7 +39,8 @@ var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 
 func Init () {
 	str.print("mesh.Init ()")
-	
+	editorInit()
+
 	
 	
 	// characters 
@@ -81,7 +82,6 @@ func Init () {
 
 	makeRectMesh()
 	BakeToolButtonArray(tBars[EDIT_TOOLBAR].Items, false, true)
-	editorInit()
 }
 
 
@@ -285,146 +285,6 @@ func sizeGameMeshFromRaw (rawId i32, extents Vec2) () {
 //	
 //	makeAndReportOn(m, false)
 //}
-
-
-func AddNewTriangleInEditor () { // just tri indices to existing global (ATM) EditorMesh 
-	str.print("mesh.AddNewTriangleInEditor(1st 3 PickedVerts)")
-	
-	
-	// feedback BEFORE 
-	printf("PickedVerts[0]: %d \n", PickedVerts[0])
-	printf("PickedVerts[1]: %d \n", PickedVerts[1])
-	printf("PickedVerts[2]: %d \n", PickedVerts[2])
-	
-	var numIds i32
-	numIds = len(EditLayers[CurrLayer].TriangleIndices)
-	printf("numIds BEFORE: %d \n", numIds)
-	
-	var numErrs i32 // erroneous leftover indices (indicating not a multiple of 3) 
-	var numTris i32
-	numTris = i32.div(numIds, 3)
-	numErrs = i32.mod(numIds, 3)
-	printf("numTris BEFORE: %d \n", numTris)
-	
-	
-	// MEAT of func 
-	EditLayers[CurrLayer].TriangleIndices = append(
-	EditLayers[CurrLayer].TriangleIndices, PickedVerts[0])
-	EditLayers[CurrLayer].TriangleIndices = append(
-	EditLayers[CurrLayer].TriangleIndices, PickedVerts[1])
-	EditLayers[CurrLayer].TriangleIndices = append(
-	EditLayers[CurrLayer].TriangleIndices, PickedVerts[2])
-
-
-	// feedback AFTER 
-	numIds  = len(EditLayers[CurrLayer].TriangleIndices)
-	numTris = i32.div(numIds, 3)
-	numErrs = i32.mod(numIds, 3) // num/how-many erroneous/leftover 
-	printf("numIds AFTER: %d \n", numIds)
-	printf("numTris AFTER: %d \n", numTris)
-	
-	if i32.uneq(numErrs, 0) {
-		printf("********* ERROR! numErrs: %d \n", numErrs)
-		printf("********* ERROR! numErrs: %d \n", numErrs)
-		printf("********* ERROR! numErrs: %d \n", numErrs)
-	}
-
-	printf("EditLayers[CurrLayer].Points len: %d \n", len(EditLayers[0].Points))
-}
-
-
-func DeleteVertexNode (layerId i32, ir i32) { // id (to) remove 
-	if app.Mode != app.APPMODE_EDITOR {		
-		return
-	}
-	
-	printf("mesh.DeleteVertexNode(%d) \n", ir)
-
-	var m Mesh2D
-	m = Mesh2D{ Name: EditLayers[layerId].Name }
-	
-	for i := 0; i32.lt(i, len(EditLayers[layerId].Points)); i++ {
-		if i32.uneq(i, ir) {
-			m.Colors = append(
-			m.Colors, EditLayers[layerId].Colors[i])
-			m.Points = append(
-			m.Points, EditLayers[layerId].Points[i])
-		}
-	}
-
-	// remove tris that point to "ir" 
-	// (handle 3 verts at a time (+=3 increment), "j" being the latest) 
-	for j := 2; i32.lt(j, len(EditLayers[layerId].TriangleIndices)); j = i32.add(j, 3) {
-		var j0 i32
-		var j1 i32
-		var j2 i32
-		
-		j0 = i32.sub(j, 2)
-		j1 = i32.sub(j, 1)
-		j2 = j
-		
-		j0 = EditLayers[layerId].TriangleIndices[j0]
-		j1 = EditLayers[layerId].TriangleIndices[j1]
-		j2 = EditLayers[layerId].TriangleIndices[j2]
-		
-		// if tri will remain, copy it 
-		if bool.and(bool.and(
-			i32.uneq(j0, ir), 
-			i32.uneq(j1, ir)), 
-			i32.uneq(j2, ir)) {
-
-			m.TriangleIndices = append(
-			m.TriangleIndices, j0)
-			m.TriangleIndices = append(
-			m.TriangleIndices, j1)
-			m.TriangleIndices = append(
-			m.TriangleIndices, j2)
-			
-			str.print("SAVING TRIANGLE")
-		} else {
-			str.print("DELETED TRIANGLE")
-		}		
-	}
-
-	// - vert ids that are > "ir" 
-	for l := 0; i32.lt(l, len(m.TriangleIndices)); l++ {
-		var currVert i32
-		currVert = m.TriangleIndices[l]
-		m.TriangleIndices[l] = getValidId(ir, currVert)
-	}
-
-//	var num i32 // last index for printing out positions (CRASHES CUZ 0 GIVES -1 INDEX) 
-//	num = i32.sub(len(m.Points), 1)
-//	printf("---num: %d \n", num)
-//	printf("---len(m.Colors): %d \n", len(m.Colors))
-//	printf("---len(m.Points): %d \n", len(m.Points))
-//	printf("---m.Points[num].X: %f \n", m.Points[num].X)
-//	printf("---m.Points[num].Y: %f \n", m.Points[num].Y)
-//	printf("---len(m.TriangleIndices): %d \n", len(m.TriangleIndices))
-//	
-//	num = i32.sub(len(EditLayers[layerId].Points), 1)
-//	printf("\n---num: %d \n", num)
-//	printf("---len(EditLayers[layerId].Colors): %d \n", len(EditLayers[layerId].Colors))
-//	printf("---len(EditLayers[layerId].Points): %d \n", len(EditLayers[layerId].Points))
-//	printf("---EditLayers[layerId].Points[num].X: %f \n", EditLayers[layerId].Points[num].X)
-//	printf("---EditLayers[layerId].Points[num].Y: %f \n", EditLayers[layerId].Points[num].Y)
-//	printf("---len(EditLayers[layerId].TriangleIndices): %d \n", len(EditLayers[layerId].TriangleIndices))
-	
-	EditLayers[layerId] = m
-}
-
-
-func getValidId (trashVert i32, currVert i32) (out i32) {
-	printf("getValidId () - trashVert: %d - currVert: %d \n", trashVert, currVert)
-	
-	// decrease vertex id by 1, if it's after removed index 
-	if i32.lt(trashVert, currVert) {
-		out = i32.sub(currVert, 1)
-		printf("getValidId () - out: %d \n", out)
-	} else {
-		out = currVert
-	}
-}
 */
 
 

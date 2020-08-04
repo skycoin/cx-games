@@ -131,23 +131,21 @@ func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {
 		var id i32 = i32.mul(i, 2) // baked id 
 		printf("BakeToolButtonArray () - id: %d \n", id)
 		
-		/*
 		// rect background 
-		tBars[menu].Items[i].BakedBackground = id
+		items[i].BakedBackground = id
 		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, id)
 		id = i32.add(id, 1)
 		printf("BakeToolButtonArray () - id: %d (+1) \n", id)
 		
 		// icon 
-		tBars[menu].Items[i].BakedIcon = id
+		items[i].BakedIcon = id
 		bakeUICellFromRaw(pos, ext, i, id)
 			
 		if vertical {
 			pos.Y = f32.sub(pos.Y, ToolButtonSpan)
-		} else { // horizontal 
+		}else{ // horizontal 
 			pos.X = f32.add(pos.X, ToolButtonSpan)
 		}
-		*/
 	}
 }
 

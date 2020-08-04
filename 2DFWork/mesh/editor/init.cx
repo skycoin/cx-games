@@ -15,7 +15,7 @@ var draggedVertexId i32 // ...vert at a time.  probably useless now
 
 
 func editorInit () {
-	str.print("mesh/editor/init.editorInit ()")
+	str.print("    editorInit ()")
 
 	tBars = []Menu{} // prep all tBars 
 	InitToolBar(EDIT_TOOLBAR, 8) // just 1 
