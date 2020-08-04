@@ -212,8 +212,7 @@ func makePlayerShip () {
 
 
 
-/*
-func InitMissileMesh () {
+func makeMissileMesh () {
     var m Mesh2D
     m = Mesh2D{ Name: "Missile" }
 
@@ -780,4 +779,3 @@ func InitRocketMesh () {
 
     makeAndReportOn(m, true)
 }
-*/

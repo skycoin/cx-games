@@ -69,7 +69,7 @@ func Init () {
 	/*
 	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.HeroExtents)
 	
-	InitMissileMesh()
+	makeMissileMesh()
 	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.BulletExtents)
 	
 	InitRocketMesh()
@@ -82,7 +82,7 @@ func Init () {
 	*/
 	
 	// menu i32, minimumEdge bool, vertical bool
-	BakeToolButtonArray(0, false, true)
+	BakeToolButtonArray(tBars[EDIT_TOOLBAR].Items, false, true)
 	editorInit()
 }
 

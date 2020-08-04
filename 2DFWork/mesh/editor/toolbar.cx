@@ -25,7 +25,7 @@ type Menu struct {
 var EDIT_TOOLBAR   i32 = 0
 var MESH_PICKER    i32 = 1
 
-var Menus          []Menu
+var tBars          []Menu
 var ToolButtonSpan f32 = 0.2
 
 // toolbar 
@@ -40,26 +40,26 @@ var TOOLiTEM_MAINMENU     i32 = app.EDITMODE_MAX + 3
 
 
 func InitToolBar (id i32, numItems i32) { // menu id 
-	// append to menus until menu id exists 
-	for id >= len(Menus) {
+	// append to toolbars until TB id exists 
+	for id >= len(tBars) {
 		var m Menu
 		m = Menu{}
 		
-		Menus = append(
-		Menus, m)
+		tBars = append(
+		tBars, m)
 	}
 
 	// setup in right slot 
-	for i := 0; i < len(Menus); i++ {
+	for i := 0; i < len(tBars); i++ {
 		if i == id {
-			if 0 == len(Menus[id].Items) {
+			if 0 == len(tBars[id].Items) {
 				var mi MenuItem
 				for j := 0; j < numItems; j++ {
 					mi = MenuItem{ BakedBackground: app.MAX_I32, Name: "common init string" }
-					Menus[id].Items = append(
-					Menus[id].Items, mi)
+					tBars[id].Items = append(
+					tBars[id].Items, mi)
 					printf("    + toolbar %d item \n", id)
-					printf("    len: %d \n", len(Menus[id].Items))
+					printf("    len: %d \n", len(tBars[id].Items))
 				}
 			}
 		}
@@ -69,7 +69,7 @@ func InitToolBar (id i32, numItems i32) { // menu id
 		// editor toolbar 
 		////// might use .Name as prefix to the hover-text of the button 
 		////// ("edit " + "colors/vertices" for example) 
-	//	Menus[id].Name = "Edit" 
+	//	tBars[id].Name = "Edit" 
 
 	//	"Edit Vertices"
 	//	"Edit Triangles"
@@ -82,16 +82,9 @@ func InitToolBar (id i32, numItems i32) { // menu id
 }
 
 
-func BakeToolButtonArray (menu i32, minimumEdge bool, vertical bool) {	
-	var numItems i32
-	var m Menu
-	var mis []MenuItem
-	m   = Menus[menu] 
-	mis = m.Items
-	/*
-	numItems = len(mis)
-	numItems = len(Menus[menu].Items)
+func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {	
 	
+	/*
 	printf("BakeToolButtonArray () - numItems: %d \n", numItems)
 	
 	var extent f32 // of a button 
@@ -134,20 +127,20 @@ func BakeToolButtonArray (menu i32, minimumEdge bool, vertical bool) {
 	printf("BakeToolButtonArray () - pos.X: %f \n", pos.X)
 
 	for i := 0; i32.lt(i, numItems); i++ {
-		Menus[menu].Items[i].Pos = pos
-		Menus[menu].Items[i].Extents = ext
+		tBars[menu].Items[i].Pos = pos
+		tBars[menu].Items[i].Extents = ext
 		
 		var id i32 = i32.mul(i, 2) // baked id 
 		printf("BakeToolButtonArray () - id: %d \n", id)
 		
 		// rect background 
-		Menus[menu].Items[i].BakedBackground = id
+		tBars[menu].Items[i].BakedBackground = id
 		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, id)
 		id = i32.add(id, 1)
 		printf("BakeToolButtonArray () - id: %d (+1) \n", id)
 		
 		// icon 
-		Menus[menu].Items[i].BakedIcon = id
+		tBars[menu].Items[i].BakedIcon = id
 		bakeUICellFromRaw(pos, ext, i, id)
 			
 		if vertical {

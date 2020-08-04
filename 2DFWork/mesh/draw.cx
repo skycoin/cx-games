@@ -148,9 +148,9 @@ func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
 		printf("trianglesForToolbar() tbId: %d \n", tbId)
 	//}
 	
-	for j := 0; i32.lt(j, len(Menus[tbId].Items)); j++ {
+	for j := 0; i32.lt(j, len(tBars[tbId].Items)); j++ {
 		var bi i32 // baked mesh id 
-		bi = Menus[tbId].Items[j].BakedBackground
+		bi = tBars[tbId].Items[j].BakedBackground
 		
 		// background 
 		if bi != app.MAX_I32 {
@@ -158,7 +158,7 @@ func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
 		}
 		
 		// icon 
-		bi = Menus[tbId].Items[j].BakedIcon
+		bi = tBars[tbId].Items[j].BakedIcon
 		trianglesForOne(meshes, bi)
 	}
 }

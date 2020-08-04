@@ -17,7 +17,7 @@ var draggedVertexId i32 // ...vert at a time.  probably useless now
 func editorInit () {
 	str.print("mesh/editor/init.editorInit ()")
 
-	Menus = []Menu{} // prep all menus 
+	tBars = []Menu{} // prep all tBars 
 	InitToolBar(EDIT_TOOLBAR, 8) // just 1 
 
 	// canvas 
@@ -219,7 +219,7 @@ func getTouchedMenuItem (mouse Vec2) (touched bool, id i32) {
 	if app.EditMode == app.EDITMODE_MESH_PICKER {
 		var mpTouched bool
 		var mpId i32
-		mpTouched, mpId = getTouchedMenuItemFrom(len(Menus) - 1, mouse)
+		mpTouched, mpId = getTouchedMenuItemFrom(len(tBars) - 1, mouse)
 		//printf("not utilizing yet - mpTouched: %v, mpId: %d \n", mpTouched, mpId)
 		
 		if mpTouched {
@@ -233,11 +233,11 @@ func getTouchedMenuItem (mouse Vec2) (touched bool, id i32) {
 func getTouchedMenuItemFrom (menuId i32, mouse Vec2) (touched bool, id i32) {
 	printf("menuId: %d \n", menuId)
 	
-	for i := 0; i32.lt(i, len(Menus[menuId].Items)); i++ {
+	for i := 0; i32.lt(i, len(tBars[menuId].Items)); i++ {
 		var p Vec2
 		var e Vec2
-		p = Menus[menuId].Items[i].Pos
-		e = Menus[menuId].Items[i].Extents
+		p = tBars[menuId].Items[i].Pos
+		e = tBars[menuId].Items[i].Extents
 		
 		if collision.PointInBox(mouse, p, e) {			
 			touched = true

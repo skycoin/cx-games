@@ -42,7 +42,7 @@ func BakeItemText () {
 	var w i32
 	var h i32
 	var pmi i32 = -1            // previous menu id 
-	var nm  i32 = len(Items)    // nm == num menus 
+	var nm  i32 = len(Items)    // nm == num tBars 
 	
 	for m := 0; m < nm; m++ {   // m  == menu id 
 	var ni  i32 = len(Items[m]) // ni == num items 
@@ -67,7 +67,7 @@ func BakeItemText () {
 	}
 	
 	// set vertical boundaries 
-	nm = len(Items)    // nm == num menus 
+	nm = len(Items)    // nm == num tBars 
 	for m := 0; m < nm; m++ {        // m  == menu id 
 	var b /* bottom */ f32 = i32.f32(app.START_HEIGHT - 1) 
 		for i := i32.sub(len(Items[m]), 1); i >= 0; i-- {
