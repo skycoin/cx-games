@@ -32,10 +32,10 @@ func respondToItem (i i32) () {
 		printEditMode()
 		wipePickedVerts()
 	} else { // perform one-time actions 
-		if i == TOOLBAR_GEN_FUNC {
+		if i == TOOLiTEM_GEN_FUNC {
 			//mesh.GenerateMeshInitFunc("Char") //"Icon")
 		} else
-		if i == TOOLBAR_SNAP_TO_GRID {
+		if i == TOOLiTEM_SNAP_TO_GRID {
 			SnapToGrid = !SnapToGrid
 			
 			if SnapToGrid {
@@ -44,7 +44,7 @@ func respondToItem (i i32) () {
 				str.print("SNAP_TO_GRID: OFF")
 			}
 		} else
-		if i == TOOLBAR_WIPE_LAYER {
+		if i == TOOLiTEM_WIPE_LAYER {
 			str.print("-> WIPE_LAYER")
 			
 			wipePickedVerts()
@@ -53,7 +53,7 @@ func respondToItem (i i32) () {
 			m = Mesh2D{}
 			mesh.EditLayers[mesh.CurrLayer] = m
 		} else
-		if i == TOOLBAR_MAINMENU {
+		if i == TOOLiTEM_MAINMENU {
 			str.print("-> MAINMENU ---------(or WILL take us to main menu when it's implemented)")
 			entity.SetupHero()
 			app.Mode = app.APPMODE_PLAYING // FIXME: LATER want app.APPMODE_MENU

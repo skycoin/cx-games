@@ -8,10 +8,14 @@ import "space"
 
 
 
-func IsOpenThenDrewIt () (out bool) {
+func Draw () {
+	rects()
+	texts()
+}
+
+
+func IsOpen () (out bool) {
 	if app.Mode < app.MODE_MENU_MAX {
-		rects()
-		texts()
 		out = true
 	}
 }

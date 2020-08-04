@@ -4,8 +4,6 @@ import "glfw"
 
 import "app"
 import "draw"
-//import "collision"
-//import "entity" // ATM, ONLY NEEDED FOR GAME OBJECT EXTENTS 
 
 
 
@@ -21,7 +19,10 @@ var RawMeshes        []Mesh2D // fully bounded to -1.0 & 1.0 extents
 var SizedMeshes      []Mesh2D // part baked (world size/scale), for moving meshes 
 var BakedUIMeshes    []Mesh2D // full baked (world size/scale & pos) for menu/toolbar 
 var BakedMeshPickers []Mesh2D // full baked (world size/scale & pos) 
-var EditLayers       []Mesh2D // TODO: (just using 1 ATM) a slice (amongst other features) allows multiple vertices at the same position (but with different colors).  allows drastic color changes between adjacent triangle sides 
+var EditLayers       []Mesh2D // TODO: (just using 1 ATM) allows multiple vertices at 
+							  // the same position (but with different colors).  
+							  // allows drastic color changes between adjacent 
+							  // triangle sides 
 
 var CurrLayer        i32
 var currMesh         Mesh2D
@@ -30,7 +31,9 @@ var currMesh         Mesh2D
 var ColorWheel       i32
 var GameOver         i32
 
-var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }
+var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
+	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", 
+	"O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }
 
 
 
@@ -62,8 +65,8 @@ func Init () {
 	makeIconSnapToGrid()
 	makeIconWipeCanvas()
 	
+	makePlayerShip()
 	/*
-	InitPlayerShipMesh()
 	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.HeroExtents)
 	
 	InitMissileMesh()

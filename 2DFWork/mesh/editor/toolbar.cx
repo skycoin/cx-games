@@ -32,10 +32,10 @@ var ToolButtonSpan f32 = 0.2
 // (Menu item button ids... 
 // 1st correspond to switching editor modes, then... 
 // 2nd, these one-time actions) 
-var TOOLBAR_GEN_FUNC     i32 = app.EDITMODE_MAX // generate mesh init func 
-var TOOLBAR_SNAP_TO_GRID i32 = app.EDITMODE_MAX + 1
-var TOOLBAR_WIPE_LAYER   i32 = app.EDITMODE_MAX + 2
-var TOOLBAR_MAINMENU     i32 = app.EDITMODE_MAX + 3
+var TOOLiTEM_GEN_FUNC     i32 = app.EDITMODE_MAX // generate mesh init func 
+var TOOLiTEM_SNAP_TO_GRID i32 = app.EDITMODE_MAX + 1
+var TOOLiTEM_WIPE_LAYER   i32 = app.EDITMODE_MAX + 2
+var TOOLiTEM_MAINMENU     i32 = app.EDITMODE_MAX + 3
 
 
 
@@ -58,7 +58,8 @@ func InitToolBar (id i32, numItems i32) { // menu id
 					mi = MenuItem{ BakedBackground: app.MAX_I32, Name: "common init string" }
 					Menus[id].Items = append(
 					Menus[id].Items, mi)
-					str.print("    + toolbar item")
+					printf("    + toolbar %d item \n", id)
+					printf("    len: %d \n", len(Menus[id].Items))
 				}
 			}
 		}
@@ -82,8 +83,13 @@ func InitToolBar (id i32, numItems i32) { // menu id
 
 
 func BakeToolButtonArray (menu i32, minimumEdge bool, vertical bool) {	
-	/*
 	var numItems i32
+	var m Menu
+	var mis []MenuItem
+	m   = Menus[menu] 
+	mis = m.Items
+	/*
+	numItems = len(mis)
 	numItems = len(Menus[menu].Items)
 	
 	printf("BakeToolButtonArray () - numItems: %d \n", numItems)

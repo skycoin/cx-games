@@ -25,19 +25,26 @@ var blinkDelay           f32 =  0.1
 
 
 
-func DrawEditorMaybe (currTime f32, deltaTime f32) {
-	//str.print("mesh.DrawEditorMaybe ()")
+func EditorIsOpenThenDrewIt (currTime f32, deltaTime f32) (open bool) {
+	//str.print("mesh.EditorIsOpenThenDrewIt ()")
 
-	blinkTiming(deltaTime)
-
-	if app.Mode == app.MODE_EDITOR {		
+	if app.Mode == app.MODE_EDITOR {
+		open = true
+		blinkTiming(deltaTime)
+			
 		if  app.EditMode != app.EDITMODE_COLORS &&
 			app.EditMode != app.EDITMODE_MESH_PICKER {
 			
 			gridLines()
 		}
 
-		gl.Begin(gl.TRIANGLES) //////////////
+		gl.Begin(gl.TRIANGLES)
+			//trianglesForOne(RawMeshes, 0)
+			trianglesForOne(RawMeshes, 1)
+			//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
+
+
+
 			if app.EditMode == app.EDITMODE_COLORS {
 				//trianglesForOne(RawMeshes, ColorWheel)
 			}else 
@@ -70,12 +77,6 @@ func DrawEditorMaybe (currTime f32, deltaTime f32) {
 		// gl.Begin(gl.LINE_LOOP) //////////////
 		// 	simpleVertexSequence(0.5)
 		// gl.End()
-	}else{ // playing (& the rest) 
-		gl.Begin(gl.TRIANGLES)
-			trianglesForOne(RawMeshes, 0)
-			trianglesForOne(RawMeshes, 1)
-			//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
-		gl.End()
 	}
 }
 

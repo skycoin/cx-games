@@ -15,19 +15,22 @@ func drawAll () {
 	pre()
 	gl.Disable(gl.TEXTURE_2D)
 	
-	// game 
-	map.DrawQuads()
-	draw.OneCircle(
-		entities.All[entities.ENT_PLAYER][0].X, 
-		entities.All[entities.ENT_PLAYER][0].Y, 
-		entities.All[entities.ENT_PLAYER][0].ExtentX, 
-		entities.All[entities.ENT_PLAYER][0].ExtentY, 
-		draw.COLOR_CYAN, 
-		1.0, 
-		true)
-		
-	mesh.DrawEditorMaybe(time.Now, time.Delta)
-	if menu.IsOpenThenDrewIt() {		
+	if mesh.EditorIsOpenThenDrewIt(time.Now, time.Delta) {
+	}else{ // gameplay 
+		map.DrawQuads()
+		draw.OneCircle(
+			entities.All[entities.ENT_PLAYER][0].X, 
+			entities.All[entities.ENT_PLAYER][0].Y, 
+			entities.All[entities.ENT_PLAYER][0].ExtentX, 
+			entities.All[entities.ENT_PLAYER][0].ExtentY, 
+			draw.COLOR_CYAN, 
+			1.0, 
+			true)			
+	}
+	
+	if  menu.IsOpen() {		
+		gl.Enable(gl.TEXTURE_2D)
+		menu.Draw()
 	}
 }
 
