@@ -1,4 +1,4 @@
-package ccInput
+package mesh
 
 import "app"
 
@@ -38,7 +38,8 @@ var TOOLBAR_MAINMENU     i32 = app.EDITMODE_MAX + 3
 
 
 
-func SetupMenu (/* menu */ id i32, numItems i32) () {
+/*
+func SetupMenu (id i32, numItems i32) { // menu id 
 	// append to menus until menu id exists 
 	for id >= len(Menus) {
 		var m Menu
@@ -64,19 +65,18 @@ func SetupMenu (/* menu */ id i32, numItems i32) () {
 	}
 
 
-	/*
 		// editor toolbar 
 		////// might use .Name as prefix to the hover-text of the button 
 		////// ("edit " + "colors/vertices" for example) 
-		Menus[id].Name = "Edit" 
+	//	Menus[id].Name = "Edit" 
 
-		"Edit Vertices"
-		"Edit Triangles"
-		"Edit Colors"
-		"Mesh Picker"
-		"Gen Init Func"
-		"Snap-To-Grid"
-		"Wipe Layer"
-		"PLAY"
-	*/
+	//	"Edit Vertices"
+	//	"Edit Triangles"
+	//	"Edit Colors"
+	//	"Mesh Picker"
+	//	"Gen Init Func"
+	//	"Snap-To-Grid"
+	//	"Wipe Layer"
+	//	"PLAY"
 }
+*/

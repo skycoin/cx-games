@@ -1,10 +1,10 @@
-package ccInput
+package mesh
 
 import "app"
-import "mesh"
 
 
 
+/*
 func doPrimaryAbility () {
 	str.print("doPrimaryAbility ()")
 	
@@ -237,3 +237,4 @@ func pickAllVertsInDragBox () {
 		setPickedStatus(j, false)
 	}
 }
+*/

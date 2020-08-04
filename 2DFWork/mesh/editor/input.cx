@@ -1,59 +1,29 @@
-package ccInput
+package mesh
 
 import "glfw"
 
 import "app"
-import "collision"
-import "entity"
-import "mesh"
 
 
 
-var MousePointer    Vec2
 var SnapToGrid      bool
 var Dragging        bool
 var DragStart       Vec2
 var draggedLayerId  i32 // these 2 ids were when we could only drag 1... 
 var draggedVertexId i32 // ...vert at a time.  probably useless now 
 
-// keys 
-var	GLFW_KEY_W      i32 = 87
-var	GLFW_KEY_A      i32 = 65
-var	GLFW_KEY_S      i32 = 83
-var	GLFW_KEY_D      i32 = 68
-
-var GLFW_KEY_SPACE  i32 = 32
-
-//		temp camera control 
-var GLFW_KEY_N      i32 = 78
-var GLFW_KEY_Y      i32 = 89
-var GLFW_KEY_F2     i32 = 291
-var GLFW_KEY_F3     i32 = 292
-
 
 
 func Setup () {
-	str.print("input/ccInput.Setup()")
+	str.print("mesh/editor.Setup()")
 
 	Menus = []Menu{} // prep all menus 
 	SetupMenu(EDIT_TOOLBAR, 8) // just 1 
-
-	// callbacks 
-	glfw.SetKeyCallback("window", "onKeyEvent")
-	glfw.SetMouseButtonCallback("window", "onMouseButtonEvent")
-	glfw.SetCursorPosCallback("window", "onCursorPosEvent")
 }
 
 
 func Update () {
-	//str.print("input/ccInput.Update()")
-
-	// motion input status 
-	//moveLeft  = keyIsDown(GLFW_KEY_A)
-	//moveRight = keyIsDown(GLFW_KEY_D)
-	//moveUp    = keyIsDown(GLFW_KEY_W)
-	//moveDown  = keyIsDown(GLFW_KEY_S)
-	//str.print("call SetPlayerVelocity() causing prob")
+	//str.print("mesh/editor.Update()")
 }
 
 
