@@ -15,7 +15,8 @@ func drawAll () {
 	pre()
 	gl.Disable(gl.TEXTURE_2D)
 	
-	if mesh.EditorIsOpenThenDrewIt(time.Now, time.Delta) {
+	if app.Mode == app.MODE_EDITOR {
+		mesh.DrawEditor()
 	}else{ // gameplay 
 		map.DrawQuads()
 		draw.OneCircle(
@@ -29,7 +30,8 @@ func drawAll () {
 	}
 	
 	if  menu.IsOpen() {		
-		gl.Enable(gl.TEXTURE_2D)
+		gl.Disable(gl.DEPTH_TEST)
+		//gl.Enable(gl.TEXTURE_2D)
 		menu.Draw()
 	}
 }

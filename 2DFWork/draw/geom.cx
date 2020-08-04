@@ -5,6 +5,53 @@ import "entities"
 
 
 
+func AddRect (pos app.Vec2, extentX f32, extentY f32) {
+	var lX /* left   */ f32 = f32.sub(pos.X, extentX)
+	var rX /* right  */ f32 = f32.add(pos.X, extentX)
+	var bY /* bottom */ f32 = f32.sub(pos.Y, extentY)
+	var tY /* top    */ f32 = f32.add(pos.Y, extentY)
+
+	gl.Vertex3f(lX, bY, 0.0)
+	gl.Vertex3f(lX, tY, 0.0)
+	gl.Vertex3f(rX, tY, 0.0)
+	gl.Vertex3f(rX, bY, 0.0)
+}
+
+
+func BeginUntexturedQuads () {
+	gl.Begin(gl.QUADS)
+}
+func BeginTexturedQuads (picId i32) {
+	gl.BindTexture(gl.TEXTURE_2D, picId)
+	gl.Begin(gl.QUADS)
+}
+func End () {
+	gl.End()
+}
+
+
+// top, right, bottom, left 
+func UntexturedQuad (t f32, r f32, b f32, l f32) {
+	gl.Vertex2f(l, t)
+	gl.Vertex2f(r, t)
+	gl.Vertex2f(r, b)
+	gl.Vertex2f(l, b)
+}
+func TexturedQuad   (t f32, r f32, b f32, l f32) {
+	gl.TexCoord2d(0.0D, 0.0D)
+	gl.Vertex2f(l, t)
+	
+	gl.TexCoord2d(1.0D, 0.0D)
+	gl.Vertex2f(r, t)
+	
+	gl.TexCoord2d(1.0D, 1.0D)
+	gl.Vertex2f(r, b)
+	
+	gl.TexCoord2d(0.0D, 1.0D)
+	gl.Vertex2f(l, b)
+}
+
+
 func OneCircle (inX f32, inY f32, extX f32, extY f32, colorId i32, alpha f32, drawAt0 bool) {
 	var x  f32
 	var y  f32
@@ -31,14 +78,3 @@ func OneCircle (inX f32, inY f32, extX f32, extY f32, colorId i32, alpha f32, dr
 }
 
 
-func AddRect (pos app.Vec2, extentX f32, extentY f32) () {
-	var lX /* left   */ f32 = f32.sub(pos.X, extentX)
-	var rX /* right  */ f32 = f32.add(pos.X, extentX)
-	var bY /* bottom */ f32 = f32.sub(pos.Y, extentY)
-	var tY /* top    */ f32 = f32.add(pos.Y, extentY)
-
-	gl.Vertex3f(lX, bY, 0.0)
-	gl.Vertex3f(lX, tY, 0.0)
-	gl.Vertex3f(rX, tY, 0.0)
-	gl.Vertex3f(rX, bY, 0.0)
-}

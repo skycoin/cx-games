@@ -4,6 +4,7 @@ import "gl"
 
 import "app"
 import "draw"
+import "time"
 
 
 var currX           f32
@@ -25,19 +26,12 @@ var blinkDelay           f32 =  0.1
 
 
 
-func EditorIsOpenThenDrewIt (currTime f32, deltaTime f32) (open bool) {
-	//str.print("mesh.EditorIsOpenThenDrewIt ()")
+func DrawEditor () {
+	//str.print("mesh.DrawEditor ()")
 
-	if app.Mode == app.MODE_EDITOR {
-		open = true
-		blinkTiming(deltaTime)
-			
-		if  app.EditMode != app.EDITMODE_COLORS &&
-			app.EditMode != app.EDITMODE_MESH_PICKER {
-			
-			gridLines()
-		}
-
+	pre()
+	
+	if app.EditMode == app.EDITMODE_VERTICES {
 		gl.Begin(gl.TRIANGLES)
 			//trianglesForOne(RawMeshes, 0)
 			trianglesForOne(RawMeshes, 1)
@@ -49,40 +43,62 @@ func EditorIsOpenThenDrewIt (currTime f32, deltaTime f32) (open bool) {
 				//trianglesForOne(RawMeshes, ColorWheel)
 			}else 
 			if true == true { //app.EditMode == app.EDITMODE_MESH_PICKER {
-				//trianglesForMenu(BakedUIMeshes, ccInput.MESH_PICKER)
+				//trianglesForMenu(BakedUIMeshes, MESH_PICKER)
 			}else{
 				//trianglesForAll(EditLayers)
 			}			
 			
-			//trianglesForMenu(BakedUIMeshes, ccInput.EDIT_TOOLBAR)
+			//trianglesForMenu(BakedUIMeshes, EDIT_TOOLBAR)
 		gl.End()
+	}else
+	if app.EditMode == app.EDITMODE_TRIANGLES {
+	}else
+	if app.EditMode == app.EDITMODE_COLORS {
+	}else
+	if app.EditMode == app.EDITMODE_MESH_PICKER {
+	}
 
-		if  app.EditMode != app.EDITMODE_COLORS &&
-			app.EditMode != app.EDITMODE_MESH_PICKER {
-			
-			gl.Begin(gl.QUADS) //////////////////
-				//editorQuads()
-			gl.End()
-			
-			gl.Begin(gl.LINES)
-				//maybeDragBox()				
-			gl.End()
-		}
+	post()
 		
-		// TODO: ADAPT THIS TO HIGHLIGHT MULTIPLE MESHES/SEPARATIONS WHEN IMPLEMENTED 
-		// 		(THIS WILL ALLOW SHARED VERTEX COORDS WITH DIFFERENT COLORS SO
-		// 		THERE CAN BE HARD COLOR CONTRAST BETWEEN MESHES THAT APPEAR CONNECTED) 
-				
-		// // draws loop from all entity positions 
-		// gl.Begin(gl.LINE_LOOP) //////////////
-		// 	simpleVertexSequence(0.5)
-		// gl.End()
+	// TODO: ADAPT THIS TO HIGHLIGHT MULTIPLE MESHES/SEPARATIONS WHEN IMPLEMENTED 
+	// 		(THIS WILL ALLOW SHARED VERTEX COORDS WITH DIFFERENT COLORS SO
+	// 		THERE CAN BE HARD COLOR CONTRAST BETWEEN MESHES THAT APPEAR CONNECTED) 
+			
+	// // draws loop from all entity positions 
+	// gl.Begin(gl.LINE_LOOP) //////////////
+	// 	simpleVertexSequence(0.5)
+	// gl.End()
+}
+
+
+func pre () {
+	pumpTheBlinking()
+		
+	if  app.EditMode != app.EDITMODE_COLORS &&
+		app.EditMode != app.EDITMODE_MESH_PICKER {
+		
+		gridLines()
 	}
 }
 
 
-func blinkTiming(deltaTime f32) {
-	timeLocalToDraw = f32.add(timeLocalToDraw, deltaTime)	
+func post () {
+	if  app.EditMode != app.EDITMODE_COLORS &&
+		app.EditMode != app.EDITMODE_MESH_PICKER {
+		
+		gl.Begin(gl.QUADS)
+			editorQuads()
+		gl.End()
+		
+		gl.Begin(gl.LINES)
+			//maybeDragBox()				
+		gl.End()
+	}
+}
+
+
+func pumpTheBlinking () {
+	timeLocalToDraw = f32.add(timeLocalToDraw, time.Delta)	
 	for f32.lteq(nextBlinkFlip, timeLocalToDraw) {
 		nextBlinkFlip = f32.add(timeLocalToDraw, blinkDelay)
 		pickedNodesAreBright = bool.not(pickedNodesAreBright)
@@ -260,14 +276,13 @@ func setColor (i i32) {
 }
 
 
-/*
 func editorQuads () {
 	var li i32
-	for li = 0; i32.lt(li, len(EditLayers)); li++ {
+	for li = 0; li < len(EditLayers); li++ {
 		var cols []Color3
 		cols = EditLayers[li].Colors
 		
-		for i := 0; i32.lt(i, len(cols)); i++ {
+		for i := 0; i < len(cols); i++ {
 			//gl.Color3f(cols[i].R, cols[i].G, cols[i].B)  TODO: oscillate between this and black?  or just blink to halfway in between? 
 			gl.Color3f(darkCI, darkCI, darkCI)
 
@@ -279,8 +294,8 @@ func editorQuads () {
 				}
 			}
 			
-			drawRect(EditLayers[li].Points[i], entity.NodeExtents)
+			
+			//draw.Rect(EditLayers[li].Points[i], entities.All[et][i].Size)
 		}
 	}
 }
-*/
