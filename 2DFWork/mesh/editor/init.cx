@@ -14,6 +14,7 @@ var draggedVertexId i32 // ...vert at a time.  probably useless now
 
 
 
+/*
 func Setup () {
 	str.print("mesh/editor.Setup()")
 
@@ -24,39 +25,6 @@ func Setup () {
 
 func Update () {
 	//str.print("mesh/editor.Update()")
-}
-
-
-func GoLeft() (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_A), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_LEFT), 1) {
-		out = true
-	}
-}
-func GoRight() (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_D), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_RIGHT), 1) {
-		out = true
-	}
-}
-func GoDown() (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_S), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_DOWN), 1) {
-		out = true
-	}
-}
-func GoUp() (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_W), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_UP), 1) {
-		out = true
-	}
-}
-
-func Back(key i32) (out bool) {
-	if i32.eq(glfw.GetKey("window", GLFW_KEY_ESCAPE), 1) ||
-		i32.eq(glfw.GetKey("window", GLFW_KEY_HOME), 1) {
-		out = true
-	}
 }
 
 
@@ -288,3 +256,4 @@ func getTouchedVertexNode (p Vec2) (touched bool, layId i32, vertId i32) {
 		}
 	}
 }
+*/
