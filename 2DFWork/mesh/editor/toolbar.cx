@@ -83,15 +83,13 @@ func InitToolBar (id i32, numItems i32) { // menu id
 
 
 func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {	
-	
-	/*
-	printf("BakeToolButtonArray () - numItems: %d \n", numItems)
+	printf("BakeToolButtonArray () - len(items): %d \n", len(items))
 	
 	var extent f32 // of a button 
 	extent = f32.div(ToolButtonSpan, 2.0)
 	
 	var longSpan f32 // span across the longest dimension 
-	longSpan = f32.mul(ToolButtonSpan, i32.f32(numItems))
+	longSpan = f32.mul(ToolButtonSpan, i32.f32(len(items)))
 
 	printf("BakeToolButtonArray () - longSpan: %f \n", longSpan)
 
@@ -107,7 +105,7 @@ func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {
 		
 		y = f32.div(longSpan, 2.0)
 		y = f32.sub(y, extent)
-	} else { // horizontal 
+	}else{ // horizontal 
 		x = f32.div(longSpan, 2.0)
 		x = -x
 		x = f32.add(x, extent)
@@ -126,13 +124,14 @@ func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {
 
 	printf("BakeToolButtonArray () - pos.X: %f \n", pos.X)
 
-	for i := 0; i32.lt(i, numItems); i++ {
-		tBars[menu].Items[i].Pos = pos
-		tBars[menu].Items[i].Extents = ext
+	for i := 0; i32.lt(i, len(items)); i++ {
+		items[i].Pos     = pos
+		items[i].Extents = ext
 		
 		var id i32 = i32.mul(i, 2) // baked id 
 		printf("BakeToolButtonArray () - id: %d \n", id)
 		
+		/*
 		// rect background 
 		tBars[menu].Items[i].BakedBackground = id
 		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, id)
@@ -148,8 +147,8 @@ func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {
 		} else { // horizontal 
 			pos.X = f32.add(pos.X, ToolButtonSpan)
 		}
+		*/
 	}
-	*/
 }
 
 
