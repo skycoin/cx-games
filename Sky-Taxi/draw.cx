@@ -30,8 +30,8 @@ func drawAll () {
 	}
 	
 	if  menu.IsOpen() {		
-		gl.Disable(gl.DEPTH_TEST)
 		//gl.Enable(gl.TEXTURE_2D)
+		//gl.Enable(gl.DEPTH_TEST)
 		menu.Draw()
 	}
 }
@@ -41,8 +41,12 @@ func pre () {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
-	gl.Ortho(space.ViewEdgeL64, space.ViewEdgeR64, -1.0D, 1.0D, 1.0D, -1.0D)
-	gl.Viewport(0, 0, space.ViewWidInPixels, space.ViewHeiInPixels)
+	gl.Ortho(
+		space.ViewEdgeL64, 
+		space.ViewEdgeR64, -1.0D, 1.0D, 1.0D, -1.0D)
+	gl.Viewport(0, 0, 
+		space.ViewWidInPixels, 
+		space.ViewHeiInPixels)
 	gl.MatrixMode(gl.MODELVIEW)
 
 	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 

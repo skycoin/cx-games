@@ -62,7 +62,8 @@ func texts () {
 	var m i32 = app.Mode
 	gl.LoadIdentity()
 
-	for i := i32.sub(len(Items[m]), 1); i >= 0; i-- {
+	var st i32 = len(Items[m]) - 1
+	for i := st; i >= 0; i-- {
 		if inputs.PointerInYPixelRange( // highlighted 
 			Items[m][i].Top, 
 			Items[m][i].Bottom) {

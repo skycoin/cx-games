@@ -30,25 +30,19 @@ func DrawEditor () {
 	//str.print("mesh.DrawEditor ()")
 
 	pre()
+	trianglesForOne(RawMeshes, 1)
 	
 	if app.EditMode == app.EDITMODE_VERTICES {
 		gl.Begin(gl.TRIANGLES)
-			//trianglesForOne(RawMeshes, 0)
-			trianglesForOne(RawMeshes, 1)
 			//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
 
 
 
 			if app.EditMode == app.EDITMODE_COLORS {
 				//trianglesForOne(RawMeshes, ColorWheel)
-			}else 
-			if true == true { //app.EditMode == app.EDITMODE_MESH_PICKER {
-				//trianglesForMenu(BakedUIMeshes, MESH_PICKER)
 			}else{
 				//trianglesForAll(EditLayers)
 			}			
-			
-			//trianglesForMenu(BakedUIMeshes, EDIT_TOOLBAR)
 		gl.End()
 	}else
 	if app.EditMode == app.EDITMODE_TRIANGLES {
@@ -56,6 +50,8 @@ func DrawEditor () {
 	if app.EditMode == app.EDITMODE_COLORS {
 	}else
 	if app.EditMode == app.EDITMODE_MESH_PICKER {
+		trianglesForOne(RawMeshes, 0)
+		trianglesForToolbar(BakedUIMeshes, MESH_PICKER)
 	}
 
 	post()
@@ -73,6 +69,7 @@ func DrawEditor () {
 
 func pre () {
 	pumpTheBlinking()
+	trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
 		
 	if  app.EditMode != app.EDITMODE_COLORS &&
 		app.EditMode != app.EDITMODE_MESH_PICKER {
@@ -86,9 +83,7 @@ func post () {
 	if  app.EditMode != app.EDITMODE_COLORS &&
 		app.EditMode != app.EDITMODE_MESH_PICKER {
 		
-		gl.Begin(gl.QUADS)
-			editorQuads()
-		gl.End()
+		editorQuads()
 		
 		gl.Begin(gl.LINES)
 			//maybeDragBox()				
@@ -139,28 +134,35 @@ func trianglesForAll (meshes []Mesh2D) () {
 		trianglesForOne(meshes, i)
 	}
 }
+*/
 
 
-func trianglesForMenu (meshes []Mesh2D, menuId i32) () {
-	if menuId != 0 {
-		printf("trianglesForMenu() menuId: %d \n", menuId)
+// tbId == toolbar id 
+func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
+	if len(meshes) < 1 {
+		printf("NO MESHES IN THAT SLICE!   -   tbId: %d \n", tbId)
+		return //////////////////////////////////////////
 	}
 	
-	for j := 0; i32.lt(j, len(ccInput.Menus[menuId].Items)); j++ {
+	//if tbId != 0 {
+		printf("trianglesForToolbar() tbId: %d \n", tbId)
+	//}
+	
+	for j := 0; i32.lt(j, len(Menus[tbId].Items)); j++ {
 		var bi i32 // baked mesh id 
-		bi = ccInput.Menus[menuId].Items[j].BakedBackground
+		bi = Menus[tbId].Items[j].BakedBackground
 		
 		// background 
-		if bi != app.I32_MAX {
+		if bi != app.MAX_I32 {
 			trianglesForOne(meshes, bi)
 		}
 		
 		// icon 
-		bi = ccInput.Menus[menuId].Items[j].BakedIcon
+		bi = Menus[tbId].Items[j].BakedIcon
 		trianglesForOne(meshes, bi)
 	}
 }
-*/
+
 
 func trianglesForOne (meshes []Mesh2D, i i32) {
 	//printf("trianglesForOne () id of given []Mesh2D: %d \n", i)
@@ -277,6 +279,8 @@ func setColor (i i32) {
 
 
 func editorQuads () {
+	draw.BeginUntexturedQuads()
+	
 	var li i32
 	for li = 0; li < len(EditLayers); li++ {
 		var cols []Color3
@@ -295,7 +299,9 @@ func editorQuads () {
 			}
 			
 			
-			//draw.Rect(EditLayers[li].Points[i], entities.All[et][i].Size)
+			draw.AddRect(EditLayers[li].Points[i], 0.01, 0.01)
 		}
 	}
+	
+	draw.End()
 }
