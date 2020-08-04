@@ -4,6 +4,22 @@ import "app"
 
 
 
+var PickedVerts     []i32
+	
+
+
+func editorInit () {
+	// canvas 
+	var m Mesh2D
+	m = Mesh2D{ Name: "Editor workspace" }
+	EditLayers = append(
+	EditLayers, m)
+	
+	// vertex pick/selection 
+	PickedVerts = []i32{}
+}
+
+
 /*
 func doPrimaryAbility () {
 	str.print("doPrimaryAbility ()")

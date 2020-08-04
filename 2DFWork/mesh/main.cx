@@ -11,26 +11,24 @@ import "draw"
 
 // to keep it simple, we'll sync Colors & Points (rather than indices to a palette) 
 type Mesh2D struct {
-	Name            str
-	Colors          []Color3 
-	Points          []Vec2
-	TriangleIndices []i32
+	Name             str
+	Colors           []Color3 
+	Points           []Vec2
+	TriangleIndices  []i32
 }
 
-var RawMeshes       []Mesh2D // fully bounded to -1.0 & 1.0 extents 
-var SizedMeshes     []Mesh2D // part baked (world size/scale) 
-var BakedUIMeshes   []Mesh2D // full baked (world size/scale & pos) for menu/toolbar 
-var BakedMeshPicker []Mesh2D // full baked (world size/scale & pos) 
-var EditLayers      []Mesh2D // TODO: (just using 1 ATM) a slice (amongst other features) allows multiple vertices at the same position (but with different colors).  allows drastic color changes between adjacent triangle sides 
+var RawMeshes        []Mesh2D // fully bounded to -1.0 & 1.0 extents 
+var SizedMeshes      []Mesh2D // part baked (world size/scale), for moving meshes 
+var BakedUIMeshes    []Mesh2D // full baked (world size/scale & pos) for menu/toolbar 
+var BakedMeshPickers []Mesh2D // full baked (world size/scale & pos) 
+var EditLayers       []Mesh2D // TODO: (just using 1 ATM) a slice (amongst other features) allows multiple vertices at the same position (but with different colors).  allows drastic color changes between adjacent triangle sides 
 
-var CurrLayer       i32
-var currMesh        Mesh2D
+var CurrLayer        i32
+var currMesh         Mesh2D
 
 // raw mesh ids 
-var ColorWheel      i32
-var GameOver        i32
-
-var PickedVerts     []i32
+var ColorWheel       i32
+var GameOver         i32
 
 var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }
 
@@ -48,7 +46,7 @@ func Init () {
 		printf("%s", charMap[i])
 	}
 	
-	str.print("")
+	printf("\n")
 
 
 
@@ -57,7 +55,7 @@ func Init () {
 	makeIconEditTriangles()
 
 	ColorWheel = len(RawMeshes)
-	makeColorPickerWheelResource() // not JUST for icon? 
+	makeColorPickerWheelResource()
 
 	makeIconMeshPicker()
 	makeIconGenerateFunc()
@@ -77,30 +75,16 @@ func Init () {
 	GameOver = len(RawMeshes)
 	InitGameOverMesh()
 
-	RidgeBlasterLogo = len(RawMeshes)
-	InitRidgeBlasterLogoMesh()
-	
-	makeEditorRectResource()	
-	
-	
-	
-	// editor 
-	
-	/////// canvas 
-	var m Mesh2D
-	m = Mesh2D{ Name: "Editor workspace" }
-	EditLayers = append(
-	EditLayers, m)
-	
-	/////// vertex pick/selection 
-	PickedVerts = []i32{}
+	makeEditorRectResource()
 	*/
+	
+	editorInit()
 }
 
 
 func makeAndReportOn (m Mesh2D, raw bool) {
 	if raw {
-		printf("    Making raw mesh:   %d  '%s' \n", len(RawMeshes), m.Name)
+		printf("    Making raw mesh:   %d  '%s' \n", len(RawMeshes),   m.Name)
 		RawMeshes = append(
 		RawMeshes, m)
 	}else{
@@ -141,8 +125,8 @@ func makeAndReportOn (m Mesh2D, raw bool) {
 
 func GenerateMeshInitFunc (s str) () {
 	printf("___________________________________________________________ \n")
-	printf("Init%sMesh() \n\n", s)
-	printf("func Init%sMesh () { \n", s)
+	printf("make%sMesh() \n\n", s)
+	printf("func make%sMesh () { \n", s)
 	printf("    var m Mesh2D \n")
 	printf("    m = Mesh2D{ Name: Raw } \n")
 	printf(" \n")
