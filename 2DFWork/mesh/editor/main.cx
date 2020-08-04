@@ -4,6 +4,12 @@ import "app"
 
 
 
+var SnapToGrid      bool
+var Dragging        bool
+var DragStart       Vec2
+var draggedLayerId  i32 // these 2 ids were when we could only drag 1... 
+var draggedVertexId i32 // ...vert at a time.  probably useless now 
+
 var PickedVerts     []i32
 	
 
