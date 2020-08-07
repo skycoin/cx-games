@@ -1,0 +1,746 @@
+package constants_pkg
+
+var SCREEN_WIDTH i32 = 1920
+var SCREEN_HEIGHT i32 = 1080
+
+
+package position_pkg
+
+type Position struct {
+  x f32
+  y f32
+}
+
+func newPosition(_x f32, _y f32) (position Position) {
+  position := Position{
+    x: _x,
+    y: _y}
+}
+
+
+package dimensions_pkg
+
+type Dimensions struct {
+  width i32
+  height i32
+}
+
+func newDimensions(_width i32, _height i32) (dimensions Dimensions) {
+  dimensions := Dimensions{
+    width: _width,
+    height: _height}
+}
+
+package aux_pkg
+
+import "gl"
+import "os"
+
+import "constants_pkg"
+import "position_pkg"
+import "dimensions_pkg"
+
+func loadTexture(relative_path str) (texture i32) {
+  var wd str
+	wd = os.GetWorkingDirectory()
+  texture = gl.NewTexture(sprintf("%s%s", wd, relative_path))
+}
+
+func scale(value i32, max i32) (scaled f32) {
+	scaled = f32.div(i32.f32(value), i32.f32(max))
+}
+
+func relative2absoluteX(relative_position f32, max_px i32) (absolute_position i32) {
+  absolute_position = f32.i32(f32.add(f32.div(i32.f32(max_px), 2.0), f32.mul(relative_position, f32.div(i32.f32(max_px), 2.0))))
+}
+
+func relative2absoluteY(relative_position f32, max_px i32) (absolute_position i32) {
+  absolute_position = f32.i32(f32.sub(f32.div(i32.f32(max_px), 2.0), f32.mul(relative_position, f32.div(i32.f32(max_px), 2.0))))
+}
+
+func cursorInsideArea(mouse_x i32, mouse_y i32, area_position position_pkg.Position, area_dimensions dimensions_pkg.Dimensions) (inside bool) {
+  inside = false
+  if i32.gteq(mouse_x, i32.sub(relative2absoluteX(area_position.x, constants_pkg.SCREEN_WIDTH), i32.div(area_dimensions.width, 2))) {
+    if i32.lteq(mouse_x, i32.add(relative2absoluteX(area_position.x, constants_pkg.SCREEN_WIDTH), i32.div(area_dimensions.width, 2))) {
+      if i32.gteq(mouse_y, i32.sub(relative2absoluteY(area_position.y, constants_pkg.SCREEN_HEIGHT), i32.div(area_dimensions.height, 2))) {
+        if i32.lteq(mouse_y, i32.add(relative2absoluteY(area_position.y, constants_pkg.SCREEN_HEIGHT), i32.div(area_dimensions.height, 2))) {
+          inside = true  // FIXME I won't allow this shit tier code...
+        }
+      }
+    }
+  }
+}
+
+package image_pkg
+
+import "gl"
+
+import "constants_pkg"
+import "aux_pkg"
+import "position_pkg"
+import "dimensions_pkg"
+
+type Image struct {
+  id str
+  position position_pkg.Position
+  dimensions dimensions_pkg.Dimensions
+  texture i32
+}
+
+func newImage(_id str, _x f32, _y f32, _width i32, _height i32, _path str) (image Image) {
+  image.id = _id
+  image.position = position_pkg.newPosition(_x, _y)
+  image.dimensions = dimensions_pkg.newDimensions(_width, _height)
+  image.texture = aux_pkg.loadTexture(_path)
+}
+
+func renderImage(image Image) () {
+  gl.PushMatrix()
+
+  gl.Translatef(image.position.x, image.position.y, 0.0)
+  gl.Scalef(
+    aux_pkg.scale(image.dimensions.width, constants_pkg.SCREEN_WIDTH),
+    aux_pkg.scale(image.dimensions.height, constants_pkg.SCREEN_HEIGHT),
+    0.0)
+
+  gl.BindTexture(gl.TEXTURE_2D, image.texture)
+	gl.Begin(gl.QUADS)
+	gl.TexCoord2d(0.0D, 0.0D);
+	gl.Vertex3f(-1.0, 1.0, 0.0);
+	gl.TexCoord2d(1.0D, 0.0D);
+	gl.Vertex3f(1.0, 1.0, 0.0);
+	gl.TexCoord2d(1.0D, 1.0D);
+	gl.Vertex3f(1.0, -1.0, 0.0);
+	gl.TexCoord2d(0.0D, 1.0D);
+	gl.Vertex3f(-1.0, -1.0, 0.0);
+	gl.End();
+
+  gl.PopMatrix()
+}
+
+
+
+package button_pkg
+
+import "gl"
+
+import "constants_pkg"
+import "aux_pkg"
+import "position_pkg"
+import "dimensions_pkg"
+
+type Button struct {
+  id str
+  position Position
+  dimensions Dimensions
+  hovered bool
+  textures [2]i32
+}
+
+func newButton(_id str, _x f32, _y f32, _width i32, _height i32, _path1 str, _path2 str) (button Button) {
+  var _textures [2]i32
+  _textures[0] = aux_pkg.loadTexture(_path1)
+  _textures[1] = aux_pkg.loadTexture(_path2)
+
+  button.id = _id
+  button.position = position_pkg.newPosition(_x, _y)
+  button.dimensions = dimensions_pkg.newDimensions(_width, _height)
+  button.hovered = false
+  button.textures = _textures
+}
+
+func updateButton(mouse_x i32, mouse_y i32, button Button) (button Button) {
+  if aux_pkg.cursorInsideArea(mouse_x, mouse_y, button.position, button.dimensions) {
+    button.hovered = true
+  } else {
+    button.hovered = false
+  }
+}
+
+func clickButton(button Button) (button Button) {
+  if button.hovered {
+    str.print(button.id)
+  }
+}
+
+func renderButton(button Button) () {
+  gl.PushMatrix()
+
+  gl.Translatef(button.position.x, button.position.y, 0.0)
+  gl.Scalef(
+    aux_pkg.scale(button.dimensions.width, constants_pkg.SCREEN_WIDTH),
+    aux_pkg.scale(button.dimensions.height, constants_pkg.SCREEN_HEIGHT),
+    0.0)
+
+  if bool.not(button.hovered) {
+    gl.BindTexture(gl.TEXTURE_2D, button.textures[0])
+  } else {
+    gl.BindTexture(gl.TEXTURE_2D, button.textures[1])
+  }
+
+	gl.Begin(gl.QUADS)
+	gl.TexCoord2d(0.0D, 0.0D);
+	gl.Vertex3f(-1.0, 1.0, 0.0);
+	gl.TexCoord2d(1.0D, 0.0D);
+	gl.Vertex3f(1.0, 1.0, 0.0);
+	gl.TexCoord2d(1.0D, 1.0D);
+	gl.Vertex3f(1.0, -1.0, 0.0);
+	gl.TexCoord2d(0.0D, 1.0D);
+	gl.Vertex3f(-1.0, -1.0, 0.0);
+	gl.End();
+
+  gl.PopMatrix()
+}
+
+
+type CheckBox struct {
+  id str
+  position Position
+  dimensions Dimensions
+  hovered bool
+  checked bool
+  textures [2]i32
+}
+
+func newCheckbox(_id str, _x f32, _y f32, _width i32, _height i32, _path1 str, _path2 str) (checkbox CheckBox) {
+  var _textures [2]i32
+  _textures[0] = aux_pkg.loadTexture(_path1)
+  _textures[1] = aux_pkg.loadTexture(_path2)
+
+  checkbox.id = _id
+  checkbox.position = position_pkg.newPosition(_x, _y)
+  checkbox.dimensions = dimensions_pkg.newDimensions(_width, _height)
+  checkbox.hovered = false
+  checkbox.checked = false
+  checkbox.textures = _textures
+}
+
+func updateCheckbox(mouse_x i32, mouse_y i32, checkbox CheckBox) (checkbox CheckBox) {
+  if aux_pkg.cursorInsideArea(mouse_x, mouse_y, checkbox.position, checkbox.dimensions) {
+    checkbox.hovered = true
+  } else {
+    checkbox.hovered = false
+  }
+}
+
+func clickCheckbox(checkbox CheckBox) (checkbox CheckBox) {
+  if checkbox.hovered {
+    checkbox.checked = bool.not(checkbox.checked)
+  }
+}
+
+func (checkbox CheckBox) render () {
+  str.print(checkbox.id)
+}
+
+func renderCheckBox(checkbox CheckBox) () {
+  gl.LoadIdentity()
+
+  if bool.not(checkbox.checked) {
+    gl.BindTexture(gl.TEXTURE_2D, checkbox.textures[0])
+  } else {
+    gl.BindTexture(gl.TEXTURE_2D, checkbox.textures[1])
+  }
+
+  gl.Translatef(checkbox.position.x, checkbox.position.y, 0.0)
+
+  gl.Scalef(
+    aux_pkg.scale(checkbox.dimensions.width, constants_pkg.SCREEN_WIDTH),
+    aux_pkg.scale(checkbox.dimensions.height, constants_pkg.SCREEN_HEIGHT),
+    0.0)
+
+	gl.Begin(gl.QUADS)
+	gl.TexCoord2d(0.0D, 0.0D);
+	gl.Vertex3f(-1.0, 1.0, 0.0);
+	gl.TexCoord2d(1.0D, 0.0D);
+	gl.Vertex3f(1.0, 1.0, 0.0);
+	gl.TexCoord2d(1.0D, 1.0D);
+	gl.Vertex3f(1.0, -1.0, 0.0);
+	gl.TexCoord2d(0.0D, 1.0D);
+	gl.Vertex3f(-1.0, -1.0, 0.0);
+	gl.End();
+}
+
+
+package radiobox_pkg
+
+import "gl"
+
+import "button_pkg"
+
+type Radiobox struct {
+  id str
+  boxes []button_pkg.CheckBox
+}
+
+func newRadiobox(id str) (radiobox Radiobox) {
+  radiobox.id = id
+  return radiobox
+}
+
+func (radiobox Radiobox) addBox(checkbox button_pkg.CheckBox) (radiobox Radiobox) {
+  if len(radiobox.boxes) == 0 {
+    checkbox.checked = true
+  }
+  radiobox.boxes = append(radiobox.boxes, checkbox)
+}
+
+func updateRadiobox(cursor_x i32, cursor_y i32, radiobox Radiobox) (radiobox Radiobox) {
+  for i:=0; i<len(radiobox.boxes); i++ {
+    radiobox.boxes[i] = button_pkg.updateCheckbox(cursor_x, cursor_y, radiobox.boxes[i])
+  }
+}
+
+func clickRadiobox(radiobox Radiobox) (radiobox Radiobox) {
+  for i:=0; i<len(radiobox.boxes); i++ {
+    if radiobox.boxes[i].hovered {
+      radiobox.boxes[i].checked = true
+    } else {
+      radiobox.boxes[i].checked = false
+    }
+  }
+  return radiobox
+}
+
+func renderRadiobox (radiobox Radiobox) {
+  for i:=0; i<len(radiobox.boxes); i++ {
+    button_pkg.renderCheckBox(radiobox.boxes[i])
+  }
+}
+
+
+package textbox_pkg
+
+import "gl"
+import "gltext"
+
+import "constants_pkg"
+import "aux_pkg"
+import "position_pkg"
+
+type Textbox struct {
+  id str
+  position position_pkg.Position
+  text str
+  font str
+}
+
+func newTextbox(_id str, _x f32, _y f32, _text str, _font str) (textbox Textbox) {
+  textbox.id = _id
+  textbox.position = position_pkg.newPosition(_x, _y)
+  textbox.text = _text
+  textbox.font = _font
+}
+
+func renderTextbox(textbox Textbox) () { // FIXME color overlay
+  gl.Color3f(0.98, 0.98, 0.98)        // FIXME add custom color
+  gltext.Printf(
+    textbox.font,
+    i32.f32(aux_pkg.relative2absoluteX(textbox.position.x, constants_pkg.SCREEN_WIDTH)),
+    i32.f32(aux_pkg.relative2absoluteY(textbox.position.y, constants_pkg.SCREEN_HEIGHT)),
+    textbox.text)
+}
+
+
+package spinbox_pkg
+
+import "button_pkg"
+import "textbox_pkg"
+
+type Spinbox struct {
+  id str
+  value i32
+  min_value i32
+  max_value i32
+  minus_button button_pkg.Button
+  plus_button button_pkg.Button
+  textbox textbox_pkg.Textbox
+}
+
+func newSpinbox(_id str, _value i32, _min_value i32, _max_value i32, _minus_button button_pkg.Button, _plus_button button_pkg.Button, _textbox textbox_pkg.Textbox) (spinbox Spinbox) {
+  spinbox := Spinbox {
+    id: _id,
+    value: _value,
+    min_value: _min_value,
+    max_value: _max_value,
+    minus_button: _minus_button,
+    plus_button: _plus_button,
+    textbox: _textbox}
+}
+
+func spinboxMinus(spinbox Spinbox) (spinbox Spinbox) {
+  if spinbox.value > spinbox.min_value {
+    spinbox.value = i32.sub(spinbox.value, 1)
+  }
+  spinbox.textbox.text = i32.str(spinbox.value)
+}
+
+func spinboxPlus(spinbox Spinbox) (spinbox Spinbox) {
+  if spinbox.value < spinbox.max_value {
+    spinbox.value = i32.add(spinbox.value, 1)
+  }
+  spinbox.textbox.text = i32.str(spinbox.value)
+}
+
+func updateSpinbox(mouse_x i32, mouse_y i32, spinbox Spinbox) (spinbox Spinbox) {
+  spinbox.minus_button = button_pkg.updateButton(mouse_x, mouse_y, spinbox.minus_button)
+  spinbox.plus_button = button_pkg.updateButton(mouse_x, mouse_y, spinbox.plus_button)
+  spinbox.textbox.text = i32.str(spinbox.value)
+}
+
+func clickSpinbox(spinbox Spinbox) (spinbox Spinbox) {
+  if spinbox.minus_button.hovered {
+    spinbox = spinboxMinus(spinbox)
+  }
+  if spinbox.plus_button.hovered {
+    spinbox = spinboxPlus(spinbox)
+  }
+}
+
+func renderSpinbox(spinbox Spinbox) () {
+  button_pkg.renderButton(spinbox.minus_button)
+  button_pkg.renderButton(spinbox.plus_button)
+  textbox_pkg.renderTextbox(spinbox.textbox)
+}
+
+package layer_pkg
+
+import "gl"
+
+import "position_pkg"
+import "dimensions_pkg"
+
+import "image_pkg"
+import "button_pkg"
+import "textbox_pkg"
+import "spinbox_pkg"
+import "radiobox_pkg"
+
+type Layer struct {
+  id str
+  position position_pkg.Position
+  dimensions dimensions_pkg.Dimensions
+
+  visible bool
+  active bool
+
+  pending_callback bool
+  callback_id str
+
+  images []image_pkg.Image
+  buttons []button_pkg.Button
+  checkboxes []button_pkg.CheckBox
+  textboxes []textbox_pkg.Textbox
+  spinboxes []spinbox_pkg.Spinbox
+  radioboxes []radiobox_pkg.Radiobox
+}
+
+func newLayer(_id str, _x f32, _y f32, _width i32, _height i32, _visible bool, _active bool) (layer Layer) {
+  layer.id = _id
+  layer.position = position_pkg.newPosition(_x, _y)
+  layer.dimensions = dimensions_pkg.newDimensions(_width, _height)
+  layer.visible = _visible
+  layer.active = _active
+  layer.pending_callback = false
+}
+
+func (layer Layer) addImage(image Image) (layer Layer) {
+  layer.images = append(layer.images, image)
+}
+
+func (layer Layer) addButton(button Button) (layer Layer) {
+  layer.buttons = append(layer.buttons, button)
+}
+
+func (layer Layer) addCheckbox (checkbox CheckBox) (layer Layer) {
+  layer.checkboxes = append(layer.checkboxes, checkbox)
+}
+
+func (layer Layer) addTextbox (textbox Textbox) (layer Layer) {
+  layer.textboxes = append(layer.textboxes, textbox)
+}
+
+func AddTextbox(layer Layer, textbox Textbox) (layer Layer) {
+  layer.textboxes = append(layer.textboxes, textbox)
+}
+
+func (layer Layer) addSpinbox (spinbox Spinbox) (layer Layer) {
+  layer.spinboxes = append(layer.spinboxes, spinbox)
+}
+
+func (layer Layer) addRadiobox (radiobox Radiobox) (layer Layer) {
+  layer.radioboxes = append(layer.radioboxes, radiobox)
+}
+
+func updateLayer(mouse_x i32, mouse_y i32, layer Layer) (layer Layer) {
+  if layer.active {
+    var i i32
+
+    for i=0; i<len(layer.buttons); i++ {
+      layer.buttons[i] = button_pkg.updateButton(mouse_x, mouse_y, layer.buttons[i])
+    }
+    for i=0; i<len(layer.checkboxes); i++ {
+      layer.checkboxes[i] = button_pkg.updateCheckbox(mouse_x, mouse_y, layer.checkboxes[i])
+    }
+    for i=0; i<len(layer.spinboxes); i++ {
+      layer.spinboxes[i] = spinbox_pkg.updateSpinbox(mouse_x, mouse_y, layer.spinboxes[i])
+    }
+    for i=0; i<len(layer.radioboxes); i++ {
+      layer.radioboxes[i] = radiobox_pkg.updateRadiobox(mouse_x, mouse_y, layer.radioboxes[i])
+    }
+  }
+}
+
+func clickLayer(layer Layer) (layer Layer) {
+  if layer.active {
+    /*
+    for i=0; i<layer.checkbox_count; i++ {
+      layer.checkboxes[i] = button_pkg.clickCheckbox(layer.checkboxes[i])
+    }
+    */
+
+    for i:=0; i<len(layer.buttons); i++ {
+      if layer.buttons[i].hovered {
+        layer.pending_callback = true
+        layer.callback_id = layer.buttons[i].id
+      }
+    }
+    for i:=0; i<len(layer.spinboxes); i++ {
+      layer.spinboxes[i] = spinbox_pkg.clickSpinbox(layer.spinboxes[i])
+    }
+    for i:=0; i<len(layer.radioboxes); i++ {
+      layer.radioboxes[i] = radiobox_pkg.clickRadiobox(layer.radioboxes[i])
+    }
+  }
+}
+
+func renderLayer(layer Layer) (){
+  gl.PushMatrix()
+  gl.Translatef(layer.position.x, layer.position.y, 0.0)
+
+  if layer.visible {
+    var i i32
+
+    for i=0; i<len(layer.images); i++ {
+      image_pkg.renderImage(layer.images[i])
+    }
+    for i=0; i<len(layer.buttons); i++ {
+      button_pkg.renderButton(layer.buttons[i])
+    }
+    for i=0; i<len(layer.checkboxes); i++ {
+      button_pkg.renderCheckBox(layer.checkboxes[i])
+    }
+    for i=0; i<len(layer.textboxes); i++ {
+      textbox_pkg.renderTextbox(layer.textboxes[i])
+    }
+    for i=0; i<len(layer.spinboxes); i++ {
+      spinbox_pkg.renderSpinbox(layer.spinboxes[i])
+    }
+    for i=0; i<len(layer.radioboxes); i++ {
+      radiobox_pkg.renderRadiobox(layer.radioboxes[i])
+    }
+  }
+  gl.PopMatrix()
+}
+
+
+package slider_pkg
+
+import "gl"
+
+import "layer_pkg"
+
+type Slider struct {
+  id str
+
+  current_slide i32
+  slides []layer_pkg.Layer
+}
+
+func NewSlider(id str) (slider Slider)  {
+  slider.id = id
+}
+
+func AddSlide(slider Slider, slide layer_pkg.Layer) (slider Slider) {
+  slider.slides = append(slider.slides, slide)
+  if len(slider.slides) == 1 {
+    slider.current_slide = 0
+  }
+}
+
+func NextSlide(slider Slider) (slider Slider) {
+  slider.current_slide = slider.current_slide + 1
+  if len(slider.slides) == slider.current_slide {
+    slider.current_slide = 0
+  }
+}
+
+func PrevSlide(slider Slider) (slider Slider) {
+  slider.current_slide = slider.current_slide - 1
+  if slider.current_slide < 0 {
+    slider.current_slide = i32.sub(len(slider.slides), 1)
+  }
+}
+
+func RenderSlider(slider Slider) {
+  layer_pkg.renderLayer(slider.slides[slider.current_slide])
+}
+
+func UpdateSlider(slider Slider, mouse_x i32, mouse_y i32) (slider Slider) {
+  slider.slides[slider.current_slide] = layer_pkg.updateLayer(mouse_x, mouse_y, slider.slides[slider.current_slide])
+}
+
+func ClickSlider(slider Slider) (slider Slider) {
+  for i:=0; i<len(slider.slides); i++ {
+    slider.slides[i] = layer_pkg.clickLayer(slider.slides[i])
+  }
+
+  if slider.slides[slider.current_slide].pending_callback {
+    if slider.slides[slider.current_slide].callback_id == "next-button" {
+      slider = NextSlide(slider)
+      slider.slides[slider.current_slide].pending_callback = false
+
+    } else if slider.slides[slider.current_slide].callback_id == "prev-button" {
+      slider = PrevSlide(slider)
+      slider.slides[slider.current_slide].pending_callback = false
+    }
+  }
+}
+
+
+package screen_pkg
+
+import "gl"
+
+import "aux_pkg"
+import "dimensions_pkg"
+import "layer_pkg"
+import "slider_pkg"
+
+type Screen struct {
+  id str
+  dimensions dimensions_pkg.Dimensions // Same as parent window
+
+  has_background bool
+  background i32
+  layers []layer_pkg.Layer
+  sliders []slider_pkg.Slider
+}
+
+func newScreen(_id str, _width i32, _height i32) (screen Screen) {
+  screen.id = _id
+  screen.dimensions = dimensions_pkg.newDimensions(_width, _height)
+}
+
+func (screen Screen) setBackground(path str) (screen Screen) {
+  screen.background = aux_pkg.loadTexture(path)
+  screen.has_background = true
+}
+
+func ScreenSetBackground(screen Screen, path str) (screen Screen) {
+  screen.background = aux_pkg.loadTexture(path)
+  screen.has_background = true
+}
+
+func (screen Screen) addLayer(layer layer_pkg.Layer) (screen Screen) {
+  screen.layers = append(screen.layers, layer)
+}
+
+func (screen Screen) addSlider(slider slider_pkg.Slider) (screen Screen) {
+  screen.sliders = append(screen.sliders, slider)
+}
+
+func (screen Screen) update(mouse_x i32, mouse_y i32) (screen Screen) {
+  for i:=0; i<len(screen.layers); i++ {
+    screen.layers[i] = layer_pkg.updateLayer(mouse_x, mouse_y, screen.layers[i])
+  }
+
+  for i:=0; i<len(screen.sliders); i++ {
+    screen.sliders[i] = slider_pkg.UpdateSlider(screen.sliders[i], mouse_x, mouse_y)
+  }
+}
+
+func ScreenUpdate(screen Screen, mouse_x i32, mouse_y i32) (screen Screen) {
+  for i:=0; i<len(screen.layers); i++ {
+    screen.layers[i] = layer_pkg.updateLayer(mouse_x, mouse_y, screen.layers[i])
+  }
+
+  for i:=0; i<len(screen.sliders); i++ {
+    screen.sliders[i] = slider_pkg.UpdateSlider(screen.sliders[i], mouse_x, mouse_y)
+  }
+}
+
+func clickScreen(screen Screen) (screen Screen) {
+  for i:=0; i<len(screen.layers); i++ {
+    screen.layers[i] = layer_pkg.clickLayer(screen.layers[i])
+  }
+
+  for i:=0; i<len(screen.sliders); i++ {
+    screen.sliders[i] = slider_pkg.ClickSlider(screen.sliders[i])
+  }
+}
+
+func ScreenClick(screen Screen) (screen Screen) {
+  for i:=0; i<len(screen.layers); i++ {
+    screen.layers[i] = layer_pkg.clickLayer(screen.layers[i])
+  }
+
+  for i:=0; i<len(screen.sliders); i++ {
+    screen.sliders[i] = slider_pkg.ClickSlider(screen.sliders[i])
+  }
+}
+
+func (screen Screen) render() {
+  if screen.has_background {
+    //gl.LoadIdentity()
+    //gl.Translatef(0.0, 0.0, 0.0)
+
+    gl.BindTexture(gl.TEXTURE_2D, screen.background)
+    gl.Begin(gl.QUADS)
+    gl.TexCoord2d(0.0D, 0.0D);
+    gl.Vertex3f(-1.0, 1.0, 0.0);
+    gl.TexCoord2d(1.0D, 0.0D);
+    gl.Vertex3f(1.0, 1.0, 0.0);
+    gl.TexCoord2d(1.0D, 1.0D);
+    gl.Vertex3f(1.0, -1.0, 0.0);
+    gl.TexCoord2d(0.0D, 1.0D);
+    gl.Vertex3f(-1.0, -1.0, 0.0);
+    gl.End();
+  }
+
+  for i:=0; i<len(screen.layers); i++ {
+    layer_pkg.renderLayer(screen.layers[i])
+  }
+}
+
+func RenderScreen(screen Screen) {
+  gl.LoadIdentity()
+  gl.Disable(gl.DEPTH_TEST)
+
+  if screen.has_background {
+    //gl.LoadIdentity()
+    //gl.Translatef(0.0, 0.0, 0.0)
+
+    gl.BindTexture(gl.TEXTURE_2D, screen.background)
+    gl.Begin(gl.QUADS)
+    gl.TexCoord2d(0.0D, 0.0D);
+    gl.Vertex3f(-1.0, 1.0, 0.0);
+    gl.TexCoord2d(1.0D, 0.0D);
+    gl.Vertex3f(1.0, 1.0, 0.0);
+    gl.TexCoord2d(1.0D, 1.0D);
+    gl.Vertex3f(1.0, -1.0, 0.0);
+    gl.TexCoord2d(0.0D, 1.0D);
+    gl.Vertex3f(-1.0, -1.0, 0.0);
+    gl.End();
+  }
+
+  for i:=0; i<len(screen.layers); i++ {
+    layer_pkg.renderLayer(screen.layers[i])
+  }
+
+  for i:=0; i<len(screen.sliders); i++ {
+    slider_pkg.RenderSlider(screen.sliders[i])
+  }
+
+  gl.Enable(gl.DEPTH_TEST)
+}

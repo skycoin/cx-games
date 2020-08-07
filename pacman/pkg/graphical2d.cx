@@ -1,0 +1,322 @@
+package graphical2d
+
+import "gl"
+import "main"
+
+type Position2D struct {
+  x f32
+  y f32
+}
+
+func newPosition2D (x1 f32, y1 f32) (position Position2D) {
+  position = Position2D{ x: x1, y: y1 }
+}
+
+func getPositionX (position Position2D) (x f32) {
+  x = position.x
+}
+
+func getPositionY (position Position2D) (y f32) {
+  y = position.y
+}
+
+func updatePositionY (position Position2D, new_y f32) (position Position2D) {
+  position.y = new_y
+}
+
+func setPositionY (position Position2D, new_y f32) (position Position2D) {
+  position.y = new_y
+}
+
+func setPositionX (position Position2D, new_x f32) (position Position2D) {
+  position.x = new_x
+}
+
+func updatePosition (position Position2D, new_x f32, new_y f32) (position Position2D) {
+  position.x = new_x
+  position.y = new_y
+}
+
+type Velocity2D struct {
+  x f32
+  y f32
+}
+
+func newVelocity2D (xv f32, yv f32) (velocity Velocity2D) {
+  velocity = Velocity2D{
+    x: xv,
+    y: yv}
+}
+
+func getVelocityX (velocity Velocity2D) (x f32) {
+  x = velocity.x
+}
+
+func getVelocityY (velocity Velocity2D) (y f32) {
+  y = velocity.y
+}
+
+func updateVelocity (velocity Velocity2D, xv f32, yv f32) (velocity Velocity2D) {
+  velocity.x = xv
+  velocity.y = yv
+}
+
+func setVelocityX (velocity Velocity2D, xv f32) (velocity Velocity2D) {
+  velocity.x = xv
+}
+
+func setVelocityY (velocity Velocity2D, yv f32) (velocity Velocity2D) {
+  velocity.y = yv
+}
+
+type Dimensions2D struct {
+  height f32
+  width f32
+}
+
+func newDimensions2D (h f32, w f32) (dimensions Dimensions2D) {
+  dimensions = Dimensions2D{
+    height: h,
+    width: w}
+}
+
+func getDimensionsHeight (dimensions Dimensions2D) (h f32) {
+  h = dimensions.height
+}
+
+func getDimensionsWidth (dimensions Dimensions2D) (w f32) {
+  w = dimensions.width
+}
+
+func setDimensionsWidth (dimensions Dimensions2D, w f32) (dimensions Dimensions2D) {
+  dimensions.width = w
+}
+
+type Color struct {
+  red f32
+  green f32
+  blue f32
+}
+
+func getColorRed (color Color) (r f32) {
+  r = color.red
+}
+
+func getColorGreen (color Color) (g f32) {
+  g = color.green
+}
+
+func getColorBlue (color Color) (b f32) {
+  b = color.blue
+}
+
+func newColor (r f32, g f32, b f32) (color Color) {
+  color = Color{
+    red: r,
+    green: g,
+    blue: b}
+}
+
+
+type Circle struct {
+  radius f32
+  color Color
+}
+
+func newCircle (rad f32, col Color) (circle Circle) {
+  circle = Circle{
+    radius: rad,
+    color: col}
+}
+
+func getCircleRadius (circle Circle) (rad f32) {
+  rad = circle.radius
+}
+
+func drawCircle (position Position2D, radius f32, color Color) () {
+  var full_angle f32
+  full_angle = f32.mul(2.0, 3.141592654)
+  var x f32
+  var y f32
+
+  gl.Begin(gl.POLYGON)
+
+  gl.Color3f(color.red, color.green, color.blue)
+
+  var i f32
+  for i = 0.0; f32.lt(i, 20.0); i = f32.add(i, 1.0) {
+    x = f32.add(position.x, f32.mul(radius, f32.cos(f32.div(f32.mul(i, full_angle), 20.0))))
+    y = f32.add(position.y, f32.mul(radius, f32.sin(f32.div(f32.mul(i, full_angle), 20.0))))
+
+    gl.Vertex2f(x, y)
+  }
+
+  gl.End()
+}
+
+func drawPacMan(position Position2D, radius f32, color Color, forLives bool) {
+  var full_angle f32 = f32.mul(2.0, 3.141592654)
+  var x f32
+  var y f32
+  var facing i32 = main.PLAYER_FACING
+
+  if forLives {
+    facing = main.LEFT
+  }
+
+  // angles in degrees
+  var start f32
+  var end f32
+
+  if facing == main.UP {
+    start = 22.5
+  }else
+  if facing == main.RIGHT {
+    start = 112.5
+  }else
+  if facing == main.DOWN {
+    start = 202.5
+  }else
+  if facing == main.LEFT {
+    start = 292.5
+  }
+
+  end = start + 315.0
+
+  if bool.not(forLives) {
+    var offs f32 = main.getTimeBasedOffset() // lip offset from a fully open mouth
+    offs = f32.mul(offs, 90.0)
+    start = f32.add(start, offs)
+    end = f32.sub(end, offs)
+  }
+
+  gl.Begin(gl.TRIANGLE_FAN)
+
+    gl.Color3f(color.red, color.green, color.blue)
+    gl.Vertex2f(position.x, position.y)
+
+    for f := start; f32.lt(f, end); f = f32.add(f, 20.0) {
+      var validAngle f32 = f
+
+      validAngle = main.getValueUnderMax(validAngle, 360.0)
+
+      validAngle = f32.div(validAngle, 360.0) // convert to fraction of full 360
+      validAngle = f32.mul(validAngle, full_angle) // converted to radians
+
+      x = f32.add(position.x, f32.mul(radius, f32.sin(validAngle)))
+      y = f32.add(position.y, f32.mul(radius, f32.cos(validAngle)))
+      gl.Vertex2f(x, y)
+    }
+
+  gl.End()
+}
+
+func drawHalfCircle(position Position2D, radius f32, color Color) () {
+  var full_angle f32
+  full_angle = f32.mul(2.0, 3.141592654)
+  var x f32
+  var y f32
+
+  gl.Begin(gl.POLYGON)
+  gl.Color3f(color.red, color.green, color.blue)
+
+  var i f32
+  for i = 0.0; f32.lteq(i, 10.0); i = f32.add(i, 1.0) {
+    x = f32.add(position.x, f32.mul(radius, f32.cos(f32.div(f32.mul(i, full_angle), 20.0))))
+    y = f32.add(position.y, f32.mul(radius, f32.sin(f32.div(f32.mul(i, full_angle), 20.0))))
+    gl.Vertex2f(x, y)
+  }
+
+  gl.End()
+}
+
+type Rectangle struct {
+  dimensions Dimensions2D
+  color Color
+}
+
+func newRectangle (dim Dimensions2D, col Color) (rectangle Rectangle) {
+  rectangle = Rectangle{
+    dimensions: dim,
+    color: col}
+}
+
+func setRectangleWidth (rectangle Rectangle, w i32) (rectangle Rectangle) {
+  rectangle.dimensions = setDimensionsWidth(rectangle.dimensions, i32.f32(w))
+}
+
+func drawRectangle (position Position2D, dimensions Dimensions2D, color Color) {
+  gl.Begin(gl.POLYGON)
+  gl.Color3f(color.red, color.green, color.blue)
+
+  gl.Vertex3f(f32.sub(position.x, f32.div(dimensions.width, 2.0)), f32.sub(position.y, f32.div(dimensions.height, 2.0)), 0.0)
+  gl.Vertex3f(f32.add(position.x, f32.div(dimensions.width, 2.0)), f32.sub(position.y, f32.div(dimensions.height, 2.0)), 0.0)
+  gl.Vertex3f(f32.add(position.x, f32.div(dimensions.width, 2.0)), f32.add(position.y, f32.div(dimensions.height, 2.0)), 0.0)
+  gl.Vertex3f(f32.sub(position.x, f32.div(dimensions.width, 2.0)), f32.add(position.y, f32.div(dimensions.height, 2.0)), 0.0)
+
+  gl.End()
+}
+
+func drawLine(start Position2D, end Position2D, width f32, color Color) () {
+  gl.Begin(gl.POLYGON)
+  gl.Color3f(color.red, color.green, color.blue)
+
+  gl.Vertex3f(start.x, start.y, 0.0)
+  gl.Vertex3f(f32.add(start.x, width), start.y, 0.0)
+  gl.Vertex3f(f32.add(end.x, width), end.y, 0.0)
+  gl.Vertex3f(end.x, end.y, 0.0)
+
+  gl.End()
+}
+
+func drawSkycoin(center Position2D, outside_radius f32, inside_radius f32, color Color) () {
+  var position Position2D
+  var dimensions Dimensions2D
+
+  //position = newPosition2D(center.x, center.y)
+  //drawCircle(center, outside_radius, color)
+
+  var inside_color Color
+  inside_color = newColor(1.0, 1.0, 1.0)
+
+  position = newPosition2D(center.x, f32.add(center.y, f32.mul(inside_radius, 0.5)))
+  drawCircle(position, inside_radius, inside_color)
+
+  position = newPosition2D(f32.add(center.x, inside_radius), f32.sub(center.y, f32.mul(inside_radius, 0.5)))
+  drawCircle(position, inside_radius, inside_color)
+
+  position = newPosition2D(f32.sub(center.x, inside_radius), f32.sub(center.y, f32.mul(inside_radius, 0.5)))
+  drawCircle(position, inside_radius, inside_color)
+
+  position = newPosition2D(center.x, f32.sub(center.y, f32.mul(inside_radius, 0.5)))
+  dimensions = newDimensions2D(f32.mul(inside_radius, 2.0), f32.mul(inside_radius, 2.0))
+  drawRectangle(position, dimensions, inside_color)
+
+  var start Position2D
+  var end Position2D
+
+  start = newPosition2D(f32.sub(center.x, f32.mul(inside_radius, 1.5)), f32.sub(center.y, f32.mul(inside_radius, 1.5)))
+  end = newPosition2D(center.x, f32.add(center.y, f32.mul(inside_radius, 1.5)))
+  drawLine(start, end, 0.001, color)
+
+  start = newPosition2D(f32.sub(center.x, f32.mul(inside_radius, 1.0)), f32.sub(center.y, f32.mul(inside_radius, 1.5)))
+  end = newPosition2D(f32.add(center.x, f32.mul(inside_radius, 0.5)), f32.add(center.y, f32.mul(inside_radius, 1.5)))
+  drawLine(start, end, 0.00125, color)
+
+  start = newPosition2D(f32.sub(center.x, f32.mul(inside_radius, 0.5)), f32.sub(center.y, f32.mul(inside_radius, 1.5)))
+  end = newPosition2D(f32.add(center.x, f32.mul(inside_radius, 1.0)), f32.add(center.y, f32.mul(inside_radius, 1.5)))
+  drawLine(start, end, 0.0015, color)
+
+  start = newPosition2D(f32.sub(center.x, f32.mul(inside_radius, 0.0)), f32.sub(center.y, f32.mul(inside_radius, 1.5)))
+  end = newPosition2D(f32.add(center.x, f32.mul(inside_radius, 1.5)), f32.add(center.y, f32.mul(inside_radius, 1.5)))
+  drawLine(start, end, 0.00175, color)
+
+  start = newPosition2D(f32.add(center.x, f32.mul(inside_radius, 0.5)), f32.sub(center.y, f32.mul(inside_radius, 1.5)))
+  end = newPosition2D(f32.add(center.x, f32.mul(inside_radius, 2.0)), f32.add(center.y, f32.mul(inside_radius, 1.5)))
+  drawLine(start, end, 0.002, color)
+
+  start = newPosition2D(f32.add(center.x, f32.mul(inside_radius, 1.0)), f32.sub(center.y, f32.mul(inside_radius, 1.5)))
+  end = newPosition2D(f32.add(center.x, f32.mul(inside_radius, 2.5)), f32.add(center.y, f32.mul(inside_radius, 1.5)))
+  drawLine(start, end, 0.0025, color)
+
+}

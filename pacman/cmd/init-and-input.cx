@@ -1,0 +1,158 @@
+package main
+
+/***************************************
+ * Initialization functions.
+***************************************/
+
+/* Function     : initGLFW
+   Description  : Initializes the game window and keyboard input manager.
+*/
+func initGLFW() () {
+  glfw.Init()
+
+  glfw.CreateWindow("window", WIDTH_WINDOW, HEIGHT_WINDOW, "PAC-MAN CX - v1.0")
+  glfw.MakeContextCurrent("window")
+
+	gl.Init()
+  gl.Enable(gl.BLEND)
+  gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
+  glfw.SetKeyCallback("window", "keyboardEvent")
+}
+
+/* Function     : initOpenGL
+   Output       : OpenGL program (program i32)
+   Description  : Initializes the OpenGL program.
+*/
+func initOpenGL() (program i32) {
+	program = gl.CreateProgram()
+  gl.LinkProgram(program)
+}
+
+
+
+/***************************************
+ * Keyboard input.
+***************************************/
+
+// Keys
+var RIGHT_ARROW_KEY i32 = 262
+var LEFT_ARROW_KEY i32 = 263
+var DOWN_ARROW_KEY i32 = 264
+var UP_ARROW_KEY i32 = 265
+
+var GLFW_KEY_W i32 = 87
+var GLFW_KEY_A i32 = 65
+var GLFW_KEY_S i32 = 83
+var GLFW_KEY_D i32 = 68
+
+/* Function     : keyboardEvent
+   Input        : active window (window str)
+                : keyboard key (key i32)
+                : scancode (scancode i32)
+                : keyboard action (action i32)
+                : modifiers (mods i32)
+   Description  : fired per keyboard event
+*/
+func keyboardEvent(window str, key i32, scancode i32, action i32, mods i32) {
+  if gameMode == GAMEMODE_PLAYING {
+    if action == 1 {
+      if eventingRight(key) {
+        movePlayer(RIGHT)
+      }
+      if eventingLeft(key) {
+        movePlayer(LEFT)
+      }
+      if eventingDown(key) {
+        movePlayer(DOWN)
+      }
+      if eventingUp(key) {
+        movePlayer(UP)
+      }
+    }
+  }
+}
+
+/* Function     : movePlayerByHeldKeys
+   Description  : after moving all ghosts, poll for held down keys
+*/
+func movePlayerByHeldKeys() {
+  if heldKeyforRight() {
+    movePlayer(RIGHT)
+  } else
+  if heldKeyforLeft() {
+    movePlayer(LEFT)
+  } else
+  if heldKeyforDown() {
+    movePlayer(DOWN)
+  } else
+  if heldKeyforUp() {
+    movePlayer(UP)
+  }
+}
+
+
+
+/* Functions    : eventing[Direction]
+   Description  : Checks 2 sets of keys for player's JUST_PRESSED direction
+*/
+func eventingLeft(key i32) (out bool) {
+  if i32.eq(key, GLFW_KEY_A) ||
+    i32.eq(key, LEFT_ARROW_KEY) {
+    out = true
+  }
+}
+
+func eventingRight(key i32) (out bool) {
+  if i32.eq(key, GLFW_KEY_D) ||
+    i32.eq(key, RIGHT_ARROW_KEY) {
+    out = true
+  }
+}
+
+func eventingDown(key i32) (out bool) {
+  if i32.eq(key, GLFW_KEY_S) ||
+    i32.eq(key, DOWN_ARROW_KEY) {
+    out = true
+  }
+}
+
+func eventingUp(key i32) (out bool) {
+  if i32.eq(key, GLFW_KEY_W) ||
+    i32.eq(key, UP_ARROW_KEY) {
+    out = true
+  }
+}
+
+
+
+/* Functions    : heldKeyfor[Direction]
+   Description  : Checks 2 sets of keys for player's HELD direction
+*/
+func heldKeyforLeft() (out bool) {
+  if i32.eq(glfw.GetKey("window", GLFW_KEY_A), 1) ||
+    i32.eq(glfw.GetKey("window", LEFT_ARROW_KEY), 1) {
+    out = true
+  }
+}
+
+func heldKeyforRight() (out bool) {
+  if i32.eq(glfw.GetKey("window", GLFW_KEY_D), 1) ||
+    i32.eq(glfw.GetKey("window", RIGHT_ARROW_KEY), 1) {
+    out = true
+  }
+}
+
+func heldKeyforDown() (out bool) {
+  if i32.eq(glfw.GetKey("window", GLFW_KEY_S), 1) ||
+    i32.eq(glfw.GetKey("window", DOWN_ARROW_KEY), 1) {
+    out = true
+  }
+}
+
+func heldKeyforUp() (out bool) {
+  if i32.eq(glfw.GetKey("window", GLFW_KEY_W), 1) ||
+    i32.eq(glfw.GetKey("window", UP_ARROW_KEY), 1) {
+    out = true
+  }
+}

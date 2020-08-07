@@ -1,0 +1,91 @@
+package main
+
+import "glfw"
+import "gl"
+
+import "screen_pkg"
+import "layer_pkg"
+import "slider_pkg"
+import "button_pkg"
+import "textbox_pkg"
+
+import "graphical"
+
+func NewSelectPointsScene(screen_width i32, screen_height i32) (scene Scene) {
+  scene = NewScene("select-points-scene", NewSelectPointsRearScreen(screen_width, screen_height), NewSelectPointsFrontScreen(screen_width, screen_height))
+}
+
+func NewSelectPointsRearScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("select-points-rear-screen", screen_width, screen_height)
+	screen = screen_pkg.ScreenSetBackground(screen, "static/texture/screen/blue-background.jpg")
+}
+
+func NewSelectPointsFrontScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("select-points-front-screen", screen_width, screen_height)
+
+  var points_slider slider_pkg.Slider
+  points_slider = slider_pkg.NewSlider("points-slider")
+
+  var slide layer_pkg.Layer
+  for i:=0; i<POINTS_COUNT; i++ {
+    slide = layer_pkg.newLayer(sprintf("points-slide-%d", i), 0.0, 0.0, screen_width, screen_height, true, true)
+    slide = slide.addButton(button_pkg.newButton("prev-button", -0.75, 0.0, 125, 125, "static/texture/btn/left-arrow.png", "static/texture/btn/left-arrow-active.png"))
+    slide = slide.addButton(button_pkg.newButton("next-button", 0.75, 0.0, 125, 130, "static/texture/btn/right-arrow.png", "static/texture/btn/right-arrow-active.png"))
+    points_slider = slider_pkg.AddSlide(points_slider, slide)
+  }
+
+  screen = screen.addSlider(points_slider)
+
+  var header_layer layer_pkg.Layer
+	header_layer = layer_pkg.newLayer("header-layer", 0.0, 0.70, screen_width, i32.div(screen_height, 2), true, true)
+	header_layer = header_layer.addImage(image_pkg.newImage("characters-title", 0.0, 0.0, 1200, 150, "static/texture/img/points-theme-title.png"))
+	screen = screen.addLayer(header_layer)
+
+  var buttons_layer layer_pkg.Layer
+  buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("select-button", 0.0, -0.7, 360, 130, "static/texture/btn/select-button-inactive.png", "static/texture/btn/select-button-active.png"))
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("back-button", -0.9, -0.8, 64, 64, "static/texture/btn/back-arrow.png", "static/texture/btn/back-arrow-active.png"))
+	screen = screen.addLayer(buttons_layer)
+}
+
+func SelectPointsSceneRender(scene Scene, program i32) {
+  SceneRenderRear(scene)
+
+  var ratio f64
+  ratio = f64.div(1920.0D, 1080.0D) // TODO @galah4d pass as args
+  gl.Ortho(f64.mul(-1.0D, ratio), f64.mul(1.0D, ratio), 1.0D, -1.0D, -1.0D, 1.0D)
+  gl.UseProgram(program)
+
+  selected := scene.front_screen.sliders[0].current_slide
+  graphical.CylinderGeometryRender(points[selected])
+
+  SceneRenderFront(scene)
+}
+
+func SelectPointsSceneUpdate(scene Scene, settings Settings) (settings Settings, current_screen i32) {
+  var x f64
+  var y f64
+
+  x, y = glfw.GetCursorPos("window")
+  scene = SceneUpdate(scene, f64.i32(x), f64.i32(y))
+
+  selected := scene.front_screen.sliders[0].current_slide
+  points[selected].rotation.y = f32.add(points[selected].rotation.y, 1.0)
+  points[settings.points_theme].position.x = 0.0
+  points[settings.points_theme].position.y = 0.0
+  points[settings.points_theme].radius = 0.35
+
+  current_screen = SELECT_POINTS_SCENE
+  for i:=0; i<len(scene.front_screen.layers); i++ {
+    if scene.front_screen.layers[i].pending_callback {
+      scene.front_screen.layers[i].pending_callback = false
+
+      if str.eq(scene.front_screen.layers[i].callback_id, "back-button") {
+        current_screen = SETTINGS_SCENE
+      } else if str.eq(scene.front_screen.layers[i].callback_id, "select-button") {
+        settings.points_theme = selected
+        current_screen = SETTINGS_SCENE
+      }
+    }
+  }
+}

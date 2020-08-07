@@ -1,0 +1,33 @@
+package phx
+
+type Direction struct {
+    vector Vector
+}
+
+func NewDirection(value Vector) (direction Direction)  {
+  direction.vector = value
+}
+
+func DirectionUp() (direction Direction) {
+  direction = NewDirection(NewVector(0.0, -1.0, 0.0))
+}
+
+func DirectionDown() (direction Direction) {
+  direction = NewDirection(NewVector(0.0, 1.0, 0.0))
+}
+
+func DirectionLeft() (direction Direction) {
+  direction = NewDirection(NewVector(-1.0, 0.0, 0.0))
+}
+
+func DirectionRight() (direction Direction) {
+  direction = NewDirection(NewVector(1.0, 0.0, 0.0))
+}
+
+func DirectionEq(d1 Direction, d2 Direction) (out bool) {
+  out = VectorEq(d1.vector, d2.vector)
+}
+
+func DirectionOpposite(direction Direction) (direction Direction) {
+  direction.vector = VectorMulScalar(direction.vector, -1.0)
+}

@@ -1,0 +1,161 @@
+package main
+
+import "gl"
+import "glfw"
+
+import "graphical"
+import "phx"
+
+/* Constant declaration */
+var PLAYER_RADIUS f32 = 0.025
+var PLAYER_TIMER f64 = 0.25D
+var PLAYER_MOVEMENT_TIMER f64 = 0.001D
+
+var PLAYER_SPAWN_LINE i32 = 23
+var PLAYER_SPAWN_COLLUMN i32 = 14
+
+
+var player_textures_0[5] i32
+var player_textures_1[5] i32
+
+var g_player Player
+
+type Player struct {
+  index_x i32
+  index_y i32
+
+  direction phx.Direction
+  next_direction phx.Direction
+  velocity f32
+
+  lives i32
+
+  geometry graphical.SphereGeometry
+  materials [2]graphical.Material
+  current_material i32
+
+  last_update f64
+  movement_timer f64
+}
+
+func NewPlayer (line i32, collumn i32, lives i32) (pl Player) {
+  var materials [2]graphical.Material
+  materials[0] = graphical.newMaterial(1.0, 1.0, 0.0)
+  materials[0] = materials[0].setTexture(player_textures_0[0])
+  materials[1] = graphical.newMaterial(1.0, 1.0, 0.0)
+  materials[1] = materials[1].setTexture(player_textures_1[0])
+
+  pl.index_x = collumn
+  pl.index_y = line
+
+  pl.direction = phx.DirectionRight()
+  pl.next_direction = phx.DirectionRight()
+  pl.velocity = 0.005
+
+  pl.lives = lives
+
+  pl.geometry = graphical.newSphereGeometry(PLAYER_RADIUS, 7, materials[0])
+  pl.materials = materials
+  pl.current_material = 0
+  pl.last_update = 0.0D
+  pl.movement_timer = 0.0D
+
+  pl.geometry.position = getPosition3D(line, collumn)
+  pl.geometry.rotation.x = -90.0
+}
+
+func InitPlayer(player_skin i32) {
+  loadPlayerTextures()
+  g_player = NewPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLLUMN, 3)
+}
+
+func ResetPlayer(player_skin i32)  {
+  g_player = NewPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLLUMN, 3)
+  g_player.materials[0] = g_player.materials[0].setTexture(player_textures_0[player_skin])
+  g_player.materials[1] = g_player.materials[1].setTexture(player_textures_1[player_skin])
+}
+
+func loadPlayerTextures() {
+  for i:=0; i<5; i++ {
+    player_textures_0[i] = gl.NewTexture(sprintf("assets/textures/player/player-%d/frame-0.png", i))
+    player_textures_1[i] = gl.NewTexture(sprintf("assets/textures/player/player-%d/frame-1.png", i))
+  }
+}
+
+func PlayerUpdate (player Player, time f64) (player Player) {
+  if PLAYER_TIMER <= f64.sub(time, player.last_update) {
+    if player.current_material == 0 {
+      player.geometry.material = player.materials[1]
+      player.current_material = 1
+    } else {
+      player.geometry.material = player.materials[0]
+      player.current_material = 0
+    }
+    player.last_update = time
+  }
+
+  // Moves the player
+  if PLAYER_MOVEMENT_TIMER <= f64.sub(time, player.movement_timer) {
+    player = PlayerMove(player)
+    player.movement_timer = time
+  }
+
+  // Rotates the player
+  if player.direction.vector.x == -1.0 {
+    player.geometry.rotation.y = 180.0
+  } else {
+    player.geometry.rotation.y = player.direction.vector.y*-90.0
+  }
+
+  return player
+}
+
+func PlayerMove(player Player) (player Player) {
+  new_line := i32.add(player.index_y, f32.i32(player.direction.vector.y))
+  new_collumn := i32.add(player.index_x, f32.i32(player.direction.vector.x))
+
+  if phx.VectorDistance(player.geometry.position, g_cells[new_line][new_collumn].geometry.position) < 0.005 {
+    player.index_y = new_line
+    player.index_x = new_collumn
+
+    if PlayerCanMove(player, player.next_direction) {
+        player.direction = player.next_direction
+    }
+  }
+
+  if PlayerCanMove(player, player.direction) {
+      player.geometry.position = phx.VectorAdd(player.geometry.position, phx.VectorMulScalar(player.direction.vector, player.velocity))
+  } else {
+    player.direction = player.next_direction
+  }
+}
+
+func PlayerChangeDirection(player Player, direction phx.Direction) (player Player) {
+  if bool.not(phx.DirectionEq(phx.DirectionOpposite(player.direction), direction)) {
+    player.next_direction = direction
+  } else {
+    player.next_direction = player.direction
+  }
+}
+
+func PlayerCanMove(player Player, direction phx.Direction) (out bool) {
+  new_line := i32.add(player.index_y, f32.i32(direction.vector.y))
+  new_collumn := i32.add(player.index_x, f32.i32(direction.vector.x))
+
+  out = i32.eq(g_cells[new_line][new_collumn].ctype, CELL_TYPE_PATH)
+}
+
+func PlayerKill(player Player) (player Player, gameOver bool) {
+  if player.lives > 0 {
+    player = NewPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLLUMN, i32.sub(player.lives, 1))
+    gameOver = false
+  } else {
+    gameOver = true
+  }
+}
+
+func PlayerRender(player Player) {
+  var sg graphical.SphereGeometry
+  sg = player.geometry
+  sg.render()
+}

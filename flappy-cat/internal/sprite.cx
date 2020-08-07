@@ -1,0 +1,56 @@
+package main
+
+import "os"
+
+var SPRITE_MAP i32 = -1
+var SPRITE_MAP_WIDTH i32 = 400
+var SPRITE_MAP_HEIGHT i32 = 128
+
+type Sprite struct{
+    x1 f32
+    x2 f32
+    y1 f32
+    y2 f32
+    spriteSheet i32
+}
+
+func NewSprite(x1 i32, x2 i32, y1 i32, y2 i32) (sprite Sprite) {
+  if i32.eq(SPRITE_MAP, -1) {
+    loadSprinteMap();
+  }
+
+  sprite = Sprite{
+      x1: scale(x1, SPRITE_MAP_WIDTH),
+      x2: scale(x2, SPRITE_MAP_WIDTH),
+      y1: scale(y1, SPRITE_MAP_HEIGHT),
+      y2: scale(y2, SPRITE_MAP_HEIGHT),
+      spriteSheet: SPRITE_MAP}
+}
+
+func loadSprinteMap() {
+  wd := os.GetWorkingDirectory()
+  SPRITE_MAP = gl.NewTexture(str.concat(wd, "../assets/textures/texture.png"))
+}
+
+func scale (x i32, max i32) (out f32) {
+    out = f32.div(i32.f32(x), i32.f32(max))
+}
+
+func RenderSprite(x f32, y f32, scaleX f32, scaleY f32, sprite Sprite) {
+  gl.LoadIdentity()
+  gl.Translatef(x, y, 0.0)
+  gl.Rotatef(0.0, 0.0, 0.0, 1.0)
+  gl.BindTexture(gl.TEXTURE_2D, SPRITE_MAP)
+  gl.Scalef(scaleX, scaleY, 0.0)
+
+  gl.Begin(gl.QUADS)
+  gl.TexCoord2f(sprite.x1, sprite.y2)
+  gl.Vertex3f(-1.0, -1.0, 0.0)
+  gl.TexCoord2f(sprite.x1, sprite.y1)
+  gl.Vertex3f(-1.0, 1.0, 0.0)
+  gl.TexCoord2f(sprite.x2, sprite.y1)
+  gl.Vertex3f(1.0, 1.0, 0.0)
+  gl.TexCoord2f(sprite.x2, sprite.y2)
+  gl.Vertex3f(1.0, -1.0, 0.0)
+  gl.End()
+}
