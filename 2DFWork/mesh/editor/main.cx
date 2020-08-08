@@ -252,7 +252,7 @@ func pickAllVertsInDragBox () {
 
 func makeRectMesh () {
 	var m Mesh2D
-	m = Mesh2D{ Name: "makeRectMesh" }
+	m = Mesh2D{ Name: "Rectangle Mesh" }
 	
 	var top f32
 	var right f32

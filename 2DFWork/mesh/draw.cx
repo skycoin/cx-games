@@ -13,7 +13,7 @@ var span            f32
 // single color channel intensities 
 var currGreen       f32 // component of terrain fill color 
 var minCI           f32 = 0.0
-var darkCI          f32 = 0.12
+var darkCI          f32 = 0.2
 var maxCI           f32 = 1.0
 var pickR           f32 = 1.0 // picked/selected red channel 
 var pickG           f32 = 0.6 // picked/selected green channel 
@@ -30,24 +30,21 @@ func DrawEditor () {
 	//str.print("mesh.DrawEditor ()")
 
 	pre()
-	trianglesForOne(RawMeshes, 1)
 	
 	if app.EditMode == app.EDITMODE_VERTICES {
-		gl.Begin(gl.TRIANGLES)
 			//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
 
 
 
 			if app.EditMode == app.EDITMODE_COLORS {
-				//trianglesForOne(RawMeshes, ColorWheel)
 			}else{
 				//trianglesForAll(EditLayers)
 			}			
-		gl.End()
 	}else
 	if app.EditMode == app.EDITMODE_TRIANGLES {
 	}else
 	if app.EditMode == app.EDITMODE_COLORS {
+		trianglesForOne(RawMeshes, ColorWheel)
 	}else
 	if app.EditMode == app.EDITMODE_MESH_PICKER {
 		trianglesForOne(RawMeshes, 0)
@@ -69,13 +66,17 @@ func DrawEditor () {
 
 func pre () {
 	pumpTheBlinking()
-	trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
 		
 	if  app.EditMode != app.EDITMODE_COLORS &&
 		app.EditMode != app.EDITMODE_MESH_PICKER {
 		
 		gridLines()
 	}
+
+	gl.Begin(gl.TRIANGLES)
+		trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
+		trianglesForOne(RawMeshes, 3)
+	gl.End()
 }
 
 
@@ -148,7 +149,7 @@ func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
 		printf("trianglesForToolbar() tbId: %d \n", tbId)
 	//}
 	
-	for j := 0; i32.lt(j, len(tBars[tbId].Items)); j++ {
+	for j := 0; j < len(tBars[tbId].Items); j++ {
 		var bi i32 // baked mesh id 
 		bi = tBars[tbId].Items[j].BakedBackground
 		
@@ -170,9 +171,9 @@ func trianglesForOne (meshes []Mesh2D, i i32) {
 	var m Mesh2D
 	m = meshes[i]
 
-	ReportBadTriCount("trianglesForOne", len(m.TriangleIndices))
+	ReportBadTriCount("trianglesForOne", i, len(m.TriangleIndices))
 
-	for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
+	for j := 0; j < len(m.TriangleIndices); j++ {
 		var pId i32 // point id (from tri ids) 
 		pId = m.TriangleIndices[j]
 		
@@ -268,7 +269,7 @@ func gridLines () {
 }
 
 
-var othCol f32 = darkCI / 3.0
+var othCol f32 = darkCI / 2.0
 func setColor (i i32) {	
 	if i % 4 == 0 {
 		gl.Color3f(darkCI, darkCI, darkCI)

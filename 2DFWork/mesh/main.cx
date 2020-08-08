@@ -288,10 +288,11 @@ func sizeGameMeshFromRaw (rawId i32, extents Vec2) () {
 */
 
 
-func ReportBadTriCount (s str, num i32) () {
+func ReportBadTriCount (s str, i i32, numTris i32) {
 	var leftover i32
-	leftover = i32.mod(num, 3)
+	leftover = i32.mod(numTris, 3)
+	
 	if i32.uneq(0, leftover) {
-		printf("********* BAD NUM OF TRI INDICES! in %s () - leftover: %d \n", s, leftover)
+		printf("********* BAD NUM OF TRI INDICES! in %s () - i: %d - leftover: %d \n", s, i, leftover)
 	}
 }

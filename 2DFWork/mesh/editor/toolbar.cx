@@ -151,16 +151,15 @@ func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {
 
 
 func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
+	printf("    bakeUICellFromRaw ()   -   bakedId: %d \n", bakedId)
+
 	// FIXME: color & tri data GENERALLY needs no changes
 	//			(when bakedId exists),
 	//			but would when GenFunc expands to also updating
 	//			in-game raw mesh data  
 	var existed bool
-	
-	printf("bakeUICellFromRaw ()   -   bakedId: %d \n", bakedId)
 			
 	// setup currMesh by bakedId's existence 
-	/*
 	if bakedId < len(BakedUIMeshes) {
 		existed = true
 		
@@ -221,23 +220,24 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 		}
 	}
 
+
 	// triangles 
 	if bool.eq(existed, false) {
-		for j := 0; i32.lt(j, len(RawMeshes[rawId].TriangleIndices)); j++ {
+		var n i32 = len(RawMeshes[rawId].TriangleIndices)
+		for j := 0; j < n; j++ {
 			var id i32
 			id = RawMeshes[rawId].TriangleIndices[j]
 			currMesh.TriangleIndices = append(
 			currMesh.TriangleIndices, id)
 		}
 
-		printf("new baked mesh, num tris: %d \n", len(RawMeshes[rawId].TriangleIndices))
+		printf("    new baked mesh, num tris: %d \n", len(RawMeshes[rawId].TriangleIndices))
 	}
 	
 	//var nnn i32 = 3
-	printf("at the end len cm.TriInds: %d \n", len(currMesh.TriangleIndices))
+	printf("    at the end len cm.TriInds: %d \n", len(currMesh.TriangleIndices))
 	//num = len(currMesh.TriangleIndices)
 	//ReportBadTriCount("bakeUICellFromRaw", num)
-	*/
 }
 
 
