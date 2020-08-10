@@ -83,7 +83,7 @@ func InitToolBar (id i32, numItems i32) { // menu id
 
 
 func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {	
-	printf("BakeToolButtonArray () - len(items): %d \n", len(items))
+	printf("    BakeToolButtonArray () %d items \n", len(items))
 	
 	var extent f32 // of a button 
 	extent = f32.div(ToolButtonSpan, 2.0)
@@ -91,7 +91,7 @@ func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {
 	var longSpan f32 // span across the longest dimension 
 	longSpan = f32.mul(ToolButtonSpan, i32.f32(len(items)))
 
-	printf("BakeToolButtonArray () - longSpan: %f \n", longSpan)
+	//printf("longSpan: %f  -  ", longSpan)
 
 	var x f32	
 	var y f32
@@ -122,20 +122,20 @@ func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {
 	pos = Vec2{ X: x,      Y: y      }
 	ext = Vec2{ X: extent, Y: extent }
 
-	printf("BakeToolButtonArray () - pos.X: %f \n", pos.X)
+	//printf("pos.X: %f  -  ", pos.X)
 
 	for i := 0; i32.lt(i, len(items)); i++ {
 		items[i].Pos     = pos
 		items[i].Extents = ext
 		
 		var id i32 = i32.mul(i, 2) // baked id 
-		printf("BakeToolButtonArray () - id: %d \n", id)
+		printf("id: %d  -  ", id)
 		
 		// rect background 
 		items[i].BakedBackground = id
 		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, id)
 		id = i32.add(id, 1)
-		printf("BakeToolButtonArray () - id: %d (+1) \n", id)
+		printf("id: %d (+1) \n", id)
 		
 		// icon 
 		items[i].BakedIcon = id
@@ -151,8 +151,6 @@ func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {
 
 
 func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
-	printf("    bakeUICellFromRaw ()   -   bakedId: %d \n", bakedId)
-
 	// FIXME: color & tri data GENERALLY needs no changes
 	//			(when bakedId exists),
 	//			but would when GenFunc expands to also updating
@@ -163,7 +161,7 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 	if bakedId < len(BakedUIMeshes) {
 		existed = true
 		
-		printf("    recalculating BakedUIMeshes[%d] \n", bakedId)
+		printf("    recalculating BakedUIMeshes[%d]  -  ", bakedId)
 		
 		currMesh = BakedUIMeshes[bakedId]
 		
@@ -186,7 +184,7 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 			str.print(".TriangleIndices count is diff between RAW & BAKED")
 		}
 	} else {
-		printf("    appending NEW @ BakedUIMeshes[%d] \n", len(BakedUIMeshes))
+		printf("    NEW BakedUIMeshes[%d] \n", len(BakedUIMeshes))
 
 		currMesh = Mesh2D{ Name: RawMeshes[rawId].Name }
 		BakedUIMeshes = append(
@@ -231,11 +229,11 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 			currMesh.TriangleIndices, id)
 		}
 
-		printf("    new baked mesh, num tris: %d \n", len(RawMeshes[rawId].TriangleIndices))
+		printf("        RawMeshes[%d] tris: %d \n", rawId, len(RawMeshes[rawId].TriangleIndices))
 	}
 	
 	//var nnn i32 = 3
-	printf("    at the end len cm.TriInds: %d \n", len(currMesh.TriangleIndices))
+	//printf("    at the end len cm.TriInds: %d \n", len(currMesh.TriangleIndices))
 	//num = len(currMesh.TriangleIndices)
 	//ReportBadTriCount("bakeUICellFromRaw", num)
 }

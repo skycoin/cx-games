@@ -4,9 +4,9 @@ import "app"
 
 
 
-func InitGameOverMesh () {
+func makeGameOverMesh () {
     var m Mesh2D
-    m = Mesh2D{ Name: "InitGameOverMesh" }
+    m = Mesh2D{ Name: "Game Over" }
 
     var c Color3
     var v Vec2

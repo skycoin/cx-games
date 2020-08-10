@@ -83,7 +83,7 @@ func Init () {
 	makeSizedMesh(len(RawMeshes) - 1, exts)
 
 	GameOver = len(RawMeshes)
-	InitGameOverMesh()
+	makeGameOverMesh()
 
 	
 	

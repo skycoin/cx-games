@@ -250,9 +250,9 @@ func pickAllVertsInDragBox () {
 */
 
 
-func makeBarButtonBackground  () {
+func makeBarButtonBackground () {
 	var m Mesh2D
-	m = Mesh2D{ Name: "Rectangle Mesh" }
+	m = Mesh2D{ Name: "Toolbar Button Background" }
 	
 	var top f32
 	var right f32
