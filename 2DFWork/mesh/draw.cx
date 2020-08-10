@@ -74,7 +74,9 @@ func pre () {
 	}
 
 	gl.Begin(gl.TRIANGLES)
-		trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
+		//trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
+		trianglesForAll(BakedUIMeshes)
+		
 		//trianglesForOne(BakedUIMeshes, 6)
 		trianglesForOne(RawMeshes, 4)
 	gl.End()
@@ -129,14 +131,14 @@ func maybeDragBox() {
 		gl.Vertex2f(ccInput.MousePointer.X, ccInput.MousePointer.Y)
 	}
 }
+*/
 
 
-func trianglesForAll (meshes []Mesh2D) () {
+func trianglesForAll (meshes []Mesh2D) {
 	for i := 0; i32.lt(i, len(meshes)); i++ {
 		trianglesForOne(meshes, i)
 	}
 }
-*/
 
 
 // tbId == toolbar id 
