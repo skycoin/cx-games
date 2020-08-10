@@ -82,15 +82,12 @@ func InitToolBar (id i32, numItems i32) { // menu id
 }
 
 
-func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {	
-	printf("    BakeToolButtonArray () %d items \n", len(items))
-	
+func getPosExt (lenItems i32, minimumEdge bool, vertical bool) (pos Vec2, ext Vec2) {
 	var extent f32 // of a button 
 	extent = f32.div(ToolButtonSpan, 2.0)
 	
 	var longSpan f32 // span across the longest dimension 
-	longSpan = f32.mul(ToolButtonSpan, i32.f32(len(items)))
-
+	longSpan = f32.mul(ToolButtonSpan, i32.f32(lenItems))
 	//printf("longSpan: %f  -  ", longSpan)
 
 	var x f32	
@@ -112,55 +109,58 @@ func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {
 
 		if minimumEdge {
 			y = -1.0 + extent
-		} else {
+		}else{
 			y = 1.0 - extent
 		}
 	}
 
-	var pos Vec2
-	var ext Vec2
 	pos = Vec2{ X: x,      Y: y      }
 	ext = Vec2{ X: extent, Y: extent }
 
-	//printf("pos.X: %f  -  ", pos.X)
+	printf("        Start @ pos.X,Y: %f,%f \n", pos.X, pos.Y)
+}
 
-	for i := 0; i32.lt(i, len(items)); i++ {
+
+func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {	
+	printf("    BakeToolButtonArray () %d items \n", len(items))
+
+	var pos Vec2
+	var ext Vec2
+	pos, ext = getPosExt(len(items), minimumEdge, vertical)
+
+	for i := 0; i < len(items); i++ {
 		items[i].Pos     = pos
 		items[i].Extents = ext
 		
-		var id i32 = i32.mul(i, 2) // baked id 
-		printf("id: %d  -  ", id)
-		
-		// rect background 
-		items[i].BakedBackground = id
-		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, id)
-		id = i32.add(id, 1)
-		printf("id: %d (+1) \n", id)
+		// button background 
+		items[i].BakedBackground =  len(RawMeshes)-1
+		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, 9999)
 		
 		// icon 
-		items[i].BakedIcon = id
-		bakeUICellFromRaw(pos, ext, i, id)
+		items[i].BakedIcon = i
+		bakeUICellFromRaw(pos, ext, i, 9999)
 			
 		if vertical {
-			pos.Y = f32.sub(pos.Y, ToolButtonSpan)
+			pos.Y = pos.Y - ToolButtonSpan
 		}else{ // horizontal 
-			pos.X = f32.add(pos.X, ToolButtonSpan)
+			pos.X = pos.X + ToolButtonSpan
 		}
+		
+		printf("        Next  @ pos.X,Y: %f,%f \n", pos.X, pos.Y)
 	}
 }
 
 
 func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
-	// FIXME: color & tri data GENERALLY needs no changes
-	//			(when bakedId exists),
+	// FIXME: color & tri data (WHY NOT MENTION VERTS?!) 
+	// 			GENERALLY needs no changes, 
 	//			but would when GenFunc expands to also updating
 	//			in-game raw mesh data  
 	var existed bool
 			
-	// setup currMesh by bakedId's existence 
-	if bakedId < len(BakedUIMeshes) {
+	if bakedId < len(BakedUIMeshes) { // (bakedId slot already exists) 
 		existed = true
-		
+		// change currMesh 		
 		printf("    recalculating BakedUIMeshes[%d]  -  ", bakedId)
 		
 		currMesh = BakedUIMeshes[bakedId]
@@ -183,8 +183,9 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 			str.print(".TriangleIndices count is diff between RAW & BAKED")
 			str.print(".TriangleIndices count is diff between RAW & BAKED")
 		}
-	} else {
-		printf("    NEW BakedUIMeshes[%d] \n", len(BakedUIMeshes))
+	}else{ // make new 
+		bakedId = len(BakedUIMeshes)
+		printf("        NEW BakedUIMeshes[%d] from ", bakedId)
 
 		currMesh = Mesh2D{ Name: RawMeshes[rawId].Name }
 		BakedUIMeshes = append(
@@ -192,10 +193,10 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 	}
 	
 
-	// colors/verts 
-	for i := 0; i32.lt(i, len(RawMeshes[rawId].Points)); i++ {
-	var c Color3
-	var p Vec2
+	// points/colors 
+	for i := 0; i < len(RawMeshes[rawId].Points); i++ {
+		var c Color3
+		var p Vec2
 		c = RawMeshes[rawId].Colors[i]
 		p = RawMeshes[rawId].Points[i]
 		
@@ -210,26 +211,28 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 		if existed {
 			currMesh.Colors[i] = c
 			currMesh.Points[i] = p
-		} else {
-			currMesh.Colors = append(
-			currMesh.Colors, c)
-			currMesh.Points = append(
-			currMesh.Points, p)
+		}else{
+			BakedUIMeshes[bakedId].Colors = append(
+			BakedUIMeshes[bakedId].Colors, c)
+			BakedUIMeshes[bakedId].Points = append(
+			BakedUIMeshes[bakedId].Points, p)
 		}
 	}
 
 
 	// triangles 
-	if bool.eq(existed, false) {
+	if existed {
+		// TODO: change it 
+	}else{
 		var n i32 = len(RawMeshes[rawId].TriangleIndices)
 		for j := 0; j < n; j++ {
 			var id i32
-			id = RawMeshes[rawId].TriangleIndices[j]
-			currMesh.TriangleIndices = append(
-			currMesh.TriangleIndices, id)
+			id =  RawMeshes[rawId].TriangleIndices[j]
+			BakedUIMeshes[bakedId].TriangleIndices = append(
+			BakedUIMeshes[bakedId].TriangleIndices, id)
 		}
 
-		printf("        RawMeshes[%d] tris: %d \n", rawId, len(RawMeshes[rawId].TriangleIndices))
+		printf("RawMeshes[%d] tris: %d \n", rawId, len(RawMeshes[rawId].TriangleIndices))
 	}
 	
 	//var nnn i32 = 3

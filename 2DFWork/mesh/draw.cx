@@ -75,7 +75,8 @@ func pre () {
 
 	gl.Begin(gl.TRIANGLES)
 		trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
-		trianglesForOne(RawMeshes, 3)
+		//trianglesForOne(BakedUIMeshes, 6)
+		//trianglesForOne(RawMeshes, 11)
 	gl.End()
 }
 
@@ -146,7 +147,7 @@ func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
 	}
 	
 	//if tbId != 0 {
-		printf("trianglesForToolbar() tbId: %d \n", tbId)
+		printf("trianglesForToolbar (meshes, %d) \n", tbId)
 	//}
 	
 	for j := 0; j < len(tBars[tbId].Items); j++ {
@@ -168,7 +169,8 @@ func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
 		// icon 
 		bi = tBars[tbId].Items[j].BakedIcon
 		printf("BakedIcon       - bi: %d \n", bi)
-		//trianglesForOne(meshes, bi)
+		
+		trianglesForOne(meshes, bi)
 	}
 }
 
