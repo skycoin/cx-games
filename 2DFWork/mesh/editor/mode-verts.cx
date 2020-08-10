@@ -62,22 +62,22 @@ func DeleteVertexNode (layerId i32, ir i32) { // id (to) remove
 		m.TriangleIndices[l] = getValidId(ir, currVert)
 	}
 
-//	var num i32 // last index for printing out positions (CRASHES CUZ 0 GIVES -1 INDEX) 
-//	num = i32.sub(len(m.Points), 1)
-//	printf("---num: %d \n", num)
-//	printf("---len(m.Colors): %d \n", len(m.Colors))
-//	printf("---len(m.Points): %d \n", len(m.Points))
-//	printf("---m.Points[num].X: %f \n", m.Points[num].X)
-//	printf("---m.Points[num].Y: %f \n", m.Points[num].Y)
-//	printf("---len(m.TriangleIndices): %d \n", len(m.TriangleIndices))
-//	
-//	num = i32.sub(len(EditLayers[layerId].Points), 1)
-//	printf("\n---num: %d \n", num)
-//	printf("---len(EditLayers[layerId].Colors): %d \n", len(EditLayers[layerId].Colors))
-//	printf("---len(EditLayers[layerId].Points): %d \n", len(EditLayers[layerId].Points))
-//	printf("---EditLayers[layerId].Points[num].X: %f \n", EditLayers[layerId].Points[num].X)
-//	printf("---EditLayers[layerId].Points[num].Y: %f \n", EditLayers[layerId].Points[num].Y)
-//	printf("---len(EditLayers[layerId].TriangleIndices): %d \n", len(EditLayers[layerId].TriangleIndices))
+	//	var num i32 // last index for printing out positions (CRASHES CUZ 0 GIVES -1 INDEX) 
+	//	num = i32.sub(len(m.Points), 1)
+	//	printf("---num: %d \n", num)
+	//	printf("---len(m.Colors): %d \n", len(m.Colors))
+	//	printf("---len(m.Points): %d \n", len(m.Points))
+	//	printf("---m.Points[num].X: %f \n", m.Points[num].X)
+	//	printf("---m.Points[num].Y: %f \n", m.Points[num].Y)
+	//	printf("---len(m.TriangleIndices): %d \n", len(m.TriangleIndices))
+	//	
+	//	num = i32.sub(len(EditLayers[layerId].Points), 1)
+	//	printf("\n---num: %d \n", num)
+	//	printf("---len(EditLayers[layerId].Colors): %d \n", len(EditLayers[layerId].Colors))
+	//	printf("---len(EditLayers[layerId].Points): %d \n", len(EditLayers[layerId].Points))
+	//	printf("---EditLayers[layerId].Points[num].X: %f \n", EditLayers[layerId].Points[num].X)
+	//	printf("---EditLayers[layerId].Points[num].Y: %f \n", EditLayers[layerId].Points[num].Y)
+	//	printf("---len(EditLayers[layerId].TriangleIndices): %d \n", len(EditLayers[layerId].TriangleIndices))
 	
 	EditLayers[layerId] = m
 }
@@ -94,3 +94,140 @@ func getValidId (trashVert i32, currVert i32) (out i32) {
 		out = currVert
 	}
 }
+
+
+func getTouchedVertexNode (p Vec2) (touched bool, layId i32, vertId i32) {
+	touched = false
+	str.print("RE-ENABLES getTouchedVertexNode()")
+	
+	/*
+	for    li := 0; li < len(EditLayers);           li++ {
+		for i := 0;  i < len(EditLayers[li].Points); i++ {
+			var v Vec2
+			v = EditLayers[li].Points[i]
+			
+			if collision.PointInBox(p, v, entity.NodeExtents) {			
+				touched = true
+				layId = li			
+				vertId = i			
+				break /////////////////////////////////////////
+			}
+		}
+	}
+	*/
+}
+
+
+func setPickedStatus (id i32, deselectWanted bool) () {
+	var alreadyPicked bool
+	
+	for j := 0; j < len(PickedVerts); j++ {
+		if id == PickedVerts[j] {
+			alreadyPicked = true
+		}
+	}
+
+	printf("setPickedStatus () ") // no \n wanted 
+	if alreadyPicked {
+		if deselectWanted {
+			deselectVertex(id)
+			printf("deselected id: %d \n", id)
+		} else {
+			printf("ignoring ALREADY PICKED id: %d \n", id)
+		}
+	} else {
+		PickedVerts = append(
+		PickedVerts, id)
+		
+		printf("selected id: %d \n", id)
+	}
+}
+
+
+func deselectVertex (id i32) () {
+	var newPicks []i32
+	newPicks = []i32{}
+	
+	for j := 0; j < len(PickedVerts); j++ {
+		if id != PickedVerts[j] {
+			newPicks = append(
+			newPicks, PickedVerts[j])
+		}
+	}
+	
+	PickedVerts = newPicks
+}
+
+
+func addNewVertexNode () () {
+	str.print("addNewVertexNode ()")
+
+	var negEdge f32 = -1.0
+	var mouX f32 = inputs.MousePointer.X
+	var mouY f32 = inputs.MousePointer.Y
+	if  (mouX >= negEdge) && // (within grid) 
+		(mouX <= 1.0) &&
+		(mouY >= negEdge) &&
+		(mouY <= 1.0) {
+		
+		var c Color3
+		c = Color3{ 
+			R: 0.5, 
+			G: 0.5, 
+			B: 0.5 }
+			
+		var m Mesh2D
+		m = EditLayers[CurrLayer]
+
+		printf("+ vertex: %d - in layer: %d \n", len(m.Points), CurrLayer)
+
+		m.Colors = append(
+		m.Colors, c)
+		m.Points = append(
+		m.Points, inputs.MousePointer)
+
+		EditLayers[CurrLayer] = m
+	}
+}
+
+
+/*
+func pickAllVertsInDragBox () {		
+	var num i32
+	num = len(EditLayers[CurrLayer].Points)
+	
+	for j := 0; j < num; j++ {
+		var v Vec2
+		v = EditLayers[CurrLayer].Points[j]
+
+		// start & end points of the final box 
+		var sX f32
+		var sY f32
+		var eX f32
+		var eY f32
+
+		sX = f32.sub(DragStart.X,    v.X)
+		sY = f32.sub(DragStart.Y,    v.Y)
+		eX = f32.sub(inputs.MousePointer.X, v.X)
+		eY = f32.sub(inputs.MousePointer.Y, v.Y)
+	
+		if sX > 0.0 && eX > 0.0 {
+			continue
+		}
+	
+		if sX < 0.0 && eX < 0.0 {
+			continue
+		}
+	
+		if sY > 0.0 && eY > 0.0 {
+			continue
+		}
+	
+		if sY < 0.0 && eY < 0.0 {
+			continue
+		}
+		
+		setPickedStatus(j, false)
+	}
+}
+*/

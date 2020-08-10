@@ -133,7 +133,7 @@ func makeAndReportOn (m Mesh2D, raw bool) {
 //}
 
 
-func GenerateMeshInitFunc (s str) () {
+func GenerateMeshInitFunc (s str) {
 	printf("___________________________________________________________ \n")
 	printf("make%sMesh() \n\n", s)
 	printf("func make%sMesh () { \n", s)

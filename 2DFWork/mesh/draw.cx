@@ -76,7 +76,7 @@ func pre () {
 	gl.Begin(gl.TRIANGLES)
 		trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
 		//trianglesForOne(BakedUIMeshes, 6)
-		//trianglesForOne(RawMeshes, 11)
+		trianglesForOne(RawMeshes, 4)
 	gl.End()
 }
 

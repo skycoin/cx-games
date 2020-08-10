@@ -32,10 +32,10 @@ var ToolButtonSpan f32 = 0.2
 // (Menu item button ids... 
 // 1st correspond to switching editor modes, then... 
 // 2nd, these one-time actions) 
-var TOOLiTEM_GEN_FUNC     i32 = app.EDITMODE_MAX // generate mesh init func 
-var TOOLiTEM_SNAP_TO_GRID i32 = app.EDITMODE_MAX + 1
-var TOOLiTEM_WIPE_LAYER   i32 = app.EDITMODE_MAX + 2
-var TOOLiTEM_MAINMENU     i32 = app.EDITMODE_MAX + 3
+var TOOLITEM_GEN_FUNC     i32 = app.EDITMODE_MAX // generate mesh init func 
+var TOOLITEM_SNAP_TO_GRID i32 = app.EDITMODE_MAX + 1
+var TOOLITEM_WIPE_LAYER   i32 = app.EDITMODE_MAX + 2
+var TOOLITEM_MAINMENU     i32 = app.EDITMODE_MAX + 3
 
 
 
@@ -185,7 +185,7 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 		}
 	}else{ // make new 
 		bakedId = len(BakedUIMeshes)
-		printf("        NEW BakedUIMeshes[%d] from ", bakedId)
+		printf("             NEW BakedUIMeshes[%d] from ", bakedId)
 
 		currMesh = Mesh2D{ Name: RawMeshes[rawId].Name }
 		BakedUIMeshes = append(
@@ -242,3 +242,38 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 }
 
 
+func getTouchedMenuItem (mouse Vec2) (touched bool, id i32) {
+	touched, id = getTouchedMenuItemFrom(EDIT_TOOLBAR, mouse)
+	
+	if app.EditMode == app.EDITMODE_MESH_PICKER {
+		var mpTouched bool
+		var mpId i32
+		mpTouched, mpId = getTouchedMenuItemFrom(len(tBars) - 1, mouse)
+		//printf("not utilizing yet - mpTouched: %v, mpId: %d \n", mpTouched, mpId)
+		
+		if mpTouched {
+			EditLayers[CurrLayer] = RawMeshes[mpId]
+			app.EditMode = app.EDITMODE_VERTICES
+		}
+	}
+}
+
+
+func getTouchedMenuItemFrom (menuId i32, mouse Vec2) (touched bool, id i32) {
+	printf("RESTORE getTouchedMenuItemFrom () --- menuId: %d \n", menuId)
+	
+	/*
+	for i := 0; i < len(tBars[menuId].Items); i++ {
+		var p Vec2
+		var e Vec2
+		p = tBars[menuId].Items[i].Pos
+		e = tBars[menuId].Items[i].Extents
+		
+		if collision.PointInBox(mouse, p, e) {			
+			touched = true
+			id = i			
+			break //////////////////////////////////////////////// 
+		}
+	}
+	*/
+}
