@@ -38,6 +38,7 @@ var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 
 
 func Init () {
+	// start 
 	str.print("mesh.Init ()")
 	editorInit()
 
@@ -66,21 +67,28 @@ func Init () {
 	makeIconSnapToGrid()
 	makeIconWipeCanvas()
 	
-	makePlayerShip()
-	/*
-	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.HeroExtents)
+	
+	
+	// gameplay 
+	var exts app.Vec2
+	    exts=app.Vec2{ X: 0.2, Y: 0.2 }
+	
+	makePlayerShip() // (is also a toolbar Editor-EXIT icon) 
+	makeSizedMesh(len(RawMeshes) - 1, exts)
 	
 	makeMissileMesh()
-	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.BulletExtents)
+	makeSizedMesh(len(RawMeshes) - 1, exts)
 	
 	InitRocketMesh()
-	sizeGameMeshFromRaw(len(RawMeshes) - 1, entity.RocketExtents)
+	makeSizedMesh(len(RawMeshes) - 1, exts)
 
 	GameOver = len(RawMeshes)
 	InitGameOverMesh()
-	*/
 
-	makeRectMesh()
+	
+	
+	// finish 
+	makeBarButtonBackground ()
 	BakeToolButtonArray(tBars[EDIT_TOOLBAR].Items, false, true)
 }
 
@@ -98,7 +106,6 @@ func makeAndReportOn (m Mesh2D, raw bool) {
 }
 
 
-/*
 //func UNUSED_CopyFromEditorToGame () {
 //	str.print("mesh.UNUSED_CopyFromEditorToGame ()")
 //	var m Mesh2D
@@ -170,7 +177,7 @@ func GenerateMeshInitFunc (s str) () {
 }
 
 
-func sizeGameMeshFromRaw (rawId i32, extents Vec2) () {
+func makeSizedMesh (rawId i32, extents Vec2) () {
 	// changes after copy/paste:
 	// don't receive pos, 
 	// don't add the pos
@@ -191,23 +198,23 @@ func sizeGameMeshFromRaw (rawId i32, extents Vec2) () {
 	maxX = -1.0
 	maxY = -1.0
 
-	//str.print("sizeGameMeshFromRaw ()")
+	str.print("        makeSizedMesh ()")
 			
 	var m Mesh2D
 	m = Mesh2D{ Name: "sizedGameMeshFromRaw" }
 
 	// colors/verts 
-	for k := 0; i32.lt(k, len(RawMeshes[rawId].Points)); k++ {
-		if minX > RawMeshes[rawId].Points[k].X {
+	for k := 0; k < len(RawMeshes[rawId].Points); k++ {
+		if  minX > RawMeshes[rawId].Points[k].X {
 			minX = RawMeshes[rawId].Points[k].X
 		}
-		if maxX < RawMeshes[rawId].Points[k].X {
+		if  maxX < RawMeshes[rawId].Points[k].X {
 			maxX = RawMeshes[rawId].Points[k].X
 		}
-		if minY > RawMeshes[rawId].Points[k].X {
+		if  minY > RawMeshes[rawId].Points[k].X {
 			minY = RawMeshes[rawId].Points[k].X
 		}
-		if maxY < RawMeshes[rawId].Points[k].Y {
+		if  maxY < RawMeshes[rawId].Points[k].Y {
 			maxY = RawMeshes[rawId].Points[k].Y
 		}
 	}
@@ -217,7 +224,7 @@ func sizeGameMeshFromRaw (rawId i32, extents Vec2) () {
 	fitExtX = f32.div(fitWid, 2.0)
 	fitExtY = f32.div(fitHei, 2.0)
 
-	for k := 0; i32.lt(k, len(RawMeshes[rawId].Points)); k++ {
+	for k := 0; k < len(RawMeshes[rawId].Points); k++ {
 		var c Color3
 		var p Vec2
 		c = RawMeshes[rawId].Colors[k]
@@ -285,7 +292,6 @@ func sizeGameMeshFromRaw (rawId i32, extents Vec2) () {
 //	
 //	makeAndReportOn(m, false)
 //}
-*/
 
 
 func ReportBadTriCount (s str, i i32, numTris i32) {

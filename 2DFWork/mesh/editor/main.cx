@@ -250,7 +250,7 @@ func pickAllVertsInDragBox () {
 */
 
 
-func makeRectMesh () {
+func makeBarButtonBackground  () {
 	var m Mesh2D
 	m = Mesh2D{ Name: "Rectangle Mesh" }
 	
