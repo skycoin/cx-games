@@ -15,12 +15,28 @@ var PickedVerts     []i32
 	
 
 
+
+
+func DoPrimaryAction () {
+	//str.print("doPrimaryAction ()")
+	var mode i32
+	var pos  Vec2
+	var vel  Vec2
+	var ext  Vec2
+	
+	// handle modes 
+	if app.Mode == app.MODE_EDITOR {
+		doPrimaryAbility()
+	}
+}
+
+
 func doPrimaryAbility () {
 	str.print("doPrimaryAbility ()")
 	
 	var touchedMenuItem bool
 	var i i32
-	touchedMenuItem, i = getTouchedMenuItem(inputs.MousePointer)
+	touchedMenuItem, i = getTouchedToolbarItem(inputs.MousePointer)
 	
 	if touchedMenuItem {
 		respondToItem(i)
@@ -30,38 +46,26 @@ func doPrimaryAbility () {
 }
 
 
-func respondToItem (i i32) {
-	printf("pressed menu item %s \n", tBars[EDIT_TOOLBAR].Items[i].Name)
-	
-	if i < app.EDITMODE_MAX { // change EditMode
-		app.EditMode = i
-		printEditMode()
-		wipePickedVerts()
-	}else{ // perform one-time actions 
-		if i == TOOLITEM_GEN_FUNC {
-			GenerateMeshInitFunc ("Icon")
-		}else
-		if i == TOOLITEM_SNAP_TO_GRID {
-			SnapToGrid = !SnapToGrid
+func DoSecondaryOrTertiaryAction(button i32) {
+	if app.Mode == app.MODE_EDITOR &&
+		app.EditMode == app.EDITMODE_VERTICES ||
+		app.EditMode == app.EDITMODE_TRIANGLES {
 			
-			if SnapToGrid {
-				str.print("SNAP_TO_GRID: ON")					
-			} else {
-				str.print("SNAP_TO_GRID: OFF")
+		var touchedVert bool
+		var lId i32 // layer id 
+		var i i32
+		touchedVert, lId, i = getTouchedVertexNode(inputs.MousePointer)
+		
+		if button == 1 {
+			str.print("RMB press && EDITMODE_VERTICES")
+			doValidGridSpaceSecondary()
+		} else
+		if button == 2 {
+			str.print("MMB press && EDITMODE_VERTICES")
+			
+			if touchedVert {			
+				str.print("mesh.DeleteVertexNode(lId, i)")
 			}
-		}else
-		if i == TOOLITEM_WIPE_LAYER {
-			str.print("-> WIPE_LAYER")
-			
-			wipePickedVerts()
-			
-			var m Mesh2D 
-			m = Mesh2D{}
-			EditLayers[CurrLayer] = m
-		}else
-		if i == TOOLITEM_MAINMENU {
-			str.print("-> MAINMENU ---------(or WILL take us to main menu when it's implemented)")
-			app.Mode = app.MODE_PLAYING
 		}
 	}
 }

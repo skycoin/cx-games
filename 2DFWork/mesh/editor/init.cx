@@ -24,60 +24,6 @@ func editorInit () {
 
 
 /*
-func Update () {
-	//str.print("mesh/editor.Update()")
-}
-
-
-// mouse buttons 
-func onMouseButtonEvent (window str, button i32, action i32, mods i32) () {
-	if action == 0 { // release 
-		if button == 0 { // LMB 
-			if Dragging {
-				pickAllVertsInDragBox()
-			}
-			
-			Dragging = false
-		} else
-		if button == 1 { // RMB 
-		}
-	} else if action == 1 { // press 
-		//printf("onMouseButtonEvent() - %f, %f \n", MousePointer.X, MousePointer.Y)
-
-		if button == 0 { // LMB 
-			doPrimaryAction()
-		} else { // RMB, MMB (would be unwise to require more than 3 buttons) 
-			doSecondaryOrTertiaryAction(button)
-		}
-	}
-}
-
-
-func doSecondaryOrTertiaryAction(button i32) () {
-	if app.Mode == app.APPMODE_EDITOR &&
-		app.EditMode == app.EDITMODE_VERTICES ||
-		app.EditMode == app.EDITMODE_TRIANGLES {
-			
-		var touchedVert bool
-		var lId i32 // layer id 
-		var i i32
-		touchedVert, lId, i = getTouchedVertexNode(MousePointer)
-		
-		if button == 1 {
-			str.print("RMB press && EDITMODE_VERTICES")
-			doValidGridSpaceSecondary()
-		} else
-		if button == 2 {
-			str.print("MMB press && EDITMODE_VERTICES")
-			
-			if touchedVert {			
-				str.print("mesh.DeleteVertexNode(lId, i)")
-			}
-		}
-	}
-}
-
-
 // mouse position 
 var oldX f32
 var oldY f32
@@ -141,7 +87,7 @@ func onKeyEvent (window str, key i32, scancode i32, action i32, mods i32) () {
 				glfw.SetShouldClose("window", true)
 			} else
 			if key == GLFW_KEY_SPACE {
-				doPrimaryAction()
+				DoPrimaryAction()
 			}
 
 			//maybeToggleMousePointer(key)
@@ -169,38 +115,6 @@ func maybeToggleMousePointer (key i32) () {
 			str.print("wantMousePointer FALSE")
 			glfw.SetInputMode("window", glfw.Cursor, glfw.CursorDisabled)
 		}
-	}
-}
-
-
-func doPrimaryAction () () {
-	//str.print("doPrimaryAction ()")
-	var mode i32
-	var pos  Vec2
-	var vel  Vec2
-	var ext  Vec2
-	
-	// handle modes 
-	if app.Mode == app.APPMODE_PLAYING {
-		pos = entity.Ents[0].Pos
-		pos.X = f32.add(pos.X, entity.Ents[0].Extents.X)
-		pos.X = f32.add(pos.X, entity.BulletExtents.X)
-		pos.X = f32.add(pos.X, 0.03) // hero to bullet padding 
-		vel = Vec2{ X: app.MAX_HERO_SPEED * 2.0, Y: 0.0 }
-		mode = entity.ENTMODE_MOVING_STRAIGHT
-		ext = entity.BulletExtents
-	
-		var ent Entity
-		ent = Entity{ 
-			Type: entity.TYPE_BULLET, 
-			Pos: pos, 
-			Vel: vel, 
-			Mode: mode, 
-			Extents: ext }
-		
-		entity.Add(ent)
-	} else if app.Mode == app.APPMODE_EDITOR {
-		doPrimaryAbility()
 	}
 }
 */

@@ -106,7 +106,7 @@ func getTouchedVertexNode (p Vec2) (touched bool, layId i32, vertId i32) {
 			var v Vec2
 			v = EditLayers[li].Points[i]
 			
-			if collision.PointInBox(p, v, entity.NodeExtents) {			
+			if space.PointInBox(p, v, NodeExtentX, NodeExtentY) {			
 				touched = true
 				layId = li			
 				vertId = i			
@@ -191,8 +191,7 @@ func addNewVertexNode () () {
 }
 
 
-/*
-func pickAllVertsInDragBox () {		
+func PickAllVertsInDragBox () {		
 	var num i32
 	num = len(EditLayers[CurrLayer].Points)
 	
@@ -230,4 +229,3 @@ func pickAllVertsInDragBox () {
 		setPickedStatus(j, false)
 	}
 }
-*/

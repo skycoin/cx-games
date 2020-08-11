@@ -242,13 +242,16 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 }
 
 
-func getTouchedMenuItem (mouse Vec2) (touched bool, id i32) {
-	touched, id = getTouchedMenuItemFrom(EDIT_TOOLBAR, mouse)
+func getTouchedToolbarItem (mouse Vec2) (touched bool, id i32) {
+	touched, id = getTouchedToolbarItemFrom(EDIT_TOOLBAR, mouse)
+	if touched {
+		printf("getTouchedToolbarItem (): %d \n", id)
+	}
 	
 	if app.EditMode == app.EDITMODE_MESH_PICKER {
 		var mpTouched bool
 		var mpId i32
-		mpTouched, mpId = getTouchedMenuItemFrom(len(tBars) - 1, mouse)
+		mpTouched, mpId = getTouchedToolbarItemFrom(len(tBars) - 1, mouse)
 		//printf("not utilizing yet - mpTouched: %v, mpId: %d \n", mpTouched, mpId)
 		
 		if mpTouched {
@@ -259,21 +262,56 @@ func getTouchedMenuItem (mouse Vec2) (touched bool, id i32) {
 }
 
 
-func getTouchedMenuItemFrom (menuId i32, mouse Vec2) (touched bool, id i32) {
-	printf("RESTORE getTouchedMenuItemFrom () --- menuId: %d \n", menuId)
+func getTouchedToolbarItemFrom (barId i32, mouse Vec2) (touched bool, id i32) {
+	//printf("getTouchedToolbarItemFrom () --- barId: %d \n", barId)
 	
-	/*
-	for i := 0; i < len(tBars[menuId].Items); i++ {
+	for i := 0; i < len(tBars[barId].Items); i++ {
 		var p Vec2
 		var e Vec2
-		p = tBars[menuId].Items[i].Pos
-		e = tBars[menuId].Items[i].Extents
+		p = tBars[barId].Items[i].Pos
+		e = tBars[barId].Items[i].Extents
 		
-		if collision.PointInBox(mouse, p, e) {			
+		if space.PointInBox(mouse, p, e.X, e.Y) {			
 			touched = true
 			id = i			
 			break //////////////////////////////////////////////// 
 		}
 	}
-	*/
+}
+
+
+func respondToItem (i i32) {
+	printf("pressed toolbar item %s \n", tBars[EDIT_TOOLBAR].Items[i].Name)
+	
+	if i < app.EDITMODE_MAX { // change EditMode
+		app.EditMode = i
+		printEditMode()
+		wipePickedVerts()
+	}else{ // perform one-time actions 
+		if i == TOOLITEM_GEN_FUNC {
+			GenerateMeshInitFunc ("Icon")
+		}else
+		if i == TOOLITEM_SNAP_TO_GRID {
+			SnapToGrid = !SnapToGrid
+			
+			if SnapToGrid {
+				str.print("SNAP_TO_GRID: ON")					
+			} else {
+				str.print("SNAP_TO_GRID: OFF")
+			}
+		}else
+		if i == TOOLITEM_WIPE_LAYER {
+			str.print("-> WIPE_LAYER")
+			
+			wipePickedVerts()
+			
+			var m Mesh2D 
+			m = Mesh2D{}
+			EditLayers[CurrLayer] = m
+		}else
+		if i == TOOLITEM_MAINMENU {
+			str.print("-> MAINMENU ---------(or WILL take us to main menu when it's implemented)")
+			app.Mode = app.MODE_PLAYING
+		}
+	}
 }

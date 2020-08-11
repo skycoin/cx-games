@@ -2,6 +2,23 @@ package mesh
 
 
 
+func changeAndAdd (inCol Color3, inM Mesh2D) (col Color3, m Mesh2D) {
+	col = inCol
+	m   = inM
+
+	var colSpan f32 = 0.2
+	
+	m.Colors = append(
+	m.Colors, col)
+
+	printf("col.R,G,B: %f,%f,%f \n", col.R, col.G, col.B)
+	col.R = col.R - colSpan
+	col.G = col.G - colSpan
+	col.B = col.B - colSpan
+	printf("col.R,G,B: %f,%f,%f AFTER \n", col.R, col.G, col.B)
+}
+
+
 func makeBarButtonBackground () {
 	var m Mesh2D
 	m = Mesh2D{ Name: "Toolbar Button Background" }
@@ -11,29 +28,20 @@ func makeBarButtonBackground () {
 	var bottom f32
 	var left f32
 	
-	top = 1.0
-	right = 1.0
+	top    =  1.0
+	right  =  1.0
 	bottom = -1.0
-	left = -1.0
+	left   = -1.0
+	
 	
 	// colors 
-	var col Color3
-	col = Color3{ R: 1.0, G: 0.2, B: 0.2 }
+	var col Color3 
+	  col = Color3{ R: 1.0, G: 1.0, B: 1.0 }
 
-	var colSpan f32
-	colSpan = 0.2	
-
-	col.R = f32.sub(col.R, colSpan)
-	m.Colors = append(m.Colors, col)
-	
-	col.R = f32.sub(col.R, colSpan)
-	m.Colors = append(m.Colors, col)
-	
-	col.R = f32.sub(col.R, colSpan)
-	m.Colors = append(m.Colors, col)
-	
-	col.R = f32.sub(col.R, colSpan)
-	m.Colors = append(m.Colors, col)
+	col, m = changeAndAdd(col, m)
+	col, m = changeAndAdd(col, m)
+	col, m = changeAndAdd(col, m)
+	col, m = changeAndAdd(col, m)
 
 		
 	// positions 
