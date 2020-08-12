@@ -136,7 +136,11 @@ func maybeDragBox() {
 
 func trianglesForAll (meshes []Mesh2D) {
 	for i := 0; i32.lt(i, len(meshes)); i++ {
-		trianglesForOne(meshes, i)
+		if i/2 == tBars[EDIT_TOOLBAR].Hovered {
+			trianglesForOneColored(meshes, i, draw.Colors[draw.COLOR_CYAN])
+		}else{
+			trianglesForOne(meshes, i)
+		}
 	}
 }
 
@@ -192,6 +196,38 @@ func trianglesForOne (meshes []Mesh2D, i i32) {
 		var c Color3
 		c = m.Colors[pId]
 		gl.Color3f(c.R, c.G, c.B)
+		
+		var v Vec2
+		v = m.Points[pId]
+		
+		gl.Vertex2f(v.X, v.Y)
+	}
+}
+
+
+func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
+	//printf("trianglesForOne () id of given []Mesh2D: %d \n", i)
+	
+	var m Mesh2D
+	m = meshes[i]
+
+	ReportBadTriCount("trianglesForOneColored", i, len(m.TriangleIndices))
+
+	for j := 0; j < len(m.TriangleIndices); j++ {
+		var pId i32 // point id (from tri ids) 
+		pId = m.TriangleIndices[j]
+		
+		var c Color3
+		c = m.Colors[pId]
+		
+		var r f32 = (c.R - col.R) * 0.5 // color channel deltas 
+		var g f32 = (c.G - col.G) * 0.5
+		var b f32 = (c.B - col.B) * 0.5
+		
+		gl.Color3f( // blend colors 
+			col.R + r, 
+			col.G + g, 
+			col.B + b)
 		
 		var v Vec2
 		v = m.Points[pId]

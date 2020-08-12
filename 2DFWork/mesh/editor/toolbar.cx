@@ -17,8 +17,9 @@ type MenuItem struct {
 }
 
 type Menu struct {
-	Name  str
-	Items []MenuItem
+	Name    str
+	Items   []MenuItem
+	Hovered i32 // id of item mouse pointer is over 
 }
 
 // menu ids 
