@@ -160,17 +160,17 @@ func UpdateAt (et i32, i i32) { // entity type, id
 	
 	
 	// move 
-	if All[et][i].Mode == ENT_MODE_MOVING_BY_VELOCITY {
+	if All[et][i].Mode == ENTMODE_MOVING_BY_VELOCITY {
 		// default motion 
 	}else
-	if All[et][i].Mode == ENT_MODE_MOVING_TO_POS {
+	if All[et][i].Mode == ENTMODE_MOVING_TO_POS {
 		if  justCrossedGoal(et, i) {
 			//str.print("CROSSED GOAL LINE")
-			All[et][i].Mode = ENT_MODE_MOVING_TO_ENTITY
+			All[et][i].Mode = ENTMODE_MOVING_TO_ENTITY
 			All[et][i].ExpiryTime = time.Now + 3.0
 		}
 	}else
-	if  All[et][i].Mode == ENT_MODE_MOVING_TO_ENTITY {
+	if  All[et][i].Mode == ENTMODE_MOVING_TO_ENTITY {
 		if  justCrossedGoal(et, i) {
 			Kill(et, i)
 			//str.print("CROSSED GOAL LINE")
@@ -382,7 +382,7 @@ func justCrossedGoal (et i32, i i32) (out bool) {
 	var gX  f32
 	var gY  f32
 	
-	if All[et][i].Mode == ENT_MODE_MOVING_TO_ENTITY {
+	if All[et][i].Mode == ENTMODE_MOVING_TO_ENTITY {
 		et, i = getGoalEntityTypeAndId(et, i)
 		gX = All[et][i].X
 		gY = All[et][i].Y
