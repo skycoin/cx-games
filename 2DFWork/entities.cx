@@ -13,13 +13,22 @@ var AutoUpdatePlayerEnts bool = true // can be multiple entities
                                      // (like player paddles in SkyBOOM) 
 
 // "enums"   FIXME: when CX has enums or constants 
-var ENT_PLAYER                  i32
-var ENT_MAX_OF_2DFW             i32 = 1
+var ENT_PLAYER                 i32
+var ENT_MAX_OF_2DFW            i32 = 1
 // 		modes 
-var ENT_MODE_MOVING_BY_VELOCITY i32
-var ENT_MODE_MOVING_TO_POS      i32 = 1
-var ENT_MODE_MOVING_TO_ENTITY   i32 = 2
-var ENT_MODE_MAX_OF_2DFW        i32 = 3
+var ENTMODE_STATIONARY         i32
+var ENTMODE_DYNAMIC_MOVER      i32 = 1
+var ENTMODE_MOVING_BY_VELOCITY i32 = 2
+var ENTMODE_MOVING_TO_POS      i32 = 3
+var ENTMODE_MOVING_TO_ENTITY   i32 = 4
+var ENTMODE_ROAMING            i32 = 5
+var ENTMODE_ATTACKING          i32 = 6
+var ENTMODE_DYING              i32 = 7
+var ENTMODE_DEAD               i32 = 8
+var ENTMODE_MAX_OF_2DFW        i32 = 9
+// consider that maybe a corpse/wreckage needs to... 
+// 		...remain visible, then *_DEAD would... 
+//		!= inactive/disabled (as used in the Unity3D Engine) 
 
 var All          [][]Entity // all entities (1st index is for ENT_* type) 
 var ActiveCounts []i32      // corresponds with "All" slices 

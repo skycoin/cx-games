@@ -22,7 +22,10 @@ type Menu struct {
 	Hovered i32 // id of item mouse pointer is over 
 }
 
-// menu ids 
+// toolbar ids 
+// MESH_PICKER IS JUST A MULTI-ROW/MULI-COLUMN toolbar that 
+//		takes up the rest of the screen 
+//		(outside of EDIT_TOOLBAR) 
 var EDIT_TOOLBAR   i32 = 0
 var MESH_PICKER    i32 = 1
 

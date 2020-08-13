@@ -1,3 +1,147 @@
+/* CORPUSC'S GENERAL CX NOTES, 
+	NOT NECESSARILY RELATED TO ANY SPECIFIC... 
+	...APP/GAME/FRAMEWORK/PROJECT 
+	
+	
+	
+	* SIMPLE GAMES to consider making 
+		* asteroids
+		* asteroid-ship-based space "dungeon" crawl 
+		* lunar lander 
+		* breakout/pong 
+		* berzerk 
+		* donkey kong? (platformer) 
+	
+
+	
+	FORMAL/THOROUGH REPORT & TEST NEEDED FOR THESE BUGS:
+	
+		couldn't make a Vec2 on the spot, as a parameter of entity.Add()
+			had to declare/define first, THEN could pass it
+	
+	
+		
+	* DEF NEEDS TO BE ADDED TO ISSUES
+	
+		-_-
+		var color Color  needs newColor
+		
+		-_-
+	    glfw.SetKeyCallback("window", "callback")
+	
+		-_-
+        yarnBall.velocity.y = -yarnBall.velocity.y
+
+		-_-
+		FACING = LEFT
+		var LEFT i32 = 2
+		(didn't take on the value)
+		-_-
+		error: map.cx:24 identifier '*lcl_215' does not exist (lt.eq())
+		
+		-_-
+		couldn't use indexception ( [[ ]] ) 
+		
+		-_- 
+		no friendly errors / warnings trying to use unimported packages 
+		
+		-_- 
+		we need math package, or things like i32.maxvalue
+		
+		-_- 
+		no nil
+		
+		-_- 
+		when instantiating a new struct (at least slices of structs, with initial data) can't have space tween var name and opening curly brace
+		
+		-_-
+		"error: graphical2d.cx:188 function 'f32.mod' does not exist"
+		and yet no error given for f % ff
+	
+	
+	
+	* CX FIXES/ADDITIONS 
+	
+		* type.mod() bug involving line 1600, mixing up 32/64 bit 
+		* bindings for .rand() on types other than i32
+*/
+
+
+
+
+
+
+/* OLDEST NOTES FROM OLD/CANCELLED (by Synth) RIDGE-BLASTER PROJECT 
+
+
+
+2dbug, [16.08.19 19:14]
+You can remove without Gc if you don't care about the order by swapping element n with element len(slice)-1 and then resize(slice, newlen)
+Yup iirc resize to a smaller size j just update the len of the slice
+
+2dbug, [16.08.19 19:20]
+Yes it's better to avoid allocations. I coded resize to avoid allocation when len is reduced
+
+2dbug, [16.08.19 19:21]
+You could also keep track of len manually in a var and never call resize
+
+
+
+
+
+
+
+
+i dunno that i understood Inge's advice to Moses, but it made me think of this way of handling dead/alive entities:
+
+* 2 vars used in conjunction with the entity slice: 
+	var numDead i32 
+	var spawnValues Entity // fresh new spawn defaults 
+
+* 2 parts to the entities slice.  all the deads 1st, then all the 		alive entities 
+
+
+* when updating actives, no need to check for alive status & jump past deads.  we just start at index of numDead
+
+
+* no need to FIND a dead to recycle (potentially cycling through whole slice)
+
+
+* on death:
+
+func kill (victim i32) {
+	// copy 1st alive to no longer needed corpse slot 
+	entities[victim] = entities[numDead] 
+	numDead++ 
+}
+
+
+* on spawning:
+
+func spawnNew () {
+	if numDead == 0 {
+		entities = append(entities, spawnValues)
+	} else {
+		entities[numDead-1] = spawnValues
+		numDead--
+	}
+}	
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 /////////////////////             ///////////////////

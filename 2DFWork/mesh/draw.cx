@@ -37,13 +37,12 @@ func DrawEditor () {
 		//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
 	}else
 	if app.EditMode == app.EDITMODE_TRIANGLES {
+		trianglesForAll(EditLayers)
 	}else
 	if app.EditMode == app.EDITMODE_COLORS {
 		trianglesForOne(RawMeshes, ColorWheel)
-	}else
-	if app.EditMode == app.EDITMODE_MESH_PICKER {
-		trianglesForToolbar(BakedUIMeshes, MESH_PICKER)
 	}
+	// app.EditMode == app.EDITMODE_MESH_PICKER handled in pre() 
 
 	post()
 		
@@ -67,9 +66,13 @@ func pre () {
 		gridLines()
 	}
 
+	// draw toolbar (or BOTH toolbars, of the 2 that curr exist) 
 	gl.Begin(gl.TRIANGLES)
-		//trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
-		trianglesForAll(BakedUIMeshes)
+		if app.EditMode == app.EDITMODE_MESH_PICKER {
+			trianglesForAll(BakedUIMeshes)
+		}else{
+			trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
+		}
 	gl.End()
 }
 
@@ -136,34 +139,24 @@ func trianglesForAll (meshes []Mesh2D) {
 
 // tbId == toolbar id 
 func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
-	if len(meshes) < 1 {
-		printf("NO MESHES IN THAT SLICE!   -   tbId: %d \n", tbId)
+	if tbId >= len(tBars) {
+		printf("NO MESHES FOR THAT TOOLBAR! (tbId: %d)! \n", tbId)
 		return //////////////////////////////////////////
 	}
 	
-	//if tbId != 0 {
-		printf("trianglesForToolbar (meshes, %d) \n", tbId)
-	//}
-	
 	for j := 0; j < len(tBars[tbId].Items); j++ {
-		/*
-		if j >= 1 && j <= 5 {
-			continue ///////////////////////////////////////////
-		}
-		*/
-		
 		var bi i32 // baked mesh id 
 		bi = tBars[tbId].Items[j].BakedBackground
-		printf("BakedBackground - bi: %d \n", bi)
+		//printf("BakedBackground - bi: %d \n", bi)
 		
-		// background 
+		// background (if it exists) 
 		if bi != app.MAX_I32 {
 			trianglesForOne(meshes, bi)
 		}
 		
 		// icon 
 		bi = tBars[tbId].Items[j].BakedIcon
-		printf("BakedIcon       - bi: %d \n", bi)
+		//printf("BakedIcon       - bi: %d \n", bi)
 		
 		trianglesForOne(meshes, bi)
 	}
