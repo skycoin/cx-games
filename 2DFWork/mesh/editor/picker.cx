@@ -13,13 +13,16 @@ var numFit      i32 // number that fit across width of screen
 
 
 
-/*
 func BakeMeshPickerButtonGrid () {
-	str.print("BakeMeshPickerButtonGrid ()")	
+	if len(tBars) > 1 {
+		return //////////////////////////////////////////////////// 
+	}
+	
+	str.print("BakeMeshPickerButtonGrid ()")
 	
 	// figure out maximum square size that allows all to fit screen 
 	//		(subtract width of editor toolbar) 
-	uWid = f64.f32(collision.ScreenEdgeR) * 2.0 - ToolButtonSpan
+	uWid = space.ViewEdgeR * 2.0 - ToolButtonSpan
 	
 	currNumRows = 2.0
 	for gridCellsWouldNotFitScreen() {
@@ -38,7 +41,7 @@ func BakeMeshPickerButtonGrid () {
 	var pos  Vec2
 	var ext  Vec2
 
-	x = f64.f32(collision.ScreenEdgeL)
+	x = space.ViewEdgeL
 	x = f32.add(x, extent)
 	y = 1.0 - extent
 
@@ -79,4 +82,3 @@ func gridCellsWouldNotFitScreen () (out bool) {
 		out = true
 	}
 }
-*/

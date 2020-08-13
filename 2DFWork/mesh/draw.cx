@@ -32,14 +32,8 @@ func DrawEditor () {
 	pre()
 	
 	if app.EditMode == app.EDITMODE_VERTICES {
-			//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
-
-
-
-			if app.EditMode == app.EDITMODE_COLORS {
-			}else{
-				//trianglesForAll(EditLayers)
-			}			
+		trianglesForAll(EditLayers)
+		//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
 	}else
 	if app.EditMode == app.EDITMODE_TRIANGLES {
 	}else
@@ -47,7 +41,6 @@ func DrawEditor () {
 		trianglesForOne(RawMeshes, ColorWheel)
 	}else
 	if app.EditMode == app.EDITMODE_MESH_PICKER {
-		trianglesForOne(RawMeshes, 0)
 		trianglesForToolbar(BakedUIMeshes, MESH_PICKER)
 	}
 
@@ -76,9 +69,6 @@ func pre () {
 	gl.Begin(gl.TRIANGLES)
 		//trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
 		trianglesForAll(BakedUIMeshes)
-		
-		//trianglesForOne(BakedUIMeshes, 6)
-		trianglesForOne(RawMeshes, 4)
 	gl.End()
 }
 

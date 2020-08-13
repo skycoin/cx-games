@@ -246,7 +246,7 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 func getTouchedToolbarItem (mouse Vec2) (touched bool, id i32) {
 	touched, id = getTouchedToolbarItemFrom(EDIT_TOOLBAR, mouse)
 	if touched {
-		printf("getTouchedToolbarItem (): %d \n", id)
+		//printf("getTouchedToolbarItem (): %d \n", id)
 	}
 	
 	if app.EditMode == app.EDITMODE_MESH_PICKER {
@@ -288,6 +288,10 @@ func respondToItem (i i32) {
 		app.EditMode = i
 		printEditMode()
 		wipePickedVerts()
+		
+		if i == app.EDITMODE_MESH_PICKER {
+			BakeMeshPickerButtonGrid()
+		}
 	}else{ // perform one-time actions 
 		if i == TOOLITEM_GEN_FUNC {
 			GenerateMeshInitFunc ("Icon")
