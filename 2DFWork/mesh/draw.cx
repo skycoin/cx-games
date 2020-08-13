@@ -4,6 +4,7 @@ import "gl"
 
 import "app"
 import "draw"
+import "mesh"
 import "time"
 
 
@@ -80,7 +81,7 @@ func post () {
 		editorQuads()
 		
 		gl.Begin(gl.LINES)
-			//maybeDragBox()				
+			maybeDragBox()				
 		gl.End()
 	}
 }
@@ -95,9 +96,8 @@ func pumpTheBlinking () {
 }
 
 
-/*
 func maybeDragBox() {
-	if ccInput.Dragging { //&&
+	if mesh.Dragging { //&&
 		//app.EditMode != app.EDITMODE_TRIANGLES {
 		
 		if pickedNodesAreBright {
@@ -107,25 +107,24 @@ func maybeDragBox() {
 		}
 		
 		// horizontal lines 
-		gl.Vertex2f(ccInput.DragStart.X,    ccInput.DragStart.Y)
-		gl.Vertex2f(ccInput.MousePointer.X, ccInput.DragStart.Y)
+		gl.Vertex2f(mesh.DragStart.X,      mesh.DragStart.Y)
+		gl.Vertex2f(inputs.MousePointer.X, mesh.DragStart.Y)
 		
-		gl.Vertex2f(ccInput.DragStart.X,    ccInput.MousePointer.Y)
-		gl.Vertex2f(ccInput.MousePointer.X, ccInput.MousePointer.Y)
+		gl.Vertex2f(mesh.DragStart.X,      inputs.MousePointer.Y)
+		gl.Vertex2f(inputs.MousePointer.X, inputs.MousePointer.Y)
 		
 		// vertical lines 
-		gl.Vertex2f(ccInput.DragStart.X,    ccInput.DragStart.Y)
-		gl.Vertex2f(ccInput.DragStart.X,    ccInput.MousePointer.Y)
+		gl.Vertex2f(mesh.DragStart.X,    mesh.DragStart.Y)
+		gl.Vertex2f(mesh.DragStart.X,    inputs.MousePointer.Y)
 		
-		gl.Vertex2f(ccInput.MousePointer.X, ccInput.DragStart.Y)
-		gl.Vertex2f(ccInput.MousePointer.X, ccInput.MousePointer.Y)
+		gl.Vertex2f(inputs.MousePointer.X, mesh.DragStart.Y)
+		gl.Vertex2f(inputs.MousePointer.X, inputs.MousePointer.Y)
 	}
 }
-*/
 
 
 func trianglesForAll (meshes []Mesh2D) {
-	for i := 0; i32.lt(i, len(meshes)); i++ {
+	for i := 0; i < len(meshes); i++ {
 		if i/2 == tBars[EDIT_TOOLBAR].Hovered {
 			trianglesForOneColored(meshes, i, draw.Colors[draw.COLOR_CYAN])
 		}else{
