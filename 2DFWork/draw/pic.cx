@@ -13,6 +13,8 @@ var PicArrowDown  i32
 var PicMouse      i32
 var PicMouseLMB   i32
 var PicMouseRMB   i32
+var PicCloudLogo  i32
+var PicCoin       i32
 
 type Pic struct {
 	Name str
@@ -21,6 +23,16 @@ type Pic struct {
 
 var pics []Pic // ATM, only used for game specific pics 
 
+
+
+func AddPic (name str) (id i32) {
+	printf("2DFWork.draw.AddPic (%s) \n", name)
+
+	id = initPic(GameAssetDir, name)	
+	var p Pic
+	p =   Pic{ Name: name, Id: id }
+	pics = append(pics, p)
+}
 
 
 func InitPics () {
@@ -38,6 +50,8 @@ func InitPics () {
 	PicMouse      = initPic(dir, "mouse.png")   
 	PicMouseLMB   = initPic(dir, "mouse-lmb.png")
 	PicMouseRMB   = initPic(dir, "mouse-rmb.png")
+	PicCoin       = initPic(dir, "coins/coin0001.png") // coin0002.png 
+	PicCloudLogo  = initPic(dir, "logos/Skycoin-Cloud-White.png")
 	
 	
 	/*
@@ -48,16 +62,6 @@ func InitPics () {
 		pics[i].Id = initPic(dir, pics[i].Name)
 	}
 	*/
-}
-
-
-func AddPic (name str) (id i32) {
-	printf("2DFWork.draw.AddPic (%s) \n", name)
-
-	id = initPic(GameAssetDir, name)	
-	var p Pic
-	p =   Pic{ Name: name, Id: id }
-	pics = append(pics, p)
 }
 
 

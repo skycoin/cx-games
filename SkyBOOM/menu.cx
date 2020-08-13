@@ -9,8 +9,8 @@ func menuInit () {
  	menu.MakeItem(0, menu.MainSize, menu.ItemPlay)
  	menu.MakeItem(0, menu.MainSize, menu.ItemQuit)
 
-	// no need for Options or Controls menus, 
-	// but check CXtris for examples of those (including slider widgets) 
+	// no need for Options or Controls menus... 
+	// check CXtris for examples of those (including slider widgets) 
 	
 	menu.BakeItemText()
 }

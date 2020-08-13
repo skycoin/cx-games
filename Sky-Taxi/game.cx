@@ -1,19 +1,28 @@
 package main
 
+import "app"
 import "inputs"
+import "mesh"
+import "space"
+import "time"
 
 
 
 func gameInit () {
 	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
-	draw.Init()
-	inputs.Init(false)
+	//space.Init()
+	drawInit()
+	inputs.Init(true)
+	mesh.Init()
+	menuInit()
 	entitiesInit()
 	map.Init()
 }
 
 
 func gameUpdate () {
+	time.Update()
+	mesh.UpdateEditor()
 	respondToButtonEvents()
 	respondToKeyEvents()
 	entitiesUpdate()
@@ -34,8 +43,6 @@ func respondToButtonEvents () {
 			if app.Mode < app.MODE_MENU_MAX { // in a menu 
 				respondToMenuClicks()
 			}
-			
-			// do 
 		}else
 		if button == glfw.MouseButtonRight {
 		}else 
@@ -85,8 +92,4 @@ func repeaters (key i32) {
 		if inputs.EventAbilityRight(key) {
 		}
 	}
-}
-
-
-func respondToMenuClicks () {
 }

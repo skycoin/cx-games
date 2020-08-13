@@ -1,5 +1,7 @@
 package main
 
+import "menu"
+
 
 
 // options 
@@ -32,4 +34,57 @@ func menuInit () {
 	menu.Items[1][2].Value = DebrisHeight
 
 	menu.BakeItemText()
+}
+
+
+func respondToMenuDrags () {
+	var s str
+	var i i32
+	s, i = menu.GetHoveredItem(app.Mode)
+
+	/*
+	if s == menu.ItemText {
+		menu.Setting = menu.SetSliderValue(i, f64.f32(MousePosInPixels.X))
+	} else
+	*/
+	if s == DebrisHeightText {
+		DebrisHeight = menu.SetSliderValue(i, f64.f32(inputs.MousePosInPixels.X))
+		startNewGameSession()
+	} else
+	if s == SpeedText {
+		DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePosInPixels.X))
+		CalcDropTime()
+	}
+}
+
+
+func respondToMenuClicks () {
+	var s str
+	var i i32
+	s, i = menu.GetHoveredItem(app.Mode)
+
+	if s == menu.ItemPlay {
+		inputs.UseMousePointer(false)
+		shape.PlayerScore    =  0
+		shape.PlayerScoreTxt = "0"
+		startNewGameSession()
+		app.Mode = app.MODE_PLAYING
+	} else
+	if s == menu.ItemOptions {
+		app.Mode = app.MODE_MENU_OPTIONS
+	} else
+	if s == menu.ItemControls {
+		app.Mode = app.MODE_MENU_CONTROLS
+	} else
+	if s == menu.ItemQuit {
+		glfw.SetShouldClose(app.Name, true)
+	} else
+	if s == ShowNextShapeText + "YES" {
+		    ShowNextShape = false
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "NO"
+	} else
+	if s == ShowNextShapeText + "NO" {
+		    ShowNextShape = true
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "YES"
+	}
 }

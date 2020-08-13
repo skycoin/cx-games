@@ -3,8 +3,6 @@ package mesh
 //import "glfw"
 
 //import "app"
-import "ccInput"
-import "collision"
 
 
 
@@ -15,13 +13,16 @@ var numFit      i32 // number that fit across width of screen
 
 
 
-/*
 func BakeMeshPickerButtonGrid () {
-	str.print("BakeMeshPickerButtonGrid ()")	
+	if len(tBars) > 1 {
+		return //////////////////////////////////////////////////// 
+	}
+	
+	str.print("BakeMeshPickerButtonGrid ()")
 	
 	// figure out maximum square size that allows all to fit screen 
 	//		(subtract width of editor toolbar) 
-	uWid = f64.f32(collision.ScreenEdgeR) * 2.0 - ccInput.ButtonSpan
+	uWid = space.ViewEdgeR * 2.0 - ToolButtonSpan
 	
 	currNumRows = 2.0
 	for gridCellsWouldNotFitScreen() {
@@ -40,7 +41,7 @@ func BakeMeshPickerButtonGrid () {
 	var pos  Vec2
 	var ext  Vec2
 
-	x = f64.f32(collision.ScreenEdgeL)
+	x = space.ViewEdgeL
 	x = f32.add(x, extent)
 	y = 1.0 - extent
 
@@ -48,7 +49,7 @@ func BakeMeshPickerButtonGrid () {
 	ext = Vec2{ X: extent, Y: extent }
 
 	n = len(RawMeshes)
-	ccInput.SetupMenu(ccInput.MESH_PICKER, n)
+	InitToolBar(MESH_PICKER, n)
 
 	for i := 0; i32.lt(i, n); i++ {
 		gX = i32.mod(i, numFit)
@@ -59,15 +60,15 @@ func BakeMeshPickerButtonGrid () {
 		pos.X = f32.add(x, f32.mul(i32.f32(gX), currSpan))
 		pos.Y = f32.add(y, f32.mul(i32.f32(-gY), currSpan))
 		
-		ccInput.Menus[ccInput.MESH_PICKER].Items[i].Pos = pos
-		ccInput.Menus[ccInput.MESH_PICKER].Items[i].Extents = ext
+		tBars[MESH_PICKER].Items[i].Pos = pos
+		tBars[MESH_PICKER].Items[i].Extents = ext
 		
 		// FIXME?: assumes this is the 2nd menu 
 		var bakeId i32 
-		bakeId = len(ccInput.Menus[ccInput.EDIT_TOOLBAR].Items)
+		bakeId = len(tBars[EDIT_TOOLBAR].Items)
 		bakeId = i32.mul(2, bakeId) // each has background + icon meshes 
 		bakeId = i32.add(bakeId, i)
-		ccInput.Menus[ccInput.MESH_PICKER].Items[i].BakedIcon = bakeId
+		tBars[MESH_PICKER].Items[i].BakedIcon = bakeId
 		bakeUICellFromRaw(pos, ext, i, bakeId) 
 	}
 }
@@ -81,4 +82,3 @@ func gridCellsWouldNotFitScreen () (out bool) {
 		out = true
 	}
 }
-*/

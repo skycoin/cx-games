@@ -7,11 +7,9 @@ import "time"
 
 
 // pic ids 
-var PIC_CLOUD  i32
-var PIC_COIN   i32
-var PIC_WALLET i32
-var PIC_0      i32
-var PIC_1      i32
+var PicWallet i32
+var Pic0Char  i32
+var Pic1Char  i32
 
 var ent entities.Entity // current 
 
@@ -20,15 +18,13 @@ var ent entities.Entity // current
 func drawInit () {
 	str.print("drawInit ()")
 
+	draw.Init()
 	gl.ClearColor(0.5, 0.7, 1.0, 0.0) // light blue 
-	//"coin0001.png")
-	//"coin0002.png")
-	PIC_COIN   = draw.AddPic("coin0001.png")
-	PIC_CLOUD  = draw.AddPic("Skycoin-Cloud-White.png")
-	PIC_WALLET = draw.AddPic("SkyWallet.png")
-	PIC_0      = draw.AddPic("0.png")
-	PIC_1      = draw.AddPic("1.png")
-	draw.InitPics()
+
+	PicWallet = draw.AddPic("SkyWallet.png")
+	Pic0Char  = draw.AddPic("0.png")
+	Pic1Char  = draw.AddPic("1.png")
+	            draw.InitPics()
 }
 
 
@@ -48,12 +44,12 @@ func drawAll () {
 
 	// menu 
 	gl.Color4f(1.0, 1.0, 1.0, 1.0)
-	//draw.ScaledRotatedPic(PIC_COIN, 0.0, 0.0, 0.5, 0.5, angle)
+	//draw.ScaledRotatedPic(draw.PicCoin, 0.0, 0.0, 0.5, 0.5, angle)
 	gl.LoadIdentity()
 
-	if app.Mode < app.MODE_MENU_MAX { // in a menu 
+	if  menu.IsOpen() {
 		menu.Draw()
-		
+
 		if app.Mode == app.MODE_MENU_CONTROLS {
 			//drawVirtualKeyBackdrops()
 		}
@@ -95,7 +91,7 @@ func drawTexturedBatches () {
 	et = ENT_BACKDROP_CLOUD
 	n  = entities.GetCountOf(et)
 
-	draw.BeginTexturedQuads(PIC_CLOUD)
+	draw.BeginTexturedQuads(draw.PicCloudLogo)
 		for i := 0; i < n; i++ {
 			var ac f32 = 1.0 // alpha channel 
 			
@@ -110,7 +106,7 @@ func drawTexturedBatches () {
 	et = ENT_GAME_COIN
 	n  = entities.GetCountOf(et)
 
-	draw.BeginTexturedQuads(PIC_COIN)
+	draw.BeginTexturedQuads(draw.PicCoin)
 		if app.Mode > app.MODE_MENU_MAX {
 			// game coins 
 			for i := 0; i < n; i++ {
@@ -141,7 +137,7 @@ func drawTexturedBatches () {
 	
 	if app.Mode > app.MODE_MENU_MAX {
 		// dropper 
-		draw.BeginTexturedQuads(PIC_CLOUD)
+		draw.BeginTexturedQuads(draw.PicCloudLogo)
 			t, r, b, l = entities.GetRect(ENT_DROPPER, 0)
 			draw.TexturedQuad(t, r, b, l)
 		draw.End()
@@ -153,7 +149,7 @@ func drawTexturedBatches () {
 		et = entities.ENT_PLAYER
 		n  = entities.GetCountOf(et)
 
-		draw.BeginTexturedQuads(PIC_WALLET)
+		draw.BeginTexturedQuads(PicWallet)
 			for i := 0; i < n; i++ {
 				t, r, b, l = entities.GetRect(et, i)
 				draw.TexturedQuad(t, r, b, l)
@@ -168,7 +164,7 @@ func drawTexturedBatches () {
 	et = ENT_PARTICLE_0
 	n  = entities.GetCountOf(et)
 
-	draw.BeginTexturedQuads(PIC_0)
+	draw.BeginTexturedQuads(Pic0Char)
 		for i := 0; i < n; i++ {
 			t, r, b, l = entities.GetRect(et, i)
 			draw.TexturedQuad(t, r, b, l)
@@ -178,7 +174,7 @@ func drawTexturedBatches () {
 	et = ENT_PARTICLE_1
 	n  = entities.GetCountOf(et)
 
-	draw.BeginTexturedQuads(PIC_1)
+	draw.BeginTexturedQuads(Pic1Char)
 		for i := 0; i < n; i++ {
 			t, r, b, l = entities.GetRect(et, i)
 			draw.TexturedQuad(t, r, b, l)

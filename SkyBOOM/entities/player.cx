@@ -17,7 +17,7 @@ var pR /* right    */  f32
 
 
 func playerEntsInit () {
-	entities.AutoUpdatePlayers = false
+	entities.AutoUpdatePlayerEnts = false
 	
 	var f f32  = 0.07
 	var y f32  = f - 1.0

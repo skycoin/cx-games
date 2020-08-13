@@ -1,5 +1,7 @@
 package main
 
+import "draw"
+
 
 
 var HackyHeightFraction f32 = 0.61458333333
@@ -14,7 +16,9 @@ func drawInit () {
 	// SO......HARDWIRED VALUE AT DECLARATION (FIXME when CX FIXES THIS) 
 	//HackyHeightFraction = f32.div(i32.f32(app.START_WIDTH), i32.f32(app.START_HEIGHT))
 
-	PicBackground = draw.AddPic("background.jpg")
+	draw.Init()
+	PicBackground = 
+	draw.AddPic("background.jpg")
 	draw.InitPics()
 	InitControlsText()
 }
@@ -37,7 +41,7 @@ func drawAll () {
 		NextShape()
 	}
 	
-	if app.Mode < app.MODE_MENU_MAX { // in a menu 
+	if  menu.IsOpen() {
 		menu.Draw()
 		
 		if app.Mode == app.MODE_MENU_CONTROLS {

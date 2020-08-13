@@ -1,17 +1,18 @@
 package mesh
 
 import "app"
+import "draw"
+import "geom"
 
 
 
-/*
-func makeColorPickerWheelResource () () {
+func makeColorPickerWheelResource () {
 	var NUM_ANGS i32
 	NUM_ANGS = 1536 // 3 x 512, 512 needed to show all possible hues between 2 colors 
 	// (256 settings per channel, but we alternate between inc/dec 1 chan at a time)
 
 	var ANG_I f32 // angle increment
-	ANG_I = f32.div(app.TAU, i32.f32(NUM_ANGS))
+	ANG_I = f32.div(geom.TAU, i32.f32(NUM_ANGS))
 
 	var CI f32 // color increment 
 	CI = f32.div(1.0, i32.f32(256))
@@ -92,9 +93,9 @@ func makeColorPickerWheelResource () () {
 }
 
 
-func InitEditTrianglesIconMesh () () {
+func makeIconEditTriangles () {
     var m Mesh2D
-    m = Mesh2D{ Name: "EditTrianglesIcon" }
+    m = Mesh2D{ Name: "Edit triangles" }
 
     var c Color3
     var v Vec2
@@ -361,172 +362,17 @@ func InitEditTrianglesIconMesh () () {
 
 
 
-// UNUSED CIRCLE 
-func InitEditColorsIconMesh () () {
+
+
+
+
+
+
+
+
+func makeIconEditVertices () {
     var m Mesh2D
-    m = Mesh2D{ Name: "EditColorsIcon" }
-
-    var c Color3
-    var v Vec2
-
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-
-    v = Vec2{ X: -0.0333333 , Y: 0.7694445 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: 0.3444444 , Y: 0.6388889 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: 0.6583332 , Y: 0.2916667 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: 0.7916666 , Y: -0.1111112 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: 0.6222223 , Y: -0.5916667 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: 0.2444445 , Y: -0.7611111 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.1194444 , Y: -0.8444444 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.4416667 , Y: -0.7861111 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.7166667 , Y: -0.5694444 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.8833333 , Y: -0.1000000 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.7527777 , Y: 0.3111111 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.4611111 , Y: 0.6638889 }
-    m.Points = append(
-    m.Points, v)
-
-    m.TriangleIndices = append(
-    m.TriangleIndices, 0)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 1)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 1)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 2)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 2)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 3)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 3)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 4)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 4)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 5)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 7)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 8)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 8)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 9)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 9)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 10)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 10)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 11)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 0)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 0)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 10)
-
-    makeAndReportOn(m, true)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-func InitEditVerticesIconMesh () () {
-    var m Mesh2D
-    m = Mesh2D{ Name: "Edit vertices icon" }
+    m = Mesh2D{ Name: "Edit vertices" }
 
     var c Color3
     var v Vec2
@@ -943,9 +789,7 @@ func InitEditVerticesIconMesh () () {
 
 
 
-
-
-func InitGenerateFuncIconMesh () () {
+func makeIconGenerateFunc () {
     var m Mesh2D
     m = Mesh2D{ Name: "GenerateFuncIcon" }
 
@@ -1595,7 +1439,7 @@ func InitGenerateFuncIconMesh () () {
 
 
 
-func InitSnapToGridIconMesh () () {
+func makeIconSnapToGrid () {
     var m Mesh2D
     m = Mesh2D{ Name: "SnapToGridIcon" }
 
@@ -1930,7 +1774,7 @@ func InitSnapToGridIconMesh () () {
 
 
 
-func InitWipeCanvasIconMesh () () {
+func makeIconWipeCanvas () {
     var m Mesh2D
     m = Mesh2D{ Name: "Wipe Layer Icon" }
 
@@ -2416,22 +2260,7 @@ func InitWipeCanvasIconMesh () () {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-func InitMeshPickerIconMesh () () {
+func makeIconMeshPicker () {
     var m Mesh2D
     m = Mesh2D{ Name: "Mesh Picker" }
 
@@ -2899,235 +2728,3 @@ func InitMeshPickerIconMesh () () {
     
     makeAndReportOn(m, true)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-func InitRidgeBlasterLogoMesh () () {
-    var m Mesh2D
-    m = Mesh2D{ Name: "Ridge Blaster Logo" }
-
-    var c Color3
-    var v Vec2
-
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-    c = Color3{ R: 0.5000000, G: 0.5000000 , B: 0.5000000 }
-    m.Colors = append(
-    m.Colors, c)
-
-    v = Vec2{ X: -0.9111111 , Y: 0.9444444 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.2361112 , Y: 0.6888889 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.4416667 , Y: 0.3138889 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.2055556 , Y: 0.0583333 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.2972223 , Y: -0.3166667 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.4583334 , Y: -0.1361111 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.3666667 , Y: 0.0250000 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.6055555 , Y: 0.1972222 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.7750001 , Y: 0.1888889 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.7833334 , Y: -0.2138889 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.6555555 , Y: -0.3638889 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.9861111 , Y: -0.5861111 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.9277778 , Y: -0.2416667 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.7416667 , Y: 0.7583333 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.4638889 , Y: 0.6250000 }
-    m.Points = append(
-    m.Points, v)
-    v = Vec2{ X: -0.7277778 , Y: 0.3722222 }
-    m.Points = append(
-    m.Points, v)
-
-    m.TriangleIndices = append(
-    m.TriangleIndices, 11)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 12)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 9)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 9)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 10)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 11)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 4)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 5)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 3)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 4)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 7)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 2)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 6)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 2)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 3)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 13)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 0)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 1)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 1)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 14)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 13)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 14)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 1)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 2)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 2)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 7)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 14)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 13)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 15)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 0)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 15)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 9)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 12)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 12)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 0)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 15)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 15)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 14)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 7)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 7)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 8)
-    m.TriangleIndices = append(
-    m.TriangleIndices, 15)
-
-    makeAndReportOn(m, true)
-}
-*/ 

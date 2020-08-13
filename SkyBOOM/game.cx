@@ -3,6 +3,8 @@ package main
 import "app"
 import "entities"
 import "inputs"
+import "space"
+import "time"
 
 /*
 
@@ -115,13 +117,12 @@ fall speed
 
 
 func gameInit () {
-	app.   Init("S k y B O O M", "Move with mouse.")
-	draw.  Init()
+	app.Init("S k y B O O M", "Move with mouse.")
+	drawInit()
 	inputs.Init(true)
 	
 	// game specific 
 	menuInit()
-	drawInit()
 	entitiesInit()
 }
 

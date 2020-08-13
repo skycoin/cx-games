@@ -26,8 +26,10 @@ func Init () {
 	glfw.SetFramebufferSizeCallback(app.Name, "OnFramebufferSize", "draw")
 	
 	// set initial values before events are triggered 
+	space.Init()
 	space.ViewWidInPixels, 
 	space.ViewHeiInPixels = glfw.GetFramebufferSize(app.Name)
+	
 	OnFramebufferSize(app.Name, 
 		space.ViewWidInPixels, 
 		space.ViewHeiInPixels)
@@ -40,40 +42,6 @@ func OnFramebufferSize (window str, wid i32, hei i32) {
 	space.SetSize(wid, hei)
 	menu.BakeItemText()
 	//gl.Viewport(0, 0, wid, hei)
-}
-
-
-func BeginUntexturedQuads () {
-	gl.Begin(gl.QUADS)
-}
-func BeginTexturedQuads (picId i32) {
-	gl.BindTexture(gl.TEXTURE_2D, picId)
-	gl.Begin(gl.QUADS)
-}
-func End () {
-	gl.End()
-}
-
-
-// top, right, bottom, left 
-func UntexturedQuad (t f32, r f32, b f32, l f32) {
-	gl.Vertex2f(l, t)
-	gl.Vertex2f(r, t)
-	gl.Vertex2f(r, b)
-	gl.Vertex2f(l, b)
-}
-func TexturedQuad   (t f32, r f32, b f32, l f32) {
-	gl.TexCoord2d(0.0D, 0.0D)
-	gl.Vertex2f(l, t)
-	
-	gl.TexCoord2d(1.0D, 0.0D)
-	gl.Vertex2f(r, t)
-	
-	gl.TexCoord2d(1.0D, 1.0D)
-	gl.Vertex2f(r, b)
-	
-	gl.TexCoord2d(0.0D, 1.0D)
-	gl.Vertex2f(l, b)
 }
 
 

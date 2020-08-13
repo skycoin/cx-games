@@ -1,0 +1,304 @@
+package mesh
+
+import "glfw"
+
+import "app"
+import "draw"
+
+
+
+// to keep it simple, we'll sync Colors & Points (rather than indices to a palette) 
+type Mesh2D struct {
+	Name             str
+	Colors           []Color3 
+	Points           []Vec2
+	TriangleIndices  []i32
+}
+
+var RawMeshes        []Mesh2D // fully bounded to -1.0 & 1.0 extents 
+var SizedMeshes      []Mesh2D // part baked (world size/scale), for moving meshes 
+var BakedUIMeshes    []Mesh2D // full baked (world size/scale & pos) for menu/toolbar 
+var BakedMeshPickers []Mesh2D // full baked (world size/scale & pos) 
+var EditLayers       []Mesh2D // TODO: (just using 1 ATM) allows multiple vertices at 
+							  // the same position (but with different colors).  
+							  // allows drastic color changes between adjacent 
+							  // triangle sides 
+
+var CurrLayer        i32
+var currMesh         Mesh2D
+
+// raw mesh ids 
+var ColorWheel       i32
+var GameOver         i32
+
+var charMap []str = []str{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
+	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", 
+	"O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }
+
+
+
+func Init () {
+	// start 
+	str.print("mesh.Init ()")
+	editorInit()
+
+	
+	
+	// characters 
+	printf("    Later, we might make meshes for: ")
+
+	for i := 0; i < len(charMap); i++ {
+		printf("%s", charMap[i])
+	}
+	
+	printf("\n")
+
+
+
+	// toolbar icons 	
+	makeIconEditVertices()
+	makeIconEditTriangles()
+
+	ColorWheel = len(RawMeshes)
+	makeColorPickerWheelResource()
+
+	makeIconMeshPicker()
+	makeIconGenerateFunc()
+	makeIconSnapToGrid()
+	makeIconWipeCanvas()
+	
+	
+	
+	// gameplay 
+	var exts app.Vec2
+	    exts=app.Vec2{ X: 0.2, Y: 0.2 }
+	
+	makePlayerShip() // (is also a toolbar Editor-EXIT icon) 
+	makeSizedMesh(len(RawMeshes) - 1, exts)
+	
+	makeMissileMesh()
+	makeSizedMesh(len(RawMeshes) - 1, exts)
+	
+	InitRocketMesh()
+	makeSizedMesh(len(RawMeshes) - 1, exts)
+
+	GameOver = len(RawMeshes)
+	makeGameOverMesh()
+
+	
+	
+	// finish 
+	makeBarButtonBackground ()
+	BakeToolButtonArray(tBars[EDIT_TOOLBAR].Items, false, true)
+}
+
+
+func makeAndReportOn (m Mesh2D, raw bool) {
+	if raw {
+		printf("    Making raw mesh:   %d  '%s' \n", len(RawMeshes),   m.Name)
+		RawMeshes = append(
+		RawMeshes, m)
+	}else{
+		printf("    Making sized mesh: %d  '%s' \n", len(SizedMeshes), m.Name)
+		SizedMeshes = append(
+		SizedMeshes, m)	
+	}
+}
+
+
+//func UNUSED_CopyFromEditorToGame () {
+//	str.print("mesh.UNUSED_CopyFromEditorToGame ()")
+//	var m Mesh2D
+//	m = Mesh2D{ Name: "Copy of UserGenMesh" }
+//	
+//	for i := 0; i32.lt(i, len(EditLayers[CurrLayer].Points)); i++ {
+//		var c Color3
+//		var p Vec2
+//		c = EditLayers[CurrLayer].Colors[i]
+//		p = EditLayers[CurrLayer].Points[i]
+//		m.Colors = append(
+//		m.Colors, c)
+//		m.Points = append(
+//		m.Points, p)
+//	}
+//
+//	for j := 0; i32.lt(j, len(EditLayers[CurrLayer].TriangleIndices)); j++ {
+//		var id i32
+//		id = EditLayers[CurrLayer].TriangleIndices[j]
+//		m.TriangleIndices = append(
+//		m.TriangleIndices, id)
+//	}
+//		
+//	makeAndReportOn(m, false)
+//}
+
+
+func GenerateMeshInitFunc (s str) {
+	printf("___________________________________________________________ \n")
+	printf("make%sMesh() \n\n", s)
+	printf("func make%sMesh () { \n", s)
+	printf("    var m Mesh2D \n")
+	printf("    m = Mesh2D{ Name: Raw } \n")
+	printf(" \n")
+	
+	printf("    var c Color3 \n")
+	printf("    var v Vec2 \n\n")
+	
+	for li := 0; i32.lt(li, len(EditLayers)); li++ {
+		for i := 0; i32.lt(i, len(EditLayers[li].Colors)); i++ {
+			printf("    c = Color3{ R: %f, G: %f , B: %f } \n", 
+				EditLayers[li].Colors[i].R,
+				EditLayers[li].Colors[i].G,
+				EditLayers[li].Colors[i].B)
+			printf("    m.Colors = append( \n")
+			printf("    m.Colors, c) \n")
+		}
+
+		printf(" \n")
+		
+		for i := 0; i32.lt(i, len(EditLayers[li].Points)); i++ {
+			printf("    v = Vec2{ X: %f , Y: %f } \n", 
+				EditLayers[li].Points[i].X,
+				EditLayers[li].Points[i].Y)
+			printf("    m.Points = append( \n")
+			printf("    m.Points, v) \n")
+		}
+
+		printf(" \n")
+		
+		for j := 0; i32.lt(j, len(EditLayers[li].TriangleIndices)); j++ {
+			printf("    m.TriangleIndices = append( \n")
+			printf("    m.TriangleIndices, %d) \n", EditLayers[li].TriangleIndices[j])
+		}
+	}
+	
+	printf("\n    makeAndReportOn(m, true) \n")
+	printf("} \n")
+}
+
+
+func makeSizedMesh (rawId i32, extents Vec2) () {
+	// changes after copy/paste:
+	// don't receive pos, 
+	// don't add the pos
+	// save to SizedMeshes
+	var minX    f32
+	var maxX    f32
+	var minY    f32
+	var maxY    f32
+	var fracX   f32 // fraction from min to max edges 
+	var fracY   f32
+	var fitWid  f32 // the inner bounding box (shrunk to fit the min/max) 
+	var fitHei  f32
+	var fitExtX f32 // extents of inner bounding box 
+	var fitExtY f32
+
+	minX = 1.0
+	minY = 1.0
+	maxX = -1.0
+	maxY = -1.0
+
+	str.print("        makeSizedMesh ()")
+			
+	var m Mesh2D
+	m = Mesh2D{ Name: "sizedGameMeshFromRaw" }
+
+	// colors/verts 
+	for k := 0; k < len(RawMeshes[rawId].Points); k++ {
+		if  minX > RawMeshes[rawId].Points[k].X {
+			minX = RawMeshes[rawId].Points[k].X
+		}
+		if  maxX < RawMeshes[rawId].Points[k].X {
+			maxX = RawMeshes[rawId].Points[k].X
+		}
+		if  minY > RawMeshes[rawId].Points[k].X {
+			minY = RawMeshes[rawId].Points[k].X
+		}
+		if  maxY < RawMeshes[rawId].Points[k].Y {
+			maxY = RawMeshes[rawId].Points[k].Y
+		}
+	}
+
+	fitWid = f32.sub(maxX, minX)
+	fitHei = f32.sub(maxY, minY)
+	fitExtX = f32.div(fitWid, 2.0)
+	fitExtY = f32.div(fitHei, 2.0)
+
+	for k := 0; k < len(RawMeshes[rawId].Points); k++ {
+		var c Color3
+		var p Vec2
+		c = RawMeshes[rawId].Colors[k]
+		p = RawMeshes[rawId].Points[k]
+		
+		//  
+		//p.X = f32.sub(p.X, fitExtX)
+		//p.Y = f32.sub(p.Y, fitExtY)
+		
+		fracX = f32.div(p.X, fitExtX)
+		fracY = f32.div(p.Y, fitExtY)
+
+		// scale 
+		p.X = f32.mul(fracX, extents.X)
+		p.Y = f32.mul(fracY, extents.Y)
+		
+		m.Colors = append(
+		m.Colors, c)
+		m.Points = append(
+		m.Points, p)
+	}
+
+	// triangles 
+	for j := 0; i32.lt(j, len(RawMeshes[rawId].TriangleIndices)); j++ {
+		var id i32
+		id = RawMeshes[rawId].TriangleIndices[j]
+		m.TriangleIndices = append(
+		m.TriangleIndices, id)
+	}
+
+	SizedMeshes = append(
+	SizedMeshes, m)
+}
+
+
+// NON-editor tri 
+//func MakeNewTriangle (a Vec2, b Vec2, c Vec2) () {
+//	////////////////// UNTESTED \\\\\\\\\\\\\\\\\\\\\
+//	str.print("mesh.MakeNewTriangle()   (NON-editor)")
+//	
+//	var m Mesh2D
+//	m = Mesh2D{ Name: "NON-editor triangle" }
+//	
+//	var col Color3
+//	col = Color3{ R: 1.0, G: 0.5, B: 0.9 }
+//	
+//	m.Colors = append(m.Colors, col)
+//	col.B = 0.6
+//	m.Colors = append(m.Colors, col)
+//	col.B = 0.2
+//	m.Colors = append(m.Colors, col)
+//	
+//	m.Points = append(m.Points, a)
+//	m.Points = append(m.Points, b)
+//	m.Points = append(m.Points, c)
+//	
+//	var tii i32 // tri indices index 
+//	tii = len(SizedMeshes[0].TriangleIndices)
+//	
+//	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
+//	tii = i32.add(tii, 1)
+//	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
+//	tii = i32.add(tii, 1)
+//	SizedMeshes[0].TriangleIndices = append(SizedMeshes[0].TriangleIndices, tii)
+//	
+//	makeAndReportOn(m, false)
+//}
+
+
+func ReportBadTriCount (s str, i i32, numTris i32) {
+	var leftover i32
+	leftover = i32.mod(numTris, 3)
+	
+	if i32.uneq(0, leftover) {
+		printf("********* BAD NUM OF TRI INDICES! in %s () - i: %d - leftover: %d \n", s, i, leftover)
+	}
+}
