@@ -8,11 +8,11 @@ import "mesh"
 import "time"
 
 
+//UNUSED?! 
 var currX           f32
 var span            f32
 
 // single color channel intensities 
-var currGreen       f32 // component of terrain fill color 
 var minCI           f32 = 0.0
 var darkCI          f32 = 0.2
 var maxCI           f32 = 1.0
@@ -330,7 +330,7 @@ func editorQuads () {
 			}
 			
 			
-			draw.AddRect(EditLayers[li].Points[i], 0.01, 0.01)
+			draw.AddRect(EditLayers[li].Points[i], VertNodeExtent, VertNodeExtent)
 		}
 	}
 	
