@@ -27,7 +27,7 @@ func makeColorPickerWheelResource () {
 	red = 1.0
 
 	var m Mesh2D
-	m = Mesh2D{ Name: "Color Picker Wheel" }
+	m = Mesh2D{ Name: "Color Picker" }
 	
 	var cti     i32 // current triangle index 
 	var currCol Color3
@@ -95,7 +95,7 @@ func makeColorPickerWheelResource () {
 
 func makeIconEditTriangles () {
     var m Mesh2D
-    m = Mesh2D{ Name: "Edit triangles" }
+    m = Mesh2D{ Name: "Edit Triangles" }
 
     var c Color3
     var v Vec2
@@ -372,7 +372,7 @@ func makeIconEditTriangles () {
 
 func makeIconEditVertices () {
     var m Mesh2D
-    m = Mesh2D{ Name: "Edit vertices" }
+    m = Mesh2D{ Name: "Edit Vertices" }
 
     var c Color3
     var v Vec2
@@ -791,7 +791,7 @@ func makeIconEditVertices () {
 
 func makeIconGenerateFunc () {
     var m Mesh2D
-    m = Mesh2D{ Name: "GenerateFuncIcon" }
+    m = Mesh2D{ Name: "Generate Function for Mesh" }
 
     var c Color3
     var v Vec2
@@ -1441,7 +1441,7 @@ func makeIconGenerateFunc () {
 
 func makeIconSnapToGrid () {
     var m Mesh2D
-    m = Mesh2D{ Name: "SnapToGridIcon" }
+    m = Mesh2D{ Name: "Snap to Grid" }
 
     var c Color3
     var v Vec2
@@ -1776,7 +1776,7 @@ func makeIconSnapToGrid () {
 
 func makeIconWipeCanvas () {
     var m Mesh2D
-    m = Mesh2D{ Name: "Wipe Layer Icon" }
+    m = Mesh2D{ Name: "Wipe Selected Layer" }
 
     var c Color3
     var v Vec2

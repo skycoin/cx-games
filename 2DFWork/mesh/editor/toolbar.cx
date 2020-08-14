@@ -13,7 +13,7 @@ type MenuItem struct {
 	// if not, set these to ids in the mesh.___Meshes (slices) 
 	BakedBackground  i32
 	BakedIcon        i32
-	MeshForHoverText i32
+	Text             TextGL
 }
 
 type Menu struct {
@@ -30,6 +30,7 @@ var TOOLBAR_EDIT        i32 = 0
 var TOOLBAR_MESH_PICKER i32 = 1
 
 var ToolButtonSpan      f32 = 0.2
+var TextHei             i32
 
 var tBars               []Menu
 
@@ -298,7 +299,7 @@ func respondToItem (i i32) {
 		}
 	}else{ // perform one-time actions 
 		if i == TOOLITEM_GEN_FUNC {
-			GenerateMeshInitFunc ("Icon")
+			GenerateMeshInitFunc ("RawMesh")
 		}else
 		if i == TOOLITEM_SNAP_TO_GRID {
 			SnapToGrid = !SnapToGrid

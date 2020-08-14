@@ -6,7 +6,7 @@ import "app"
 
 func makePlayerShip () {
     var m Mesh2D
-    m = Mesh2D{ Name: "PlayerShip" }
+    m = Mesh2D{ Name: "BACK to Game" }
 
     var c Color3
     var v Vec2

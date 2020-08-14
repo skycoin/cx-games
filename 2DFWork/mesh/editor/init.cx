@@ -20,6 +20,10 @@ func editorInit () {
 	
 	// vertex pick/selection 
 	PickedVerts = []i32{}
+
+	// text 
+	TextHei = f32.i32(ToolButtonSpan / space.PixelSize.Y)
+	draw.LoadFontSized(draw.FontPath, mesh.TextHei)
 }
 
 

@@ -1,6 +1,7 @@
 package mesh
 
 import "gl"
+import "gltext"
 
 import "app"
 import "draw"
@@ -50,6 +51,53 @@ func DrawEditor () {
 
 	post()
 		
+	var y f32 = 0.0
+	var hov i32 = tBars[TOOLBAR_EDIT].Hovered
+	var name str
+	var w i32
+	var h i32
+	if hov != app.MAX_I32 {
+	//for i := 0; i < len(tBars[TOOLBAR_EDIT].Items); i++ {
+		//gl.LoadIdentity()
+		
+		/*
+		if inputs.PointerInYPixelRange( // highlighted 
+			Items[m][i].Top, 
+			Items[m][i].Bottom) {
+							
+			Items[m][i].Hover = true			
+			gl.Color3f(1.0, 1.0, 1.0)
+		}else{
+			Items[m][i].Hover = false
+			gl.Color3f(draw.Mid, draw.Mid, draw.Mid)
+		}
+		*/
+
+		name = RawMeshes[hov].Name
+		//tBars[TOOLBAR_EDIT].Items[hov].Name
+		
+		w, h = gltext.Metrics("Roboto58", name)
+		/*
+		Items[m][i].Wid = i32.f32(w)
+		Items[m][i].Hei = i32.f32(h)
+		Items[m][i].Left = (i32.f32(space.ViewWidInPixels) - i32.f32(w)) / 2.0
+		*/
+		
+		draw.SetColor(draw.COLOR_CYAN)
+		gltext.Printf(
+			"Roboto58", //tBars[TOOLBAR_EDIT].Items[i].Text.FontId, 
+			i32.f32(space.ViewWidInPixels - w), //tBars[TOOLBAR_EDIT].Items[i].Text.Left, 
+			0.0, //tBars[TOOLBAR_EDIT].Items[i].Text.Top, 
+			name)
+			//tBars[TOOLBAR_EDIT].Items[i].Name)
+
+		/*
+		printf("...Items[i].Pos.Y: %f \n", tBars[TOOLBAR_EDIT].Items[i].Pos.Y)
+		var grr f32 = space.PixelSize.Y * 100.0
+		y = y + grr
+		*/
+	}
+
 	// TODO: ADAPT THIS TO HIGHLIGHT MULTIPLE MESHES/SEPARATIONS WHEN IMPLEMENTED 
 	// 		(THIS WILL ALLOW SHARED VERTEX COORDS WITH DIFFERENT COLORS SO
 	// 		THERE CAN BE HARD COLOR CONTRAST BETWEEN MESHES THAT APPEAR CONNECTED) 
