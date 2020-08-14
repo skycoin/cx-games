@@ -87,10 +87,11 @@ func post () {
 
 
 func pumpTheBlinking () {
-	timeLocalToDraw = f32.add(timeLocalToDraw, time.Delta)	
-	for f32.lteq(nextBlinkFlip, timeLocalToDraw) {
-		nextBlinkFlip = f32.add(timeLocalToDraw, blinkDelay)
-		pickedNodesAreBright = bool.not(pickedNodesAreBright)
+	timeLocalToDraw = timeLocalToDraw + time.Delta
+	
+	for nextBlinkFlip <= timeLocalToDraw {
+		nextBlinkFlip  = timeLocalToDraw + blinkDelay
+		pickedNodesAreBright = !pickedNodesAreBright
 	}
 }
 
@@ -141,20 +142,13 @@ func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
 	}
 	
 	for j := 0; j < len(tBars[tbId].Items); j++ {
-		var bi i32 // baked mesh id 
-		bi = tBars[tbId].Items[j].BakedBackground
-		//printf("BakedBackground - bi: %d \n", bi)
-		
-		// background (if it exists) 
-		if bi != app.MAX_I32 {
-			trianglesForOne(meshes, bi)
+		if j == tBars[tbId].Hovered {
+			trianglesForOneColored(meshes, j * 2  , draw.Colors[draw.COLOR_CYAN])
+			trianglesForOneColored(meshes, j * 2+1, draw.Colors[draw.COLOR_CYAN])
+		}else{
+			trianglesForOne       (meshes, j * 2)
+			trianglesForOne       (meshes, j * 2+1)
 		}
-		
-		// icon 
-		bi = tBars[tbId].Items[j].BakedIcon
-		//printf("BakedIcon       - bi: %d \n", bi)
-		
-		trianglesForOne(meshes, bi)
 	}
 }
 
@@ -184,7 +178,7 @@ func trianglesForOne (meshes []Mesh2D, i i32) {
 
 
 func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
-	//printf("trianglesForOne () id of given []Mesh2D: %d \n", i)
+	//printf("trianglesForOneColored () id of given []Mesh2D: %d \n", i)
 	
 	var m Mesh2D
 	m = meshes[i]
@@ -215,15 +209,15 @@ func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
 }
 
 
-func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) () {
+func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) {
 	//str.print("trianglesForOneWithPos ()")
 	
 	var m Mesh2D
 	m = meshes[i]
 
-	ReportBadTriCount("trianglesForOneWithPos", len(m.TriangleIndices))
+	ReportBadTriCount("trianglesForOneWithPos", i, len(m.TriangleIndices))
 
-	for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
+	for j := 0; j < len(m.TriangleIndices); j++ {
 		var pId i32 // point id (from tri ids) 
 		pId = m.TriangleIndices[j]
 		
@@ -243,12 +237,14 @@ func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) () {
 func simpleVertexSequence (colorChanIntensity f32) () {
 	gl.Color3f(colorChanIntensity, colorChanIntensity, colorChanIntensity)
 
+	/*
 	for i := 0; i < len(entity.Ents); i++ {
 		var e Entity
 		e = entity.Ents[i]
 
 		gl.Vertex2f(e.Pos.X, e.Pos.Y)
 	}
+	*/
 }
 
 
