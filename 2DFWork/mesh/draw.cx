@@ -28,17 +28,25 @@ func DrawEditor () {
 
 	pre()
 	
-	if app.EditMode == app.EDITMODE_VERTICES {
-		trianglesForAll(EditLayers)
-		//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
-	}else
-	if app.EditMode == app.EDITMODE_TRIANGLES {
-		trianglesForAll(EditLayers)
-	}else
-	if app.EditMode == app.EDITMODE_COLORS {
-		trianglesForOne(RawMeshes, ColorWheel)
-	}
-	// app.EditMode == app.EDITMODE_MESH_PICKER handled in pre() 
+	gl.Begin(gl.TRIANGLES)
+		if app.EditMode == app.EDITMODE_VERTICES {
+			trianglesForAll(EditLayers)
+			//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
+		}else
+		if app.EditMode == app.EDITMODE_TRIANGLES {
+			trianglesForAll(EditLayers)
+		}else
+		if app.EditMode == app.EDITMODE_COLORS {
+			trianglesForOne(RawMeshes, ColorWheel)
+		}
+		
+		// draw toolbar (or BOTH toolbars, of the 2 that exist ATM) 
+		if app.EditMode == app.EDITMODE_MESH_PICKER {
+			trianglesForAll(BakedUIMeshes)
+		}else{
+			trianglesForToolbar(BakedUIMeshes, TOOLBAR_EDIT)
+		}
+	gl.End()
 
 	post()
 		
@@ -61,15 +69,6 @@ func pre () {
 		
 		gridLines()
 	}
-
-	// draw toolbar (or BOTH toolbars, of the 2 that curr exist) 
-	gl.Begin(gl.TRIANGLES)
-		if app.EditMode == app.EDITMODE_MESH_PICKER {
-			trianglesForAll(BakedUIMeshes)
-		}else{
-			trianglesForToolbar(BakedUIMeshes, TOOLBAR_EDIT)
-		}
-	gl.End()
 }
 
 

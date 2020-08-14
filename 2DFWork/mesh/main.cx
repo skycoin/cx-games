@@ -263,7 +263,7 @@ func makeSizedMesh (rawId i32, extents Vec2) () {
 // NON-editor tri 
 //func MakeNewTriangle (a Vec2, b Vec2, c Vec2) () {
 //	////////////////// UNTESTED \\\\\\\\\\\\\\\\\\\\\
-//	str.print("mesh.MakeNewTriangle()   (NON-editor)")
+//	str.print("MakeNewTriangle()   (NON-editor)")
 //	
 //	var m Mesh2D
 //	m = Mesh2D{ Name: "NON-editor triangle" }
