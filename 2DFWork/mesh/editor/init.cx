@@ -10,7 +10,7 @@ func editorInit () {
 	str.print("    editorInit ()")
 
 	tBars = []Menu{} // prep all tBars 
-	InitToolBar(EDIT_TOOLBAR, 8) // just 1 
+	InitToolBar(TOOLBAR_EDIT, 8) // just 1 
 
 	// canvas 
 	var m Mesh2D

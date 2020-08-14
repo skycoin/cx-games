@@ -89,7 +89,7 @@ func Init () {
 	
 	// finish 
 	makeBarButtonBackground ()
-	BakeToolButtonArray(tBars[EDIT_TOOLBAR].Items, false, true)
+	BakeToolButtonArray(tBars[TOOLBAR_EDIT].Items, false, true)
 }
 
 

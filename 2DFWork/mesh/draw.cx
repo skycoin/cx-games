@@ -8,10 +8,6 @@ import "mesh"
 import "time"
 
 
-//UNUSED?! 
-var currX           f32
-var span            f32
-
 // single color channel intensities 
 var minCI           f32 = 0.0
 var darkCI          f32 = 0.2
@@ -71,7 +67,7 @@ func pre () {
 		if app.EditMode == app.EDITMODE_MESH_PICKER {
 			trianglesForAll(BakedUIMeshes)
 		}else{
-			trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
+			trianglesForToolbar(BakedUIMeshes, TOOLBAR_EDIT)
 		}
 	gl.End()
 }
@@ -128,7 +124,7 @@ func maybeDragBox() {
 
 func trianglesForAll (meshes []Mesh2D) {
 	for i := 0; i < len(meshes); i++ {
-		if i/2 == tBars[EDIT_TOOLBAR].Hovered {
+		if i/2 == tBars[TOOLBAR_EDIT].Hovered {
 			trianglesForOneColored(meshes, i, draw.Colors[draw.COLOR_CYAN])
 		}else{
 			trianglesForOne(meshes, i)
@@ -219,7 +215,6 @@ func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
 }
 
 
-/*
 func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) () {
 	//str.print("trianglesForOneWithPos ()")
 	
@@ -248,15 +243,14 @@ func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) () {
 func simpleVertexSequence (colorChanIntensity f32) () {
 	gl.Color3f(colorChanIntensity, colorChanIntensity, colorChanIntensity)
 
-	var i i32
-	for i = 0; i32.lt(i, len(entity.Ents)); i++ {
+	for i := 0; i < len(entity.Ents); i++ {
 		var e Entity
 		e = entity.Ents[i]
 
 		gl.Vertex2f(e.Pos.X, e.Pos.Y)
 	}
 }
-*/
+
 
 func gridLines () {
 	gl.Begin(gl.LINES)

@@ -34,9 +34,9 @@ func respondToPointerEvents () {
 		touchedMenuItem, i = getTouchedToolbarItem(inputs.MousePointer)
 		
 		if touchedMenuItem {
-			tBars[EDIT_TOOLBAR].Hovered = i
+			tBars[TOOLBAR_EDIT].Hovered = i
 		}else{
-			tBars[EDIT_TOOLBAR].Hovered = app.MAX_I32
+			tBars[TOOLBAR_EDIT].Hovered = app.MAX_I32
 		}
 	}
 }
