@@ -160,7 +160,17 @@ package app
 // FIXME when CX gets constants 
 var START_WIDTH  i32 = 1280
 var START_HEIGHT i32 = 720
+// these next 2 are used like how i would use nullable types 
+//		in C#.  often times, i want a value that means 
+//		"this has not specifically been set to any desired 
+//		value", or "this field is N/A (not applicable)". 
+//		why not use 0/0.0 to signify this?  because often 
+//		there's a desirable USE of zero (as a value) 
 var MAX_I32      i32 = 2147483647
+//		i would have to learn all about the convoluted floating 
+//		point storage scheme to know the max value. 
+//		or extend CX myself, to expose Golang's math.MaxFloat32 
+//		& such.  and i can't truthfully call this "max" 
 var TOO_BIG_F32  f32 = 999777.999777
 
 var Name         str
@@ -220,11 +230,11 @@ func CliIntro () {
 
 func showWorkHoursNeeded () {
 	// current "workmonth" (pay period) goes from the 5th to the 4th of following month 
-	var today       i32 = 28 // day of current month 
-	var hoursWorked f32 = 26.5
+	var today       i32 = 25 // day of current month 
+	var hoursWorked f32 = 20.5
 
 	var hoursGoal   f32 = 60.0 // ...to work this month (pay period) 
-	var daysInMonth i32 = 30 // current month that majority of days are in 
+	var daysInMonth i32 = 31 // current month that majority of days are in 
 	
 	
 	var daysLeft    i32 = daysInMonth - today + 4

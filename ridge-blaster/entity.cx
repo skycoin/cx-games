@@ -1,12 +1,4 @@
 type Entity struct {
-	Type i32
-	StartPos Vec2 // initial spawn position, ATM just for rockets 
-	Pos Vec2 // position 
-	//Rot f32  // rotation (around z axis) 
-	Radius f32
-	Extents Vec2 // FIXME?...this obviates need for radius? 
-	Vel Vec2 // velocity 
-	Mode i32
 	NextMode i32
 	TimeToNextMode f32
 	DistanceToNextMode f32
