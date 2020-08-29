@@ -230,8 +230,8 @@ func CliIntro () {
 
 func showWorkHoursNeeded () {
 	// current "workmonth" (pay period) goes from the 5th to the 4th of following month 
-	var today       i32 = 25 // day of current month 
-	var hoursWorked f32 = 20.5
+	var today       i32 = 29 // day of current month 
+	var hoursWorked f32 = 23.5
 
 	var hoursGoal   f32 = 60.0 // ...to work this month (pay period) 
 	var daysInMonth i32 = 31 // current month that majority of days are in 

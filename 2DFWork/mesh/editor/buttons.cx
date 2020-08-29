@@ -11,11 +11,11 @@ func changeAndAdd (inCol Color3, inM Mesh2D) (col Color3, m Mesh2D) {
 	m.Colors = append(
 	m.Colors, col)
 
-	printf("col.R,G,B: %f,%f,%f \n", col.R, col.G, col.B)
+	//printf("col.R,G,B: %f,%f,%f \n", col.R, col.G, col.B)
 	col.R = col.R - colSpan
 	col.G = col.G - colSpan
 	col.B = col.B - colSpan
-	printf("col.R,G,B: %f,%f,%f AFTER \n", col.R, col.G, col.B)
+	//printf("col.R,G,B: %f,%f,%f AFTER \n", col.R, col.G, col.B)
 }
 
 

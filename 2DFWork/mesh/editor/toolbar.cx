@@ -64,27 +64,12 @@ func InitToolBar (id i32, numItems i32) { // menu id
 					mi = MenuItem{ BakedBackground: app.MAX_I32, Name: "common init string" }
 					tBars[id].Items = append(
 					tBars[id].Items, mi)
-					printf("    + toolbar %d item \n", id)
-					printf("    len: %d \n", len(tBars[id].Items))
+					printf("    + toolbar %d item ", id)
+					printf("%d \n", len(tBars[id].Items))
 				}
 			}
 		}
 	}
-
-
-		// editor toolbar 
-		////// might use .Name as prefix to the hover-text of the button 
-		////// ("edit " + "colors/vertices" for example) 
-	//	tBars[id].Name = "Edit" 
-
-	//	"Edit Vertices"
-	//	"Edit Triangles"
-	//	"Edit Colors"
-	//	"Mesh Picker"
-	//	"Gen Init Func"
-	//	"Snap-To-Grid"
-	//	"Wipe Layer"
-	//	"PLAY"
 }
 
 

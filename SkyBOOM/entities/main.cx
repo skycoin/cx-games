@@ -114,7 +114,7 @@ func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 			DistanceY:   0.0, 
 			ExtentX:     0.015, 
 			ExtentY:     0.03}
-			//ExpiryTime:  exp}				
+			//TimeToNextMode:  exp}				
 		
 
 
