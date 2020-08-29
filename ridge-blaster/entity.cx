@@ -1,11 +1,3 @@
-type Entity struct {
-	NextMode i32
-	TimeToNextMode f32
-	DistanceToNextMode f32
-	MeshId i32
-}
-
-
 func Add (ent Entity) {
 	//printf("entity.Add()   x: %f, y: %f \n", ent.Pos.X, ent.Pos.Y)
 	Ents = append(Ents, ent)

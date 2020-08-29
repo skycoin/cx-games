@@ -35,44 +35,46 @@ var ActiveCounts []i32      // corresponds with "All" slices
                             //     (len(All[et]) - NumActive[et] == num dead) 
 
 type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN()! 
-	X           f32
-	Y           f32
-	OldX        f32
-	OldY        f32
-	ExtentX     f32
-	ExtentY     f32
-	VelX        f32 // velocity 
-	VelY        f32 // velocity 
-	Gravity     f32
-	Mode        i32
-	ExpiryDist  f32 // expire by distance travelled (0.0 == not using) 
-	ExpiryTime  f32 // expire by time passed        (0.0 == not using) 
-	WrapView    bool // moving objects wrap/teleport to opposite side of viewport 
+	X              f32
+	Y              f32
+	OldX           f32
+	OldY           f32
+	ExtentX        f32
+	ExtentY        f32
+	VelX           f32 // velocity 
+	VelY           f32 // velocity 
+	Gravity        f32
+	Mode           i32
+	NextMode       i32
+	DistToNextMode f32 // expire by distance travelled (0.0 == not using) 
+	TimeToNextMode f32 // expire by time passed        (0.0 == not using) 
+	WrapView       bool // moving objects wrap/teleport to opposite side of viewport 
 
 	// FIXME: move this section into Sky Taxi 
-	GridPos     app.Vec2I
+	GridPos        app.Vec2I
 	// cell bounds/connections 
-	CellMin     app.Vec2 // boundaries of the current cell it's in 
-	CellMax     app.Vec2 // ^ 
+	CellMin        app.Vec2 // boundaries of the current cell it's in 
+	CellMax        app.Vec2 // ^ 
 	//Room     map.CarvedRoom // CAN'T FIGURE OUT WHY THIS MAKES AVATAR DISAPPEAR 
-	ExitNorth   bool
-	ExitSouth   bool
-	ExitEast    bool
-	ExitWest    bool
+	ExitNorth      bool
+	ExitSouth      bool
+	ExitEast       bool
+	ExitWest       bool
 	
 	// Goal/Target info. 
 	// 		by worldspace position (THIS HAS PRIORITY OVER ENTITY-BASED GOALS). 
 	//			these 2 are a unit, if both == 0.0, no ws pos goal set 
 	// 			non-zero values causes VelX/Y to be ignored, 
 	// 			& instead move towards these values until close enough 
-	GoalX       f32
-	GoalY       f32
+	GoalX          f32
+	GoalY          f32
 	//		by Entity (likely moving). 
 	//			these 2 are a unit (id-only would be useless) 
-	GoalEntType i32
-	GoalEntId   i32
-	DistanceX   f32 // how far entity travelled since spawning 
-	DistanceY   f32 //                    " 
+	GoalEntType    i32
+	GoalEntId      i32
+	DistanceX      f32 // how far entity travelled since spawning 
+	DistanceY      f32 //                    " 
+	MeshId         i32
 }
 
 
@@ -129,7 +131,7 @@ func Update () {
 		for i := 0; i < ActiveCounts[t]; i++ {
 			if t == ENT_PLAYER && AutoUpdatePlayerEnts {
 				// REQUIRES FIXME IF PLAYER ENTS EVER SHOULD 
-				// 		USE EXPIRYTIME/DIST FIELDS 
+				// 		USE TimeToNextMode/DIST FIELDS 
 				//		(CUZ NOW IT COLLIDES AFTER Kill() IN UpdateAt() )
 				All[t][i].VelX,
 				All[t][i].VelY = mov.GetPlayerVelocityFromInput(
@@ -167,7 +169,7 @@ func UpdateAt (et i32, i i32) { // entity type, id
 		if  justCrossedGoal(et, i) {
 			//str.print("CROSSED GOAL LINE")
 			All[et][i].Mode = ENTMODE_MOVING_TO_ENTITY
-			All[et][i].ExpiryTime = time.Now + 3.0
+			All[et][i].TimeToNextMode = time.Now + 3.0
 		}
 	}else
 	if  All[et][i].Mode == ENTMODE_MOVING_TO_ENTITY {
@@ -218,8 +220,8 @@ func UpdateAt (et i32, i i32) { // entity type, id
 	
 	
 	// expire any ents that timeout 
-	if All[et][i].ExpiryTime != 0.0 {
-		if All[et][i].ExpiryTime <= time.Now {
+	if All[et][i].TimeToNextMode != 0.0 {
+		if All[et][i].TimeToNextMode <= time.Now {
 			Kill(et, i)
 		}		
 	}
@@ -227,7 +229,7 @@ func UpdateAt (et i32, i i32) { // entity type, id
 
 
 func Spawn (eType i32, newEnt Entity) {
-	//printf("Spawn (eType: %d) newEnt.ExpiryTime: %f \n", eType, newEnt.ExpiryTime)
+	//printf("Spawn (eType: %d) newEnt.TimeToNextMode: %f \n", eType, newEnt.TimeToNextMode)
 
 	var aC i32 // active count 
 	aC = ActiveCounts[eType]
@@ -237,25 +239,27 @@ func Spawn (eType i32, newEnt Entity) {
 	
 	if  aC < iC /* (can recycle an inactive) */ { 
 		//printf("------------- Spawn (eType: %v)     RECYCLing 1st inactive \n", eType)
-		All[eType][aC].X           = newEnt.X
-		All[eType][aC].Y           = newEnt.Y        
-		All[eType][aC].OldX        = newEnt.OldX
-		All[eType][aC].OldY        = newEnt.OldY
-		All[eType][aC].ExtentX     = newEnt.ExtentX  
-		All[eType][aC].ExtentY     = newEnt.ExtentY  
-		All[eType][aC].VelX        = newEnt.VelX       
-		All[eType][aC].VelY        = newEnt.VelY       
-		All[eType][aC].Gravity     = newEnt.Gravity  
-		All[eType][aC].Mode        = newEnt.Mode     
-		All[eType][aC].DistanceX   = newEnt.DistanceX
-		All[eType][aC].DistanceY   = newEnt.DistanceY
-		All[eType][aC].ExpiryDist  = newEnt.ExpiryDist
-		All[eType][aC].ExpiryTime  = newEnt.ExpiryTime
-		All[eType][aC].WrapView    = newEnt.WrapView	
-		All[eType][aC].GoalX       = newEnt.GoalX      
-		All[eType][aC].GoalY       = newEnt.GoalY      
-		All[eType][aC].GoalEntType = newEnt.GoalEntType
-		All[eType][aC].GoalEntId   = newEnt.GoalEntId  
+		All[eType][aC].X              = newEnt.X
+		All[eType][aC].Y              = newEnt.Y        
+		All[eType][aC].OldX           = newEnt.OldX
+		All[eType][aC].OldY           = newEnt.OldY
+		All[eType][aC].ExtentX        = newEnt.ExtentX  
+		All[eType][aC].ExtentY        = newEnt.ExtentY  
+		All[eType][aC].VelX           = newEnt.VelX       
+		All[eType][aC].VelY           = newEnt.VelY       
+		All[eType][aC].Gravity        = newEnt.Gravity  
+		All[eType][aC].Mode           = newEnt.Mode     
+		All[eType][aC].NextMode       = newEnt.NextMode     
+		All[eType][aC].DistanceX      = newEnt.DistanceX
+		All[eType][aC].DistanceY      = newEnt.DistanceY
+		All[eType][aC].DistToNextMode = newEnt.DistToNextMode
+		All[eType][aC].TimeToNextMode = newEnt.TimeToNextMode
+		All[eType][aC].WrapView       = newEnt.WrapView	
+		All[eType][aC].GoalX          = newEnt.GoalX      
+		All[eType][aC].GoalY          = newEnt.GoalY      
+		All[eType][aC].GoalEntType    = newEnt.GoalEntType
+		All[eType][aC].GoalEntId      = newEnt.GoalEntId  
+		All[eType][aC].MeshId         = newEnt.MeshId  
 	}else{
 		//printf("------------- Spawn (eType: %v)     APPENDing \n", eType)
 		All[eType] = append(
@@ -288,25 +292,27 @@ func Kill (eType i32, id i32) {
 		id < lS /* (not last active, last needs no copy) */ {
 			
 		//printf("RECYCLE  eType: %d   id: %d BEFORE \n", eType, id)
-		All[eType][id].X           = All[eType][lS].X
-		All[eType][id].Y           = All[eType][lS].Y
-		All[eType][id].OldX        = All[eType][lS].OldX
-		All[eType][id].OldY        = All[eType][lS].OldY
-		All[eType][id].ExtentX     = All[eType][lS].ExtentX
-		All[eType][id].ExtentY     = All[eType][lS].ExtentY
-		All[eType][id].VelX        = All[eType][lS].VelX
-		All[eType][id].VelY        = All[eType][lS].VelY
-		All[eType][id].Gravity     = All[eType][lS].Gravity
-		All[eType][id].Mode        = All[eType][lS].Mode
-		All[eType][id].DistanceX   = All[eType][lS].DistanceX
-		All[eType][id].DistanceY   = All[eType][lS].DistanceY
-		All[eType][id].ExpiryDist  = All[eType][lS].ExpiryDist
-		All[eType][id].ExpiryTime  = All[eType][lS].ExpiryTime
-		All[eType][id].WrapView    = All[eType][lS].WrapView
-		All[eType][id].GoalX       = All[eType][lS].GoalX      
-		All[eType][id].GoalY       = All[eType][lS].GoalY      
-		All[eType][id].GoalEntType = All[eType][lS].GoalEntType
-		All[eType][id].GoalEntId   = All[eType][lS].GoalEntId  
+		All[eType][id].X              = All[eType][lS].X
+		All[eType][id].Y              = All[eType][lS].Y
+		All[eType][id].OldX           = All[eType][lS].OldX
+		All[eType][id].OldY           = All[eType][lS].OldY
+		All[eType][id].ExtentX        = All[eType][lS].ExtentX
+		All[eType][id].ExtentY        = All[eType][lS].ExtentY
+		All[eType][id].VelX           = All[eType][lS].VelX
+		All[eType][id].VelY           = All[eType][lS].VelY
+		All[eType][id].Gravity        = All[eType][lS].Gravity
+		All[eType][id].Mode           = All[eType][lS].Mode
+		All[eType][id].NextMode       = All[eType][lS].NextMode
+		All[eType][id].DistanceX      = All[eType][lS].DistanceX
+		All[eType][id].DistanceY      = All[eType][lS].DistanceY
+		All[eType][id].DistToNextMode = All[eType][lS].DistToNextMode
+		All[eType][id].TimeToNextMode = All[eType][lS].TimeToNextMode
+		All[eType][id].WrapView       = All[eType][lS].WrapView
+		All[eType][id].GoalX          = All[eType][lS].GoalX      
+		All[eType][id].GoalY          = All[eType][lS].GoalY      
+		All[eType][id].GoalEntType    = All[eType][lS].GoalEntType
+		All[eType][id].GoalEntId      = All[eType][lS].GoalEntId  
+		All[eType][id].MeshId         = All[eType][lS].MeshId
 		//printf("RECYCLED eType: %d   id: %d        \n", eType, id)
 		//printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
 	}
