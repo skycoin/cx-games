@@ -337,8 +337,8 @@ func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
 
 
 func moveByVelocity (et i32, i i32) {
-	All[et][i].OldX      = All[et][i].X
-	All[et][i].OldY      = All[et][i].Y
+	All[et][i].OldX = All[et][i].X
+	All[et][i].OldY = All[et][i].Y
 	
 	var vX f32 
 	var vY f32 

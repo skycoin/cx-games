@@ -144,7 +144,7 @@ func getVelocity (velocity f32, negative bool, positive bool) (out f32) {
 		}
 
 		out = f32.sub(out, Force * time.Delta)
-	} else { //_________________________ slow down 
+	}else{ // ________________ slow down 
 		if out > 0.0 {
 			out = dampenPositiveMovement(out, 1.0)
 		} else

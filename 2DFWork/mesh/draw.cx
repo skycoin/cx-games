@@ -51,7 +51,9 @@ func DrawEditor () {
 
 	post()
 		
-	colorPalette()
+	if app.EditMode != app.EDITMODE_MESH_PICKER {
+		colorPalette()
+	}
 	
 	// text for hovered item 
 	var y f32 = 0.0
