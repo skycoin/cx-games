@@ -99,6 +99,8 @@ func post () {
 
 func colorPalette () {
 	var l i32 = len(draw.Colors)
+	//l = l * 2 (USED IF WE DOUBLE SIZE OF draw.COLORS SLICE) 
+	
 	var ext f32 = 2.0 / i32.f32(l) * 0.5 // swatch extent 
 	//printf("ext: %f \n", ext)
 	
@@ -112,7 +114,9 @@ func colorPalette () {
 	for i := 0; i < l; i++ {
 		//printf("i: %d \n", i)
 		draw.SetColor(i)
-		draw.AddRect (pos, ext, ext)
+		draw.AddRect(pos, ext, ext)
+		//draw.SetBlendedColor3(a, b)
+		//draw.AddRect (pos, ext, ext)
 		pos.Y = pos.Y - ext * 2.0
 	}
 	
@@ -223,17 +227,7 @@ func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
 		var pId i32 // point id (from tri ids) 
 		pId = m.TriangleIndices[j]
 		
-		var c Color3
-		c = m.Colors[pId]
-		
-		var r f32 = (c.R - col.R) * 0.5 // color channel deltas 
-		var g f32 = (c.G - col.G) * 0.5
-		var b f32 = (c.B - col.B) * 0.5
-		
-		gl.Color3f( // blend colors 
-			col.R + r, 
-			col.G + g, 
-			col.B + b)
+		draw.SetBlendedColor3(m.Colors[pId], col)
 		
 		var v Vec2
 		v = m.Points[pId]

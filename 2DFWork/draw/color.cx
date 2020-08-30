@@ -80,6 +80,18 @@ func SetColor4 (color Color3, alpha f32) {
 }
 
 
+func SetBlendedColor3 (a Color3, b Color3) {
+		var rc f32 = (a.R - b.R) * 0.5 // color channel deltas 
+		var gc f32 = (a.G - b.G) * 0.5
+		var bc f32 = (a.B - b.B) * 0.5
+		
+		gl.Color3f( // blend colors 
+			b.R + rc, 
+			b.G + gc, 
+			b.B + bc)
+}
+
+
 func SetSequentiallyCycledColor (i i32) {
 	var l i32 = len(Colors)
 	var c i32 = i % l
