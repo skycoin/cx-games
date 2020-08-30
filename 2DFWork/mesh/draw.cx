@@ -99,9 +99,10 @@ func post () {
 
 func colorPalette () {
 	var l i32 = len(draw.Colors)
-	//l = l * 2 (USED IF WE DOUBLE SIZE OF draw.COLORS SLICE) 
+	var d i32 = l // doubled amount 
+	d = d * 2 // for DOUBLing SIZE OF draw.COLORS SLICE 
 	
-	var ext f32 = 2.0 / i32.f32(l) * 0.5 // swatch extent 
+	var ext f32 = 2.0 / i32.f32(d) * 0.5 // swatch extent 
 	//printf("ext: %f \n", ext)
 	
 	var pos app.Vec2
@@ -111,12 +112,19 @@ func colorPalette () {
 
 	draw.BeginUntexturedQuads()
 	
-	for i := 0; i < l; i++ {
+	for i := 0; i < d; i++ {
 		//printf("i: %d \n", i)
-		draw.SetColor(i)
+		var a i32 = i / 2
+		var b i32 = a + 1
+		b = b % l
+		
+		if i % 2 == 0 {
+			draw.SetColor(a)
+		}else{
+			draw.SetBlendedColor3(draw.Colors[a], draw.Colors[b])
+		}
+		
 		draw.AddRect(pos, ext, ext)
-		//draw.SetBlendedColor3(a, b)
-		//draw.AddRect (pos, ext, ext)
 		pos.Y = pos.Y - ext * 2.0
 	}
 	
