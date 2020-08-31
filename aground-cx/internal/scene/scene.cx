@@ -1,0 +1,33 @@
+package main
+
+import "screen_pkg"
+
+type Scene struct {
+  id str
+  rear_screen screen_pkg.Screen
+  front_screen screen_pkg.Screen
+}
+
+func NewScene(id str, rear_screen screen_pkg.Screen, front_screen screen_pkg.Screen) (scene Scene) {
+  scene.id = id;
+  scene.rear_screen = rear_screen;
+  scene.front_screen = front_screen;
+}
+
+func SceneRenderRear(scene Scene) {
+  screen_pkg.RenderScreen(scene.rear_screen);
+}
+
+func SceneRenderFront(scene Scene) {
+  screen_pkg.RenderScreen(scene.front_screen);
+}
+
+func SceneUpdate(scene Scene, x i32, y i32) (scene Scene) {
+  scene.rear_screen = screen_pkg.ScreenUpdate(scene.rear_screen, x, y)
+  scene.front_screen = screen_pkg.ScreenUpdate(scene.front_screen, x, y)
+}
+
+func SceneClick(scene Scene) (scene Scene) {
+  // Only click the front layer
+  scene.front_screen = screen_pkg.ScreenClick(scene.front_screen)
+}

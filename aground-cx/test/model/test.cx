@@ -1,0 +1,71 @@
+package main
+
+import "gl"
+import "test"
+
+func SetUp()  {
+  gl.Init()
+	gl.Enable(gl.BLEND)
+  	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.DEPTH_TEST)
+	gl.Enable(gl.TEXTURE_2D)
+
+	program := gl.CreateProgram()
+	gl.LinkProgram(program)
+}
+
+func TearDown() {}
+
+func main() {
+  SetUp()
+
+  // cell_test.cx
+  {
+    NewCell_Test()
+    LoadCellTextures_Test()
+    CellHit_Test()
+    CellHit_WhenAlreadyDestroyed_Test()
+  }
+
+  // item_test.cx
+  {
+    NewItem_Test()
+    LoadItemTextures_Test()
+    ItemUse_WhenWeapon_Test()
+    ItemUse_WhenBlock_Test()
+    ItemUse_WhenBlock_AndCellNotEmpty_Test()
+    ItemUse_WhenConsumable_Test()
+    ItemToCell_Test()
+  }
+
+  // item_collection_test.cx
+  {
+    NewItemCollection_Test()
+    ItemCollectionAddItem_WhenEmpty_Test()
+    ItemCollectionAddItem_WhenHalfFull_Test()
+    ItemCollectionAddItem_WhenFull_Test()
+    ItemCollectionRemoveItem_Test()
+    ItemCollectionEquip_Test()
+    ItemCollectionEquip_WhenSlotEmpty_Test()
+    ItemCollectionGetEquiped_Test()
+    ItemCollectionGetEquiped_WhenNoneEquiped_Test()
+    ItemCollectionIsEmpty_WhenEmpty_Test()
+    ItemCollectionIsEmpty_WhenNotEmpty_Test()
+    ItemCollectionIsFull_WhenFull_Test()
+    ItemCollectionIsFull_WhenNotFull_Test()
+  }
+
+  // crafter_test.cx
+  {
+    InitCrafter_Test()
+  }
+
+  // player_test.cx
+  {
+    NewPlayer_Test()
+  }
+
+  TearDown()
+
+  test.Summary()
+}

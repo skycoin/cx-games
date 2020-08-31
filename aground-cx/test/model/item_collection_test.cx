@@ -1,0 +1,285 @@
+package main
+
+import "test"
+
+func NewItemCollection_Test() {
+  test.StartTest("should initialize an ItemCollection with the correct attributes")
+
+  // arrange
+  var capacity i32 = 10
+
+  // act
+  var collection ItemCollection = NewItemCollection(capacity)
+
+  // assert
+  test.AssertEqualsI32(collection.capacity, capacity)
+  for i:=0; i<capacity; i++ {
+    test.AssertEqualsI32(collection.slots[i].id, ITEM_TYPE_VOID)
+    test.AssertEqualsI32(collection.slots[i].class, ITEM_CLASS_VOID)
+  }
+  test.AssertEqualsI32(collection.active_slot, -1)
+
+  test.FinishTest()
+}
+
+func ItemCollectionAddItem_WhenEmpty_Test()  {
+  test.StartTest("should add item to first slot of a collection when empty")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+  var item Item = NewItem(ITEM_TYPE_SWORD, ITEM_CLASS_WEAPON)
+
+  // act
+  var is_empty bool = ItemCollectionIsEmpty(collection)
+
+  // assert
+  test.AssertTrue(is_empty)
+
+  // act
+  collection = ItemCollectionAddItem(collection, item)
+
+  // assert
+  test.AssertEqualsI32(collection.slots[0].id, item.id)
+  test.AssertEqualsI32(collection.slots[0].class, item.class)
+  for i:=1; i<capacity; i++ {
+    test.AssertEqualsI32(collection.slots[i].id, ITEM_TYPE_VOID)
+    test.AssertEqualsI32(collection.slots[i].class, ITEM_CLASS_VOID)
+  }
+
+  test.FinishTest()
+}
+
+func ItemCollectionAddItem_WhenHalfFull_Test()  {
+  test.StartTest("should add item to first empty slot of a collection slots available")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+  for i:=0; i<capacity/2; i++ {
+    collection = ItemCollectionAddItem(collection, NewItem(ITEM_TYPE_APPLE, ITEM_CLASS_CONSUMABLE))
+  }
+  var item Item = NewItem(ITEM_TYPE_SWORD, ITEM_CLASS_WEAPON)
+
+  // act
+  var is_empty bool = ItemCollectionIsEmpty(collection)
+  var is_full bool = ItemCollectionIsFull(collection)
+
+  // assert
+  test.AssertFalse(is_empty)
+  test.AssertFalse(is_full)
+
+  // act
+  collection = ItemCollectionAddItem(collection, item)
+
+  // assert
+  for i:=0; i<capacity/2; i++ {
+    test.AssertEqualsI32(collection.slots[i].id, ITEM_TYPE_APPLE)
+    test.AssertEqualsI32(collection.slots[i].class, ITEM_CLASS_CONSUMABLE)
+  }
+  test.AssertEqualsI32(collection.slots[capacity/2].id, ITEM_TYPE_SWORD)
+  test.AssertEqualsI32(collection.slots[capacity/2].class, ITEM_CLASS_WEAPON)
+
+  test.FinishTest()
+}
+
+func ItemCollectionAddItem_WhenFull_Test()  {
+  test.StartTest("should not add item to a collection when full")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+  for i:=0; i<capacity; i++ {
+    collection = ItemCollectionAddItem(collection, NewItem(ITEM_TYPE_APPLE, ITEM_CLASS_CONSUMABLE))
+  }
+  var item Item = NewItem(ITEM_TYPE_SWORD, ITEM_CLASS_WEAPON)
+
+  // act
+  var is_full bool = ItemCollectionIsFull(collection)
+
+  // assert
+  test.AssertTrue(is_full)
+
+  // act
+  collection = ItemCollectionAddItem(collection, item)
+
+  // assert
+  for i:=0; i<capacity; i++ {
+    test.AssertEqualsI32(collection.slots[i].id, ITEM_TYPE_APPLE)
+    test.AssertEqualsI32(collection.slots[i].class, ITEM_CLASS_CONSUMABLE)
+  }
+
+  test.FinishTest()
+}
+
+func ItemCollectionRemoveItem_Test()  {
+  test.StartTest("should remove an item from collection when slot is full")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+  var item Item = NewItem(ITEM_TYPE_SWORD, ITEM_CLASS_WEAPON)
+
+  // act
+  collection = ItemCollectionAddItem(collection, item)
+  var is_empty bool = ItemCollectionIsEmpty(collection)
+
+  // assert
+  test.AssertFalse(is_empty)
+
+  // act
+  var removed Item
+  collection, removed = ItemCollectionRemoveItem(collection, 0)
+  is_empty = ItemCollectionIsEmpty(collection)
+
+  // assert
+  test.AssertEqualsI32(removed.id, item.id)
+  test.AssertEqualsI32(removed.class, item.class)
+  test.AssertTrue(is_empty)
+
+  test.FinishTest()
+}
+
+// TODO remove equiped item
+
+func ItemCollectionEquip_Test()  {
+  test.StartTest("should equip an item from collection when the selected slot is full")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+  var item Item = NewItem(ITEM_TYPE_SWORD, ITEM_CLASS_WEAPON)
+  collection = ItemCollectionAddItem(collection, item)
+
+  // act
+  collection = ItemCollectionEquip(collection, 0)
+
+  // assert
+  test.AssertEqualsI32(collection.active_slot, 0)
+
+  test.FinishTest()
+}
+
+func ItemCollectionEquip_WhenSlotEmpty_Test() {
+  test.StartTest("should not equip an item from collection when the selected slot is empty")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+
+  // act
+  collection = ItemCollectionEquip(collection, 0)
+
+  // assert
+  test.AssertNotEqualsI32(collection.active_slot, 0)
+
+  test.FinishTest()
+}
+
+func ItemCollectionGetEquiped_Test() {
+  test.StartTest("should return the equiped item when one is equiped")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+  var item Item = NewItem(ITEM_TYPE_SWORD, ITEM_CLASS_WEAPON)
+  collection = ItemCollectionAddItem(collection, item)
+
+  // act
+  collection = ItemCollectionEquip(collection, 0)
+  var equiped Item = ItemCollectionGetEquiped(collection)
+
+  // assert
+  test.AssertEqualsI32(equiped.id, item.id)
+  test.AssertEqualsI32(equiped.class, item.class)
+
+  test.FinishTest()
+}
+
+func ItemCollectionGetEquiped_WhenNoneEquiped_Test()  {
+  test.StartTest("should return a void item when no item is equiped")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+
+  // act
+  var equiped Item = ItemCollectionGetEquiped(collection)
+
+  // assert
+  test.AssertEqualsI32(equiped.id, ITEM_TYPE_VOID)
+  test.AssertEqualsI32(equiped.class, ITEM_CLASS_VOID)
+
+  test.FinishTest()
+}
+
+func ItemCollectionIsEmpty_WhenEmpty_Test() {
+  test.StartTest("should return true when the collection is empty")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+
+  // act
+  var is_empty bool = ItemCollectionIsEmpty(collection)
+
+  // assert
+  test.AssertTrue(is_empty)
+
+  test.FinishTest()
+}
+
+func ItemCollectionIsEmpty_WhenNotEmpty_Test() {
+  test.StartTest("should return false when the collection is not empty")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+  var item Item = NewItem(ITEM_TYPE_SWORD, ITEM_CLASS_WEAPON)
+  collection = ItemCollectionAddItem(collection, item)
+
+  // act
+  var is_empty bool = ItemCollectionIsEmpty(collection)
+
+  // assert
+  test.AssertFalse(is_empty)
+
+  test.FinishTest()
+}
+
+func ItemCollectionIsFull_WhenFull_Test() {
+  test.StartTest("should return true when the collection is full")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+  for i:=0; i<capacity; i++ {
+    collection = ItemCollectionAddItem(collection, NewItem(ITEM_TYPE_SWORD, ITEM_CLASS_WEAPON))
+  }
+
+  // act
+  var is_full bool = ItemCollectionIsFull(collection)
+
+  // assert
+  test.AssertTrue(is_full)
+
+  test.FinishTest()
+}
+
+func ItemCollectionIsFull_WhenNotFull_Test() {
+  test.StartTest("should return false when the collection is not full")
+
+  // arrange
+  var capacity i32 = 10
+  var collection ItemCollection = NewItemCollection(capacity)
+  var item Item = NewItem(ITEM_TYPE_SWORD, ITEM_CLASS_WEAPON)
+  collection = ItemCollectionAddItem(collection, item)
+
+  // act
+  var is_full bool = ItemCollectionIsFull(collection)
+
+  // assert
+  test.AssertFalse(is_full)
+
+  test.FinishTest()
+}

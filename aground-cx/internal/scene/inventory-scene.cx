@@ -1,0 +1,87 @@
+package main
+
+import "glfw"
+
+import "screen_pkg"
+import "button_pkg"
+
+func NewInventoryScene(screen_width i32, screen_height i32) (scene Scene) {
+  scene = NewScene(
+    "inventory-scene",
+    NewInventoryRearScreen(screen_width, screen_height),
+    NewInventoryFrontScreen(screen_width, screen_height))
+}
+
+func NewInventoryRearScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("inventory-rear-screen", screen_width, screen_height)
+  //screen = screen_pkg.ScreenSetBackground(screen, "../../static/texture/screen/sky.png")
+}
+
+func NewInventoryFrontScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+    screen = screen_pkg.newScreen("inventory-front-screen", screen_width, screen_height)
+
+    var storage_layer layer_pkg.Layer
+    storage_layer = layer_pkg.newLayer("inventory-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+    for i:=0; i<5; i++ {
+        for j:=0; j<i32.div(g_inventory.capacity, 5); j++ {
+            storage_layer = storage_layer.addButton(
+                button_pkg.newButton2(
+                    sprintf("inventory-%d", i*15 + j),
+                    CELL_WIDTH*(i32.f32(j)-7.0), 0.5 - CELL_HEIGHT*1.5*i32.f32(i), 60, 60,
+                    g_inventory.slots[i*15 + j].geometry.material.texture,
+                    g_inventory.slots[i*15 + j].geometry.material.texture))
+        }
+    }
+    screen = screen.addLayer(storage_layer)
+
+    var items_layer layer_pkg.Layer
+    items_layer = layer_pkg.newLayer("hotbar-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+    for i:=0; i<g_hotbar.capacity; i++ {
+        items_layer = items_layer.addButton(
+            button_pkg.newButton2(
+                sprintf("hotbar-%d", i),
+                CELL_WIDTH*(i32.f32(i)-4.0), -0.5, 60, 60,
+                g_hotbar.slots[i].geometry.material.texture,
+                g_hotbar.slots[i].geometry.material.texture))
+    }
+    screen = screen.addLayer(items_layer)
+}
+
+func InventorySceneRender(scene Scene) {
+    SceneRenderRear(scene)
+    SceneRenderFront(scene)
+}
+
+func InventorySceneUpdate(scene Scene) (scene Scene) {
+    var x f64
+    var y f64
+    x, y = glfw.GetCursorPos("window")
+    scene = SceneUpdate(scene, f64.i32(x), f64.i32(y))
+
+    for i:=0; i<len(scene.front_screen.layers); i++ {
+        if scene.front_screen.layers[i].pending_callback {
+            callback_id := scene.front_screen.layers[i].callback_id
+            for j:=0; j<g_inventory.capacity; j++ {
+                if str.eq(callback_id, sprintf("inventory-%d", j)) {
+                    if bool.not(ItemCollectionIsFull(g_hotbar)) {
+                        var item Item
+                        g_inventory, item = ItemCollectionRemoveItem(g_inventory, j)
+                        g_hotbar = ItemCollectionAddItem(g_hotbar, item)
+                    }
+                }
+            }
+
+            for j:=0; j<g_hotbar.capacity; j++ {
+                if str.eq(callback_id, sprintf("hotbar-%d", j)) {
+                    if bool.not(ItemCollectionIsFull(g_inventory)) {
+                        var item Item
+                        g_hotbar, item = ItemCollectionRemoveItem(g_hotbar, j)
+                        g_inventory = ItemCollectionAddItem(g_inventory, item)
+                    }
+                }
+            }
+            scene.front_screen.layers[i].pending_callback = false
+            scene.front_screen = NewInventoryFrontScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
+        }
+    }
+}

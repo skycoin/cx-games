@@ -1,0 +1,51 @@
+package main
+
+import "test"
+
+func InitCrafter_Test() {
+  test.StartTest("should initialize the crafter with the correct attributes")
+
+  // act
+  InitCrafter()
+
+  // assert
+  test.AssertEqualsI32(g_crafter.collection.capacity, 9)
+  for i:=0; i<9; i++ {
+    test.AssertEqualsI32(g_crafter.collection.slots[i].id, ITEM_TYPE_VOID)
+    test.AssertEqualsI32(g_crafter.collection.slots[i].class, ITEM_CLASS_VOID)
+  }
+  test.AssertEqualsI32(g_crafter.result.id, ITEM_TYPE_VOID)
+  test.AssertEqualsI32(g_crafter.result.class, ITEM_CLASS_VOID)
+
+  test.FinishTest()
+}
+
+/*func InitCrafter_Test() {
+  test.StartTest("")
+
+  // arrange
+  // act
+  // assert
+
+  test.FinishTest()
+}*/
+
+/*func InitCrafter_Test() {
+  test.StartTest("")
+
+  // arrange
+  // act
+  // assert
+
+  test.FinishTest()
+}*/
+
+/*func InitCrafter_Test() {
+  test.StartTest("")
+
+  // arrange
+  // act
+  // assert
+
+  test.FinishTest()
+}*/

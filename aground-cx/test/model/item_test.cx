@@ -1,0 +1,110 @@
+package main
+
+import "test"
+
+func NewItem_Test() {
+  test.StartTest("should initialize an Item with the correct attributes")
+
+  // act
+  var item Item = NewItem(ITEM_TYPE_PICKAXE, ITEM_CLASS_WEAPON)
+
+  // assert
+  test.AssertEqualsI32(item.id, ITEM_TYPE_PICKAXE)
+  test.AssertEqualsI32(item.class, ITEM_CLASS_WEAPON)
+
+  test.FinishTest()
+}
+
+func LoadItemTextures_Test() {
+  test.StartTest("should load Item textures after initializing the first item")
+
+  // arrange
+  item_textures_loaded = false
+
+  // assert
+  test.AssertFalse(item_textures_loaded)
+
+  // act
+  var item Item = NewItem(ITEM_TYPE_PICKAXE, ITEM_CLASS_WEAPON)
+
+  // assert
+  test.AssertTrue(item_textures_loaded)
+
+  test.FinishTest()
+}
+
+func ItemUse_WhenWeapon_Test() {
+  test.StartTest("should decrease a cell resistance when hit by a weapon")
+
+  // arrange
+  g_world[0][0] = NewCell(0, 0, CELL_TYPE_DIRT)
+  var item Item = NewItem(ITEM_TYPE_PICKAXE, ITEM_CLASS_WEAPON)
+
+  // assert
+  test.AssertEqualsI32(g_world[0][0].resistance, 1)
+
+  // act
+  ItemUse(item, 0, 0)
+
+  // assert
+  test.AssertEqualsI32(g_world[0][0].resistance, 0)
+
+  test.FinishTest()
+}
+
+func ItemUse_WhenBlock_Test() {
+  test.StartTest("should place a cell block when a block item is used on an empty cell")
+
+  // arrange
+  g_world[0][0] = NewCell(0, 0, CELL_TYPE_EMPTY)
+  var item Item = NewItem(ITEM_TYPE_LADDER, ITEM_CLASS_BLOCK)
+
+  // act
+  ItemUse(item, 0, 0)
+
+  // assert
+  test.AssertEqualsI32(g_world[0][0].tp, CELL_TYPE_LADDER)
+
+  test.FinishTest()
+}
+
+func ItemUse_WhenBlock_AndCellNotEmpty_Test() {
+  test.StartTest("should not place a cell block when a block item is used on an not empty cell")
+
+  // arrange
+  g_world[0][0] = NewCell(0, 0, CELL_TYPE_DIRT)
+  var item Item = NewItem(ITEM_TYPE_LADDER, ITEM_CLASS_BLOCK)
+
+  // act
+  ItemUse(item, 0, 0)
+
+  // assert
+  test.AssertNotEqualsI32(g_world[0][0].tp, ITEM_TYPE_LADDER)
+  test.AssertEqualsI32(g_world[0][0].tp, CELL_TYPE_DIRT)
+
+  test.FinishTest()
+}
+
+func ItemUse_WhenConsumable_Test() {
+  test.StartTest("should increase the player stats when a consumable item is used")
+
+  // TODO implement this
+
+  test.FinishTest()
+}
+
+func ItemToCell_Test()  {
+  // TODO test for multiple items
+  test.StartTest("should map an item to the corresponding cell")
+
+  // arrenge
+  var item Item = NewItem(ITEM_TYPE_LADDER, ITEM_CLASS_BLOCK)
+
+  // act
+  var cell_type i32 = itemToCell(item)
+
+  // assert
+  test.AssertEqualsI32(cell_type, CELL_TYPE_LADDER)
+
+  test.FinishTest()
+}
