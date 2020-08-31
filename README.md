@@ -22,6 +22,7 @@ The list of all games included in this repo as well as the respective stage of d
 | [Sky Boom](skyBOOM/) | No description available. | Finished | [corpursc](https://github.com/corpusc) |
 | [Contest Elim](contest-elim) | No description available. | Finished | unknown |
 | [Brick Breaker](brick-breaker/) | A Brick Breaker clone in CX. | Development | [RedCurse](https://github.com/jaywillscott) |
+| [Aground](aground-cx/) | A CX based remake of Aground. | Development | [galah4d](https://github.com/galah4d) |
 | [Sky Taxi](ridge-blaster/) | No description available. | Development | [corpursc](https://github.com/corpusc) |
 | [Ridge Balster](ridge-blaster/) | No description available. | Abandoned | [corpursc](https://github.com/corpusc) |
 
