@@ -1,0 +1,40 @@
+package phx
+
+type Vector struct {
+  x f32
+  y f32
+  z f32
+}
+
+func NewVector(x f32, y f32, z f32) (vector Vector) {
+  vector.x = x
+  vector.y = y
+  vector.z = z
+}
+
+func VectorAdd(v1 Vector, v2 Vector) (out Vector) {
+  out = NewVector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z)
+}
+
+func VectorSub(v1 Vector, v2 Vector) (out Vector) {
+  out = NewVector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z)
+}
+
+func VectorEq(v1 Vector, v2 Vector) (out bool) {
+  out = v1.x == v2.x && v1.y == v2.y && v1.z == v2.z
+}
+
+func VectorMulScalar(v1 Vector, s f32) (out Vector) {
+  out = NewVector(v1.x * s, v1.y * s, v1.z * s)
+}
+
+func VectorDistance(v1 Vector, v2 Vector) (out f32) {
+  xs := f32.mul(f32.sub(v1.x, v2.x), f32.sub(v1.x, v2.x))
+  ys := f32.mul(f32.sub(v1.y, v2.y), f32.sub(v1.y, v2.y))
+  zs := f32.mul(f32.sub(v1.z, v2.z), f32.sub(v1.z, v2.z))
+  out = f32.sqrt(xs + ys + zs)
+}
+
+func VectorPrint(vector Vector) {
+  printf("x: %f, y: %f, z: %f\n", vector.x, vector.y, vector.z)
+}

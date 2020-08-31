@@ -5,6 +5,11 @@ type Vector2D struct {
     y f32
 }
 
+func NewVector2D(x f32, y f32) (vec Vector2D) {
+    vec.x = x
+    vec.y = y
+}
+
 type Window struct {
     Height i32
     Width i32

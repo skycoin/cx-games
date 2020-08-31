@@ -1,0 +1,49 @@
+package main
+
+import "gl"
+import "app"
+import "graphical"
+
+var BRICK_WIDTH f32 = 128.0 / 1024.0
+var BRICK_HEIGHT f32 = 64.0 / 768.0
+
+var BRICK_TEXTURE_LOADED bool = false
+var BRICK_TEXTURE i32
+
+var g_bricks []Brick
+
+type Brick struct {
+    position app.Vector2D
+    destroyed bool
+    geometry graphical.PlaneGeometry
+}
+
+func NewBrick(x f32, y f32) (brick Brick) {
+    brick.position = app.NewVector2D(x, y)
+    brick.destroyed = false
+
+    if bool.not(BRICK_TEXTURE_LOADED) {
+        BRICK_TEXTURE = gl.NewTexture("./assets/textures/brick.png")
+        BRICK_TEXTURE_LOADED = true
+    }
+
+    var mat graphical.Material
+    mat = graphical.newMaterial(0.0, 0.0, 0.0)
+    mat = mat.setTexture(BRICK_TEXTURE)
+
+    brick.geometry = graphical.newPlaneGeometry(
+        graphical.newVector3f(brick.position.x, brick.position.y, 0.0),
+        graphical.newVector3f(BRICK_WIDTH, BRICK_HEIGHT, 0.0),
+        mat)
+}
+
+func UpdateBrick(brick Brick) (brick Brick) {
+}
+
+func RenderBrick(brick Brick) {
+    if bool.not(brick.destroyed) {
+        var geometry graphical.PlaneGeometry
+        geometry = brick.geometry;
+        geometry.render()
+    }
+}
