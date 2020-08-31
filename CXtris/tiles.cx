@@ -1,0 +1,39 @@
+package tiles // the cells of the playfield 
+
+import "app"
+import "main"
+
+
+
+var EMPTY_CELL        i32 = app.MAX_I32
+
+// 0,0 is the bottom left corner, of map/playfield cells 
+var NUM_CELLS_X       i32 = 9
+var NUM_CELLS_Y       i32 = 19 // FIXME: unfortch, can't use this as an array init'er ATM 
+
+var CollapsingRows    []i32 // for when row/s are full & disappear 
+var CollapseStartTime f64   //                 ^ 
+// fractions of screen width (2.0, ranging over -1.0 to 1.0) 
+var pixelW            f32 = 590.0
+var fToLEdge          f32 = 18.0 / pixelW // fraction to left edge of playfield? 
+var LEdge             f32 = f32.add(-1.0, f32.mul(fToLEdge, 2.0))
+var Width             f32 = f32.div(400.0, pixelW) * 2.0
+var CellWidth         f32 = f32.div(Width, i32.f32(NUM_CELLS_X))
+var CellHeight        f32 = f32.mul(CellWidth, main.HackyHeightFraction)
+var CellWidthHalf     f32 = f32.div(CellWidth, 2.0)
+var CellHeightHalf    f32 = f32.div(CellHeight, 2.0)
+var Cells             [19][9]i32 // FIXME with NUM_CELLS_* FROM ABOVE WHEN CX FIXED 
+
+// corner pixel positions of map cells column (of total playfield surface) 
+// b      l:             18, 940
+// bottom right corner: 418, 940
+
+
+
+func EmptyPlayfield () {
+	for     y := 0; y < NUM_CELLS_Y; y++ {
+		for x := 0; x < NUM_CELLS_X; x++ {
+			Cells[y][x] = EMPTY_CELL
+		}
+	}
+}

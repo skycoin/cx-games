@@ -1,0 +1,63 @@
+package draw
+
+import "gl"
+import "glfw"
+import "gltext"
+
+import "app"
+import "geom"
+import "menu"
+import "space"
+
+
+
+var BaseAssetDir str = "../2DFWork/draw/assets/"
+var GameAssetDir str = "assets/"
+
+
+
+func Init () {
+	str.print("2DFWork/draw.Init ()")
+
+	initGL()
+	initColor()
+	InitFonts()
+
+	glfw.SetFramebufferSizeCallback(app.Name, "OnFramebufferSize", "draw")
+	
+	// set initial values before events are triggered 
+	space.Init()
+	space.ViewWidInPixels, 
+	space.ViewHeiInPixels = glfw.GetFramebufferSize(app.Name)
+	
+	OnFramebufferSize(app.Name, 
+		space.ViewWidInPixels, 
+		space.ViewHeiInPixels)
+}
+
+
+func OnFramebufferSize (window str, wid i32, hei i32) {
+	printf("    OnFramebufferSize() w,h: %d,%d \n", wid, hei)
+	
+	space.SetSize(wid, hei)
+	menu.BakeItemText()
+	//gl.Viewport(0, 0, wid, hei)
+}
+
+
+func initGL () {
+	glfw.Init()
+	glfw.CreateWindow(
+		app.Name, 
+		app.START_WIDTH, 
+		app.START_HEIGHT, 
+		app.Name)
+	glfw.MakeContextCurrent(app.Name)
+
+	gl.Init()
+	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.TEXTURE_2D)
+	gl.Enable(gl.BLEND)
+	gl.DepthMask(true) // not needed by "gltext" package 
+}

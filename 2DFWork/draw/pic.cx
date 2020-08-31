@@ -1,0 +1,170 @@
+package draw
+
+
+
+// pics (textures) 
+var PicStar       i32
+var PicShapeTile  i32
+var PicRotLeft    i32
+var PicRotRight   i32
+var PicArrowLeft  i32
+var PicArrowRight i32
+var PicArrowDown  i32
+var PicMouse      i32
+var PicMouseLMB   i32
+var PicMouseRMB   i32
+var PicCloudLogo  i32
+var PicCoin       i32
+
+type Pic struct {
+	Name str
+	Id   i32
+}
+
+var pics []Pic // ATM, only used for game specific pics 
+
+
+
+func AddPic (name str) (id i32) {
+	printf("2DFWork.draw.AddPic (%s) \n", name)
+
+	id = initPic(GameAssetDir, name)	
+	var p Pic
+	p =   Pic{ Name: name, Id: id }
+	pics = append(pics, p)
+}
+
+
+func InitPics () {
+	str.print("2DFWork.draw.InitPics ()")
+	
+	var dir str = BaseAssetDir
+	
+	PicStar       = initPic(dir, "star.png")
+	PicShapeTile  = initPic(dir, "tile.png")
+	PicRotLeft    = initPic(dir, "rotate-left.png")
+	PicRotRight   = initPic(dir, "rotate-right.png")
+	PicArrowLeft  = initPic(dir, "arrow-left.png")
+	PicArrowRight = initPic(dir, "arrow-right.png")
+	PicArrowDown  = initPic(dir, "arrow-down.png")
+	PicMouse      = initPic(dir, "mouse.png")   
+	PicMouseLMB   = initPic(dir, "mouse-lmb.png")
+	PicMouseRMB   = initPic(dir, "mouse-rmb.png")
+	PicCoin       = initPic(dir, "coins/coin0001.png") // coin0002.png 
+	PicCloudLogo  = initPic(dir, "logos/Skycoin-Cloud-White.png")
+	
+	
+	/*
+	dir = GameAssetDir
+	
+	// game specifics 
+	for i := 0; i < len(pics); i++ {
+		pics[i].Id = initPic(dir, pics[i].Name)
+	}
+	*/
+}
+
+
+// no need to use GetPicId() if you assign output of AddPic() to a var 
+// (recommended) 
+func GetPicId (name str) (out i32) {
+	for i := 0; i < len(pics); i++ {
+		if name == pics[i].Name {
+			out =  pics[i].Id
+			break
+		}
+	}
+}
+
+
+func ScaledPic (picId i32, x f32, y f32, scaleX f32, scaleY f32) {
+	ScaledRotatedPic(picId, x, y, scaleX, scaleY, 0.0)
+}
+
+
+func ScaledRotatedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32, angle f32) {
+	gl.LoadIdentity()
+	gl.BindTexture(gl.TEXTURE_2D, picId)
+	
+	if angle != 0.0 {
+		gl.Rotatef(angle, 0.0, 0.0, 1.0)
+	}
+	gl.Translatef(x, y, 0.0)
+	gl.Scalef(scaleX, scaleY, 0.0)
+	
+	gl.Begin(gl.QUADS)
+		gl.TexCoord2d(0.0D, 0.0D)
+		gl.Vertex3f(-0.5, 0.5, 0.0)
+		
+		gl.TexCoord2d(1.0D, 0.0D)
+		gl.Vertex3f(0.5, 0.5, 0.0)
+		
+		gl.TexCoord2d(1.0D, 1.0D)
+		gl.Vertex3f(0.5, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.0D, 1.0D)
+		gl.Vertex3f(-0.5, -0.5, 0.0)
+	gl.End()
+}
+
+
+func Scaled3SlicedPic (x f32, y f32, scaleX f32, scaleY f32) {
+	var tosy f32 = scaleY / 3.0 // 3rd of scale y 
+	var ome f32 // offset (to) middle (section) extent 
+	ome = scaleX - tosy
+	ome = ome - tosy
+	ome = ome / 2.0
+	ome = ome * 0.5
+	
+	gl.LoadIdentity()
+	gl.Translatef(x, y, 0.0)
+	gl.Scalef(scaleX, scaleY, 0.0)
+
+	gl.Begin(gl.QUADS)
+		gl.TexCoord2d(0.0D, 0.0D)
+		gl.Vertex3f(-0.5, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.33D, 0.0D)
+		gl.Vertex3f(-ome, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.33D, 1.0D)
+		gl.Vertex3f(-ome, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.0D, 1.0D)
+		gl.Vertex3f(-0.5, -0.5, 0.0)
+
+
+
+		gl.TexCoord2d(0.33D, 0.0D)
+		gl.Vertex3f(-ome, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.66D, 0.0D)
+		gl.Vertex3f(ome, 0.5, 0.0)
+		
+		gl.TexCoord2d(0.66D, 1.0D)
+		gl.Vertex3f(ome, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.33D, 1.0D)
+		gl.Vertex3f(-ome, -0.5, 0.0)
+
+
+
+		gl.TexCoord2d(0.66D, 0.0D)
+		gl.Vertex3f(ome, 0.5, 0.0)
+		
+		gl.TexCoord2d(1.0D, 0.0D)
+		gl.Vertex3f(0.5, 0.5, 0.0)
+		
+		gl.TexCoord2d(1.0D, 1.0D)
+		gl.Vertex3f(0.5, -0.5, 0.0)
+		
+		gl.TexCoord2d(0.66D, 1.0D)
+		gl.Vertex3f(ome, -0.5, 0.0)
+	gl.End()
+}
+
+
+func initPic (dir str, name str) (id i32) {
+	id = gl.NewTexture(dir + "textures/" + name)
+	printf("    initPic (id: %d, name: %s) \n", id, name)
+}

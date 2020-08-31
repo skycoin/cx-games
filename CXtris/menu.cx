@@ -1,104 +1,90 @@
-package menu
+package main
 
-import "app"
-import "time"
-
+import "menu"
 
 
-type MenuItem struct {
-	Text  str
-	Font  str
-	Size  f32  // used for gltext init of the font 
-	Left  f32  // in pixels 
-	Wid   f32  // w/h caches the resulting string measure queries, 
-	Hei   f32  // 		to get the pixel bounds of the text. 
-	Hover bool // pointer is touching/hovering-over measured rect 
-	Value i32  // only for sliders 
-	Max   i32  // (exclusionary) max value for sliders (0 == NOT a slider) 
-}
-var Items [][]MenuItem // 1st is menu id, 2nd is item id 
-
-// main  
-var MainSize            f32  = 150.0
-var Play                str  = "Play"
-var Options             str  = "Options"
-var Quit                str  = "Quit"
 
 // options 
-var OptionsSize         f32  = 58.0
-var ShowNextShape       bool = true
-var ShowNextShapeText   str  = "Show next shape: "
-var SpeedText           str  = "Speed"
-var DebrisHeightText    str  = "Debris height"
-var DebrisHeight        i32  = 9
+var ShowNextShape     bool = true
+var ShowNextShapeText str  = "Show next shape: "
+var SpeedText         str  = "Speed"
+var DebrisHeightText  str  = "Debris height"
+var DebrisHeight      i32  = 9
 
 
 
-func Init () {
- 	printf("menu.Init () \n")
- 	
- 	var mis []MenuItem
- 	
- 	mis = []MenuItem{}
- 	Items = append(
-	Items, mis)
- 	
- 	mis = []MenuItem{}
- 	Items = append(
-	Items, mis)
-
+func menuInit () {
  	// app.MODE_MENU_MAIN
- 	makeMenuItem(0, MainSize, Play)
- 	makeMenuItem(0, MainSize, Options)
- 	makeMenuItem(0, MainSize, Quit)
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemPlay)
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemOptions)
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemControls)
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemQuit)
+
 	// app.MODE_MENU_OPTIONS
- 	makeMenuItem(1, OptionsSize, ShowNextShapeText + "YES")
- 	makeMenuItem(1, OptionsSize, SpeedText)
- 	makeMenuItem(1, OptionsSize, DebrisHeightText)
- 	makeMenuItem(1, OptionsSize, Play)
-// 	makeMenuItem(1, 50.0, "<- BACK")
+ 	menu.MakeItem(1, menu.OptionsSize, ShowNextShapeText + "YES")
+ 	menu.MakeItem(1, menu.OptionsSize, SpeedText)
+ 	menu.MakeItem(1, menu.OptionsSize, DebrisHeightText)
+	// app.MODE_MENU_CONTROLS (no items, just a mode for drawing) 
+ 	menu.MakeItem(2, menu.OptionsSize, "")
 
-	// sliders (only items that use these fields) 
-	Items[1][1].Max = time.DROP_SPEED_MAX
-	Items[1][1].Value = time.DropSpeed
-	Items[1][2].Max = 11 // for debris height 
-	Items[1][2].Value = DebrisHeight
+	// sliders (the only items that use these fields) 
+	menu.Items[1][1].Max   = DROP_SPEED_MAX
+	menu.Items[1][1].Value = DropSpeed
+	menu.Items[1][2].Max   = 11 // for debris height 
+	menu.Items[1][2].Value = DebrisHeight
+
+	menu.BakeItemText()
 }
 
 
-func makeMenuItem(menuId i32, size f32, text str) {
- 	var mIt MenuItem 
- 	mIt = MenuItem{ Size: size, Text: text }
- 	Items[menuId] = append(
-	Items[menuId], mIt)
-}
+func respondToMenuDrags () {
+	var s str
+	var i i32
+	s, i = menu.GetHoveredItem(app.Mode)
 
-
-func GetHoveredItem (menuId i32) (text str, id i32) {
-	for i := 0; i < len(Items[menuId]); i++ {			
-		if         Items[menuId][i].Hover {
-			text = Items[menuId][i].Text
-			id   = i
-		}
+	/*
+	if s == menu.ItemText {
+		menu.Setting = menu.SetSliderValue(i, f64.f32(MousePosInPixels.X))
+	} else
+	*/
+	if s == DebrisHeightText {
+		DebrisHeight = menu.SetSliderValue(i, f64.f32(inputs.MousePosInPixels.X))
+		startNewGameSession()
+	} else
+	if s == SpeedText {
+		DropSpeed =    menu.SetSliderValue(i, f64.f32(inputs.MousePosInPixels.X))
+		CalcDropTime()
 	}
 }
 
 
-func SetSliderValue (i i32, mouseX f32) (out i32) {
-	var span f32 = 
-		        Items[app.Mode][i].Wid / 
-		i32.f32(Items[app.Mode][i].Max)
-		
-	mouseX = mouseX - Items[app.Mode][i].Left
-	Items[app.Mode][i].Value = f32.i32(mouseX / span)
-	
-	if Items[app.Mode][i].Value < 0 {
-		Items[app.Mode][i].Value = 0
+func respondToMenuClicks () {
+	var s str
+	var i i32
+	s, i = menu.GetHoveredItem(app.Mode)
+
+	if s == menu.ItemPlay {
+		inputs.UseMousePointer(false)
+		shape.PlayerScore    =  0
+		shape.PlayerScoreTxt = "0"
+		startNewGameSession()
+		app.Mode = app.MODE_PLAYING
+	} else
+	if s == menu.ItemOptions {
+		app.Mode = app.MODE_MENU_OPTIONS
+	} else
+	if s == menu.ItemControls {
+		app.Mode = app.MODE_MENU_CONTROLS
+	} else
+	if s == menu.ItemQuit {
+		glfw.SetShouldClose(app.Name, true)
+	} else
+	if s == ShowNextShapeText + "YES" {
+		    ShowNextShape = false
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "NO"
+	} else
+	if s == ShowNextShapeText + "NO" {
+		    ShowNextShape = true
+		menu.Items[app.Mode][i].Text = ShowNextShapeText + "YES"
 	}
-	if Items[app.Mode][i].Value >= Items[app.Mode][i].Max {
-		Items[app.Mode][i].Value = Items[app.Mode][i].Max - 1
-	}
-	
-	out = Items[app.Mode][i].Value
-	//printf("set slider value to: %d \n", out)
 }

@@ -1,0 +1,322 @@
+package mesh
+
+import "app"
+import "space"
+
+
+
+type MenuItem struct {
+	Name             str // just for console text feedback 
+	Pos              Vec2
+	Extents          Vec2	
+	// mesh ids unnecessary? 
+	// if not, set these to ids in the mesh.___Meshes (slices) 
+	BakedBackground  i32
+	BakedIcon        i32
+	MeshForHoverText i32
+}
+
+type Menu struct {
+	Name    str
+	Items   []MenuItem
+	Hovered i32 // id of item mouse pointer is over 
+}
+
+// menu ids 
+var EDIT_TOOLBAR   i32 = 0
+var MESH_PICKER    i32 = 1
+
+var tBars          []Menu
+var ToolButtonSpan f32 = 0.2
+
+// toolbar 
+// (Menu item button ids... 
+// 1st correspond to switching editor modes, then... 
+// 2nd, these one-time actions) 
+var TOOLITEM_GEN_FUNC     i32 = app.EDITMODE_MAX // generate mesh init func 
+var TOOLITEM_SNAP_TO_GRID i32 = app.EDITMODE_MAX + 1
+var TOOLITEM_WIPE_LAYER   i32 = app.EDITMODE_MAX + 2
+var TOOLITEM_MAINMENU     i32 = app.EDITMODE_MAX + 3
+
+
+
+func InitToolBar (id i32, numItems i32) { // menu id 
+	// append to toolbars until TB id exists 
+	for id >= len(tBars) {
+		var m Menu
+		m = Menu{}
+		
+		tBars = append(
+		tBars, m)
+	}
+
+	// setup in right slot 
+	for i := 0; i < len(tBars); i++ {
+		if i == id {
+			if 0 == len(tBars[id].Items) {
+				var mi MenuItem
+				for j := 0; j < numItems; j++ {
+					mi = MenuItem{ BakedBackground: app.MAX_I32, Name: "common init string" }
+					tBars[id].Items = append(
+					tBars[id].Items, mi)
+					printf("    + toolbar %d item \n", id)
+					printf("    len: %d \n", len(tBars[id].Items))
+				}
+			}
+		}
+	}
+
+
+		// editor toolbar 
+		////// might use .Name as prefix to the hover-text of the button 
+		////// ("edit " + "colors/vertices" for example) 
+	//	tBars[id].Name = "Edit" 
+
+	//	"Edit Vertices"
+	//	"Edit Triangles"
+	//	"Edit Colors"
+	//	"Mesh Picker"
+	//	"Gen Init Func"
+	//	"Snap-To-Grid"
+	//	"Wipe Layer"
+	//	"PLAY"
+}
+
+
+func getPosExt (lenItems i32, minimumEdge bool, vertical bool) (pos Vec2, ext Vec2) {
+	var extent f32 // of a button 
+	extent = f32.div(ToolButtonSpan, 2.0)
+	
+	var longSpan f32 // span across the longest dimension 
+	longSpan = f32.mul(ToolButtonSpan, i32.f32(lenItems))
+	//printf("longSpan: %f  -  ", longSpan)
+
+	var x f32	
+	var y f32
+
+	if vertical {
+		if minimumEdge {
+			x = space.ViewEdgeL + extent
+		}else{
+			x = space.ViewEdgeR - extent
+		}
+		
+		y = f32.div(longSpan, 2.0)
+		y = f32.sub(y, extent)
+	}else{ // horizontal 
+		x = f32.div(longSpan, 2.0)
+		x = -x
+		x = f32.add(x, extent)
+
+		if minimumEdge {
+			y = -1.0 + extent
+		}else{
+			y = 1.0 - extent
+		}
+	}
+
+	pos = Vec2{ X: x,      Y: y      }
+	ext = Vec2{ X: extent, Y: extent }
+
+	printf("        Start @ pos.X,Y: %f,%f \n", pos.X, pos.Y)
+}
+
+
+func BakeToolButtonArray (items []MenuItem, minimumEdge bool, vertical bool) {	
+	printf("    BakeToolButtonArray () %d items \n", len(items))
+
+	var pos Vec2
+	var ext Vec2
+	pos, ext = getPosExt(len(items), minimumEdge, vertical)
+
+	for i := 0; i < len(items); i++ {
+		items[i].Pos     = pos
+		items[i].Extents = ext
+		
+		// button background 
+		items[i].BakedBackground =  len(RawMeshes)-1
+		bakeUICellFromRaw(pos, ext, len(RawMeshes)-1, 9999)
+		
+		// icon 
+		items[i].BakedIcon = i
+		bakeUICellFromRaw(pos, ext, i, 9999)
+			
+		if vertical {
+			pos.Y = pos.Y - ToolButtonSpan
+		}else{ // horizontal 
+			pos.X = pos.X + ToolButtonSpan
+		}
+		
+		printf("        Next  @ pos.X,Y: %f,%f \n", pos.X, pos.Y)
+	}
+}
+
+
+func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
+	// FIXME: color & tri data (WHY NOT MENTION VERTS?!) 
+	// 			GENERALLY needs no changes, 
+	//			but would when GenFunc expands to also updating
+	//			in-game raw mesh data  
+	var existed bool
+			
+	if bakedId < len(BakedUIMeshes) { // (bakedId slot already exists) 
+		existed = true
+		// change currMesh 		
+		printf("    recalculating BakedUIMeshes[%d]  -  ", bakedId)
+		
+		currMesh = BakedUIMeshes[bakedId]
+		
+		if len(RawMeshes[rawId].Colors) != 
+			len(currMesh.Colors) {
+			str.print(".Colors count is diff between RAW & BAKED")
+			str.print(".Colors count is diff between RAW & BAKED")
+			str.print(".Colors count is diff between RAW & BAKED")
+		}
+		if len(RawMeshes[rawId].Points) != 
+			len(currMesh.Points) {
+			str.print(".Points count is diff between RAW & BAKED")
+			str.print(".Points count is diff between RAW & BAKED")
+			str.print(".Points count is diff between RAW & BAKED")
+		}
+		if len(RawMeshes[rawId].TriangleIndices) != 
+			len(currMesh.TriangleIndices) {
+			str.print(".TriangleIndices count is diff between RAW & BAKED")
+			str.print(".TriangleIndices count is diff between RAW & BAKED")
+			str.print(".TriangleIndices count is diff between RAW & BAKED")
+		}
+	}else{ // make new 
+		bakedId = len(BakedUIMeshes)
+		printf("             NEW BakedUIMeshes[%d] from ", bakedId)
+
+		currMesh = Mesh2D{ Name: RawMeshes[rawId].Name }
+		BakedUIMeshes = append(
+		BakedUIMeshes, currMesh)
+	}
+	
+
+	// points/colors 
+	for i := 0; i < len(RawMeshes[rawId].Points); i++ {
+		var c Color3
+		var p Vec2
+		c = RawMeshes[rawId].Colors[i]
+		p = RawMeshes[rawId].Points[i]
+		
+		// scale 
+		p.X = f32.mul(p.X, extents.X)
+		p.Y = f32.mul(p.Y, extents.Y)
+		
+		// position 
+		p.X = f32.add(pos.X, p.X)
+		p.Y = f32.add(pos.Y, p.Y)
+		
+		if existed {
+			currMesh.Colors[i] = c
+			currMesh.Points[i] = p
+		}else{
+			BakedUIMeshes[bakedId].Colors = append(
+			BakedUIMeshes[bakedId].Colors, c)
+			BakedUIMeshes[bakedId].Points = append(
+			BakedUIMeshes[bakedId].Points, p)
+		}
+	}
+
+
+	// triangles 
+	if existed {
+		// TODO: change it 
+	}else{
+		var n i32 = len(RawMeshes[rawId].TriangleIndices)
+		for j := 0; j < n; j++ {
+			var id i32
+			id =  RawMeshes[rawId].TriangleIndices[j]
+			BakedUIMeshes[bakedId].TriangleIndices = append(
+			BakedUIMeshes[bakedId].TriangleIndices, id)
+		}
+
+		printf("RawMeshes[%d] tris: %d \n", rawId, len(RawMeshes[rawId].TriangleIndices))
+	}
+	
+	//var nnn i32 = 3
+	//printf("    at the end len cm.TriInds: %d \n", len(currMesh.TriangleIndices))
+	//num = len(currMesh.TriangleIndices)
+	//ReportBadTriCount("bakeUICellFromRaw", num)
+}
+
+
+func getTouchedToolbarItem (mouse Vec2) (touched bool, id i32) {
+	touched, id = getTouchedToolbarItemFrom(EDIT_TOOLBAR, mouse)
+	if touched {
+		//printf("getTouchedToolbarItem (): %d \n", id)
+	}
+	
+	if app.EditMode == app.EDITMODE_MESH_PICKER {
+		var mpTouched bool
+		var mpId i32
+		mpTouched, mpId = getTouchedToolbarItemFrom(len(tBars) - 1, mouse)
+		//printf("not utilizing yet - mpTouched: %v, mpId: %d \n", mpTouched, mpId)
+		
+		if mpTouched {
+			EditLayers[CurrLayer] = RawMeshes[mpId]
+			app.EditMode = app.EDITMODE_VERTICES
+		}
+	}
+}
+
+
+func getTouchedToolbarItemFrom (barId i32, mouse Vec2) (touched bool, id i32) {
+	//printf("getTouchedToolbarItemFrom () --- barId: %d \n", barId)
+	
+	for i := 0; i < len(tBars[barId].Items); i++ {
+		var p Vec2
+		var e Vec2
+		p = tBars[barId].Items[i].Pos
+		e = tBars[barId].Items[i].Extents
+		
+		if space.PointInBox(mouse, p, e.X, e.Y) {			
+			touched = true
+			id = i			
+			break //////////////////////////////////////////////// 
+		}
+	}
+}
+
+
+func respondToItem (i i32) {
+	printf("pressed toolbar item %s \n", tBars[EDIT_TOOLBAR].Items[i].Name)
+	
+	if i < app.EDITMODE_MAX { // change EditMode
+		app.EditMode = i
+		printEditMode()
+		wipePickedVerts()
+		
+		if i == app.EDITMODE_MESH_PICKER {
+			BakeMeshPickerButtonGrid()
+		}
+	}else{ // perform one-time actions 
+		if i == TOOLITEM_GEN_FUNC {
+			GenerateMeshInitFunc ("Icon")
+		}else
+		if i == TOOLITEM_SNAP_TO_GRID {
+			SnapToGrid = !SnapToGrid
+			
+			if SnapToGrid {
+				str.print("SNAP_TO_GRID: ON")					
+			} else {
+				str.print("SNAP_TO_GRID: OFF")
+			}
+		}else
+		if i == TOOLITEM_WIPE_LAYER {
+			str.print("-> WIPE_LAYER")
+			
+			wipePickedVerts()
+			
+			var m Mesh2D 
+			m = Mesh2D{}
+			EditLayers[CurrLayer] = m
+		}else
+		if i == TOOLITEM_MAINMENU {
+			str.print("-> MAINMENU ---------(or WILL take us to main menu when it's implemented)")
+			app.Mode = app.MODE_PLAYING
+		}
+	}
+}

@@ -1,0 +1,40 @@
+package inputs
+
+import "glfw"
+import "app"
+
+
+
+var LatestUserActionTime f64
+
+
+
+func Init (bufferingPointerSpots bool) {
+	str.print("inputs.Init ()")
+
+	// events/callbacks 
+	glfw.SetKeyCallback        (app.Name, "onKeyEvent")
+	glfw.SetMouseButtonCallback(app.Name, "onMouseButtonEvent")
+	
+	if  bufferingPointerSpots {
+		BufferingPointerSpots = 
+		bufferingPointerSpots
+		printf("    BufferingPointerSpots: %v \n", BufferingPointerSpots)
+		glfw.SetCursorPosCallback(app.Name, "onCursorPosEvent")
+	}
+}
+
+
+func Update () {
+	// so far never needed to trigger this 
+	str.print("inputs.Update ()")
+}
+
+
+func UserActionWithinLast (seconds f64) (out bool) {
+	var /* time */ sinceInput f64 = glfw.GetTime() - LatestUserActionTime
+	
+	if (sinceInput < seconds) {
+		out = true
+	}
+}

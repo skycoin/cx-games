@@ -19,19 +19,34 @@ var START_HEIGHT i32 = 720
 var MAX_I32      i32 = 2147483647
 var TOO_BIG_F32  f32 = 999777.999777
 
-var Name     str
-var Controls str
-var Colors   []Color3
+var Name         str
+var Controls     str
 
 
-// modes 
-var MODE_MENU_MAIN    i32
-var MODE_MENU_OPTIONS i32 = 1
-var MODE_PLAYING      i32 = 2
-var MODE_GAME_OVER    i32 = 3
-var MODE_MAX          i32 = 4
-var Mode i32 = MODE_MENU_MAIN
+// app modes 
+var MODE_MENU_MAIN       i32
+var MODE_MENU_OPTIONS    i32 = 1
+var MODE_MENU_CONTROLS   i32 = 2
+var MODE_MENU_MAX        i32 = 3 // anything < this == open menu 
+var MODE_EDITOR          i32 = 4
+var MODE_PLAYING         i32 = 5
+var MODE_GAME_OVER       i32 = 6
+var MODE_MAX             i32 = 7
+var Mode                 i32 = MODE_MENU_MAIN
 
+// 		editor 
+var EDITMODE_VERTICES    i32
+var EDITMODE_TRIANGLES   i32 = 1
+var EDITMODE_COLORS      i32 = 2
+var EDITMODE_MESH_PICKER i32 = 3
+var EDITMODE_MAX         i32 = 4
+var EditMode             i32 = EDITMODE_VERTICES
+
+
+type Vec2 struct {
+	X f32
+	Y f32
+}
 
 type Vec2I struct {
 	X i32
@@ -43,17 +58,6 @@ type Vec2F64 struct {
 	Y f64
 }
 
-type Vec2 struct {
-	X f32
-	Y f32
-}
-
-type Color3 struct {
-	R f32
-	G f32
-	B f32
-}
-
 
 
 func Init (name str, controls str) {
@@ -61,17 +65,7 @@ func Init (name str, controls str) {
 	Name = name
 	Controls = controls
 	CliIntro()
-	
-	// colors 
-	var f f32 = 0.2
-	addColor(0.9, 0.0, 0.0) // red 
-	addColor(0.3, 0.3, 0.9) // blue 
-	addColor(0.3, 0.9, 0.3) // green 
-	addColor(0.7, 0.0, 0.8) // purple  
-	addColor(1.0, 0.9, 0.0) // yellow 
-	addColor(1.0, 0.5, 0.0) // orange 
-	addColor(0.0, 1.0, 1.0) // cyan  
-	addColor(f, f, f)       // dark gray 
+	showWorkHoursNeeded() // calculate CorpusC's current daily goal 
 }
 
 
@@ -80,8 +74,25 @@ func CliIntro () {
 }
 
 
-func addColor (r f32, g f32, b f32) {
-	var col Color3
-	col = Color3{R: r, G: g, B: b}
-	Colors = append(Colors, col)
+func showWorkHoursNeeded () {
+	// current "workmonth" (pay period) goes from the 5th to the 4th of following month 
+	var today       i32 = 28 // day of current month 
+	var hoursWorked f32 = 26.5
+
+	var hoursGoal   f32 = 60.0 // ...to work this month (pay period) 
+	var daysInMonth i32 = 30 // current month that majority of days are in 
+	
+	
+	var daysLeft    i32 = daysInMonth - today + 4
+	var hoursLeft   f32 = hoursGoal - hoursWorked
+	printf("============================================================================\n")
+	printf("============================================================================\n")
+	printf("====                      CorpusC's daily time goal                     ====\n")
+	printf("============================================================================\n")
+	printf("====  daysLeft: %d (includes today) \n", daysLeft)
+	printf("====  hoursLeft: %f \n", hoursLeft)
+	printf("====  hours needed (to work per day): %f \n", hoursLeft / i32.f32(daysLeft))
+	printf("============================================================================\n")
+	printf("============================================================================\n")
+	printf("============================================================================\n")
 }

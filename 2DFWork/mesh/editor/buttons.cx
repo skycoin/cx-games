@@ -1,0 +1,77 @@
+package mesh
+
+
+
+func changeAndAdd (inCol Color3, inM Mesh2D) (col Color3, m Mesh2D) {
+	col = inCol
+	m   = inM
+
+	var colSpan f32 = 0.2
+	
+	m.Colors = append(
+	m.Colors, col)
+
+	printf("col.R,G,B: %f,%f,%f \n", col.R, col.G, col.B)
+	col.R = col.R - colSpan
+	col.G = col.G - colSpan
+	col.B = col.B - colSpan
+	printf("col.R,G,B: %f,%f,%f AFTER \n", col.R, col.G, col.B)
+}
+
+
+func makeBarButtonBackground () {
+	var m Mesh2D
+	m = Mesh2D{ Name: "Toolbar Button Background" }
+	
+	var top f32
+	var right f32
+	var bottom f32
+	var left f32
+	
+	top    =  1.0
+	right  =  1.0
+	bottom = -1.0
+	left   = -1.0
+	
+	
+	// colors 
+	var col Color3 
+	  col = Color3{ R: 1.0, G: 1.0, B: 1.0 }
+
+	col, m = changeAndAdd(col, m)
+	col, m = changeAndAdd(col, m)
+	col, m = changeAndAdd(col, m)
+	col, m = changeAndAdd(col, m)
+
+		
+	// positions 
+	var v Vec2
+	v = Vec2{ X: 0.0, Y: 0.0 }
+	
+	// start at... 
+	v.X = left
+	v.Y = top
+	// ...then go clockwise 
+	m.Points = append(m.Points, v)
+	v.X = right
+	v.Y = top
+	m.Points = append(m.Points, v)
+	v.X = right
+	v.Y = bottom
+	m.Points = append(m.Points, v)
+	v.X = left
+	v.Y = bottom
+	m.Points = append(m.Points, v)
+
+		
+	// triangles 
+	m.TriangleIndices = append(m.TriangleIndices, 0)
+	m.TriangleIndices = append(m.TriangleIndices, 1)
+	m.TriangleIndices = append(m.TriangleIndices, 2)
+
+	m.TriangleIndices = append(m.TriangleIndices, 2)
+	m.TriangleIndices = append(m.TriangleIndices, 3)
+	m.TriangleIndices = append(m.TriangleIndices, 0)
+	
+	makeAndReportOn(m, true)
+}

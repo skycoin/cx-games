@@ -1,0 +1,51 @@
+package main
+
+import "menu"
+
+
+
+func menuInit () {
+ 	// app.MODE_MENU_MAIN
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemPlay)
+ 	menu.MakeItem(0, menu.MainSize, menu.ItemQuit)
+
+	// no need for Options or Controls menus... 
+	// check CXtris for examples of those (including slider widgets) 
+	
+	menu.BakeItemText()
+}
+
+
+func respondToMenuClicks () {
+	var s str
+	var i i32
+	s, i = menu.GetHoveredItem(app.Mode)
+	printf("GetHoveredItem() mode: %d s: %s i: %d\n", app.Mode, s, i)
+
+	if s == menu.ItemPlay {
+		inputs.UseMousePointer(false)
+		app.Mode = app.MODE_PLAYING
+		score = 0
+		
+		entities.All[ENT_DROPPER][0].X = 0.0
+		
+		// activate all wallet paddles 
+		entities.ActiveCounts[plr] = 3
+		pT = entities.All[plr][2].Y +
+		     entities.All[plr][2].ExtentY
+		     
+		// center wallet paddles 
+		for i := 0; i < 3; i++ {
+			entities.All[plr][i].X = 0.0
+		}
+		     
+		// clear game coins 
+		var n i32 = entities.GetCountOf(ENT_GAME_COIN)
+		for i := 0; i < n; i++ {
+			entities.Kill(ENT_GAME_COIN, i)
+		}
+	} else
+	if s == menu.ItemQuit {
+		glfw.SetShouldClose(app.Name, true)
+	}
+}

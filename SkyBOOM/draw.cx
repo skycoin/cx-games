@@ -1,0 +1,183 @@
+package main
+
+import "draw"
+import "entities"
+import "time"
+
+
+
+// pic ids 
+var PicWallet i32
+var Pic0Char  i32
+var Pic1Char  i32
+
+var ent entities.Entity // current 
+
+
+
+func drawInit () {
+	str.print("drawInit ()")
+
+	draw.Init()
+	gl.ClearColor(0.5, 0.7, 1.0, 0.0) // light blue 
+
+	PicWallet = draw.AddPic("SkyWallet.png")
+	Pic0Char  = draw.AddPic("0.png")
+	Pic1Char  = draw.AddPic("1.png")
+	            draw.InitPics()
+}
+
+
+var angle f32
+func drawAll () {
+	//str.print("drawAll")
+	
+	var inc f32 = time.Delta * 50.0
+	angle = angle + inc
+
+	pre()
+	//gl.Disable(gl.TEXTURE_2D)
+	gl.LoadIdentity()
+	gl.Enable(gl.TEXTURE_2D)
+	
+	drawTexturedBatches()
+
+	// menu 
+	gl.Color4f(1.0, 1.0, 1.0, 1.0)
+	//draw.ScaledRotatedPic(draw.PicCoin, 0.0, 0.0, 0.5, 0.5, angle)
+	gl.LoadIdentity()
+
+	if  menu.IsOpen() {
+		menu.Draw()
+
+		if app.Mode == app.MODE_MENU_CONTROLS {
+			//drawVirtualKeyBackdrops()
+		}
+	}else
+	if app.Mode == app.MODE_PLAYING {
+		//if gui.ShowControls {
+		//	drawVirtualKeyBackdrops()
+		//}
+	}
+}
+
+
+func pre () {
+	gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.MatrixMode(gl.PROJECTION)
+	gl.LoadIdentity()
+	gl.Ortho(
+		space.ViewEdgeL64, 
+		space.ViewEdgeR64, -1.0D, 1.0D, 1.0D, -1.0D)
+	gl.Viewport(0, 0, 
+		space.ViewWidInPixels, 
+		space.ViewHeiInPixels)
+	gl.MatrixMode(gl.MODELVIEW)
+
+	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
+}
+
+
+func drawTexturedBatches () {
+	var t  f32 // rect edges 
+	var r  f32
+	var b  f32
+	var l  f32
+	var et i32 // entity type 
+	var n  i32
+
+
+	// clouds 
+	et = ENT_BACKDROP_CLOUD
+	n  = entities.GetCountOf(et)
+
+	draw.BeginTexturedQuads(draw.PicCloudLogo)
+		for i := 0; i < n; i++ {
+			var ac f32 = 1.0 // alpha channel 
+			
+			draw.SetColor4(draw.White, ac)
+			t, r, b, l = entities.GetRect(et, i)
+			draw.TexturedQuad(t, r, b, l)
+		}
+	draw.End()
+	
+	
+	// coins 
+	et = ENT_GAME_COIN
+	n  = entities.GetCountOf(et)
+
+	draw.BeginTexturedQuads(draw.PicCoin)
+		if app.Mode > app.MODE_MENU_MAX {
+			// game coins 
+			for i := 0; i < n; i++ {
+				var ac f32 = 1.0 // alpha channel 
+				
+				if entities.All[et][i].Mode == ENT_MODE_FADING {
+					ac = 1.0 - entities.All[et][i].ExtentY * 1.0
+				}
+			
+				draw.SetColor4(draw.White, ac)
+				t, r, b, l = entities.GetRect(et, i)
+				draw.TexturedQuad(t, r, b, l)
+			}
+		}else{
+			// menu coins 
+			draw.SetColor4(draw.White, 1.0)
+			
+			et = ENT_BACKDROP_COIN
+			n  = entities.GetCountOf(et)
+
+			for i := 0; i < n; i++ {
+				t, r, b, l = entities.GetRect(et, i)
+				draw.TexturedQuad(t, r, b, l)
+			}
+		}
+	draw.End()
+	
+	
+	if app.Mode > app.MODE_MENU_MAX {
+		// dropper 
+		draw.BeginTexturedQuads(draw.PicCloudLogo)
+			t, r, b, l = entities.GetRect(ENT_DROPPER, 0)
+			draw.TexturedQuad(t, r, b, l)
+		draw.End()
+
+
+		// player entities 
+		draw.SetColor3(draw.White)
+		
+		et = entities.ENT_PLAYER
+		n  = entities.GetCountOf(et)
+
+		draw.BeginTexturedQuads(PicWallet)
+			for i := 0; i < n; i++ {
+				t, r, b, l = entities.GetRect(et, i)
+				draw.TexturedQuad(t, r, b, l)
+			}
+		draw.End()
+	}
+	
+	
+	// 1s & 0s particles 
+	draw.SetColor(draw.COLOR_BLUE)
+	
+	et = ENT_PARTICLE_0
+	n  = entities.GetCountOf(et)
+
+	draw.BeginTexturedQuads(Pic0Char)
+		for i := 0; i < n; i++ {
+			t, r, b, l = entities.GetRect(et, i)
+			draw.TexturedQuad(t, r, b, l)
+		}
+	draw.End()
+	
+	et = ENT_PARTICLE_1
+	n  = entities.GetCountOf(et)
+
+	draw.BeginTexturedQuads(Pic1Char)
+		for i := 0; i < n; i++ {
+			t, r, b, l = entities.GetRect(et, i)
+			draw.TexturedQuad(t, r, b, l)
+		}
+	draw.End()
+}
