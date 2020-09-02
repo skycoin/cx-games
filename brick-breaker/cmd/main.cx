@@ -5,11 +5,13 @@ import "gl"
 import "os"
 
 import "app"
-import "inputs"
 import "LoopLimiter"
 import "LoopTracker"
 
-
+// keyboard key codes
+var SPACE_KEY i32 = 32
+var RIGHT_ARROW_KEY i32 = 262
+var LEFT_ARROW_KEY i32 = 263
 
 // *************************************
 // Start - Game
@@ -24,116 +26,28 @@ func initGlfw(window Window) {
     glfw.WindowHint(glfw.Resizable, glfw.False)
     glfw.CreateWindow("window", window.Width, window.Height, "Brick Breaker")
     glfw.MakeContextCurrent("window")
-    inputs.SetupCallbacks()
+    glfw.SetKeyCallback("window", "keyboardCallback")
 }
 
+func initOpenGL() (program i32) {
+    gl.Init()
+    gl.Enable(gl.BLEND)
+    gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
-func startGame() {
-    mainGameLoop()
+    program = gl.CreateProgram()
+    gl.LinkProgram(program)
 }
 
-
-func mainGameLoop()() {
-    var program i32 = gl.CreateProgram()
-    initSprites()
-    synthCat.position.y = 0.8
-    yarnBall.position.x = 0.0
-    yarnBall.position.y = -0.8
-    yarnBall.velocity.y = 0.3
-    yarnBall.velocity.x = 0.6
-
-    for bool.not(glfw.ShouldClose("window")) {
-        currentTime = glfw.GetTime()
-        loopLimiter = LoopLimiter.update(loopLimiter, currentTime)
-        animationLimiter = LoopLimiter.update(animationLimiter, currentTime)
-        loopTracker = LoopTracker.update(loopTracker, currentTime)
-
-        synthCat = inputs.updatePlayer(synthCat)
-        yarnBall = updateBall(yarnBall)
-        checkBrickCollisions()
-
-        synthCat = updateSprite(synthCat)
-        yarnBall = updateSprite(yarnBall)
-
-        if loopLimiter.limitReached {
-            gl.UseProgram(program)
-            gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
-            gl.Enable(gl.TEXTURE_2D)
-            gl.Disable(gl.DITHER)
-            gl.Disable(gl.POINT_SMOOTH)
-            gl.Disable(gl.LINE_SMOOTH)
-            gl.Disable(gl.POLYGON_SMOOTH)
-            gl.Hint(gl.POINT_SMOOTH, gl.DONT_CARE)
-            gl.Hint(gl.LINE_SMOOTH, gl.DONT_CARE)
-            gl.Hint(gl.POLYGON_SMOOTH_HINT, gl.DONT_CARE)
-            gl.Disable(gl.MULTISAMPLE_ARB)
-
-            gl.TexEnvi(gl.TEXTURE_ENV, gl.TEXTURE_ENV_MODE, gl.MODULATE)
-            gl.Disable(gl.DEPTH_TEST)
-
-            gl.ClearColor(1.0, 1.0, 1.0, 1.0)
-            gl.ClearDepth(1.0D)
-            gl.DepthFunc(gl.LEQUAL)
-
-            gl.Enable(gl.BLEND)
-            gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-            gl.DepthMask(true)
-
-            gl.MatrixMode(gl.PROJECTION)
-            gl.LoadIdentity()
-
-            gl.MatrixMode(gl.MODELVIEW)
-            gl.LoadIdentity()
-
-            drawSprite(background)
-            drawSprite(synthCat)
-            drawSprite(yarnBall)
-
-            var brick Sprite
-
-            for i:=0; i<len(bricks); i=i+1{
-                brick = bricks[i]
-                if brick.brickHit == false {
-                    drawSprite(brick)
-                }
-            }
-
-            glfw.PollEvents()
-            glfw.SwapBuffers("window")
+func keyboardCallback(window str, key i32, scancode i32, action i32, mods i32) () {
+    if i32.eq(action, 1) {
+        if i32.eq(key, RIGHT_ARROW_KEY) {
+            g_player.velocity.x = PLAYER_SPAWN_VEL_X;
+        } else if i32.eq(key, LEFT_ARROW_KEY) {
+            g_player.velocity.x = f32.mul(-1.0, PLAYER_SPAWN_VEL_X);
+        } else if i32.eq(key, SPACE_KEY) {
+            g_game = StartGame(g_game)
         }
     }
-}
-
-
-
-func updateBall(ball Sprite)(out Sprite) {
-    if ball.position.x >= 0.9 || ball.position.x <= -0.9 {
-        ball.velocity.x = ball.velocity.x*-1.0
-        if ball.position.x > 0.9 {
-            ball.position.x = 0.9
-        } else {
-            ball.position.x = -0.9
-        }
-    }
-
-    if ball.position.y >= 0.9 || ball.position.y <= -0.9 {
-        ball.velocity.y = ball.velocity.y*-1.0
-        if ball.position.y > 0.9 {
-            ball.position.y = 0.9
-        } else {
-            ball.position.y = -0.9
-        }
-    }
-
-    if spriteTop(ball) > spriteBottom(synthCat) && spriteLastTop(ball) < spriteLastBottom(synthCat) {
-        if spriteRight(ball) >= spriteLeft(synthCat) && spriteLeft(ball) <= spriteRight(synthCat) {
-            ball.position.y = spriteBottom(synthCat) - ball.height / 2.0
-            ball.velocity.y = ball.velocity.y*-1.0
-        }
-    }
-
-    ball.lastPosition = ball.position
-    out = ball
 }
 
 func main() {
@@ -141,9 +55,28 @@ func main() {
     window = Window{ Width: 1024, Height: 768 }
 
     initGlfw(window)
-    gl.Init()
+    var program i32
+    program = initOpenGL()
 
-    startGame()
+    g_game = NewGame()
+
+    for bool.not(glfw.ShouldClose("window")) {
+        gl.UseProgram(program)
+        gl.ClearColor(0.0, 0.0, 0.0, 1.0)
+        gl.Clear(gl.COLOR_BUFFER_BIT)
+        gl.Enable(gl.TEXTURE_2D)
+
+        currentTime = glfw.GetTime()
+        loopLimiter = LoopLimiter.update(loopLimiter, currentTime)
+        animationLimiter = LoopLimiter.update(animationLimiter, currentTime)
+        loopTracker = LoopTracker.update(loopTracker, currentTime)
+
+        g_game = UpdateGame(g_game)
+        RenderGame(g_game)
+
+        glfw.PollEvents()
+        glfw.SwapBuffers("window")
+    }
 }
 
 // *************************************

@@ -1,0 +1,67 @@
+package main
+
+var recipes [4][10]i32
+var recipes_loaded bool = false
+
+var g_crafter Crafter
+
+type Crafter struct {
+    collection ItemCollection
+    result Item
+}
+
+func InitCrafter()  {
+    g_crafter.collection = NewItemCollection(9)
+    g_crafter.result = NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID)
+    if bool.not(recipes_loaded) {
+        _loadRecipes()
+        recipes_loaded = true
+    }
+}
+
+func CrafterCraft(crafter Crafter) (item Item) {
+    crafter = CrafterUpdate(crafter)
+    item = crafter.result
+    if (item.id != ITEM_TYPE_VOID) {
+        InitCrafter()
+    }
+}
+
+
+func CrafterUpdate(crafter Crafter) (crafter Crafter) {
+    var recipe [9]i32
+    for i:=0; i<9; i++ {
+        recipe[i] = crafter.collection.slots[i].id
+    }
+
+    var result i32
+    result = _parseRecipe(recipe)
+    i32.print(result)
+    if result == ITEM_TYPE_VOID {
+        crafter.result = NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID)
+    } else {
+        crafter.result = NewItem(result, ITEM_CLASS_WEAPON)
+    }
+}
+
+func _loadRecipes() {
+    recipes[0] = RECIPE_PICKAXE
+    recipes[1] = RECIPE_SHOVEL
+    recipes[2] = RECIPE_AXE
+    recipes[3] = RECIPE_HOE
+}
+
+func _parseRecipe(recipe [9]i32) (result i32) {
+    var match bool
+    result = ITEM_TYPE_VOID
+    for i:=0; i<NUM_RECIPES; i++ {
+        match = true
+        for j:=0; j<9; j++ {
+            match = bool.and(match, i32.eq(recipes[i][j], recipe[j]))
+        }
+        if match {
+            result = recipes[i][9];
+            break
+        }
+    }
+}

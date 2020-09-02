@@ -1,0 +1,83 @@
+package test
+
+var TEST_STATUS_PASSED i32 = 1
+var TEST_STATUS_FAILED i32 = 2
+var TEST_STATUS_RUNNING i32 = 3
+
+var g_tests []Test
+var g_current i32 = -1
+
+type Test struct {
+  id i32
+  name str
+  status i32
+  failures []str
+}
+
+func StartTest(name str) {
+  if i32.eq(len(g_tests), 0) {
+    printBanner()
+  }
+
+  var test Test
+  test.id = len(g_tests)
+  test.name = name
+  test.status = TEST_STATUS_RUNNING
+
+  g_tests = append(g_tests, test)
+  g_current = test.id
+}
+
+func FinishTest() {
+  if i32.eq(g_current, -1) {
+    printf("[!] Error - Test not running.\n"); return
+  }
+  var test Test = g_tests[g_current]
+  if i32.eq(len(test.failures), 0) {
+    g_tests[g_current].status = TEST_STATUS_PASSED
+    printf("%s - '%s'\n", "PASSED", test.name)
+  } else {
+    g_tests[g_current].status = TEST_STATUS_FAILED
+    printf("%s - '%s'\n", "FAILED", test.name)
+    for i:=0; i<len(test.failures); i++ {
+      printf("  > %s\n", test.failures[i])
+    }
+  }
+
+  g_current = -1
+}
+
+func addFailure(failure str) {
+  if i32.eq(g_current, -1) {
+    printf("[!] Error - Test not running.\n"); return
+  }
+  g_tests[g_current].failures = append(g_tests[g_current].failures, failure)
+}
+
+func printBanner() {
+  printf("---------------------------------------------------------\n")
+  printf("  ______  __          _   _       _ _  _____         _   \n")
+  printf(" / ___\\ \\/ /         | | | |_ __ (_) ||_   _|__  ___| |_ \n")
+  printf("| |    \\  /   _____  | | | | '_ \\| | __|| |/ _ \\/ __| __|\n")
+  printf("| |___ /  \\  |_____| | |_| | | | | | |_ | |  __/\\__ \\ |_ \n")
+  printf(" \\____/_/\\_\\          \\___/|_| |_|_|\\__||_|\\___||___/\\__|\n")
+  printf("                                                         \n")
+  printf("---------------------------------------------------------\n\n")
+}
+
+func Summary()  {
+  var passed i32 = 0
+  var failed i32 = 0
+  var n_tests i32 = len(g_tests)
+  for i:=0; i<n_tests; i++ {
+    if i32.eq(g_tests[i].status, TEST_STATUS_PASSED) {
+      passed = passed + 1
+    } else if i32.eq(g_tests[i].status, TEST_STATUS_FAILED) {
+      failed = failed + 1
+    }
+  }
+
+  printf("\nTests Summary:\n")
+  printf("   - PASSED : %d of %d\n", passed, n_tests)
+  printf("   - FAILED : %d of %d\n", failed, n_tests)
+}

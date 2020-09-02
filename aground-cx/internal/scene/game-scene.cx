@@ -1,0 +1,38 @@
+package main
+
+import "glfw"
+
+import "screen_pkg"
+import "button_pkg"
+
+func NewGameScene(screen_width i32, screen_height i32) (scene Scene) {
+  scene = NewScene(
+    "game-scene",
+    NewGameRearScreen(screen_width, screen_height),
+    NewGameFrontScreen(screen_width, screen_height))
+}
+
+func NewGameRearScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("game-rear-screen", screen_width, screen_height)
+	//screen = screen_pkg.ScreenSetBackground(screen, "static/texture/screen/sky.png")
+}
+
+func NewGameFrontScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("game-front-screen", screen_width, screen_height)
+
+  /*screen = screen.addLayer(NewLivesLayer2(i32.div(screen_width, 2), i32.div(screen_height, 2), 3))
+  screen = screen.addLayer(NewLevelLayer2(i32.div(screen_width, 2), i32.div(screen_height, 2), 1))
+
+  var buttons_layer layer_pkg.Layer
+  buttons_layer = layer_pkg.newLayer("buttons-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+  buttons_layer = buttons_layer.addButton(button_pkg.newButton("return-button", 0.9, 0.9, 60, 60, "static/texture/btn/back-arrow.png", "static/texture/btn/back-arrow-active.png"))
+  screen = screen.addLayer(buttons_layer)*/
+}
+
+func GameSceneRender(scene Scene) {
+  SceneRenderRear(scene)
+  SceneRenderFront(scene)
+}
+
+func GameSceneUpdate(scene Scene) (current_screen i32) {
+}

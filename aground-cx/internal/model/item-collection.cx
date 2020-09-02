@@ -1,0 +1,114 @@
+package main
+
+import "gl"
+import "graphical"
+
+var g_inventory ItemCollection
+var g_hotbar ItemCollection
+
+type ItemCollection struct {
+    slots []Item
+    capacity i32
+    active_slot i32
+
+    textures [2]i32
+    geometry graphical.PlaneGeometry
+}
+
+func NewItemCollection(capacity i32) (collection ItemCollection) {
+    for i:=0; i<capacity; i++ {
+        collection.slots = append(collection.slots, NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID))
+    }
+    collection.capacity = capacity
+    collection.active_slot = -1
+
+    collection.textures[0] = gl.NewTexture(sprintf("assets/textures/cell-%d.png", 4))
+    collection.textures[1] = gl.NewTexture(sprintf("assets/textures/cell-%d.png", 3))
+
+    var mat graphical.Material
+    mat = graphical.newMaterial(0.0, 0.0, 0.0)
+    mat = mat.setTexture(collection.textures[0])
+    collection.geometry = graphical.newPlaneGeometry(
+      graphical.newVector3f(0.0, 0.0, 0.0),
+      graphical.newVector3f(CELL_WIDTH, CELL_HEIGHT, 0.0),
+      mat)
+}
+
+/*func ItemCollectionAddItem(collection ItemCollection, item Item) (collection ItemCollection) {
+    for i:=0; i<collection.capacity; i++ {
+        if collection.slots[i].class == ITEM_CLASS_VOID {
+            collection.slots[i] = item
+            break
+        }
+    }
+}*/
+
+func ItemCollectionAddItem(collection ItemCollection, item Item) (collection ItemCollection)  {
+    for i:=0; i<collection.capacity; i++ {
+        if collection.slots[i].class == ITEM_CLASS_VOID {
+            collection.slots[i] = NewItem(item.id, item.class)
+            break
+        }
+    }
+}
+
+func ItemCollectionRemoveItem(collection ItemCollection, slot i32) (collection ItemCollection, item Item)  {
+    if collection.active_slot == slot {
+        collection.active_slot = -1
+    }
+    item = collection.slots[slot]
+    collection.slots[slot] = NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID)
+}
+
+func ItemCollectionEquip(collection ItemCollection, slot i32) (collection ItemCollection) {
+    if collection.slots[slot].class != ITEM_CLASS_VOID {
+        collection.active_slot = slot
+    }
+}
+
+func ItemCollectionGetEquiped(collection ItemCollection) (item Item) {
+    if collection.active_slot == -1 {
+        item = NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID)
+    } else {
+        item = collection.slots[collection.active_slot]
+    }
+}
+
+func ItemCollectionIsEmpty(collection ItemCollection) (full bool) {
+    for i:=0; i<collection.capacity; i++ {
+        if collection.slots[i].class != ITEM_CLASS_VOID {
+            return false
+        }
+    }
+    return true
+}
+
+func ItemCollectionIsFull(collection ItemCollection) (full bool) {
+    for i:=0; i<collection.capacity; i++ {
+        if collection.slots[i].class == ITEM_CLASS_VOID {
+            return false
+        }
+    }
+    return true
+}
+
+func ItemCollectionRender(collection ItemCollection) {
+    var geometry graphical.PlaneGeometry
+    geometry = collection.geometry;
+
+    for i:=0; i<collection.capacity; i++ {
+        gl.PushMatrix()
+        if (collection.active_slot == i) {
+            geometry.material.texture = collection.textures[1]
+            gl.Translatef(CELL_WIDTH*i32.f32(i - 4), CELL_WIDTH*-0.25, 0.0)
+        } else {
+            geometry.material.texture = collection.textures[0]
+            gl.Translatef(CELL_WIDTH*i32.f32(i - 4), 0.0, 0.0)
+        }
+        ItemRender(collection.slots[i])
+        geometry.render()
+        gl.PopMatrix()
+    }
+
+    geometry.render()
+}

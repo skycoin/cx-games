@@ -1,0 +1,85 @@
+package main
+
+import "gl"
+
+import "app"
+import "graphical"
+
+var BALL_SPAWN_POS_X f32 = 0.0
+var BALL_SPAWN_POS_Y f32 = 0.575
+var BALL_SPAWN_VEL_X f32 = 0.01
+var BALL_SPAWN_VEL_Y f32 = -0.01
+var BALL_WIDTH f32 = 64.0 / 1024.0
+var BALL_HEIGHT f32 = 64.0 / 768.0
+
+var BALL_TEXTURE_LOADED bool = false
+var BALL_TEXTURE i32
+
+var g_ball Ball
+
+type Ball struct {
+    position app.Vector2D
+    velocity app.Vector2D
+    geometry graphical.PlaneGeometry
+}
+
+func NewBall() (ball Ball) {
+    ball.position = app.NewVector2D(BALL_SPAWN_POS_X, BALL_SPAWN_POS_Y)
+    ball.velocity = app.NewVector2D(BALL_SPAWN_VEL_X, BALL_SPAWN_VEL_Y)
+
+    if bool.not(BALL_TEXTURE_LOADED) {
+        BALL_TEXTURE = gl.NewTexture("./assets/textures/yarnBall0.png")
+        BALL_TEXTURE_LOADED = true
+    }
+
+    var mat graphical.Material
+    mat = graphical.newMaterial(0.0, 0.0, 0.0)
+    mat = mat.setTexture(BALL_TEXTURE)
+
+    ball.geometry = graphical.newPlaneGeometry(
+        graphical.newVector3f(ball.position.x, ball.position.y, 0.0),
+        graphical.newVector3f(BALL_WIDTH, BALL_HEIGHT, 0.0),
+        mat)
+}
+
+func UpdateBall(ball Ball) (ball Ball) {
+    ball.position.x = f32.add(ball.position.x, ball.velocity.x)
+    ball.position.y = f32.add(ball.position.y, ball.velocity.y)
+
+    if ball.position.x >= 0.9 || ball.position.x <= -0.9 {
+        ball.velocity.x = ball.velocity.x*-1.0
+        if ball.position.x > 0.9 {
+            ball.position.x = 0.9
+        } else {
+            ball.position.x = -0.9
+        }
+    }
+
+    if ball.position.y >= 0.9 || ball.position.y <= -0.9 {
+        ball.velocity.y = ball.velocity.y*-1.0
+        if ball.position.y > 0.9 {
+            ball.position.y = 0.9
+        } else {
+            ball.position.y = -0.9
+        }
+    }
+
+    ball.geometry.position.x = ball.position.x
+    ball.geometry.position.y = ball.position.y
+
+    /*if spriteTop(ball) > spriteBottom(synthCat) && spriteLastTop(ball) < spriteLastBottom(synthCat) {
+        if spriteRight(ball) >= spriteLeft(synthCat) && spriteLeft(ball) <= spriteRight(synthCat) {
+            ball.position.y = spriteBottom(synthCat) - ball.height / 2.0
+            ball.velocity.y = ball.velocity.y*-1.0
+        }
+    }
+
+    ball.lastPosition = ball.position
+    out = ball*/
+}
+
+func RenderBall(ball Ball) {
+    var geometry graphical.PlaneGeometry
+    geometry = ball.geometry;
+    geometry.render()
+}

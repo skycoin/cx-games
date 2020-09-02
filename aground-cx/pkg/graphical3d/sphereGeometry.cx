@@ -1,0 +1,99 @@
+package graphical
+
+import "gl"
+import "glfw"
+
+import "phx"
+
+var PI f32 = 3.14
+var n i32 = 20
+
+type SphereGeometry struct {
+	position phx.Vector
+  radius f32
+	segments i32
+	rotation Vector3f
+	material Material
+
+	mesh Mesh
+	tex_map []Vectorf64
+}
+
+func newSphereGeometry(radius f32, segments i32, material Material) (sg SphereGeometry) {
+	sg.position = phx.NewVector(0.0, 0.0, 0.0)
+	sg.radius = radius
+	sg.segments = segments
+	sg.rotation = newVector3f(0.0, 0.0, 0.0)
+	sg.material = material
+
+	sg.mesh = NewMesh()
+
+	var px f32
+  var py f32
+  var pz f32
+
+  var incO f32 = f32.mul(2.0, f32.div(PI, i32.f32(sg.segments)))
+  var incA f32 = f32.div(PI, i32.f32(sg.segments))
+
+	for i:=0; i<=sg.segments; i++ {
+		for j:=0; j<=sg.segments; j++ {
+			pz = f32.cos(PI - (incA*i32.f32(j)))*sg.radius;
+			py = f32.sin(PI - (incA*i32.f32(j)))*f32.sin(incO*i32.f32(i))*sg.radius;
+			px = f32.sin(PI - (incA*i32.f32(j)))*f32.cos(incO*i32.f32(i))*sg.radius;
+			sg.mesh = MeshAddVertex(sg.mesh, newVector3f(px, py, pz))
+			sg.tex_map = append(sg.tex_map, newVectorf64(convert_p(px, sg.radius), convert_p(py, sg.radius), 0.0D))
+
+			pz = f32.cos(PI - (incA*i32.f32(j)))*sg.radius;
+			py = f32.sin(PI - (incA*i32.f32(j)))*f32.sin(incO*(i32.f32(i) + 1.0))*sg.radius;
+			px = f32.sin(PI - (incA*i32.f32(j)))*f32.cos(incO*(i32.f32(i) + 1.0))*sg.radius;
+			sg.mesh = MeshAddVertex(sg.mesh, newVector3f(px, py, pz))
+			sg.tex_map = append(sg.tex_map, newVectorf64(convert_p(px, sg.radius), convert_p(py, sg.radius), 0.0D))
+		}
+	}
+  gl.End()
+	gl.PopMatrix()
+}
+
+func (sg SphereGeometry) render () {
+	gl.MatrixMode(gl.MODELVIEW)
+	gl.PushMatrix()
+	gl.Translatef(sg.position.x, sg.position.y, sg.position.z)
+  gl.Rotatef(sg.rotation.x, 1.0, 0.0, 0.0)
+	gl.Rotatef(sg.rotation.y, 0.0, 1.0, 0.0)
+	gl.Rotatef(sg.rotation.z, 0.0, 0.0, 1.0)
+	gl.Translatef(f32.mul(-1.0, sg.position.x), f32.mul(-1.0, sg.position.y), f32.mul(-1.0, sg.position.z))
+
+  gl.BindTexture(gl.TEXTURE_2D, sg.material.texture)
+  gl.Begin(gl.TRIANGLE_STRIP);
+	for i:=0; i<len(sg.mesh.vertices); i++ {
+		gl.TexCoord2d(sg.tex_map[i].x, sg.tex_map[i].y)
+		gl.Vertex3f(
+			f32.add(sg.position.x, sg.mesh.vertices[i].x),
+			f32.add(sg.position.y, sg.mesh.vertices[i].y),
+			f32.add(sg.position.z, sg.mesh.vertices[i].z));
+	}
+  gl.End()
+	gl.PopMatrix()
+}
+
+func SphereGeometryRender(sg SphereGeometry) {
+	gl.MatrixMode(gl.MODELVIEW)
+	gl.PushMatrix()
+	gl.Translatef(sg.position.x, sg.position.y, sg.position.z)
+  gl.Rotatef(sg.rotation.x, 1.0, 0.0, 0.0)
+	gl.Rotatef(sg.rotation.y, 0.0, 1.0, 0.0)
+	gl.Rotatef(sg.rotation.z, 0.0, 0.0, 1.0)
+	gl.Translatef(f32.mul(-1.0, sg.position.x), f32.mul(-1.0, sg.position.y), f32.mul(-1.0, sg.position.z))
+
+  gl.BindTexture(gl.TEXTURE_2D, sg.material.texture)
+  gl.Begin(gl.TRIANGLE_STRIP);
+	for i:=0; i<len(sg.mesh.vertices); i++ {
+		gl.TexCoord2d(sg.tex_map[i].x, sg.tex_map[i].y)
+		gl.Vertex3f(
+			f32.add(sg.position.x, sg.mesh.vertices[i].x),
+			f32.add(sg.position.y, sg.mesh.vertices[i].y),
+			f32.add(sg.position.z, sg.mesh.vertices[i].z));
+	}
+  gl.End()
+	gl.PopMatrix()
+}

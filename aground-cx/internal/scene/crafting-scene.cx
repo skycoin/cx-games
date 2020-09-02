@@ -1,0 +1,115 @@
+package main
+
+import "glfw"
+
+import "screen_pkg"
+import "button_pkg"
+
+func NewCraftingScene(screen_width i32, screen_height i32) (scene Scene) {
+  scene = NewScene(
+    "crafting-scene",
+    NewCraftingRearScreen(screen_width, screen_height),
+    NewCraftingFrontScreen(screen_width, screen_height))
+}
+
+func NewCraftingRearScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+  screen = screen_pkg.newScreen("crafting-rear-screen", screen_width, screen_height)
+}
+
+func NewCraftingFrontScreen(screen_width i32, screen_height i32) (screen screen_pkg.Screen) {
+    screen = screen_pkg.newScreen("crafting-front-screen", screen_width, screen_height)
+
+    var storage_layer layer_pkg.Layer
+    storage_layer = layer_pkg.newLayer("inventory-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+    for i:=0; i<5; i++ {
+        for j:=0; j<i32.div(g_inventory.capacity, 5); j++ {
+            storage_layer = storage_layer.addButton(
+                button_pkg.newButton2(
+                    sprintf("inventory-%d", i*15 + j),
+                    CELL_WIDTH*(i32.f32(j)-7.0), 0.75 - CELL_HEIGHT*1.5*i32.f32(i), 60, 60,
+                    g_inventory.slots[i*15 + j].geometry.material.texture,
+                    g_inventory.slots[i*15 + j].geometry.material.texture))
+        }
+    }
+    screen = screen.addLayer(storage_layer)
+
+    var crafting_layer layer_pkg.Layer
+    crafting_layer = layer_pkg.newLayer("crafting-layer", 0.0, 0.0, screen_width, i32.div(screen_height, 2), true, true)
+    for i:=0; i<3; i++ {
+        for j:=0; j<3; j++ {
+            crafting_layer = crafting_layer.addButton(
+                button_pkg.newButton2(
+                    sprintf("crafting-%d", i*3 + j),
+                    CELL_WIDTH*(i32.f32(j)-3.0), -0.25 - CELL_HEIGHT*1.5*i32.f32(i), 60, 60,
+                    g_crafter.collection.slots[i*3 + j].geometry.material.texture,
+                    g_crafter.collection.slots[i*3 + j].geometry.material.texture))
+        }
+    }
+    crafting_layer = crafting_layer.addButton(
+        button_pkg.newButton2(
+            "crefting-result",
+            CELL_WIDTH*2.0, -0.25 - CELL_HEIGHT*1.5, 60, 60,
+            g_crafter.result.geometry.material.texture,
+            g_crafter.result.geometry.material.texture))
+
+    crafting_layer = crafting_layer.addButton(
+        button_pkg.newButton(
+            "craft-button",
+            0.0, -0.75, 240, 70,
+            "static/texture/btn/select-button-inactive.png",
+            "static/texture/btn/select-button-active.png"))
+
+    screen = screen.addLayer(crafting_layer)
+}
+
+func CraftingSceneRender(scene Scene) {
+    SceneRenderRear(scene)
+    SceneRenderFront(scene)
+}
+
+func CraftingSceneUpdate(scene Scene) (scene Scene) {
+    var x f64
+    var y f64
+    x, y = glfw.GetCursorPos("window")
+    scene = SceneUpdate(scene, f64.i32(x), f64.i32(y))
+
+    for i:=0; i<len(scene.front_screen.layers); i++ {
+        if scene.front_screen.layers[i].pending_callback {
+            callback_id := scene.front_screen.layers[i].callback_id
+            for j:=0; j<g_inventory.capacity; j++ {
+                if str.eq(callback_id, sprintf("inventory-%d", j)) {
+                    if bool.not(ItemCollectionIsFull(g_crafter.collection)) {
+                        var item Item
+                        g_inventory, item = ItemCollectionRemoveItem(g_inventory, j)
+                        g_crafter.collection = ItemCollectionAddItem(g_crafter.collection, item)
+                        g_crafter = CrafterUpdate(g_crafter)
+                    }
+                }
+            }
+
+            for j:=0; j<g_hotbar.capacity; j++ {
+                if str.eq(callback_id, sprintf("crafting-%d", j)) {
+                    if bool.not(ItemCollectionIsFull(g_inventory)) {
+                        var item Item
+                        g_crafter.collection, item = ItemCollectionRemoveItem(g_crafter.collection, j)
+                        g_inventory = ItemCollectionAddItem(g_inventory, item)
+                        g_crafter = CrafterUpdate(g_crafter)
+                    }
+                }
+            }
+
+            if str.eq(callback_id, "craft-button") {
+                var item Item
+                if bool.not(ItemCollectionIsFull(g_inventory)) {
+                    var item Item
+                    item = CrafterCraft(g_crafter)
+                    g_inventory = ItemCollectionAddItem(g_inventory, item)
+                }
+
+            }
+
+            scene.front_screen.layers[i].pending_callback = false
+            scene.front_screen = NewCraftingFrontScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
+        }
+    }
+}
