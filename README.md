@@ -16,14 +16,13 @@ The list of all games included in this repo as well as the respective stage of d
 | :---: | ----------- | :----: | :----: |
 | [Pacman](pacman/) | A clone in CX of the popular arcade game PacMan. | Finished | [galah4d](https://github.com/galah4d) |
 | [CXtris](CXtris/) | A CX based remake of Tetris. | Finished | [corpusc](https://github.com/corpusc) |
-| [Snake](snake/) | A remake of the classic mobile game Snake, based on CX. | Finished | [Lunier](https://github.com/Lunier) |
+| [Snake](snake/) | A remake of the classic game Snake, based on CX. | Finished | [Lunier](https://github.com/Lunier) |
 | [Flappy Cat](flappy-cat/) | A CX clone of the viral game FlappyBird. | Finished | [atang152](https://github.com/atang152) |
 | [Pacman 3D](pacman-3d/) | An extension of the original PacMan with 3D capabilities. | Finished | [galah4d](https://github.com/galah4d) |
 | [SkyBOOM](SkyBOOM/) | A remake of Kaboom!, for the Atari 2600. | Development | [corpusc](https://github.com/corpusc) |
 | [Contest Elim](contest-elim) | Somebody running a Skycoin contest requested this. | Finished | corpusc |
 | [Brick Breaker](brick-breaker/) | A Brick Breaker clone in CX. | Development | [RedCurse](https://github.com/jaywillscott) |
 | [Sky Taxi](sky-taxi/) | A remake of Space Taxi. | Development | [corpusc](https://github.com/corpusc) |
-| [Ridge Blaster](ridge-blaster/) | Has an in-game 2D Mesh Editor. | Cancelled | [corpusc](https://github.com/corpusc) |
 
 Instructions on how to run the games as well as documentation can be found in the respective folder, have fun!
 
