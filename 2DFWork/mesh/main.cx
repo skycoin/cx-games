@@ -60,7 +60,8 @@ func Init () {
 	makeIconEditTriangles()
 
 	ColorWheel = len(RawMeshes)
-	makeColorPickerWheelResource()
+	//makeColorPickerWheel()
+	makeColorPickerSquare()
 
 	makeIconMeshPicker()
 	makeIconGenerateFunc()

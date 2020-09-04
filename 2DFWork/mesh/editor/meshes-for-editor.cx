@@ -6,7 +6,86 @@ import "geom"
 
 
 
-func makeColorPickerWheelResource () {
+func makeColorPickerSquare () {
+    var numQX i32 = 3 // number of quads in X 
+    var incX  f32 = 2.0 / i32.f32(numQX)
+    
+    var m Mesh2D
+    m = Mesh2D{ Name: "Color Picker" }
+
+    // colors 
+    var lc Color3 // left 
+        lc = Color3{ R: 1.0 }
+    var rc Color3 // right 
+        rc = Color3{ G: 1.0 }
+    
+    // verts 
+    var t f32 =  1.0
+    var r f32 = -1.0 + incX
+    var b f32 = -1.0
+    var l f32 = -1.0
+    
+    // tris 
+    var cti     i32 // current triangle index 
+
+    for i := 0; i < numQX; i++ {
+        // colors 
+        m.Colors = append(m.Colors, lc)
+        m.Colors = append(m.Colors, lc)
+        m.Colors = append(m.Colors, rc)
+        m.Colors = append(m.Colors, rc)
+        //      advance to next pair 
+        lc = rc
+        if i == 0 {
+            rc = Color3{ R: 0.0, G: 0.0, B: 1.0 }
+        }else{
+            rc = Color3{ R: 1.0, G: 0.0, B: 0.0 }
+        }
+        
+        
+        // verts 
+        var p Vec2
+        p = Vec2{ X: l, Y: b }
+        m.Points = append(
+        m.Points, p)
+
+        p = Vec2{ X: l, Y: t }
+        m.Points = append(
+        m.Points, p)
+
+        p = Vec2{ X: r, Y: t }
+        m.Points = append(
+        m.Points, p)
+
+        p = Vec2{ X: r, Y: b }
+        m.Points = append(
+        m.Points, p)
+        
+        l = l + incX
+        r = r + incX
+
+
+        // tris 
+        for q := 0; q < 3; q++ {
+            m.TriangleIndices = append(
+            m.TriangleIndices, cti)
+            cti = cti + 1
+        }
+        
+        m.TriangleIndices = append(
+        m.TriangleIndices, cti - 3)
+        m.TriangleIndices = append(
+        m.TriangleIndices, cti - 1)
+        m.TriangleIndices = append(
+        m.TriangleIndices, cti)
+        cti = cti + 1
+    }
+    
+    makeAndReportOn(m, true)
+}
+
+
+func makeColorPickerWheel () {
 	var NUM_ANGS i32 = 1536 // 3 x 512, 512 needed to show all possible hues between 2 colors 
 	// (256 settings per channel, but we alternate between inc/dec 1 chan at a time)
 
@@ -31,9 +110,9 @@ func makeColorPickerWheelResource () {
 	for i := 0; i < NUM_ANGS; i++ {
 		currCol = Color3{ R: red, G: green, B: blue }
 		
-		m.Colors = append(m.Colors, currCol)
-		m.Colors = append(m.Colors, currCol)
-		m.Colors = append(m.Colors, currCol)
+        for q := 0; q < 3; q++ {
+            m.Colors = append(m.Colors, currCol)
+        }
 
 		var leftFromCenter  Vec2
 		var rightFromCenter Vec2
@@ -48,35 +127,29 @@ func makeColorPickerWheelResource () {
 		m.Points = append(
 		m.Points, rightFromCenter)
 
-		m.TriangleIndices = append(
-		m.TriangleIndices, cti)
-		cti = i32.add(cti, 1)
-		
-		m.TriangleIndices = append(
-		m.TriangleIndices, cti)
-		cti = i32.add(cti, 1)
-		
-		m.TriangleIndices = append(
-		m.TriangleIndices, cti)
-		cti = i32.add(cti, 1)
+		for qq := 0; qq < 3; qq++ {
+            m.TriangleIndices = append(
+            m.TriangleIndices, cti)
+            cti = cti + 1
+        }
 
 		if i >= 1024 {
 			if increase {
 				red = f32.add(red, CI)
-			} else {
+			}else{
 				blue = f32.sub(blue, CI)
 			}
-		} else
+		}else
 		if i >= 512 {
 			if increase {
 				blue = f32.add(blue, CI)
-			} else {
+			}else{
 				green = f32.sub(green, CI)
 			}
-		} else {
+		}else{
 			if increase {
 				green = f32.add(green, CI)
-			} else {
+			}else{
 				red = f32.sub(red, CI)
 			}
 		}
