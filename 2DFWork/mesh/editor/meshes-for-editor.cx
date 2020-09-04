@@ -76,9 +76,15 @@ func makeColorPickerSquare () {
 
         // {0} solid R,G, or B fading to black, connective-bridge tri. 
         // (needs to be split into 2 tris on the 3rd/last stage) 
-        m.Colors = append(m.Colors, draw.Black)
-        m.Colors = append(m.Colors, cols[ccP1])
-        m.Colors = append(m.Colors, draw.Black)
+        if i == numQX - 1 {
+            m.Colors = append(m.Colors, draw.Black)
+            m.Colors = append(m.Colors, cols[ccP1])
+            m.Colors = append(m.Colors, draw.Black)
+        }
+        
+        m.Colors     = append(m.Colors, draw.Black)
+        m.Colors     = append(m.Colors, cols[ccP1])
+        m.Colors     = append(m.Colors, draw.Black)
         //m.Colors = append(m.Colors, /*draw.Black)*/rc)
         
         
@@ -114,18 +120,35 @@ func makeColorPickerSquare () {
         
         // {1} solid R,G, or B fading to black, connective-bridge tri. 
         // (needs to be split into 2 tris on the 3rd/last stage) 
-        p = Vec2{ X: l+incXH, Y: b }
-        m.Points = append(
-        m.Points, p)
+            p = Vec2{ X: l+incXH, Y: b }
+            m.Points = append(
+            m.Points, p)
 
-        p = Vec2{ X: r,       Y: t }
-        m.Points = append(
-        m.Points, p)
+            p = Vec2{ X: r,       Y: t }
+            m.Points = append(
+            m.Points, p)
 
-        p = Vec2{ X: r+incXH, Y: b }
-        m.Points = append(
-        m.Points, p)
+            p = Vec2{ X: r+incXH, Y: b }
+            m.Points = append(
+            m.Points, p)
+            
+        if i == numQX - 1 {
+            p = Vec2{ X: l+incXH, Y: b }
+            p.X = p.X - incX * 3.0
+            m.Points = append(
+            m.Points, p)
 
+            p = Vec2{ X: r,       Y: t }
+            p.X = p.X - incX * 3.0
+            m.Points = append(
+            m.Points, p)
+
+            p = Vec2{ X: r+incXH, Y: b }
+            p.X = p.X - incX * 3.0
+            m.Points = append(
+            m.Points, p)
+        }
+        
         /*
         p = Vec2{ X: r, Y: b }
         m.Points = append(
@@ -137,7 +160,7 @@ func makeColorPickerSquare () {
 
 
         // tris 
-        for q := 0; q < 9; q++ {
+        for q := 0; q < 10; q++ {
             m.TriangleIndices = append(
             m.TriangleIndices, cti)
             cti = cti + 1
