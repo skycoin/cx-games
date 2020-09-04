@@ -193,8 +193,8 @@ func UpdateAt (et i32, i i32) { // entity type, id
 			vY        = vY * All[et][i].DistanceY
 			vX        = vX * 2.5
 			vY        = vY * 2.5
-		All[et][i].VelX  = vX
-		All[et][i].VelY  = vY
+		All[et][i].VelX = vX
+		All[et][i].VelY = vY
 	}
 	
 	

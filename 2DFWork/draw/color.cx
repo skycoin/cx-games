@@ -80,6 +80,16 @@ func SetColor4 (color Color3, alpha f32) {
 }
 
 
+func GetLerpedColor3 (a Color3, b Color3, frac f32) (out Color3) {
+		var rc f32 = (a.R - b.R) * frac // color channel deltas 
+		var gc f32 = (a.G - b.G) * frac
+		var bc f32 = (a.B - b.B) * frac
+		
+		// blend colors 
+		out.R = b.R + rc
+		out.G = b.G + gc
+		out.B = b.B + bc
+}
 func SetBlendedColor3 (a Color3, b Color3) {
 		var rc f32 = (a.R - b.R) * 0.5 // color channel deltas 
 		var gc f32 = (a.G - b.G) * 0.5
