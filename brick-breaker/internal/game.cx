@@ -1,0 +1,78 @@
+package main
+
+import "graphical"
+
+var g_game Game
+
+type Game struct {
+    running bool
+    background graphical.PlaneGeometry
+}
+
+func NewGame() (game Game) {
+    game.running = false
+
+    var material graphical.Material
+    material = graphical.newMaterial(0.0, 0.0, 0.0)
+    material = material.setTexture(gl.NewTexture("./assets/textures/background.png"))
+    game.background = graphical.newPlaneGeometry(
+    graphical.newVector3f(0.0, 0.0, 0.0),
+    graphical.newVector3f(2.0, 2.0, 0.0),
+    material)
+
+    g_player = NewPlayer()
+    g_ball = NewBall()
+
+    var brick_x f32 = -0.55
+    for i:=0; i<8; i++ {
+        brick_x = brick_x + BRICK_WIDTH
+        g_bricks = append(g_bricks, NewBrick(brick_x, -0.6))
+    }
+}
+
+func StartGame(game Game) (game Game) {
+    game.running = true
+}
+
+func UpdateGame(game Game) (game Game) {
+    if bool.not(game.running) {
+        return
+    }
+
+    if checkCollisionAABB(g_player.geometry, g_ball.geometry) {
+        if f32.gt(g_player.position.y, g_ball.position.y) {
+            g_ball.velocity.y = BALL_SPAWN_VEL_Y
+        }
+    }
+
+    for i:=0; i<len(g_bricks); i++ {
+        if checkCollisionAABB(g_bricks[i].geometry, g_ball.geometry) {
+            g_bricks[i].destroyed = true
+        }
+    }
+
+    g_player = UpdatePlayer(g_player)
+    g_ball = UpdateBall(g_ball)
+}
+
+func checkCollisionAABB(a graphical.PlaneGeometry, b graphical.PlaneGeometry) (collision bool) {
+    var col1x bool = f32.lt(a.position.x, f32.add(b.position.x, f32.div(b.dimensions.x, 2.0)))
+    var col2x bool = f32.gt(f32.add(a.position.x, f32.div(a.dimensions.x, 2.0)), b.position.x)
+    var col1y bool = f32.lt(a.position.y, f32.add(b.position.y, f32.div(b.dimensions.y, 2.0)))
+    var col2y bool = f32.gt(f32.add(a.position.y, f32.div(a.dimensions.y, 2.0)), b.position.y)
+
+    return col1x && col2x && col1y && col2y
+}
+
+func RenderGame(game Game) {
+    var geometry graphical.PlaneGeometry
+    geometry = game.background;
+    geometry.render()
+
+    RenderPlayer(g_player)
+    RenderBall(g_ball)
+
+    for i:=0; i<len(g_bricks); i++ {
+        RenderBrick(g_bricks[i])
+    }
+}

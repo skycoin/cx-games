@@ -1,0 +1,92 @@
+package main
+
+import "time"
+
+import "graphical"
+
+var g_game Game
+
+type Game struct {
+
+  sky graphical.PlaneGeometry
+
+  player Player
+}
+
+func NewGame() (game Game) {
+  initWorld()
+
+  game.sky = initSky()
+
+  game.player = NewPlayer()
+  initInventory()
+  InitCrafter()
+}
+
+func initInventory() {
+    g_inventory = NewItemCollection(75)
+    for i:=0; i<10; i++ {
+        g_inventory = ItemCollectionAddItem(g_inventory, NewItem(i, ITEM_CLASS_WEAPON))
+    }
+    for i:=0; i<5; i++ {
+        g_inventory = ItemCollectionAddItem(g_inventory, NewItem(9, ITEM_CLASS_WEAPON))
+    }
+    g_hotbar = NewItemCollection(9)
+}
+
+func initSky() (sky graphical.PlaneGeometry) {
+  var material graphical.Material
+  material = graphical.newMaterial(0.0, 0.0, 0.0)
+  material = material.setTexture(gl.NewTexture("assets/textures/sky.png"))
+
+  sky = graphical.newPlaneGeometry(
+    graphical.newVector3f(0.0, -3.45, 0.0),
+    graphical.newVector3f(4.0, 1.0, 0.0),
+    material)
+}
+
+func GameUpdate(game Game) (game Game)  {
+  game.player = PlayerUpdate(game.player, i64.f64(time.UnixMilli()))
+}
+
+func GameRender(game Game, program i32) {
+  ratio := f64.div(i32.f64(SCREEN_WIDTH), i32.f64(SCREEN_HEIGHT))
+
+  p_x := game.player.geometry.position.x
+  p_y := game.player.geometry.position.y
+
+  left := f64.add(f64.mul(-1.0D, ratio), f32.f64(p_x))
+  right := f64.add(f64.mul(1.0D, ratio), f32.f64(p_x))
+  bottom := f64.add(1.0D, f32.f64(p_y))
+  top := f64.add(-1.0D, f32.f64(p_y))
+
+  //gl.Ortho(f64.mul(-1.0D, ratio), f64.mul(1.0D, ratio), 1.0D, -1.0D, -1.0D, 1.0D)
+  gl.Ortho(left, right, bottom, top, -1.0D, 1.0D)
+
+  // Scales and rotates the scene
+  /*gl.Scalef(game.settings.scale, game.settings.scale, game.settings.scale);
+  gl.Rotatef(game.settings.rotation_x, 1.0, 0.0, 0.0 );
+  gl.Rotatef(game.settings.rotation_y, 0.0, 1.0, 0.0 );
+  gl.Rotatef(game.settings.rotation_z, 0.0, 0.0, 1.0 );*/
+
+  gl.UseProgram(program)
+
+  // render player
+  PlayerRender(game.player)
+
+  // render inventory
+  gl.PushMatrix()
+  gl.Translatef(p_x, p_y+0.75, 0.0)
+  ItemCollectionRender(g_hotbar)
+  gl.PopMatrix()
+
+
+  // render world
+  renderWorld(game.player.x, game.player.y)
+
+  gl.Translatef(p_x, 0.0, 0.0)
+  var sg graphical.PlaneGeometry
+  sg = game.sky
+  sg.render()
+
+}

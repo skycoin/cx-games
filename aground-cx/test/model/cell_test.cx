@@ -1,0 +1,71 @@
+package main
+
+import "test"
+
+func NewCell_Test() {
+  test.StartTest("should initialize a Cell with the correct attributes")
+
+  // arrange
+  var x i32 = 1
+  var y i32 = 2
+  var tp i32 = 42
+
+  // act
+  var cell Cell = NewCell(x, y, tp)
+
+  // assert
+  test.AssertEqualsI32(cell.x, x)
+  test.AssertEqualsI32(cell.y, y)
+  test.AssertEqualsI32(cell.tp, tp)
+
+  test.FinishTest()
+}
+
+func LoadCellTextures_Test() {
+  test.StartTest("should load Cell textures after initializing the first cell")
+
+  // arrange
+  cell_texture_loaded = false
+
+  // assert
+  test.AssertFalse(cell_texture_loaded)
+
+  // act
+  var cell Cell = NewCell(0, 0, 42)
+
+  // assert
+  test.AssertTrue(cell_texture_loaded)
+
+  test.FinishTest()
+}
+
+func CellHit_Test() {
+  test.StartTest("should decrease the Cell resistance after being hit")
+
+  // arrange
+  var cell Cell = NewCell(0, 0, 3)
+  var expected i32 = cell.resistance - 1
+
+  // act
+  cell = CellHit(cell)
+
+  // assert
+  test.AssertEqualsI32(cell.resistance, expected)
+
+  test.FinishTest()
+}
+
+func CellHit_WhenAlreadyDestroyed_Test() {
+  test.StartTest("should not decrease the Cell resistance if already destroyed")
+
+  // arrange
+  var cell Cell = NewCell(0, 0, 999)
+
+  // act
+  cell = CellHit(cell)
+
+  // assert
+  test.AssertEqualsI32(cell.resistance, 0)
+
+  test.FinishTest()
+}

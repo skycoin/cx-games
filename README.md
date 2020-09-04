@@ -22,6 +22,7 @@ The list of all games included in this repo as well as the respective stage of d
 | [SkyBOOM](SkyBOOM/) | A remake of Kaboom!, for the Atari 2600. | Development | [corpusc](https://github.com/corpusc) |
 | [Contest Elim](contest-elim) | Somebody running a Skycoin contest requested this. | Finished | corpusc |
 | [Brick Breaker](brick-breaker/) | A Brick Breaker clone in CX. | Development | [RedCurse](https://github.com/jaywillscott) |
+| [Aground](aground-cx/) | A CX based remake of Aground. | Development | [galah4d](https://github.com/galah4d) |
 | [Sky Taxi](sky-taxi/) | A remake of Space Taxi. | Development | [corpusc](https://github.com/corpusc) |
 
 Instructions on how to run the games as well as documentation can be found in the respective folder, have fun!

@@ -1,0 +1,28 @@
+package main
+
+var g_world[10][10] i32
+
+type Game struct {
+  world[10][10] i32
+}
+
+func NewGame() (game Game) {
+  // this works
+  for i:=0; i<10; i++ {
+    for j:=0; j<10; j++ {
+      g_world[i][j] = 1
+    }
+  }
+
+  // this does not work
+  for i:=0; i<10; i++ {
+    for j:=0; j<10; j++ {
+      game.world[i][j] = 1
+    }
+  }
+}
+
+func main()  {
+  var game Game
+  game = NewGame()
+}

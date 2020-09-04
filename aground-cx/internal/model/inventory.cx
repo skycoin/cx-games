@@ -1,0 +1,128 @@
+package main
+
+import "gl"
+import "graphical"
+
+var g_inventory Inventory
+
+type Inventory struct {
+    storage [75]Item
+
+    slots [9]Item
+    active_slot i32
+
+    textures [2]i32
+    geometry graphical.PlaneGeometry
+}
+
+func NewInventory() (inventory Inventory) {
+    for i:=0; i<9; i++ {
+        inventory.slots[i] = NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID)
+    }
+    inventory.active_slot = -1;
+
+    for i:=0; i<75; i++ {
+        if i < 9 {
+            inventory.storage[i] = NewItem(i, ITEM_CLASS_WEAPON)
+        } else {
+            inventory.storage[i] = NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID)
+        }
+    }
+
+    inventory.textures[0] = gl.NewTexture(sprintf("assets/textures/cell-%d.png", 4))
+    inventory.textures[1] = gl.NewTexture(sprintf("assets/textures/cell-%d.png", 3))
+
+    var mat graphical.Material
+    mat = graphical.newMaterial(0.0, 0.0, 0.0)
+    mat = mat.setTexture(inventory.textures[0])
+    inventory.geometry = graphical.newPlaneGeometry(
+      graphical.newVector3f(0.0, 0.0, 0.0),
+      graphical.newVector3f(CELL_WIDTH, CELL_HEIGHT, 0.0),
+      mat)
+}
+
+func InventoryAddItem(inventory Inventory, item Item) (inventory Inventory) {
+    for i:=0; i<9; i++ {
+        if inventory.slots[i].class == ITEM_CLASS_VOID {
+            inventory.slots[i] = item
+            break
+        }
+    }
+}
+
+func InventoryRemoveItem(inventory Inventory, slot i32) (inventory Inventory, item Item)  {
+    if inventory.active_slot == slot {
+        inventory.active_slot = -1
+    }
+    item = inventory.slots[slot]
+    inventory.slots[slot] = NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID)
+}
+
+func InventoryEquip(inventory Inventory, slot i32) (inventory Inventory) {
+    // TODO check bounds
+    if inventory.slots[slot].class != ITEM_CLASS_VOID {
+        inventory.active_slot = slot
+    }
+}
+
+func InventoryGetEquiped(inventory Inventory) (item Item) {
+    if inventory.active_slot == -1 {
+        item = NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID)
+    } else {
+        item = inventory.slots[inventory.active_slot]
+    }
+}
+
+func StorageAddItem(inventory Inventory, item Item) (inventory Inventory) {
+    for i:=0; i<75; i++ {
+        if inventory.storage[i].class == ITEM_CLASS_VOID {
+            inventory.storage[i] = item
+            break
+        }
+    }
+}
+
+func StorageRemoveItem(inventory Inventory, slot i32) (inventory Inventory, item Item) {
+    item = inventory.storage[slot]
+    inventory.storage[slot] = NewItem(ITEM_TYPE_VOID, ITEM_CLASS_VOID)
+}
+
+func InventoryIsFull(inventory Inventory) (full bool) {
+    for i:=0; i<9; i++ {
+        if inventory.slots[i].class == ITEM_CLASS_VOID {
+            return false
+        }
+    }
+    return true
+}
+
+func StorageIsFull(inventory Inventory) (full bool) {
+    for i:=0; i<75; i++ {
+        if inventory.storage[i].class == ITEM_CLASS_VOID {
+            return false
+        }
+    }
+    return true
+}
+
+func InventoryRender(inventory Inventory) {
+    var geometry graphical.PlaneGeometry
+    geometry = inventory.geometry;
+
+    for i:=0; i<9; i++ {
+        gl.PushMatrix()
+        if (inventory.active_slot == i) {
+            geometry.material.texture = inventory.textures[1]
+            gl.Translatef(CELL_WIDTH*i32.f32(i - 4), CELL_WIDTH*-0.25, 0.0)
+        } else {
+            geometry.material.texture = inventory.textures[0]
+            gl.Translatef(CELL_WIDTH*i32.f32(i - 4), 0.0, 0.0)
+        }
+        ItemRender(inventory.slots[i])
+        geometry.render()
+        gl.PopMatrix()
+    }
+
+
+    geometry.render()
+}

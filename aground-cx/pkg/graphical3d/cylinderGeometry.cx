@@ -1,0 +1,166 @@
+package graphical
+
+import "gl"
+import "glfw"
+
+import "phx"
+
+var PI f32 = 3.1415
+
+type CylinderGeometry struct {
+	position phx.Vector
+  height f32
+  radius f32
+	theta_length f32
+	segments i32
+	rotation Vector3f
+	materials [2]Material
+}
+
+func newCylinderGeometry(height f32, radius f32, segments i32, materials [2]Material) (cg CylinderGeometry) {
+	cg.position = phx.NewVector(0.0, 0.0, 0.0)
+  cg.height = height
+  cg.radius = radius
+	cg.segments = segments
+	cg.rotation = newVector3f(0.0, 0.0, 0.0)
+	cg.materials = materials
+	cg.theta_length = f32.div(2.0*PI, i32.f32(cg.segments))
+}
+
+func (cg CylinderGeometry) render () {
+  var px f32
+  var py f32
+
+  var theta f32
+  var half_height f32
+  half_height = f32.div(cg.height, 2.0)
+
+	gl.MatrixMode(gl.MODELVIEW)
+	gl.PushMatrix()
+	gl.Translatef(cg.position.x, cg.position.y, cg.position.z)
+  gl.Rotatef(cg.rotation.x, 1.0, 0.0, 0.0)
+	gl.Rotatef(cg.rotation.y, 0.0, 1.0, 0.0)
+	gl.Rotatef(cg.rotation.z, 0.0, 0.0, 1.0)
+	gl.Translatef(f32.mul(-1.0, cg.position.x), f32.mul(-1.0, cg.position.y), f32.mul(-1.0, cg.position.z))
+
+  gl.BindTexture(gl.TEXTURE_2D, cg.materials[1].texture)
+  gl.Begin(gl.TRIANGLE_STRIP);
+
+	var i i32;
+  for i=0; i<=cg.segments; i++ {
+    theta = i32.f32(i)*cg.theta_length
+    px = cg.radius*f32.cos(theta)
+    py = cg.radius*f32.sin(theta)
+
+    gl.TexCoord2d(f32.f64(f32.div(theta, 2.0*PI)), 1.0D)
+    gl.Vertex3f(f32.add(cg.position.x, px), f32.add(cg.position.y, py), half_height);
+    gl.TexCoord2d(f32.f64(f32.div(theta, 2.0*PI)), 0.0D)
+    gl.Vertex3f(f32.add(cg.position.x, px), f32.add(cg.position.y, py), f32.mul(-1.0, half_height));
+  }
+  gl.End();
+
+	gl.BindTexture(gl.TEXTURE_2D, cg.materials[0].texture)
+  gl.Begin(gl.TRIANGLE_STRIP);
+  for i=0; i<=cg.segments; i++ {
+    theta = i32.f32(i)*cg.theta_length
+    px = cg.radius*f32.cos(theta)
+    py = cg.radius*f32.sin(theta)
+
+    gl.TexCoord2d(convert_p(px, cg.radius), convert_p(py, cg.radius))
+    gl.Vertex3f(f32.add(cg.position.x, px), f32.add(cg.position.y, py),  f32.add(cg.position.z, f32.div(cg.height, 2.0)));
+    gl.TexCoord2d(0.5D, 0.5D)
+    gl.Vertex3f(cg.position.x, cg.position.y,  f32.add(cg.position.z, f32.div(cg.height, 2.0)));
+  }
+  gl.End();
+
+	gl.BindTexture(gl.TEXTURE_2D, cg.materials[0].texture)
+  gl.Begin(gl.TRIANGLE_STRIP);
+  for i=0; i<=cg.segments; i++ {
+    theta = i32.f32(i)*cg.theta_length
+    px = cg.radius*f32.cos(theta)
+    py = cg.radius*f32.sin(theta)
+
+    gl.TexCoord2d(convert_p(px, cg.radius), convert_p(py, cg.radius))
+    gl.Vertex3f(f32.add(cg.position.x, px), f32.add(cg.position.y, py),  f32.sub(cg.position.z, f32.div(cg.height, 2.0)));
+    gl.TexCoord2d(0.5D, 0.5D)
+    gl.Vertex3f(cg.position.x, cg.position.y,  f32.sub(cg.position.z, f32.div(cg.height, 2.0)));
+  }
+  gl.End();
+
+	gl.PopMatrix()
+
+	/*
+	var border CircleGeometry
+	border = newCircleGeometry(cg.radius, cg.segments, cg.material)
+	border.theta_length = cg.theta_length
+	border.position = cg.position
+
+	border.position.z = half_height
+	border.render()
+
+	border.position.z = f32.mul(-1.0, half_height)
+	border.render()*/
+}
+
+func CylinderGeometryRender (cg CylinderGeometry) {
+	var px f32
+  var py f32
+
+  var theta f32
+  var half_height f32
+  half_height = f32.div(cg.height, 2.0)
+
+	gl.MatrixMode(gl.MODELVIEW)
+	gl.PushMatrix()
+	gl.Translatef(cg.position.x, cg.position.y, cg.position.z)
+  gl.Rotatef(cg.rotation.x, 1.0, 0.0, 0.0)
+	gl.Rotatef(cg.rotation.y, 0.0, 1.0, 0.0)
+	gl.Rotatef(cg.rotation.z, 0.0, 0.0, 1.0)
+	gl.Translatef(f32.mul(-1.0, cg.position.x), f32.mul(-1.0, cg.position.y), f32.mul(-1.0, cg.position.z))
+
+  gl.BindTexture(gl.TEXTURE_2D, cg.materials[1].texture)
+  gl.Begin(gl.TRIANGLE_STRIP);
+
+	var i i32;
+  for i=0; i<=cg.segments; i++ {
+    theta = i32.f32(i)*cg.theta_length
+    px = cg.radius*f32.cos(theta)
+    py = cg.radius*f32.sin(theta)
+
+    gl.TexCoord2d(f32.f64(f32.div(theta, 2.0*PI)), 1.0D)
+    gl.Vertex3f(f32.add(cg.position.x, px), f32.add(cg.position.y, py), half_height);
+    gl.TexCoord2d(f32.f64(f32.div(theta, 2.0*PI)), 0.0D)
+    gl.Vertex3f(f32.add(cg.position.x, px), f32.add(cg.position.y, py), f32.mul(-1.0, half_height));
+  }
+  gl.End();
+
+	gl.BindTexture(gl.TEXTURE_2D, cg.materials[0].texture)
+  gl.Begin(gl.TRIANGLE_STRIP);
+  for i=0; i<=cg.segments; i++ {
+    theta = i32.f32(i)*cg.theta_length
+    px = cg.radius*f32.cos(theta)
+    py = cg.radius*f32.sin(theta)
+
+    gl.TexCoord2d(convert_p(px, cg.radius), convert_p(py, cg.radius))
+    gl.Vertex3f(f32.add(cg.position.x, px), f32.add(cg.position.y, py),  f32.add(cg.position.z, f32.div(cg.height, 2.0)));
+    gl.TexCoord2d(0.5D, 0.5D)
+    gl.Vertex3f(cg.position.x, cg.position.y,  f32.add(cg.position.z, f32.div(cg.height, 2.0)));
+  }
+  gl.End();
+
+	gl.BindTexture(gl.TEXTURE_2D, cg.materials[0].texture)
+  gl.Begin(gl.TRIANGLE_STRIP);
+  for i=0; i<=cg.segments; i++ {
+    theta = i32.f32(i)*cg.theta_length
+    px = cg.radius*f32.cos(theta)
+    py = cg.radius*f32.sin(theta)
+
+    gl.TexCoord2d(convert_p(px, cg.radius), convert_p(py, cg.radius))
+    gl.Vertex3f(f32.add(cg.position.x, px), f32.add(cg.position.y, py),  f32.sub(cg.position.z, f32.div(cg.height, 2.0)));
+    gl.TexCoord2d(0.5D, 0.5D)
+    gl.Vertex3f(cg.position.x, cg.position.y,  f32.sub(cg.position.z, f32.div(cg.height, 2.0)));
+  }
+  gl.End();
+
+	gl.PopMatrix()
+}

@@ -1,0 +1,65 @@
+package graphical
+
+import "gl"
+import "glfw"
+
+type PlaneGeometry struct {
+	position Vector3f
+	dimensions Vector3f
+	rotation Vector3f
+	material Material
+}
+
+func newPlaneGeometry(pos Vector3f, dim Vector3f, material Material) (pg PlaneGeometry) {
+	pg = PlaneGeometry{
+		position:pos,
+		dimensions:dim,
+		rotation:newVector3f(0.0, 0.0, 0.0),
+		material:material}
+	return pg
+}
+
+func (pg PlaneGeometry) render () {
+	x1 := f32.mul(-1.0, f32.div(pg.dimensions.x, 2.0))
+	x2 := f32.mul( 1.0, f32.div(pg.dimensions.x, 2.0))
+
+	y1 := f32.mul(-1.0, f32.div(pg.dimensions.y, 2.0))
+	y2 := f32.mul( 1.0, f32.div(pg.dimensions.y, 2.0))
+
+	gl.PushMatrix()
+
+	gl.Rotatef(pg.rotation.x, 1.0, 0.0, 0.0)
+	gl.Rotatef(pg.rotation.y, 0.0, 1.0, 0.0)
+	gl.Rotatef(pg.rotation.z, 0.0, 0.0, 1.0)
+	gl.Translatef(pg.position.x, pg.position.y, pg.position.z)
+
+	if pg.material.textured {
+		gl.BindTexture(gl.TEXTURE_2D, pg.material.texture)
+
+		if (pg.material.flipped) {
+			gl.Scalef(-1.0, 1.0, 1.0)
+		}
+
+		gl.Begin(gl.TRIANGLE_STRIP);
+		gl.TexCoord2d(0.0D, 0.0D);
+		gl.Vertex2f( x1, y1);
+		gl.TexCoord2d(0.0D, 1.0D);
+		gl.Vertex2f( x1, y2);
+		gl.TexCoord2d(1.0D, 0.0D);
+		gl.Vertex2f( x2, y1);
+		gl.TexCoord2d(1.0D, 1.0D);
+		gl.Vertex2f( x2, y2);
+
+	} else {
+		gl.Color3f(pg.material.color.x, pg.material.color.y, pg.material.color.z);
+
+		gl.Begin(gl.QUADS);
+		gl.Vertex2f( x2, y1);
+		gl.Vertex2f( x2, y2);
+		gl.Vertex2f( x1, y2);
+		gl.Vertex2f( x1, y1);
+	}
+	gl.End()
+
+	gl.PopMatrix()
+}

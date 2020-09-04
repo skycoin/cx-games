@@ -1,0 +1,89 @@
+package main
+
+import "gl"
+
+import "graphical"
+
+var cell_textures [6]i32
+var cell_texture_loaded bool = false
+
+type Cell struct {
+  tp i32
+  x i32
+  y i32
+
+  resistance i32
+
+  geometry graphical.PlaneGeometry
+}
+
+func NewCell(x i32, y i32, tp i32) (cell Cell) {
+  cell.tp = tp
+  cell.x = x
+  cell.y = y
+
+  if bool.not(cell_texture_loaded) {
+    cell_textures[1] = gl.NewTexture(sprintf("assets/textures/cell-%d.png", 1))
+    cell_textures[2] = gl.NewTexture(sprintf("assets/textures/cell-%d.png", 2))
+    cell_textures[3] = gl.NewTexture(sprintf("assets/textures/cell-%d.png", 3))
+    cell_textures[4] = gl.NewTexture(sprintf("assets/textures/cell-%d.png", 4))
+    cell_textures[5] = gl.NewTexture("assets/textures/ladder.png")
+    cell_texture_loaded = true
+  }
+
+  var mat graphical.Material
+  mat = graphical.newMaterial(0.01*i32.f32(x), 0.01*i32.f32(y), 0.0)
+  if (tp == 1) {
+    cell.resistance = 1
+    mat = mat.setTexture(cell_textures[1])
+  } else if (tp == 2) {
+    cell.resistance = 1
+    mat = mat.setTexture(cell_textures[2])
+  } else if (tp == 3) {
+    cell.resistance = 2
+    mat = mat.setTexture(cell_textures[3])
+  } else if (tp == 4) {
+    cell.resistance = 10
+    mat = mat.setTexture(cell_textures[4])
+  } else if (tp == CELL_TYPE_LADDER) {
+    cell.resistance = 1
+    mat = mat.setTexture(cell_textures[5])
+  } else {
+    cell.resistance = 0
+  }
+
+  cell.geometry = graphical.newPlaneGeometry(
+    getCellPosition(x, y),
+    graphical.newVector3f(CELL_WIDTH, CELL_HEIGHT, 0.0),
+    mat)
+}
+
+func getCellPosition(x i32, y i32) (v graphical.Vector3f) {
+  var base_x f32
+  base_x = -1.0*((CELL_WIDTH*i32.f32(WORLD_X_MAX))/2.0)
+
+  var base_y f32
+  base_y = -1.0*((CELL_HEIGHT*i32.f32(WORLD_Y_MAX))/2.0)
+
+  pos_x := f32.add(base_x, f32.mul(i32.f32(x), CELL_WIDTH))
+  pos_y := f32.add(base_y, f32.mul(i32.f32(y), CELL_HEIGHT))
+	v = graphical.newVector3f(pos_x, pos_y, 0.0)
+}
+
+func CellHit(cell Cell) (cell Cell) {
+    if (cell.resistance > 0) {
+      cell.resistance = cell.resistance - 1
+      if (cell.resistance == 0) {
+        //cell = NewCell(cell.x, cell.y, 0)
+      }
+    }
+}
+
+func CellRender(cell Cell) {
+  if cell.tp == 0 {
+    return
+  }
+  var geometry graphical.PlaneGeometry
+  geometry = cell.geometry;
+  geometry.render()
+}

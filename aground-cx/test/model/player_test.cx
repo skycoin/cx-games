@@ -1,0 +1,35 @@
+package main
+
+import "test"
+
+func NewPlayer_Test() {
+  test.StartTest("should initialize a Player with the correct attributes")
+
+  // act
+  var player Player = NewPlayer()
+
+  // assert
+  test.AssertEqualsI32(player.x, PLAYER_SPAWN_X)
+  test.AssertEqualsI32(player.y, PLAYER_SPAWN_Y)
+  test.AssertEqualsI32(player.dir_x, 1)
+  test.AssertEqualsI32(player.dir_y, 0)
+  test.AssertEqualsI32(player.xtarget, player.x)
+  test.AssertEqualsI32(player.ytarget, player.y)
+  test.AssertEqualsI32(player.item, ITEM_TYPE_LADDER)
+  test.AssertEqualsI32(player.state, PLAYER_STATE_IDLE)
+  test.AssertEqualsI32(len(player.anims), 4)
+
+  test.FinishTest()
+}
+
+func PlayerMove_Test()  {
+  test.StartTest("should change player position when movement is possible")
+  // TODO
+  test.FinishTest()
+}
+
+func PlayerMove_WhenNotPossible_Test()  {
+  test.StartTest("should not change player position when movement is impossible")
+  // TODO
+  test.FinishTest()
+}

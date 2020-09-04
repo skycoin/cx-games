@@ -1,0 +1,23 @@
+package main
+
+import "test"
+
+func main() {
+  Addittion_Test()
+}
+
+func Addittion_Test() {
+  test.StartTest("should return the correct result for an addition operation")
+
+  // given
+  var a i32 = 2
+  var b i32 = 3
+
+  // when
+  var res i32 = a + b
+
+  // then
+  test.AssertEqualsI32(res, 2)
+
+  test.FinishTest()
+}

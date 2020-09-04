@@ -1,0 +1,66 @@
+package main
+
+import "gl"
+
+import "app"
+import "graphical"
+
+var PLAYER_SPAWN_POX_X f32 = 0.0
+var PLAYER_SPAWN_POS_Y f32 = 0.75
+var PLAYER_SPAWN_VEL_X f32 = 0.01
+var PLAYER_SPAWN_VEL_Y f32 = 0.01
+var PLAYER_WIDTH f32 = 200.0 / 1024.0
+var PLAYER_HEIGHT f32 = 200.0 / 768.0
+
+var PLAYER_TEXTURE_LOADED bool = false
+var PLAYER_TEXTURE i32
+
+var g_player Player
+
+type Player struct {
+  position app.Vector2D
+  velocity app.Vector2D
+  geometry graphical.PlaneGeometry
+}
+
+func NewPlayer() (pl Player) {
+    pl.position = app.NewVector2D(PLAYER_SPAWN_POX_X, PLAYER_SPAWN_POS_Y)
+
+    if bool.not(PLAYER_TEXTURE_LOADED) {
+        PLAYER_TEXTURE = gl.NewTexture("./assets/textures/synth_cat.png")
+        PLAYER_TEXTURE_LOADED = true
+    }
+
+    var mat graphical.Material
+    mat = graphical.newMaterial(0.0, 0.0, 0.0)
+    mat = mat.setTexture(PLAYER_TEXTURE)
+
+    pl.geometry = graphical.newPlaneGeometry(
+        graphical.newVector3f(pl.position.x, pl.position.y, 0.0),
+        graphical.newVector3f(PLAYER_WIDTH, PLAYER_HEIGHT, 0.0),
+        mat)
+}
+
+func UpdatePlayer(pl Player) (pl Player) {
+    pl = updatePosition(pl)
+    if f32.gt(f32.add(pl.position.x, f32.div(PLAYER_WIDTH, 2.0)), 1.0) {
+        pl.position.x = f32.sub(1.0, f32.div(PLAYER_WIDTH, 2.0))
+        pl.geometry.position.x = pl.position.x
+    } else if f32.lt(f32.sub(pl.position.x, f32.div(PLAYER_WIDTH, 2.0)), -1.0) {
+        pl.position.x = f32.add(-1.0, f32.div(PLAYER_WIDTH, 2.0))
+        pl.geometry.position.x = pl.position.x
+    }
+}
+
+func updatePosition(pl Player) (pl Player) {
+    pl.position.x = f32.add(pl.position.x, pl.velocity.x)
+    pl.position.y = f32.add(pl.position.y, pl.velocity.y)
+    pl.geometry.position.x = pl.position.x
+    pl.geometry.position.y = pl.position.y
+}
+
+func RenderPlayer(pl Player)  {
+    var geometry graphical.PlaneGeometry
+    geometry = pl.geometry;
+    geometry.render()
+}
