@@ -9,18 +9,47 @@ import "geom"
 func makeColorPickerSquare () {
     var numQX i32 = 3 // number of quads in X 
     var incX  f32 = 2.0 / i32.f32(numQX)
+    var incXH f32 = incX * 0.5 // half of above 
     
     var m Mesh2D
     m = Mesh2D{ Name: "Color Picker" }
 
     // colors 
-    var lc Color3 // left 
-        lc = Color3{ R: 1.0 }
-    var rc Color3 // right 
-        rc = Color3{ G: 1.0 }
+    var cols []Color3
+    var c      Color3
+    
+    c = Color3{ R: 1.0 }
+    cols = append(
+    cols, c)
+    
+    c = Color3{ R: 1.0, G: 1.0, B: 0.0 }
+    cols = append(
+    cols, c)
+    
+    c = Color3{ R: 0.0, G: 1.0, B: 0.0 }
+    cols = append(
+    cols, c)
+    
+    c = Color3{ R: 0.0, G: 1.0, B: 1.0 }
+    cols = append(
+    cols, c)
+    
+    c = Color3{ R: 0.0, G: 0.0, B: 1.0 }
+    cols = append(
+    cols, c)
+    
+    c = Color3{ R: 1.0, G: 0.0, B: 1.0 }
+    cols = append(
+    cols, c)
+    
+    /*
+    c = Color3{ R: 1.0, G: 0.0, B: 0.0 }
+    cols = append(
+    cols, c)
+    */
     
     // verts 
-    var t f32 =  1.0
+    var t f32 =  0.0
     var r f32 = -1.0 + incX
     var b f32 = -1.0
     var l f32 = -1.0
@@ -28,28 +57,43 @@ func makeColorPickerSquare () {
     // tris 
     var cti     i32 // current triangle index 
 
+    var cc i32 // current color idx 
     for i := 0; i < numQX; i++ {
         // colors 
-        m.Colors = append(m.Colors, lc)
-        m.Colors = append(m.Colors, lc)
-        m.Colors = append(m.Colors, rc)
-        m.Colors = append(m.Colors, rc)
-        //      advance to next pair 
-        lc = rc
-        if i == 0 {
-            rc = Color3{ R: 0.0, G: 0.0, B: 1.0 }
-        }else{
-            rc = Color3{ R: 1.0, G: 0.0, B: 0.0 }
-        }
+        var ccP0 i32 = (cc    ) % len(cols)
+        var ccP1 i32 = (cc + 1) % len(cols)
+        //var ccP2 i32 = (cc + 2) % len(cols)
+        m.Colors = append(m.Colors, cols[ccP0])
+        m.Colors = append(m.Colors, cols[ccP1])
+        m.Colors = append(m.Colors, draw.Black)//draw.White)
+        cc = cc + 1
+
+              ccP0   = (cc    ) % len(cols)
+              ccP1   = (cc + 1) % len(cols)
+        //var ccP2 i32 = (cc + 2) % len(cols)
+        m.Colors = append(m.Colors, cols[ccP0])
+        m.Colors = append(m.Colors, cols[ccP1])
+        m.Colors = append(m.Colors, draw.Black)//draw.White)
+        cc = cc + 1
+        //m.Colors = append(m.Colors, /*draw.Black)*/rc)
         
         
         // verts 
         var p Vec2
-        p = Vec2{ X: l, Y: b }
+        
+        p = Vec2{ X: l,       Y: t }
         m.Points = append(
         m.Points, p)
 
-        p = Vec2{ X: l, Y: t }
+        p = Vec2{ X: l+incXH, Y: t }
+        m.Points = append(
+        m.Points, p)
+
+        p = Vec2{ X: r-incXH, Y: b }
+        m.Points = append(
+        m.Points, p)
+        
+        p = Vec2{ X: r-incXH, Y: t }
         m.Points = append(
         m.Points, p)
 
@@ -57,21 +101,28 @@ func makeColorPickerSquare () {
         m.Points = append(
         m.Points, p)
 
+        p = Vec2{ X: r-incXH, Y: b }
+        m.Points = append(
+        m.Points, p)
+
+        /*
         p = Vec2{ X: r, Y: b }
         m.Points = append(
         m.Points, p)
+        */
         
         l = l + incX
         r = r + incX
 
 
         // tris 
-        for q := 0; q < 3; q++ {
+        for q := 0; q < 6; q++ {
             m.TriangleIndices = append(
             m.TriangleIndices, cti)
             cti = cti + 1
         }
         
+        /*
         m.TriangleIndices = append(
         m.TriangleIndices, cti - 3)
         m.TriangleIndices = append(
@@ -79,6 +130,7 @@ func makeColorPickerSquare () {
         m.TriangleIndices = append(
         m.TriangleIndices, cti)
         cti = cti + 1
+        */
     }
     
     makeAndReportOn(m, true)
@@ -110,7 +162,8 @@ func makeColorPickerWheel () {
 	for i := 0; i < NUM_ANGS; i++ {
 		currCol = Color3{ R: red, G: green, B: blue }
 		
-        for q := 0; q < 3; q++ {
+            m.Colors = append(m.Colors, draw.Black)
+        for q := 0; q < 2; q++ {
             m.Colors = append(m.Colors, currCol)
         }
 
