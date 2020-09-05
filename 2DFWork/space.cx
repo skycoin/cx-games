@@ -5,45 +5,72 @@ import "app"
 
 
 // FIXME: these should be updated from window change events 
-var PixelWid     f32
-var PixelHei     f32
-var PixelsAcross Vec2I
-var ScreenEdgeL  f64 // left 
-var ScreenEdgeR  f64 // right 
+var AspectRatio     f32 // horizontal FOV (field of view) NOT in degrees  
+                        // vertical will always be 1.0, horizontal is relative to that 
+var ViewWidInPixels i32 // separate i32s cuz *GetFramebuffer*() return format 
+var ViewHeiInPixels i32
+var ViewSizeInGL    app.Vec2
+var PixelSize       app.Vec2 //           in GL space 
+var ViewEdgeL       f32 // viewport left  in GL space 
+var ViewEdgeR       f32 // viewport right in GL space 
+var ViewEdgeL64     f64 // gl.Ortho() needs 64 bit 
+var ViewEdgeR64     f64 // gl.Ortho() needs 64 bit 
 
 
 
 func Init () {
 	str.print("space.Init ()")
 	
-	PixelsAcross.X = app.START_WIDTH
-	PixelsAcross.Y = app.START_HEIGHT
-	PixelWid = 2.0 / i32.f32(app.START_WIDTH)
-	PixelHei = 2.0 / i32.f32(app.START_HEIGHT)
+	ViewWidInPixels = app.START_WIDTH
+	ViewHeiInPixels = app.START_HEIGHT
+	PixelSize.X = 2.0 / i32.f32(app.START_WIDTH)
+	PixelSize.Y = 2.0 / i32.f32(app.START_HEIGHT)
 }
 
 
-func Update (ratio f32) () {
-	printf("space.Update () - ratio: %f \n", ratio)
+// for full resolution ViewEdge64 vars (fed to gl.Ortho() ) 
+var AspectRatio64 f64
+func SetSize (wid i32, hei i32) () {
+	printf("space.SetSize () \n")
 
-	ScreenEdgeL = f32.f64(f32.mul(ratio, -1.0))
-	ScreenEdgeR = f32.f64(ratio)
+	AspectRatio64 = i32.f64(wid) / i32.f64(hei)
+	AspectRatio   = f64.f32(AspectRatio64)
+	printf("    AspectRatio: %f \n", AspectRatio)
 
-	printf("ScreenEdgeL, ScreenEdgeR: %f, %f \n", ScreenEdgeL, ScreenEdgeR)
+	ViewSizeInGL.X = 2.0 * AspectRatio
+	ViewSizeInGL.Y = 2.0
+	printf("    ViewSizeInGL.X: %f \n", 
+	ViewSizeInGL.X)
+	printf("    ViewSizeInGL.Y: %f \n", 
+	ViewSizeInGL.Y)
+
+	ViewEdgeL   = 0.0  - AspectRatio
+	ViewEdgeR   =        AspectRatio
+	ViewEdgeL64 = 0.0D - AspectRatio64
+	ViewEdgeR64 =        AspectRatio64
+	printf("    ViewEdgeL: %f\n    ViewEdgeR: %f \n",
+	ViewEdgeL,
+	ViewEdgeR)
+
+	ViewWidInPixels = wid
+	ViewHeiInPixels = hei
+	PixelSize.X = ViewSizeInGL.X / i32.f32(wid)
+	PixelSize.Y = ViewSizeInGL.Y / i32.f32(hei)
 }
 
 
-func PointInBox (p Vec2, box Vec2, extents Vec2) (out bool) {
-	if p.X > (box.X - extents.X) &&
-		p.X < (box.X + extents.X) &&
-		p.Y > (box.Y - extents.Y) &&
-		p.Y < (box.Y + extents.Y) {
+func PointInBox (p Vec2, box Vec2, extentX f32, extentY f32) (out bool) {
+	if  p.X > (box.X - extentX) &&
+		p.X < (box.X + extentX) &&
+		p.Y > (box.Y - extentY) &&
+		p.Y < (box.Y + extentY) {
 		
 		out = true
 	}
 }
 
 
+/* FROM OLD COLLISION.CX 
 func BoxesOverlap (a Vec2, b Vec2, aExtents Vec2, bExtents Vec2) (out bool) {
 	var padX f32 // minimum distance between centerpoints (before overlap occurs) 
 	var padY f32
@@ -52,6 +79,52 @@ func BoxesOverlap (a Vec2, b Vec2, aExtents Vec2, bExtents Vec2) (out bool) {
 	
 	padX = f32.add(aExtents.X, bExtents.X)
 	padY = f32.add(aExtents.Y, bExtents.Y)
+	bX = f32.sub(b.X, a.X) 
+	bY = f32.sub(b.Y, a.Y)
+	
+	if bX > padX {
+		return false
+	}
+	
+	if bX < -padX {
+		return false
+	}
+	
+	if bY > padY {
+		return false
+	}
+	
+	if bY < -padY {
+		return false
+	}
+	
+	return true
+}
+*/
+
+
+
+
+
+
+
+
+
+func BoxesOverlap (
+	a Vec2, 
+	b Vec2, 
+	aExtentX f32, 
+	aExtentY f32, 
+	bExtentX f32, 
+	bExtentY f32) (out bool) {
+		
+	var padX f32 // minimum distance between centerpoints (before overlap occurs) 
+	var padY f32
+	var bX f32 // B's local position (in A's space) 
+	var bY f32
+	
+	padX = f32.add(aExtentX, bExtentX)
+	padY = f32.add(aExtentY, bExtentY)
 	bX = f32.sub(b.X, a.X) 
 	bY = f32.sub(b.Y, a.Y)
 	

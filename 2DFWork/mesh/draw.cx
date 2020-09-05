@@ -1,0 +1,346 @@
+package mesh
+
+import "gl"
+
+import "app"
+import "draw"
+import "time"
+
+
+var currX           f32
+var span            f32
+
+// single color channel intensities 
+var currGreen       f32 // component of terrain fill color 
+var minCI           f32 = 0.0
+var darkCI          f32 = 0.2
+var maxCI           f32 = 1.0
+var pickR           f32 = 1.0 // picked/selected red channel 
+var pickG           f32 = 0.6 // picked/selected green channel 
+
+// blink timing 
+var pickedNodesAreBright bool
+var timeLocalToDraw      f32
+var nextBlinkFlip        f32
+var blinkDelay           f32 =  0.1
+
+
+
+func DrawEditor () {
+	//str.print("mesh.DrawEditor ()")
+
+	pre()
+	
+	if app.EditMode == app.EDITMODE_VERTICES {
+		trianglesForAll(EditLayers)
+		//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
+	}else
+	if app.EditMode == app.EDITMODE_TRIANGLES {
+	}else
+	if app.EditMode == app.EDITMODE_COLORS {
+		trianglesForOne(RawMeshes, ColorWheel)
+	}else
+	if app.EditMode == app.EDITMODE_MESH_PICKER {
+		trianglesForToolbar(BakedUIMeshes, MESH_PICKER)
+	}
+
+	post()
+		
+	// TODO: ADAPT THIS TO HIGHLIGHT MULTIPLE MESHES/SEPARATIONS WHEN IMPLEMENTED 
+	// 		(THIS WILL ALLOW SHARED VERTEX COORDS WITH DIFFERENT COLORS SO
+	// 		THERE CAN BE HARD COLOR CONTRAST BETWEEN MESHES THAT APPEAR CONNECTED) 
+			
+	// // draws loop from all entity positions 
+	// gl.Begin(gl.LINE_LOOP) //////////////
+	// 	simpleVertexSequence(0.5)
+	// gl.End()
+}
+
+
+func pre () {
+	pumpTheBlinking()
+		
+	if  app.EditMode != app.EDITMODE_COLORS &&
+		app.EditMode != app.EDITMODE_MESH_PICKER {
+		
+		gridLines()
+	}
+
+	gl.Begin(gl.TRIANGLES)
+		//trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
+		trianglesForAll(BakedUIMeshes)
+	gl.End()
+}
+
+
+func post () {
+	if  app.EditMode != app.EDITMODE_COLORS &&
+		app.EditMode != app.EDITMODE_MESH_PICKER {
+		
+		editorQuads()
+		
+		gl.Begin(gl.LINES)
+			//maybeDragBox()				
+		gl.End()
+	}
+}
+
+
+func pumpTheBlinking () {
+	timeLocalToDraw = f32.add(timeLocalToDraw, time.Delta)	
+	for f32.lteq(nextBlinkFlip, timeLocalToDraw) {
+		nextBlinkFlip = f32.add(timeLocalToDraw, blinkDelay)
+		pickedNodesAreBright = bool.not(pickedNodesAreBright)
+	}
+}
+
+
+/*
+func maybeDragBox() {
+	if ccInput.Dragging { //&&
+		//app.EditMode != app.EDITMODE_TRIANGLES {
+		
+		if pickedNodesAreBright {
+			gl.Color3f(pickR, pickG, minCI)
+		} else {
+			gl.Color3f(darkCI, darkCI, darkCI) // gray 
+		}
+		
+		// horizontal lines 
+		gl.Vertex2f(ccInput.DragStart.X,    ccInput.DragStart.Y)
+		gl.Vertex2f(ccInput.MousePointer.X, ccInput.DragStart.Y)
+		
+		gl.Vertex2f(ccInput.DragStart.X,    ccInput.MousePointer.Y)
+		gl.Vertex2f(ccInput.MousePointer.X, ccInput.MousePointer.Y)
+		
+		// vertical lines 
+		gl.Vertex2f(ccInput.DragStart.X,    ccInput.DragStart.Y)
+		gl.Vertex2f(ccInput.DragStart.X,    ccInput.MousePointer.Y)
+		
+		gl.Vertex2f(ccInput.MousePointer.X, ccInput.DragStart.Y)
+		gl.Vertex2f(ccInput.MousePointer.X, ccInput.MousePointer.Y)
+	}
+}
+*/
+
+
+func trianglesForAll (meshes []Mesh2D) {
+	for i := 0; i32.lt(i, len(meshes)); i++ {
+		if i/2 == tBars[EDIT_TOOLBAR].Hovered {
+			trianglesForOneColored(meshes, i, draw.Colors[draw.COLOR_CYAN])
+		}else{
+			trianglesForOne(meshes, i)
+		}
+	}
+}
+
+
+// tbId == toolbar id 
+func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
+	if len(meshes) < 1 {
+		printf("NO MESHES IN THAT SLICE!   -   tbId: %d \n", tbId)
+		return //////////////////////////////////////////
+	}
+	
+	//if tbId != 0 {
+		printf("trianglesForToolbar (meshes, %d) \n", tbId)
+	//}
+	
+	for j := 0; j < len(tBars[tbId].Items); j++ {
+		/*
+		if j >= 1 && j <= 5 {
+			continue ///////////////////////////////////////////
+		}
+		*/
+		
+		var bi i32 // baked mesh id 
+		bi = tBars[tbId].Items[j].BakedBackground
+		printf("BakedBackground - bi: %d \n", bi)
+		
+		// background 
+		if bi != app.MAX_I32 {
+			trianglesForOne(meshes, bi)
+		}
+		
+		// icon 
+		bi = tBars[tbId].Items[j].BakedIcon
+		printf("BakedIcon       - bi: %d \n", bi)
+		
+		trianglesForOne(meshes, bi)
+	}
+}
+
+
+func trianglesForOne (meshes []Mesh2D, i i32) {
+	//printf("trianglesForOne () id of given []Mesh2D: %d \n", i)
+	
+	var m Mesh2D
+	m = meshes[i]
+
+	ReportBadTriCount("trianglesForOne", i, len(m.TriangleIndices))
+
+	for j := 0; j < len(m.TriangleIndices); j++ {
+		var pId i32 // point id (from tri ids) 
+		pId = m.TriangleIndices[j]
+		
+		var c Color3
+		c = m.Colors[pId]
+		gl.Color3f(c.R, c.G, c.B)
+		
+		var v Vec2
+		v = m.Points[pId]
+		
+		gl.Vertex2f(v.X, v.Y)
+	}
+}
+
+
+func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
+	//printf("trianglesForOne () id of given []Mesh2D: %d \n", i)
+	
+	var m Mesh2D
+	m = meshes[i]
+
+	ReportBadTriCount("trianglesForOneColored", i, len(m.TriangleIndices))
+
+	for j := 0; j < len(m.TriangleIndices); j++ {
+		var pId i32 // point id (from tri ids) 
+		pId = m.TriangleIndices[j]
+		
+		var c Color3
+		c = m.Colors[pId]
+		
+		var r f32 = (c.R - col.R) * 0.5 // color channel deltas 
+		var g f32 = (c.G - col.G) * 0.5
+		var b f32 = (c.B - col.B) * 0.5
+		
+		gl.Color3f( // blend colors 
+			col.R + r, 
+			col.G + g, 
+			col.B + b)
+		
+		var v Vec2
+		v = m.Points[pId]
+		
+		gl.Vertex2f(v.X, v.Y)
+	}
+}
+
+
+/*
+func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) () {
+	//str.print("trianglesForOneWithPos ()")
+	
+	var m Mesh2D
+	m = meshes[i]
+
+	ReportBadTriCount("trianglesForOneWithPos", len(m.TriangleIndices))
+
+	for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
+		var pId i32 // point id (from tri ids) 
+		pId = m.TriangleIndices[j]
+		
+		var c Color3
+		c = m.Colors[pId]
+		//gl.Color3f(c.R, c.G, c.B)
+		//gl.Color3f(maxCI, maxCI, maxCI)		
+		
+		var v Vec2
+		v = m.Points[pId]
+		
+		gl.Vertex2f(pos.X + v.X,   pos.Y + v.Y)
+	}
+}
+
+
+func simpleVertexSequence (colorChanIntensity f32) () {
+	gl.Color3f(colorChanIntensity, colorChanIntensity, colorChanIntensity)
+
+	var i i32
+	for i = 0; i32.lt(i, len(entity.Ents)); i++ {
+		var e Entity
+		e = entity.Ents[i]
+
+		gl.Vertex2f(e.Pos.X, e.Pos.Y)
+	}
+}
+*/
+
+func gridLines () {
+	gl.Begin(gl.LINES)
+
+	var l f32
+	l = -1.0
+	
+	var r f32
+	r = 1.0
+	
+	numLines := 20
+	var unitSpan f32
+	unitSpan = f32.mul(r, 2.0)
+	unitSpan = f32.div(unitSpan, i32.f32(numLines))
+	z := 0.2
+
+	// vertical 
+	var fx f32
+	fx = l
+	for x := 0; x <= numLines; x++ {
+		setColor(x)		
+		gl.Vertex3f(fx, l, z)
+		gl.Vertex3f(fx, r, z)
+		
+		fx = f32.add(fx, unitSpan)
+	}
+	
+	// horizontal 
+	var fy f32
+	fy = l
+	for y := 0; y <= numLines; y++ {
+		setColor(y)		
+		gl.Vertex3f(l, fy, z)
+		gl.Vertex3f(r, fy, z)
+		
+		fy = f32.add(fy, unitSpan)
+	}
+	
+	gl.End()
+}
+
+
+var othCol f32 = darkCI / 2.0
+func setColor (i i32) {	
+	if i % 4 == 0 {
+		gl.Color3f(darkCI, darkCI, darkCI)
+	} else {
+		gl.Color3f(othCol, othCol, othCol)
+	}
+}
+
+
+func editorQuads () {
+	draw.BeginUntexturedQuads()
+	
+	var li i32
+	for li = 0; li < len(EditLayers); li++ {
+		var cols []Color3
+		cols = EditLayers[li].Colors
+		
+		for i := 0; i < len(cols); i++ {
+			//gl.Color3f(cols[i].R, cols[i].G, cols[i].B)  TODO: oscillate between this and black?  or just blink to halfway in between? 
+			gl.Color3f(darkCI, darkCI, darkCI)
+
+			if pickedNodesAreBright {
+				for j := 0; j < len(PickedVerts); j++ {
+					if i == PickedVerts[j] {
+						gl.Color3f(pickR, pickG, minCI)
+					}
+				}
+			}
+			
+			
+			draw.AddRect(EditLayers[li].Points[i], 0.01, 0.01)
+		}
+	}
+	
+	draw.End()
+}

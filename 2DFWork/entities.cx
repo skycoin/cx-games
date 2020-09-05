@@ -1,12 +1,419 @@
 package entities
 
+import "app"
+import "geom"
+import "inputs"
+import "mov"
+import "space"
+import "time"
 
 
-type Ball struct {
-	x f32
-	y f32
-	vx f32
-	vy f32
-	gravity f32
-	radius f32
+
+var AutoUpdatePlayerEnts bool = true // can be multiple entities 
+                                     // (like player paddles in SkyBOOM) 
+
+// "enums"   FIXME: when CX has enums or constants 
+var ENT_PLAYER                  i32
+var ENT_MAX_OF_2DFW             i32 = 1
+// 		modes 
+var ENT_MODE_MOVING_BY_VELOCITY i32
+var ENT_MODE_MOVING_TO_POS      i32 = 1
+var ENT_MODE_MOVING_TO_ENTITY   i32 = 2
+var ENT_MODE_MAX_OF_2DFW        i32 = 3
+
+var All          [][]Entity // all entities (1st index is for ENT_* type) 
+var ActiveCounts []i32      // corresponds with "All" slices 
+                            //     (len(All[et]) - NumActive[et] == num dead) 
+
+type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN()! 
+	X           f32
+	Y           f32
+	OldX        f32
+	OldY        f32
+	ExtentX     f32
+	ExtentY     f32
+	VelX        f32 // velocity 
+	VelY        f32 // velocity 
+	Gravity     f32
+	Mode        i32
+	ExpiryDist  f32 // expire by distance travelled (0.0 == not using) 
+	ExpiryTime  f32 // expire by time passed        (0.0 == not using) 
+	WrapView    bool // moving objects wrap/teleport to opposite side of viewport 
+
+	// FIXME: move this section into Sky Taxi 
+	GridPos     app.Vec2I
+	// cell bounds/connections 
+	CellMin     app.Vec2 // boundaries of the current cell it's in 
+	CellMax     app.Vec2 // ^ 
+	//Room     map.CarvedRoom // CAN'T FIGURE OUT WHY THIS MAKES AVATAR DISAPPEAR 
+	ExitNorth   bool
+	ExitSouth   bool
+	ExitEast    bool
+	ExitWest    bool
+	
+	// Goal/Target info. 
+	// 		by worldspace position (THIS HAS PRIORITY OVER ENTITY-BASED GOALS). 
+	//			these 2 are a unit, if both == 0.0, no ws pos goal set 
+	// 			non-zero values causes VelX/Y to be ignored, 
+	// 			& instead move towards these values until close enough 
+	GoalX       f32
+	GoalY       f32
+	//		by Entity (likely moving). 
+	//			these 2 are a unit (id-only would be useless) 
+	GoalEntType i32
+	GoalEntId   i32
+	DistanceX   f32 // how far entity travelled since spawning 
+	DistanceY   f32 //                    " 
+}
+
+
+
+func Init (maxEntTypes i32) {
+	str.print("entities.Init ()")
+	
+	// add all slices needed for entity types 
+	var newEnts []Entity
+	for i := 0; i < maxEntTypes; i++ {
+		newEnts = []Entity{}
+		
+		All = append(
+		All, newEnts)
+		
+		ActiveCounts = append(
+		ActiveCounts, 0)
+	}
+	
+	printf("    Created %v slices (1 for each entity type) \n", maxEntTypes)
+
+
+	// ENT_PLAYER 
+	var ne Entity
+	  ne = Entity{
+		X:       0.0,
+		Y:       0.0,
+		ExtentX: 0.05,
+		ExtentY: 0.05,
+		//VelX:      0.10,
+		//VelY:      0.10,
+		Gravity: 0.01}
+		
+	Spawn(ENT_PLAYER, ne)
+}
+
+
+// each app/game probably has a few unique entities that are 
+// special cases, & updated uniquely at app level 
+// (such as player objects, which might be the current falling 
+// piece/shape in CXtris, or the player paddles/buckets in
+// SkyBOOM). 
+// SkyBOOM's coin dropping cloud is another example. 
+// the rest can be handled generically, moving around based on 
+// their current velocity. 
+func Update () {
+	//printf("entities.Update () \n")
+
+	// motion/position 
+	// cycle thru types (t) 
+	for     t := 0; t < len(All);        t++ {
+		//printf("entities.Update () t:%d \n", t)
+		
+		for i := 0; i < ActiveCounts[t]; i++ {
+			if t == ENT_PLAYER && AutoUpdatePlayerEnts {
+				// REQUIRES FIXME IF PLAYER ENTS EVER SHOULD 
+				// 		USE EXPIRYTIME/DIST FIELDS 
+				//		(CUZ NOW IT COLLIDES AFTER Kill() IN UpdateAt() )
+				All[t][i].VelX,
+				All[t][i].VelY = mov.GetPlayerVelocityFromInput(
+				All[t][i].VelX,
+				All[t][i].VelY)
+			
+				UpdateAt(t, i)
+
+				// back out of any entity/entity penetration 
+				All[t][i].X,
+				All[t][i].Y,
+				All[t][i].VelX,
+				All[t][i].VelY = mov.ConstrainPosByMap(t, i)
+			}else{
+				UpdateAt(t, i)
+			}
+		}
+	}
+}
+
+
+func UpdateAt (et i32, i i32) { // entity type, id 
+	/*
+	if et != 4 {
+		printf("entities.UpdateAt (et: %d    i: %d) \n", et, i)
+	}
+	*/
+	
+	
+	// move 
+	if All[et][i].Mode == ENT_MODE_MOVING_BY_VELOCITY {
+		// default motion 
+	}else
+	if All[et][i].Mode == ENT_MODE_MOVING_TO_POS {
+		if  justCrossedGoal(et, i) {
+			//str.print("CROSSED GOAL LINE")
+			All[et][i].Mode = ENT_MODE_MOVING_TO_ENTITY
+			All[et][i].ExpiryTime = time.Now + 3.0
+		}
+	}else
+	if  All[et][i].Mode == ENT_MODE_MOVING_TO_ENTITY {
+		if  justCrossedGoal(et, i) {
+			Kill(et, i)
+			//str.print("CROSSED GOAL LINE")
+			return ////////////////////////////////////////////// 
+		}
+
+		//str.print("zooming to paddle 0")
+
+		//printf("time.Delta: %f \n", time.Delta)
+		var f f32 = time.Delta * 20.0
+		//printf("f: %f \n", f)
+		//All[et][i].VelX = f32.mul(All[et][i].VelX, f)
+		//All[et][i].VelY = f32.mul(All[et][i].VelY, f)
+		var entId i32 = All[et][i].GoalEntId
+		var vX    f32 = f32.sub(All[ENT_PLAYER][entId].X, All[et][i].X)
+		var vY    f32 = f32.sub(All[ENT_PLAYER][entId].Y, All[et][i].Y)
+			vX        = vX * All[et][i].DistanceX
+			vY        = vY * All[et][i].DistanceY
+			vX        = vX * 2.5
+			vY        = vY * 2.5
+		All[et][i].VelX  = vX
+		All[et][i].VelY  = vY
+	}
+	
+	
+	moveByVelocity(et, i)
+	
+	
+	// wrap/teleport to opposite edge of screen (for any that go OOB) 
+	if All[et][i].WrapView {
+		if  All[et][i].X > space.ViewEdgeR + All[et][i].ExtentX {
+			All[et][i].X = space.ViewEdgeL - All[et][i].ExtentX
+		}else
+		if  All[et][i].X < space.ViewEdgeL - All[et][i].ExtentX {
+			All[et][i].X = space.ViewEdgeR + All[et][i].ExtentX
+		}
+		
+		if  All[et][i].Y >  1.0 + All[et][i].ExtentY {
+			All[et][i].Y = -1.0 - All[et][i].ExtentY
+		}else
+		if  All[et][i].Y < -1.0 - All[et][i].ExtentY {
+			All[et][i].Y =  1.0 + All[et][i].ExtentY
+		}
+	}
+	
+	
+	// expire any ents that timeout 
+	if All[et][i].ExpiryTime != 0.0 {
+		if All[et][i].ExpiryTime <= time.Now {
+			Kill(et, i)
+		}		
+	}
+}
+
+
+func Spawn (eType i32, newEnt Entity) {
+	//printf("Spawn (eType: %d) newEnt.ExpiryTime: %f \n", eType, newEnt.ExpiryTime)
+
+	var aC i32 // active count 
+	aC = ActiveCounts[eType]
+
+	var iC i32 // inclusive count (includes inactives) 
+	iC = len(All[eType])
+	
+	if  aC < iC /* (can recycle an inactive) */ { 
+		//printf("------------- Spawn (eType: %v)     RECYCLing 1st inactive \n", eType)
+		All[eType][aC].X           = newEnt.X
+		All[eType][aC].Y           = newEnt.Y        
+		All[eType][aC].OldX        = newEnt.OldX
+		All[eType][aC].OldY        = newEnt.OldY
+		All[eType][aC].ExtentX     = newEnt.ExtentX  
+		All[eType][aC].ExtentY     = newEnt.ExtentY  
+		All[eType][aC].VelX        = newEnt.VelX       
+		All[eType][aC].VelY        = newEnt.VelY       
+		All[eType][aC].Gravity     = newEnt.Gravity  
+		All[eType][aC].Mode        = newEnt.Mode     
+		All[eType][aC].DistanceX   = newEnt.DistanceX
+		All[eType][aC].DistanceY   = newEnt.DistanceY
+		All[eType][aC].ExpiryDist  = newEnt.ExpiryDist
+		All[eType][aC].ExpiryTime  = newEnt.ExpiryTime
+		All[eType][aC].WrapView    = newEnt.WrapView	
+		All[eType][aC].GoalX       = newEnt.GoalX      
+		All[eType][aC].GoalY       = newEnt.GoalY      
+		All[eType][aC].GoalEntType = newEnt.GoalEntType
+		All[eType][aC].GoalEntId   = newEnt.GoalEntId  
+	}else{
+		//printf("------------- Spawn (eType: %v)     APPENDing \n", eType)
+		All[eType] = append(
+		All[eType], newEnt)
+	}
+
+	ActiveCounts[eType] = 
+	ActiveCounts[eType] + 1
+	//printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], iC)
+}
+
+
+func Kill (eType i32, id i32) {
+	var aC i32 // active count 
+	aC = ActiveCounts[eType]
+
+	var iC i32 // inclusive count (+ inactives)
+	iC = len(All[eType])
+	
+	var lS i32 // last slot (of actives) 
+	lS = aC - 1
+	
+	// the normal recycle process needs to operate on 2 slots. 
+	// it copies the values of the 
+	// last ActiveCounts slot to the slot being recycled 
+	// (also prevents having an inactive slot which would have 
+	// 		needed an extra var in order to be marked for skipping) 
+	//printf("(========== ABOUT TO copy values from lS: %v ---> id: %v    (aC: %v) \n", lS, id, aC)
+	if  aC > 1  /* (has 2 slots for copying) */ && 
+		id < lS /* (not last active, last needs no copy) */ {
+			
+		//printf("RECYCLE  eType: %d   id: %d BEFORE \n", eType, id)
+		All[eType][id].X           = All[eType][lS].X
+		All[eType][id].Y           = All[eType][lS].Y
+		All[eType][id].OldX        = All[eType][lS].OldX
+		All[eType][id].OldY        = All[eType][lS].OldY
+		All[eType][id].ExtentX     = All[eType][lS].ExtentX
+		All[eType][id].ExtentY     = All[eType][lS].ExtentY
+		All[eType][id].VelX        = All[eType][lS].VelX
+		All[eType][id].VelY        = All[eType][lS].VelY
+		All[eType][id].Gravity     = All[eType][lS].Gravity
+		All[eType][id].Mode        = All[eType][lS].Mode
+		All[eType][id].DistanceX   = All[eType][lS].DistanceX
+		All[eType][id].DistanceY   = All[eType][lS].DistanceY
+		All[eType][id].ExpiryDist  = All[eType][lS].ExpiryDist
+		All[eType][id].ExpiryTime  = All[eType][lS].ExpiryTime
+		All[eType][id].WrapView    = All[eType][lS].WrapView
+		All[eType][id].GoalX       = All[eType][lS].GoalX      
+		All[eType][id].GoalY       = All[eType][lS].GoalY      
+		All[eType][id].GoalEntType = All[eType][lS].GoalEntType
+		All[eType][id].GoalEntId   = All[eType][lS].GoalEntId  
+		//printf("RECYCLED eType: %d   id: %d        \n", eType, id)
+		//printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
+	}
+
+	ActiveCounts[eType] = 
+	ActiveCounts[eType] - 1
+	//printf("ActiveCounts[%d]: %d iC: %d FINISHED \n", eType, ActiveCounts[eType], len(All[eType]))
+}
+
+
+func GetCountOf (entType i32) (c i32) {
+	c = ActiveCounts[entType]
+}
+
+
+func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
+	t = All[entType][id].Y + All[entType][id].ExtentY
+	r = All[entType][id].X + All[entType][id].ExtentX
+	b = All[entType][id].Y - All[entType][id].ExtentY
+	l = All[entType][id].X - All[entType][id].ExtentX
+}
+
+
+func moveByVelocity (et i32, i i32) {
+	All[et][i].OldX      = All[et][i].X
+	All[et][i].OldY      = All[et][i].Y
+	
+	var vX f32 
+	var vY f32 
+	vX = All[et][i].VelX
+	vY = All[et][i].VelY
+
+	var dX f32 
+	var dY f32 
+	dX = f32.mul(vX, time.Delta)
+	dY = f32.mul(vY, time.Delta)
+
+	if  et == ENT_MAX_OF_2DFW + 4 ||
+		et == ENT_MAX_OF_2DFW + 5 {
+			
+		printf("i: %d  *  ", i)
+		printf("time.Delta: %f  *  ", time.Delta)
+
+		printf("dX: %f  ----- ", dX)
+		printf("dY: %f \n",      dY)
+	
+	}
+	
+	All[et][i].DistanceX = dX + All[et][i].DistanceX
+	All[et][i].DistanceY = dY + All[et][i].DistanceY
+	// new pos 
+	All[et][i].X         = f32.add(All[et][i].X, dX)
+	All[et][i].Y         = f32.add(All[et][i].Y, dY)
+	//printf("All[et][i].DistanceX: %f \n", All[et][i].DistanceX)
+	//printf("All[et][i].DistanceY: %f \n", All[et][i].DistanceY)
+}
+
+
+// et == entity type, i == id 
+func justCrossedGoal (et i32, i i32) (out bool) {
+	// FIXME?  if travelling straight(ish) in... 
+	// ...N/S/E/West it might trigger too soon? 
+	
+	// old, new, goal (1D positions) 
+	var oX  f32
+	var oY  f32
+	var nX  f32
+	var nY  f32
+	oX = All[et][i].OldX
+	oY = All[et][i].OldY
+	nX = All[et][i].X
+	nY = All[et][i].Y
+	var gX  f32
+	var gY  f32
+	
+	if All[et][i].Mode == ENT_MODE_MOVING_TO_ENTITY {
+		et, i = getGoalEntityTypeAndId(et, i)
+		gX = All[et][i].X
+		gY = All[et][i].Y
+	}else{
+		gX = All[et][i].GoalX
+		gY = All[et][i].GoalY
+	}
+	
+	if  justCrossedGoalInAxis(oX, nX, gX) ||
+		justCrossedGoalInAxis(oY, nY, gY)  {
+		
+		out = true
+	}else{
+		out = false
+	}
+}
+
+
+func getGoalEntityTypeAndId (et i32, i i32) (etOut i32, idOut i32) {
+	etOut = All[et][i].GoalEntType
+	idOut = All[et][i].GoalEntId
+}
+
+
+// positions: 
+// 		(o)ld 
+// 		(n)ew 
+// 		(g)oal 
+func justCrossedGoalInAxis (o f32, n f32, g f32) (out bool) {
+	if     o <  g { // (previously less) 
+		if n >= g {
+			out = true
+		}else{      // (prev & curr on same side of goal) 
+			out = false
+		}
+	}else{          // (previously same or more) 
+		if  n < g {
+			out = true
+		}else{      // (prev & curr on same side of goal) 
+			out = false
+		}
+	}
 }

@@ -1,0 +1,169 @@
+package main
+
+import "app"
+import "entities"
+import "inputs"
+import "space"
+import "time"
+
+/*
+
+--------------- ISSUE REPORTS ----------------------------------------
+THE FOLLOWING WASN'T RETURNING TRUE
+
+// detect edge touching player 
+func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
+	if  edge < pR &&
+		edge > pL {
+			
+		growAndFadeUpward(i)
+		return true
+	}
+	
+	return false
+}
+
+
+
+
+passing parameter to entities.Update () had no proper error 
+
+
+
+
+printf() can have more arguments than there is %codes for 
+
+
+
+
+len() should give an error message when used on non-collection vars 
+
+
+
+
+i seem to be having a problem with remove() not being able to selectively remove 1 item from a slice within a slice of slices.  just wondering if you ever do that @d2bug
+
+it seems to remove all of them instead of just the 1.
+
+entities.All[ENT_GAME_COIN] = remove(entities.All[ENT_GAME_COIN], i)
+
+actually it seems to remove all items the 1st time or 2, then after that it leaves 1 (out of around 7 items) remaining in the inner slice.
+
+
+
+
+hmmmm, it seems i can't get the correct values out of a struct which was returned by a function from a package.  i guess all the values i retrieve from a package have to be basic types.
+
+func Get (entType i32, id i32) (e Entity) {
+  e = All[entType][id]
+  printf("INSIDE Get() All[entType][id].Y: %f \n", All[entType][id].Y)
+  printf("INSIDE Get()                e.Y: %f \n", e.Y)
+}
+
+that's INSIDE the package, and even INSIDE, "e" has default values instead of what i had just set it to.
+
+(the All[entType][id].Y has the values i expected)
+
+
+
+
+
+
+------------------------------- SkyBOOM notes ----------------------------
+--- GENERAL IMPROVEMENT 
+
+move CXtris texture loading out of 2DFWork
+add matrix partics (straight downwards) to menu backdrop 
+wallet explosion upon loss 
+remove space.Init from CXtris, as i think .SetSize always gets called in 2DFW games 
+
+
+--- SPLASH SCREEN 
+
+Full Skycoin logo inc. text
+
+
+--- INITIAL MENU 
+
+whole background field of....
+random sized, placed, angled, angular velocity coins 
+	(try not only Z angles, but X or Y as well)
+random color shading even?
+
+
+--- GAMEPLAY BACKGROUND
+
+smaller skycoin cloud logos in a band across upper half(?) of screen
+		...kind of like a parallax starfield in space games 
+	random sized, random scaled (diff in x & y), 
+	random alpha value? 
+	random blueness & grayness (from white base) 
+
+
+--- DIFFICULTY SCALING FACTORS
+
+dropper can keep getting lower
+"        "  bounce up & down?
+" can start throwing angles on coins
+coins could come down in jiggly patterns or dodge slightly?
+dropper move speed
+drop rate
+dropper changing direction more
+total height of buckets
+fall speed
+
+*/
+
+
+
+func gameInit () {
+	app.Init("S k y B O O M", "Move with mouse.")
+	drawInit()
+	inputs.Init(true)
+	
+	// game specific 
+	menuInit()
+	entitiesInit()
+}
+
+
+func gameUpdate () {
+	time.Update()
+	respondToPointerEvents() // updates player paddles with deltas 
+	respondToButtonEvents()
+	respondToKeyEvents()
+	entitiesUpdate()
+}
+
+
+func getPlayerEdges (i i32) (l f32, r f32) {
+	l = // left 
+		entities.All[plr][i].X -
+		entities.All[plr][i].ExtentX
+		
+	r = // right 
+		entities.All[plr][i].X +
+		entities.All[plr][i].ExtentX
+}
+
+
+func doFading (i i32) {
+	if  entities.All[ENT_GAME_COIN][i].Mode == ENT_MODE_FADING {
+		entities.All[ENT_GAME_COIN][i].ExtentX = 
+		entities.All[ENT_GAME_COIN][i].ExtentX + time.Delta
+		entities.All[ENT_GAME_COIN][i].ExtentY = 
+		entities.All[ENT_GAME_COIN][i].ExtentY + time.Delta
+	}
+}
+
+
+// detect edge touching player 
+func caughtCoin (i i32, pL f32, pR f32, edge f32) (out bool) {
+	if  edge < pR &&
+		edge > pL {
+			
+		out = true
+	}else{	
+		out = false
+	}
+}

@@ -1,0 +1,84 @@
+package menu
+
+import "gl"
+
+import "draw"
+import "inputs"
+import "space"
+
+
+
+func Draw () {
+	rects()
+	texts()
+}
+
+
+func IsOpen () (out bool) {
+	if app.Mode < app.MODE_MENU_MAX {
+		out = true
+	}
+}
+
+
+var alpha f32 = 0.8
+func rects () {
+	gl.BindTexture(gl.TEXTURE_2D, draw.PicShapeTile)
+
+	var m     i32 = app.Mode
+	var ySpan f32 = f32.mul(Items[m][0].Hei, space.PixelSize.Y) // of text 
+	var y     f32 = f32.add(-1.0, f32.div(ySpan, 2.0))
+
+	for i := i32.sub(len(Items[m]), 1); i >= 0; i-- {
+		//printf("Items[m][i].Text: %s \n", Items[m][i].Text)
+				
+		var xSpan f32 = f32.mul(Items[m][i].Wid, space.PixelSize.X) // of text 
+	
+		if Items[m][i].Hover {
+			draw.SetColorToGrayShade(draw.Mid, alpha)
+		}else{
+			draw.SetColorToGrayShade(draw.Dark, alpha)
+		}
+		
+		draw.Scaled3SlicedPic(0.0, y, xSpan, ySpan)
+		
+		if Items[m][i].Max != 0 { // (if it's a slider) 
+			gl.Color3f(1.0, 1.0, 1.0)
+			var val f32 = i32.f32(Items[m][i].Value)
+			var max f32 = i32.f32(Items[m][i].Max)
+			var wid f32 = xSpan / max
+			var x   f32 = (val / max * xSpan)
+			x = f32.sub(x, f32.div(xSpan, 2.0))
+			x = f32.add(x, f32.div(wid, 2.0))
+			draw.Scaled3SlicedPic(x, y, wid, ySpan)
+		}
+		
+		y = f32.add(y, ySpan)
+	}
+}
+
+
+func texts () {
+	var m i32 = app.Mode
+	gl.LoadIdentity()
+
+	var st i32 = len(Items[m]) - 1
+	for i := st; i >= 0; i-- {
+		if inputs.PointerInYPixelRange( // highlighted 
+			Items[m][i].Top, 
+			Items[m][i].Bottom) {
+							
+			Items[m][i].Hover = true			
+			gl.Color3f(1.0, 1.0, 1.0)
+		}else{
+			Items[m][i].Hover = false
+			gl.Color3f(draw.Mid, draw.Mid, draw.Mid)
+		}
+
+		gltext.Printf(
+			Items[m][i].FontId, 
+			Items[m][i].Left, 
+			Items[m][i].Top, 
+			Items[m][i].Text)
+	}
+}
