@@ -35,6 +35,8 @@ A list of all libraries useful for CX game development will be catalogued and ad
 
 | Name  | Description | Status | Author |
 | :---: | ----------- | :----: | :----: |
+| [Graphical3d](libs/graphical3d) | A library to render 3D objects. | Finished | [galah4d](https://github.com/galah4d) |
+| [UTest](libs/utest) | An unit testing framework for CX. | Development | [galah4d](https://github.com/galah4d) |
 
 # Collaborate
 We are an open source project and everyone is welcome to contribute by creating games, documentation, testing, etc.
