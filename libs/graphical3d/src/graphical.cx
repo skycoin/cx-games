@@ -1,0 +1,149 @@
+package graphical
+
+type Vectorf64 struct {
+	x f64
+	y f64
+	z f64
+}
+
+func newVectorf64(x f64, y f64, z f64) (vector Vectorf64)  {
+	vector.x = x
+	vector.y = y
+	vector.z = z
+}
+
+type Vector3f struct {
+	x f32
+	y f32
+	z f32
+}
+
+func newVector3f(_x f32, _y f32, _z f32) (v Vector3f) {
+	v.x = _x
+	v.y = _y
+	v.z = _z
+}
+
+type Material struct {
+	color Vector3f
+	textured bool
+	texture i32
+	flipped bool
+}
+
+func newMaterial(red f32, green f32, blue f32) (mat Material) {
+	mat.color = newVector3f(red, green, blue)
+	mat.textured = false
+	mat.flipped = false
+}
+
+func (material Material) setTexture(texture i32) (material Material) {
+	material.textured = true
+	material.texture = texture
+	return material
+}
+
+type Mesh struct {
+	vertices []Vector3f
+}
+
+func NewMesh() (mesh Mesh) {
+	return mesh;
+}
+
+func MeshAddVertex(mesh Mesh, vertex Vector3f) (mesh Mesh) {
+	mesh.vertices = append(mesh.vertices, vertex)
+}
+
+func convert_p(value f32, radius f32) (c f64) {
+  c = f32.f64(range_conversion(f32.mul(radius, -1.0), radius, 0.0, 1.0, value))
+	return c
+}
+
+
+func convert_x(x f32, z f32, rad f32) (c f64) {
+	c = f32.f64(range_conversion(f32.mul(rad, -1.0), rad, 0.0, 0.5, x))
+	if z > 0.0 {
+		c = f64.sub(1.0D, c)
+	}
+}
+
+func range_conversion(oldMin f32, oldMax f32, newMin f32, newMax f32, oldValue f32) (newValue f32) {
+	oldRange := f32.sub(oldMax, oldMin)
+	newRange := f32.sub(newMax, newMin)
+	newValue = f32.add(f32.div(f32.mul(f32.sub(oldValue, oldMin), newRange), oldRange), newMin)
+}
+
+
+package phx
+
+type Vector struct {
+  x f32
+  y f32
+  z f32
+}
+
+func NewVector(x f32, y f32, z f32) (vector Vector) {
+  vector.x = x
+  vector.y = y
+  vector.z = z
+}
+
+func VectorAdd(v1 Vector, v2 Vector) (out Vector) {
+  out = NewVector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z)
+}
+
+func VectorSub(v1 Vector, v2 Vector) (out Vector) {
+  out = NewVector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z)
+}
+
+func VectorEq(v1 Vector, v2 Vector) (out bool) {
+  out = v1.x == v2.x && v1.y == v2.y && v1.z == v2.z
+}
+
+func VectorMulScalar(v1 Vector, s f32) (out Vector) {
+  out = NewVector(v1.x * s, v1.y * s, v1.z * s)
+}
+
+func VectorDistance(v1 Vector, v2 Vector) (out f32) {
+  xs := f32.mul(f32.sub(v1.x, v2.x), f32.sub(v1.x, v2.x))
+  ys := f32.mul(f32.sub(v1.y, v2.y), f32.sub(v1.y, v2.y))
+  zs := f32.mul(f32.sub(v1.z, v2.z), f32.sub(v1.z, v2.z))
+  out = f32.sqrt(xs + ys + zs)
+}
+
+func VectorPrint(vector Vector) {
+  printf("x: %f, y: %f, z: %f\n", vector.x, vector.y, vector.z)
+}
+
+type Direction struct {
+    vector Vector
+}
+
+func NewDirection(value Vector) (direction Direction)  {
+  direction.vector = value
+}
+
+func DirectionUp() (direction Direction) {
+  direction = NewDirection(NewVector(0.0, -1.0, 0.0))
+}
+
+func DirectionDown() (direction Direction) {
+  direction = NewDirection(NewVector(0.0, 1.0, 0.0))
+}
+
+func DirectionLeft() (direction Direction) {
+  direction = NewDirection(NewVector(-1.0, 0.0, 0.0))
+}
+
+func DirectionRight() (direction Direction) {
+  direction = NewDirection(NewVector(1.0, 0.0, 0.0))
+}
+
+func DirectionEq(d1 Direction, d2 Direction) (out bool) {
+  out = VectorEq(d1.vector, d2.vector)
+}
+
+func DirectionOpposite(direction Direction) (direction Direction) {
+  direction.vector = VectorMulScalar(direction.vector, -1.0)
+}
