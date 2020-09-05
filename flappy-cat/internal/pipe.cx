@@ -1,9 +1,11 @@
 package main
 
+import "graphical"
+
 var PIPE_GAP f32 = 0.7
 var PIPE_GAP_X f32 = 0.7
 var PIPE_START_X f32 = 0.5
-var PIPE_WIDTH f32 = 0.10
+var PIPE_WIDTH f32 = 0.20
 var PIPE_SPEED f32 = -0.009
 
 var pSkullHeightTop f32 = -0.07 // TODO rename
@@ -21,7 +23,8 @@ type Pipe struct {
     w f32
     topPipe bool
 
-    body Sprite
+    body graphical.PlaneGeometry
+    //body Sprite
     head Sprite
 }
 
@@ -41,8 +44,17 @@ func NewPipe(x f32, height f32, top bool) (pipe Pipe) {
       pipe.y = -1.0
     }
 
-    pipe.body = NewSprite(136, 157, 16, 19)
+    //pipe.body = NewSprite(136, 157, 16, 19)
     pipe.head = NewSprite(192, 216, 0, 14)
+
+    var mat graphical.Material
+    mat = graphical.newMaterial(0.0, 0.0, 0.0)
+    mat = mat.setTexture(SPRITE_MAP)
+
+    pipe.body = graphical.newPlaneGeometry(
+        graphical.newVector3f(pipe.x, pipe.y, 0.0),
+        graphical.newVector3f(pipe.w, pipe.h, 0.0),
+        mat)
 }
 
 func UpdatePipe(pipe Pipe, randNum f32) (pipe Pipe) {
@@ -57,14 +69,23 @@ func UpdatePipe(pipe Pipe, randNum f32) (pipe Pipe) {
   } else {
     pipe.x = f32.add(pipe.x, pipe.vx)
   }
+
+  pipe.body.position.x = pipe.x
 }
 
 func RenderPipe(pipe Pipe) {
-  RenderSprite(pipe.x, pipe.y, pipe.w, pipe.h, pipe.body)
-  if pipe.topPipe {
-    RenderSprite(pipe.x, f32.sub(pipe.y, pipe.h), f32.add(pipe.w, 0.01), pSkullHeightTop, pipe.body)
-  } else {
-    RenderSprite(pipe.x, f32.add(pipe.y, pipe.h), f32.add(pipe.w, 0.01), pSkullHeightBottom, pipe.body)
+    //RenderSprite(pipe.x, pipe.y, pipe.w, pipe.h, pipe.body)
+    var geometry graphical.PlaneGeometry
+    geometry = pipe.body;
+    geometry.renderCustom(
+        scale(136, SPRITE_MAP_WIDTH),
+        scale(157, SPRITE_MAP_WIDTH),
+        scale(16, SPRITE_MAP_HEIGHT),
+        scale(19, SPRITE_MAP_HEIGHT))
 
-  }
+    /*if pipe.topPipe {
+        RenderSprite(pipe.x, f32.sub(pipe.y, pipe.h), f32.add(pipe.w, 0.01), pSkullHeightTop, pipe.head)
+    } else {
+        RenderSprite(pipe.x, f32.add(pipe.y, pipe.h), f32.add(pipe.w, 0.01), pSkullHeightBottom, pipe.head)
+    }*/
 }

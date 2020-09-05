@@ -1,5 +1,7 @@
 package main
 
+import "graphical"
+
 var BACKGROUND_START_X f32 = 0.0
 var BACKGROUND_START_Y f32 = -0.4
 var BACKGROUND_SCALE_X f32 = 1.0
@@ -42,7 +44,7 @@ func NewGame() (game Game) {
 
 func UpdateGame(game Game) (game Game) {
   for i:=0; i<len(g_top_pipes); i++ {
-   if bool.or(checkCollision(g_bird, g_top_pipes[i]), checkCollision(g_bird, g_bottom_pipes[i])) {
+   if bool.or(checkCollisionAABB(g_bird.geometry, g_top_pipes[i].body), checkCollisionAABB(g_bird.geometry, g_bottom_pipes[i].body)) {
      bool.print(true)
      game = NewGame()
    }
@@ -60,6 +62,15 @@ func UpdateGame(game Game) (game Game) {
   }
 }
 
+func checkCollision2(bird Bird, pipe Pipe) (collision bool) {
+    var col1x bool = f32.lt(bird.x, f32.add(pipe.body.position.x, f32.div(pipe.body.dimensions.x, 2.0)))
+    var col2x bool = f32.gt(f32.add(bird.x, bird.radius), pipe.body.position.x)
+    var col1y bool = f32.lt(bird.y, f32.add(pipe.body.position.y, f32.div(pipe.body.dimensions.y, 2.0)))
+    var col2y bool = f32.gt(f32.add(bird.y, bird.radius), pipe.body.position.y)
+
+    return col1x && col2x && col1y && col2y
+}
+
 func checkCollision(bird Bird, pipe Pipe) (collision bool) {
   collision = false
   if pipe.topPipe {
@@ -73,14 +84,23 @@ func checkCollision(bird Bird, pipe Pipe) (collision bool) {
   }
 }
 
-func RenderGame(game Game) {
-  RenderSprite(BACKGROUND_START_X, BACKGROUND_START_Y, BACKGROUND_SCALE_X, BACKGROUND_SCALE_Y, game.background)
-  RenderSprite(SKY_START_X, SKY_START_Y, SKY_SCALE_X, SKY_SCALE_Y, game.sky)
-  RenderSprite(GRASS_START_X, GRASS_START_Y, GRASS_SCALE_X, GRASS_SCALE_Y, game.grass)
+func checkCollisionAABB(a graphical.PlaneGeometry, b graphical.PlaneGeometry) (collision bool) {
+    var col1x bool = f32.lt(a.position.x, f32.add(b.position.x, f32.div(b.dimensions.x, 2.0)))
+    var col2x bool = f32.gt(f32.add(a.position.x, f32.div(a.dimensions.x, 2.0)), b.position.x)
+    var col1y bool = f32.lt(a.position.y, f32.add(b.position.y, f32.div(b.dimensions.y, 2.0)))
+    var col2y bool = f32.gt(f32.add(a.position.y, f32.div(a.dimensions.y, 2.0)), b.position.y)
 
-  RenderBird(g_bird)
+    return col1x && col2x && col1y && col2y
+}
+
+func RenderGame(game Game) {
+  //RenderSprite(BACKGROUND_START_X, BACKGROUND_START_Y, BACKGROUND_SCALE_X, BACKGROUND_SCALE_Y, game.background)
+  //RenderSprite(SKY_START_X, SKY_START_Y, SKY_SCALE_X, SKY_SCALE_Y, game.sky)
+  //RenderSprite(GRASS_START_X, GRASS_START_Y, GRASS_SCALE_X, GRASS_SCALE_Y, game.grass)
+
   for i:=0; i<len(g_top_pipes); i++ {
     RenderPipe(g_top_pipes[i])
     RenderPipe(g_bottom_pipes[i])
   }
+  RenderBird(g_bird)
 }

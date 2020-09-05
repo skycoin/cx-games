@@ -1,8 +1,10 @@
 package main
 
+import "graphical"
+
 var BIRD_START_X f32 = -0.75
 var BIRD_START_Y f32 = 0.5
-var BIRD_RADIUS f32 = 0.2
+var BIRD_RADIUS f32 = 0.1
 var BIRD_GRAVITY f32 = 0.001
 
 var BIRD_SCALE_X f32 = 0.07
@@ -19,6 +21,7 @@ type Bird struct{
     radius f32
 
     animation [4]Sprite
+    geometry graphical.PlaneGeometry
 }
 
 func NewBird() (bird Bird) {
@@ -34,13 +37,31 @@ func NewBird() (bird Bird) {
   bird.animation[1] = NewSprite(167, 227, 67, 113)
   bird.animation[2] = NewSprite(248, 313, 17, 63)
   bird.animation[3] = NewSprite(248, 313, 67, 113)
+
+  var mat graphical.Material
+  mat = graphical.newMaterial(0.0, 0.0, 0.0)
+  mat = mat.setTexture(SPRITE_MAP)
+
+  bird.geometry = graphical.newPlaneGeometry(
+      graphical.newVector3f(bird.x, bird.y, 0.0),
+      graphical.newVector3f(f32.mul(bird.radius, 2.0), f32.mul(bird.radius, 2.0), 0.0),
+      mat)
 }
 
 func UpdateBird(bird Bird) (bird Bird) {
   bird.vy = f32.sub(bird.vy, bird.gravity)
   bird.y = f32.add(bird.y, bird.vy)
+
+  bird.geometry.position.x = bird.x
+  bird.geometry.position.y = bird.y
 }
 
 func RenderBird(bird Bird) {
-  RenderSprite(bird.x, bird.y, BIRD_SCALE_X, BIRD_SCALE_Y, bird.animation[0])
+  var geometry graphical.PlaneGeometry
+  geometry = bird.geometry;
+  geometry.renderCustom(
+      scale(167, SPRITE_MAP_WIDTH),
+      scale(232, SPRITE_MAP_WIDTH),
+      scale(17, SPRITE_MAP_HEIGHT),
+      scale(62, SPRITE_MAP_HEIGHT))
 }
