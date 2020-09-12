@@ -1,0 +1,52 @@
+package graphical
+
+import "gl"
+import "glfw"
+
+type TriangleGeometry struct {
+	position Vector3f
+	vertices [3]Vector3f
+	rotation Vector3f
+	material Material
+}
+
+func newTriangleGeometry(vertice1 Vector3f, vertice2 Vector3f, vertice3 Vector3f, material Material) (tg) {
+	tg = TriangleGeometry{
+		position:newVector3f(0.0, 0.0, 0.0),
+		vertices:[3]Vector3f{vertice1, vertice2, vertice3},
+		rotation:newVector3f(0.0, 0.0, 0.0),
+		material:material}
+	return tg
+}
+
+func (tg TriangleGeometry) render () {
+	gl.PushMatrix()
+	gl.Rotatef(tg.rotation.x, 1.0, 0.0, 0.0)
+	gl.Rotatef(tg.rotation.y, 0.0, 1.0, 0.0)
+	gl.Rotatef(tg.rotation.z, 0.0, 0.0, 1.0)
+	gl.Translatef(tg.position.x, tg.position.y, tg.position.z)
+
+
+	// TODO fix texture mapping
+	if pg.material.textured {
+		gl.BindTexture(gl.TEXTURE_2D, tg.material.texture)
+
+		gl.Begin(gl.QUADS);
+		gl.TexCoord2d(1.0D, 0.0D);
+		gl.Vertex3f(tg.vertices[0].x, tg.vertices[0].y, tg.vertices[0].z);;
+		gl.TexCoord2d(1.0D, 1.0D);
+		gl.Vertex3f(tg.vertices[1].x, tg.vertices[1].y, tg.vertices[1].z);
+		gl.TexCoord2d(0.0D, 1.0D);
+		gl.Vertex3f(tg.vertices[2].x, tg.vertices[2].y, tg.vertices[2].z);
+	} else {
+		gl.Color3f(tg.material.color.x, tg.material.color.y, tg.material.color.z);
+
+		gl.Begin(gl.TRIANGLE_STRIP);
+		gl.Vertex3f(tg.vertices[0].x, tg.vertices[0].y, tg.vertices[0].z);
+		gl.Vertex3f(tg.vertices[1].x, tg.vertices[1].y, tg.vertices[1].z);
+		gl.Vertex3f(tg.vertices[2].x, tg.vertices[2].y, tg.vertices[2].z);
+	}
+	gl.End()
+
+	gl.PopMatrix()
+}

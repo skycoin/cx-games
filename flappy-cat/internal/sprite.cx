@@ -29,7 +29,7 @@ func NewSprite(x1 i32, x2 i32, y1 i32, y2 i32) (sprite Sprite) {
 
 func loadSprinteMap() {
   wd := os.GetWorkingDirectory()
-  SPRITE_MAP = gl.NewTexture(str.concat(wd, "../assets/textures/texture.png"))
+  SPRITE_MAP = gl.NewTexture("./assets/textures/background.png")
 }
 
 func scale (x i32, max i32) (out f32) {

@@ -1,0 +1,231 @@
+package graphical
+
+import "gl"
+import "glfw"
+
+import "phx"
+
+type BoxGeometry struct {
+	position phx.Vector
+	dimensions Vector3f
+	rotation Vector3f
+	materials [6]Material
+}
+
+func newBoxGeometry(width f32, heigth f32, depth f32, materials [6]Material) (bg BoxGeometry) {
+	bg.position = phx.NewVector(0.0, 0.0, 0.0)
+	bg.dimensions = newVector3f(width, heigth, depth)
+	bg.rotation = newVector3f(0.0, 0.0, 0.0)
+	bg.materials = materials
+}
+
+func (bg BoxGeometry) render () {
+	x1 := f32.sub(bg.position.x, f32.div(bg.dimensions.x, 2.0))
+	x2 := f32.add(bg.position.x, f32.div(bg.dimensions.x, 2.0))
+
+	y1 := f32.sub(bg.position.y, f32.div(bg.dimensions.y, 2.0))
+	y2 := f32.add(bg.position.y, f32.div(bg.dimensions.y, 2.0))
+
+	z1 := f32.sub(bg.position.z, f32.div(bg.dimensions.z, 2.0))
+	z2 := f32.add(bg.position.z, f32.div(bg.dimensions.z, 2.0))
+
+	gl.MatrixMode(gl.MODELVIEW)
+	gl.PushMatrix()
+	gl.Translatef(bg.position.x, bg.position.y, bg.position.z)
+  gl.Rotatef(bg.rotation.x, 1.0, 0.0, 0.0)
+	gl.Rotatef(bg.rotation.y, 0.0, 1.0, 0.0)
+	gl.Rotatef(bg.rotation.z, 0.0, 0.0, 1.0)
+	gl.Translatef(f32.mul(-1.0, bg.position.x), f32.mul(-1.0, bg.position.y), f32.mul(-1.0, bg.position.z))
+
+	//Yellow side - FRONT
+	gl.BindTexture(gl.TEXTURE_2D, bg.materials[0].texture)
+	gl.Begin(gl.TRIANGLE_STRIP);
+	gl.TexCoord2d(1.0D, 1.0D);
+	gl.Vertex3f(x2, y2, z1);
+	gl.TexCoord2d(1.0D, 0.0D);
+	gl.Vertex3f(x2, y1, z1);
+	gl.TexCoord2d(0.0D, 1.0D);
+	gl.Vertex3f(x1,  y2, z1);
+	gl.TexCoord2d(0.0D, 0.0D);
+	gl.Vertex3f(x1, y1, z1);
+	gl.End()
+
+	// White side - BACK
+	gl.BindTexture(gl.TEXTURE_2D, bg.materials[1].texture)
+	gl.Begin(gl.TRIANGLE_STRIP);
+	gl.TexCoord2d(1.0D, 1.0D);
+	gl.Vertex3f(  x2, y2, z2 );
+	gl.TexCoord2d(1.0D, 0.0D);
+	gl.Vertex3f(  x2, y1, z2 );
+	gl.TexCoord2d(0.0D, 1.0D);
+	gl.Vertex3f( x1, y2, z2 );
+	gl.TexCoord2d(0.0D, 0.0D);
+	gl.Vertex3f( x1, y1, z2 );
+	gl.End();
+
+	// Purple side - RIGHT
+	gl.BindTexture(gl.TEXTURE_2D, bg.materials[2].texture)
+	gl.Begin(gl.TRIANGLE_STRIP);
+	gl.TexCoord2d(1.0D, 1.0D);
+	gl.Vertex3f( x2, y2, z1 );
+	gl.TexCoord2d(1.0D, 0.0D);
+	gl.Vertex3f( x2, y1, z1 );
+	gl.TexCoord2d(0.0D, 1.0D);
+	gl.Vertex3f( x2, y2, z2 );
+	gl.TexCoord2d(0.0D, 0.0D);
+	gl.Vertex3f( x2, y1, z2 );
+	gl.End();
+
+	// Green Side - LEFT
+	gl.BindTexture(gl.TEXTURE_2D, bg.materials[3].texture)
+	gl.Begin(gl.TRIANGLE_STRIP);
+	gl.TexCoord2d(1.0D, 1.0D);
+	gl.Vertex3f( x1, y2, z2 );
+	gl.TexCoord2d(1.0D, 0.0D);
+	gl.Vertex3f( x1, y1, z2 );
+	gl.TexCoord2d(0.0D, 1.0D);
+	gl.Vertex3f( x1, y2, z1 );
+	gl.TexCoord2d(0.0D, 0.0D);
+	gl.Vertex3f( x1, y1, z1 );
+	gl.End();
+
+	// Blue side - TOP
+	gl.BindTexture(gl.TEXTURE_2D, bg.materials[4].texture)
+	gl.Begin(gl.TRIANGLE_STRIP);
+	gl.TexCoord2d(1.0D, 1.0D);
+	gl.Vertex3f( x2,  y2, z1 );
+	gl.TexCoord2d(1.0D, 0.0D);
+	gl.Vertex3f( x2,  y2, z2 );
+	gl.TexCoord2d(0.0D, 1.0D);
+	gl.Vertex3f( x1,  y2, z1 );
+	gl.TexCoord2d(0.0D, 0.0D);
+	gl.Vertex3f( x1,  y2, z2 );
+	gl.End();
+
+	// Red side - BASE
+	gl.BindTexture(gl.TEXTURE_2D, bg.materials[5].texture)
+	gl.Begin(gl.TRIANGLE_STRIP);
+	gl.TexCoord2d(1.0D, 1.0D);
+	gl.Vertex3f(  x2, y1, z2 );
+	gl.TexCoord2d(1.0D, 0.0D);
+	gl.Vertex3f(  x2, y1, z1 );
+	gl.TexCoord2d(0.0D, 1.0D);
+	gl.Vertex3f( x1, y1, z2 );
+	gl.TexCoord2d(0.0D, 0.0D);
+	gl.Vertex3f( x1, y1, z1 );
+	gl.End();
+
+	gl.PopMatrix()
+}
+
+func BoxGeometryRender (bg BoxGeometry, front bool, back bool, left bool, right bool, up bool, down bool) {
+	x1 := f32.sub(bg.position.x, f32.div(bg.dimensions.x, 2.0))
+	x2 := f32.add(bg.position.x, f32.div(bg.dimensions.x, 2.0))
+
+	y1 := f32.sub(bg.position.y, f32.div(bg.dimensions.y, 2.0))
+	y2 := f32.add(bg.position.y, f32.div(bg.dimensions.y, 2.0))
+
+	z1 := f32.sub(bg.position.z, f32.div(bg.dimensions.z, 2.0))
+	z2 := f32.add(bg.position.z, f32.div(bg.dimensions.z, 2.0))
+
+	gl.MatrixMode(gl.MODELVIEW)
+	gl.PushMatrix()
+	gl.Translatef(bg.position.x, bg.position.y, bg.position.z)
+  gl.Rotatef(bg.rotation.x, 1.0, 0.0, 0.0)
+	gl.Rotatef(bg.rotation.y, 0.0, 1.0, 0.0)
+	gl.Rotatef(bg.rotation.z, 0.0, 0.0, 1.0)
+	gl.Translatef(f32.mul(-1.0, bg.position.x), f32.mul(-1.0, bg.position.y), f32.mul(-1.0, bg.position.z))
+
+	//Yellow side - DOWN
+	if down {
+		gl.BindTexture(gl.TEXTURE_2D, bg.materials[0].texture)
+		gl.Begin(gl.TRIANGLE_STRIP);
+		gl.TexCoord2d(1.0D, 1.0D);
+		gl.Vertex3f(x2, y2, z1);
+		gl.TexCoord2d(1.0D, 0.0D);
+		gl.Vertex3f(x2, y1, z1);
+		gl.TexCoord2d(0.0D, 1.0D);
+		gl.Vertex3f(x1,  y2, z1);
+		gl.TexCoord2d(0.0D, 0.0D);
+		gl.Vertex3f(x1, y1, z1);
+		gl.End()
+	}
+
+	// White side - UP
+	if up {
+		gl.BindTexture(gl.TEXTURE_2D, bg.materials[1].texture)
+		gl.Begin(gl.TRIANGLE_STRIP);
+		gl.TexCoord2d(1.0D, 1.0D);
+		gl.Vertex3f(  x2, y2, z2 );
+		gl.TexCoord2d(1.0D, 0.0D);
+		gl.Vertex3f(  x2, y1, z2 );
+		gl.TexCoord2d(0.0D, 1.0D);
+		gl.Vertex3f( x1, y2, z2 );
+		gl.TexCoord2d(0.0D, 0.0D);
+		gl.Vertex3f( x1, y1, z2 );
+		gl.End();
+	}
+
+	// Purple side - RIGHT
+	if right {
+		gl.BindTexture(gl.TEXTURE_2D, bg.materials[2].texture)
+		gl.Begin(gl.TRIANGLE_STRIP);
+		gl.TexCoord2d(0.0D, 0.0D);
+		gl.Vertex3f( x2, y1, z1 );
+		gl.TexCoord2d(1.0D, 0.0D);
+		gl.Vertex3f( x2, y1, z2 );
+		gl.TexCoord2d(0.0D, 1.0D);
+		gl.Vertex3f( x2, y2, z1 );
+		gl.TexCoord2d(1.0D, 1.0D);
+		gl.Vertex3f( x2, y2, z2 );
+
+		gl.End();
+	}
+
+	// Green Side - LEFT
+	if left {
+		gl.BindTexture(gl.TEXTURE_2D, bg.materials[3].texture)
+		gl.Begin(gl.TRIANGLE_STRIP);
+		gl.TexCoord2d(1.0D, 1.0D);
+		gl.Vertex3f( x1, y2, z2 );
+		gl.TexCoord2d(1.0D, 0.0D);
+		gl.Vertex3f( x1, y1, z2 );
+		gl.TexCoord2d(0.0D, 1.0D);
+		gl.Vertex3f( x1, y2, z1 );
+		gl.TexCoord2d(0.0D, 0.0D);
+		gl.Vertex3f( x1, y1, z1 );
+		gl.End();
+	}
+
+	// Blue side - FRONT
+	if front {
+		gl.BindTexture(gl.TEXTURE_2D, bg.materials[4].texture)
+		gl.Begin(gl.TRIANGLE_STRIP);
+		gl.TexCoord2d(1.0D, 1.0D);
+		gl.Vertex3f( x2,  y2, z1 );
+		gl.TexCoord2d(1.0D, 0.0D);
+		gl.Vertex3f( x2,  y2, z2 );
+		gl.TexCoord2d(0.0D, 1.0D);
+		gl.Vertex3f( x1,  y2, z1 );
+		gl.TexCoord2d(0.0D, 0.0D);
+		gl.Vertex3f( x1,  y2, z2 );
+		gl.End();
+	}
+
+	// Red side - BACK
+	if back {
+		gl.BindTexture(gl.TEXTURE_2D, bg.materials[5].texture)
+		gl.Begin(gl.TRIANGLE_STRIP);
+		gl.TexCoord2d(1.0D, 1.0D);
+		gl.Vertex3f(  x2, y1, z2 );
+		gl.TexCoord2d(1.0D, 0.0D);
+		gl.Vertex3f(  x2, y1, z1 );
+		gl.TexCoord2d(0.0D, 1.0D);
+		gl.Vertex3f( x1, y1, z2 );
+		gl.TexCoord2d(0.0D, 0.0D);
+		gl.Vertex3f( x1, y1, z1 );
+		gl.End();
+	}
+
+	gl.PopMatrix()
+}

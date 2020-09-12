@@ -1,0 +1,61 @@
+package main
+
+import "gl"
+import "glfw"
+import "graphical"
+
+func initGL() (program i32) {
+	gl.Init()
+	gl.Enable(gl.BLEND)
+  gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.DEPTH_TEST)
+	gl.Enable(gl.TEXTURE_2D)
+
+	program = gl.CreateProgram()
+	gl.LinkProgram(program)
+	return program
+}
+
+func initGLFW() {
+	glfw.Init()
+	glfw.WindowHint(glfw.Resizable, glfw.False)
+	glfw.WindowHint(glfw.ContextVersionMajor, 2)
+  glfw.WindowHint(glfw.ContextVersionMinor, 1)
+
+	glfw.CreateWindow("window", 500, 500, "Skycoin")
+	glfw.MakeContextCurrent("window")
+}
+
+func main()  {
+  initGLFW()
+	var program i32
+	program = initGL()
+
+  var mats [2]graphical.Material
+
+  // load main material
+  var mat1 graphical.Material
+  mat1 = graphical.newMaterial(1.0, 1.0, 1.0)
+  mat1 = mat1.setTexture(gl.NewTexture("assets/skycoin-front.png"))
+  mats[0] = mat1
+
+  // load secondary material
+  var mat2 graphical.Material
+  mat2 = graphical.newMaterial(1.0, 1.0, 1.0)
+  mat2 = mat2.setTexture(gl.NewTexture("assets/skycoin-side.png"))
+  mats[1] = mat2
+
+  var skycoin graphical.CylinderGeometry
+  skycoin = graphical.newCylinderGeometry(0.1, 0.5, 30, mats)
+
+  for bool.not(glfw.ShouldClose("window")) {
+    gl.Clear(i32.bitor(gl.COLOR_BUFFER_BIT, gl.DEPTH_BUFFER_BIT))
+		gl.LoadIdentity()
+
+		skycoin.rotation.y = skycoin.rotation.y + 1.0
+    skycoin.render()
+
+    glfw.PollEvents()
+		glfw.SwapBuffers("window")
+  }
+}

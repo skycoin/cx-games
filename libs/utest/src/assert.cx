@@ -1,0 +1,168 @@
+package test
+
+func _assert(v bool, msg str) {
+  if (bool.not(v)) {
+    addFailure(msg)
+  }
+  /*if (v) {
+    printf("[+] Test passed.\n")
+  } else {
+    printf("[-] Test failed:\n")
+    printf("\t > %s\n", msg)
+  }*/
+}
+
+// AssertEquals
+
+func AssertEqualsI32(actual i32, expected i32) {
+  _assert(i32.eq(actual, expected), sprintf("Actual: %d | Expected: %d.", actual, expected));
+}
+
+func AssertEqualsI64(actual i64, expected i64) {
+  _assert(i64.eq(actual, expected), sprintf("Actual: %dL | Expected: %dL.", actual, expected));
+}
+
+func AssertEqualsF32(actual f32, expected f32) {
+  _assert(f32.eq(actual, expected), sprintf("Actual: %f | Expected: %f.", actual, expected));
+}
+
+func AssertEqualsF64(actual f64, expected f64) {
+  _assert(f64.eq(actual, expected), sprintf("Actual: %fD | Expected: %fD.", actual, expected));
+}
+
+func AssertEqualsStr(actual str, expected str) {
+  _assert(str.eq(actual, expected), sprintf("Actual: %s | Expected: %s.", actual, expected));
+}
+
+func AssertEqualsBool(actual bool, expected bool) {
+  _assert(bool.eq(actual, expected), "AssertEqualsBool");
+}
+
+// AssertNotEquals
+
+func AssertNotEqualsI32(actual i32, not_expected i32) {
+  _assert(bool.not(i32.eq(actual, not_expected)), sprintf("Actual: %d | Not Expected: %d.", actual, not_expected));
+}
+
+func AssertNotEqualsI64(actual i64, not_expected i64) {
+  _assert(bool.not(i64.eq(actual, not_expected)), sprintf("Actual: %dL | Not Expected: %dL.", actual, not_expected));
+}
+
+func AssertNotEqualsF32(actual f32, not_expected f32) {
+  _assert(bool.not(f32.eq(actual, not_expected)), sprintf("Actual: %f | Not Expected: %f.", actual, not_expected));
+}
+
+func AssertNotEqualsF64(actual f64, not_expected f64) {
+  _assert(bool.not(f64.eq(actual, not_expected)), sprintf("Actual: %fD | Not Expected: %fD.", actual, not_expected));
+}
+
+func AssertNotEqualsStr(actual str, not_expected str) {
+  _assert(bool.not(str.eq(actual, not_expected)), sprintf("Actual: %s | Not Expected: %s.", actual, not_expected));
+}
+
+// AssertSliceEquals
+
+func AssertSliceEqualsI32(actual []i32, expected[]i32)  {
+  if bool.not(i32.eq(len(actual), len(expected))) {
+    _assert(false, sprintf("Actual length: %d | Expected length: %d.", len(actual), len(expected)));
+  } else {
+    for i:=0; i<len(actual); i++ {
+      if bool.not(i32.eq(actual[i], expected[i])) {
+        _assert(false, sprintf("At index(%d) - Actual: %d | Expected: %d.", i, actual[i], expected[i]))
+        return
+      }
+    }
+    _assert(true, "");
+  }
+}
+
+func AssertSliceEqualsI64(actual []i64, expected []i64)  {
+  if bool.not(i32.eq(len(actual), len(expected))) {
+    _assert(false, sprintf("Actual length: %d | Expected length: %d.", len(actual), len(expected)));
+  } else {
+    for i:=0; i<len(actual); i++ {
+      if bool.not(i64.eq(actual[i], expected[i])) {
+        _assert(false, sprintf("At index(%d) - Actual: %dL | Expected: %dL.", i, actual[i], expected[i]))
+        return
+      }
+    }
+    _assert(true, "");
+  }
+}
+
+func AssertSliceEqualsF32(actual []f32, expected[]f32)  {
+  if bool.not(i32.eq(len(actual), len(expected))) {
+    _assert(false, sprintf("Actual length: %d | Expected length: %d.", len(actual), len(expected)));
+  } else {
+    for i:=0; i<len(actual); i++ {
+      if bool.not(f32.eq(actual[i], expected[i])) {
+        _assert(false, sprintf("At index(%d) - Actual: %f | Expected: %f.", i, actual[i], expected[i]))
+        return
+      }
+    }
+    _assert(true, "");
+  }
+}
+
+func AssertSliceEqualsF64(actual []f64, expected []f64)  {
+  if bool.not(i32.eq(len(actual), len(expected))) {
+    _assert(false, sprintf("Actual length: %d | Expected length: %d.", len(actual), len(expected)));
+  } else {
+    for i:=0; i<len(actual); i++ {
+      if bool.not(f64.eq(actual[i], expected[i])) {
+        _assert(false, sprintf("At index(%d) - Actual: %fD | Expected: %fD.", i, actual[i], expected[i]))
+        return
+      }
+    }
+    _assert(true, "");
+  }
+}
+
+// Other
+
+func AssertTrue(value bool) {
+  _assert(value, "Actual: false | Expected: true.");
+}
+
+func AssertFalse(value bool) {
+  _assert(bool.not(value), "Actual: true | Expected: false.");
+}
+
+
+/*package main
+
+import "test"
+
+func main() {
+  test.AssertEqualsI32(9, 10)
+  test.AssertEqualsI64(9L, 10L)
+  test.AssertEqualsF32(9.0, 10.0)
+  test.AssertEqualsF64(9.0D, 10.0D)
+  test.AssertEqualsStr("foo", "oof")
+  test.AssertEqualsBool(true, false)
+
+  test.AssertNotEqualsI32(10, 10)
+  test.AssertNotEqualsI64(10L, 10L)
+  test.AssertNotEqualsF32(10.0, 10.0)
+  test.AssertNotEqualsF64(10.0D, 10.0D)
+  test.AssertNotEqualsStr("foo", "foo")
+
+  test.AssertTrue(false)
+  test.AssertFalse(true)
+
+  var array_a []i32; var array_b []i32
+  array_a = []i32{10, 20, 30}; array_b = []i32{10, 10, 30}
+  test.AssertSliceEqualsI32(array_a, array_b)
+
+  var array_c []i64; var array_d []i64
+  array_c = []i64{10L, 20L, 30L}; array_d = []i64{10L, 10L, 30L}
+  test.AssertSliceEqualsI64(array_c, array_d)
+
+  var array_e []f32; var array_f []f32
+  array_e = []f32{10.0, 20.0, 30.0}; array_f = []f32{10.0, 10.0, 30.0}
+  test.AssertSliceEqualsF32(array_e, array_f)
+
+  var array_g []f64; var array_h []f64
+  array_g = []f64{10.0D, 20.0D, 30.0D}; array_h = []f64{10.0D, 10.0D, 30.0D}
+  test.AssertSliceEqualsF64(array_g, array_h)
+}*/
