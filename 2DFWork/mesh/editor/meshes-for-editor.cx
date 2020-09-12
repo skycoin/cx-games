@@ -42,17 +42,13 @@ func makeColorPickerSquare () {
     cols = append(
     cols, c)
     
-    /*
-    c = Color3{ R: 1.0, G: 0.0, B: 0.0 }
-    cols = append(
-    cols, c)
-    */
     
     // verts 
-    var t f32 =  0.0
-    var r f32 = -1.0 + incX
-    var b f32 = -1.0
-    var l f32 = -1.0
+    var vm f32 =  0.0 // vertical midpoint 
+    var t  f32 =  1.0
+    var r  f32 = -1.0 + incX
+    var b  f32 = -1.0
+    var l  f32 = -1.0
     
     // tris 
     var cti     i32 // current triangle index 
@@ -91,11 +87,11 @@ func makeColorPickerSquare () {
         // verts 
         var p Vec2
         
-        p = Vec2{ X: l,       Y: t }
+        p = Vec2{ X: l,       Y: vm }
         m.Points = append(
         m.Points, p)
 
-        p = Vec2{ X: l+incXH, Y: t }
+        p = Vec2{ X: l+incXH, Y: vm }
         m.Points = append(
         m.Points, p)
 
@@ -103,11 +99,11 @@ func makeColorPickerSquare () {
         m.Points = append(
         m.Points, p)
         
-        p = Vec2{ X: r-incXH, Y: t }
+        p = Vec2{ X: r-incXH, Y: vm }
         m.Points = append(
         m.Points, p)
 
-        p = Vec2{ X: r, Y: t }
+        p = Vec2{ X: r,       Y: vm }
         m.Points = append(
         m.Points, p)
 
@@ -124,7 +120,7 @@ func makeColorPickerSquare () {
             m.Points = append(
             m.Points, p)
 
-            p = Vec2{ X: r,       Y: t }
+            p = Vec2{ X: r,       Y: vm }
             m.Points = append(
             m.Points, p)
 
@@ -138,7 +134,7 @@ func makeColorPickerSquare () {
             m.Points = append(
             m.Points, p)
 
-            p = Vec2{ X: r,       Y: t }
+            p = Vec2{ X: r,       Y: vm }
             p.X = p.X - incX * 3.0
             m.Points = append(
             m.Points, p)
