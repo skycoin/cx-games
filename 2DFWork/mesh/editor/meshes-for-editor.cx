@@ -128,7 +128,8 @@ func makeColorPickerSquare () {
             m.Points = append(
             m.Points, p)
             
-        if i == numQX - 1 {
+        if i == numQX - 1 { // ...(last one) 
+            // draw same colors on left side 
             p = Vec2{ X: l+incXH, Y: b }
             p.X = p.X - incX * 3.0
             m.Points = append(
