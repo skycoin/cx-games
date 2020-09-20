@@ -7,7 +7,7 @@ import "geom"
 
 
 func makeColorPickerSquare () {
-    var numQX i32 = 3 // number of quads in X 
+    var numQX i32 = 6 // number of quads in X 
     var incX  f32 = 2.0 / i32.f32(numQX)
     var incXH f32 = incX * 0.5 // half of above 
     
@@ -55,24 +55,53 @@ func makeColorPickerSquare () {
 
     var cc i32 // current color idx 
     for i := 0; i < numQX; i++ {
+        // to cover a rectangular region that smoothly blends colors 
+        // between it's 4 corners, we can't just use 2 triangles, 
+        // because all 4 colors need to be a factor across virtually 
+        // the whole area.  triangles can only have 3 colors each. 
+        // the ones with an edge along the white/black edges of the 
+        // area only end up with 2 colors factored in. 
+        // so i think 5 verts & 4 tris are needed. 
+        // maybe it could be only 3 tris oriented differently for the
+        // lerping-to-white and lerping-to-black bands?  
+        // i already spent a decent amount of time 
+        // making special logic for 2 triangles, so i think it's wise 
+        // to jump to 4 tris to MAKE SURE it gives the desired results. 
+        // using a few more triangles would never be noticed anyways. 
+        // 
+        // for each rectangular area, 
+        // vertices & colors are laid out like this: 
+        // 0---1 
+        // |\ /| 
+        // | 4 | 
+        // |/ \| 
+        // 3---2
+        
         // colors 
         var ccP0 i32 = (cc    ) % len(cols)
         var ccP1 i32 = (cc + 1) % len(cols)
+        var shm Color3 // saturated hori midpoint (tween side edges) 
+        shm = draw.GetLerpedColor3(cols[ccP0], cols[ccP1], 0.5)
         m.Colors = append(m.Colors, cols[ccP0])
         m.Colors = append(m.Colors, cols[ccP1])
         m.Colors = append(m.Colors, draw.Black)
+        m.Colors = append(m.Colors, draw.Black)
+        m.Colors = append(m.Colors, draw.GetLerpedColor3(draw.Black, shm, 0.5))
         cc = cc + 1
 
+        /* RIGHT of triangular cup
             ccP0     = (cc    ) % len(cols)
             ccP1     = (cc + 1) % len(cols)
         m.Colors = append(m.Colors, cols[ccP0])
         m.Colors = append(m.Colors, cols[ccP1])
         m.Colors = append(m.Colors, draw.Black)
         cc = cc + 1
+        */
 
+        /*
         // {0} solid R,G, or B fading to black, connective-bridge tri. 
-        // (needs to be split into 2 tris on the 3rd/last stage) 
-        if i == numQX - 1 {
+        // (TODO: needs to be split into 2 tris on the 3rd/last stage) 
+        if i == numQX - 1 { // ...(last one) 
             m.Colors = append(m.Colors, draw.Black)
             m.Colors = append(m.Colors, cols[ccP1])
             m.Colors = append(m.Colors, draw.Black)
@@ -81,8 +110,7 @@ func makeColorPickerSquare () {
         m.Colors     = append(m.Colors, draw.Black)
         m.Colors     = append(m.Colors, cols[ccP1])
         m.Colors     = append(m.Colors, draw.Black)
-        //m.Colors = append(m.Colors, /*draw.Black)*/rc)
-        
+        */
         
         // verts 
         var p Vec2
@@ -91,14 +119,23 @@ func makeColorPickerSquare () {
         m.Points = append(
         m.Points, p)
 
-        p = Vec2{ X: l+incXH, Y: vm }
+        p = Vec2{ X: r,       Y: vm }
         m.Points = append(
         m.Points, p)
 
-        p = Vec2{ X: r-incXH, Y: b }
+        p = Vec2{ X: r,       Y: b }
+        m.Points = append(
+        m.Points, p)
+
+        p = Vec2{ X: l,       Y: b }
+        m.Points = append(
+        m.Points, p)
+
+        p = Vec2{ X: l+incXH, Y: vm-0.5 }
         m.Points = append(
         m.Points, p)
         
+        /* RIGHT of triangular cup
         p = Vec2{ X: r-incXH, Y: vm }
         m.Points = append(
         m.Points, p)
@@ -110,10 +147,11 @@ func makeColorPickerSquare () {
         p = Vec2{ X: r-incXH, Y: b }
         m.Points = append(
         m.Points, p)
-
+        */
 
 
         
+        /*
         // {1} solid R,G, or B fading to black, connective-bridge tri. 
         // (needs to be split into 2 tris on the 3rd/last stage) 
             p = Vec2{ X: l+incXH, Y: b }
@@ -145,6 +183,7 @@ func makeColorPickerSquare () {
             m.Points = append(
             m.Points, p)
         }
+        */
         
         /*
         p = Vec2{ X: r, Y: b }
@@ -156,22 +195,50 @@ func makeColorPickerSquare () {
         r = r + incX
 
 
-        // tris 
-        for q := 0; q < 10; q++ {
-            m.TriangleIndices = append(
-            m.TriangleIndices, cti)
-            cti = cti + 1
-        }
-        
-        /*
-        m.TriangleIndices = append(
-        m.TriangleIndices, cti - 3)
-        m.TriangleIndices = append(
-        m.TriangleIndices, cti - 1)
-        m.TriangleIndices = append(
+        // tri inds 
+        // (start with top edge, and go around clockwise edges, 
+        //  ending at center, from each edge) 
+        // 4 triangles connecting 5 verts 
+        m.TriangleIndices = append( // top left 
         m.TriangleIndices, cti)
-        cti = cti + 1
-        */
+        
+        m.TriangleIndices = append( // top right 
+        m.TriangleIndices, cti + 1)
+        
+        m.TriangleIndices = append( // center 
+        m.TriangleIndices, cti + 4)
+
+
+        m.TriangleIndices = append( // top right 
+        m.TriangleIndices, cti + 1)
+        
+        m.TriangleIndices = append( // bottom right 
+        m.TriangleIndices, cti + 2)
+        
+        m.TriangleIndices = append( // center 
+        m.TriangleIndices, cti + 4)
+
+
+        m.TriangleIndices = append( // bottom right 
+        m.TriangleIndices, cti + 2)
+        
+        m.TriangleIndices = append( // bottom left 
+        m.TriangleIndices, cti + 3)
+        
+        m.TriangleIndices = append(
+        m.TriangleIndices, cti + 4) // center 
+
+
+        m.TriangleIndices = append( // bottom left 
+        m.TriangleIndices, cti + 3)
+        
+        m.TriangleIndices = append( // top left 
+        m.TriangleIndices, cti)
+        
+        m.TriangleIndices = append(
+        m.TriangleIndices, cti + 4) // center 
+        
+        cti = cti + 5
     }
     
     makeAndReportOn(m, true)
