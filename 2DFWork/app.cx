@@ -228,6 +228,12 @@ func CliIntro () {
 }
 
 
+func GetLerped (a f32, b f32, frac f32) (out f32) {
+	var delta f32 = (a - b) * frac
+	out = b + delta
+}
+
+
 func showWorkHoursNeeded () {
 	// current "workmonth" (pay period) goes from the 5th to the 4th of following month 
 	var today       i32 = 30 // day of current month 
