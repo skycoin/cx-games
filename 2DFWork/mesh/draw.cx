@@ -41,6 +41,7 @@ func DrawEditor () {
 			trianglesForOne(RawMeshes, ColorWheel)
 		}
 		
+		
 		// toolbar (or BOTH toolbars, of the 2 that exist ATM) 
 		if app.EditMode == app.EDITMODE_MESH_PICKER {
 			trianglesForAll(BakedUIMeshes)
@@ -123,7 +124,7 @@ func colorPalette () {
 		if i % 2 == 0 {
 			draw.SetColor(a)
 		}else{
-			draw.SetBlendedColor3(draw.Colors[a], draw.Colors[b])
+			draw.SetColor3(draw.GetLerpedColor3(draw.Colors[a], draw.Colors[b], 0.5))
 		}
 		
 		draw.AddRect(pos, ext, ext)
@@ -237,7 +238,7 @@ func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
 		var pId i32 // point id (from tri ids) 
 		pId = m.TriangleIndices[j]
 		
-		draw.SetBlendedColor3(m.Colors[pId], col)
+		draw.SetColor3(draw.GetLerpedColor3(m.Colors[pId], col, 0.5))
 		
 		var v Vec2
 		v = m.Points[pId]
