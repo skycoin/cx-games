@@ -6,243 +6,172 @@ import "geom"
 
 
 
-func makeColorPickerSquare () {
-    var numQX i32 = 6 // number of quads in X 
-    var incX  f32 = 2.0 / i32.f32(numQX)
-    var incXH f32 = incX * 0.5 // half of above 
-    
-    var m Mesh2D
-    m = Mesh2D{ Name: "Color Picker" }
+var cp Mesh2D // color picker 
 
-    // colors 
-    var cols []Color3
-    var c      Color3
+
+
+func makeColorPickerSquare () {
+    var sl   i32 = draw.GetSpectrumLen() // number of hue columns in X 
+    var incX f32 = 2.0 / i32.f32(sl)
     
-    c = Color3{ R: 1.0, G: 0.0, B: 0.0 }
-    cols = append(
-    cols, c)
+    cp = Mesh2D{ Name: "Color Picker" }
     
-    c = Color3{ R: 1.0, G: 1.0, B: 0.0 }
-    cols = append(
-    cols, c)
-    
-    c = Color3{ R: 0.0, G: 1.0, B: 0.0 }
-    cols = append(
-    cols, c)
-    
-    c = Color3{ R: 0.0, G: 1.0, B: 1.0 }
-    cols = append(
-    cols, c)
-    
-    c = Color3{ R: 0.0, G: 0.0, B: 1.0 }
-    cols = append(
-    cols, c)
-    
-    c = Color3{ R: 1.0, G: 0.0, B: 1.0 }
-    cols = append(
-    cols, c)
-    
-    
-    // verts 
+    // key points for hue columns 
     var vm f32 =  0.0 // vertical midpoint 
     var t  f32 =  1.0
     var r  f32 = -1.0 + incX
     var b  f32 = -1.0
     var l  f32 = -1.0
     
-    // tris 
-    var cti     i32 // current triangle index 
-
-    var cc i32 // current color idx 
-    for i := 0; i < numQX; i++ {
-        // to cover a rectangular region that smoothly blends colors 
-        // between it's 4 corners, we can't just use 2 triangles, 
-        // because all 4 colors need to be a factor across virtually 
-        // the whole area.  triangles can only have 3 colors each. 
-        // the ones with an edge along the white/black edges of the 
-        // area only end up with 2 colors factored in. 
-        // so i think 5 verts & 4 tris are needed. 
-        // maybe it could be only 3 tris oriented differently for the
-        // lerping-to-white and lerping-to-black bands?  
-        // i already spent a decent amount of time 
-        // making special logic for 2 triangles, so i think it's wise 
-        // to jump to 4 tris to MAKE SURE it gives the desired results. 
-        // using a few more triangles would never be noticed anyways. 
-        // 
-        // for each rectangular area, 
-        // vertices & colors are laid out like this: 
-        // 0---1 
-        // |\ /| 
-        // | 4 | 
-        // |/ \| 
-        // 3---2
-        
-        // colors 
-        var ccP0 i32 = (cc    ) % len(cols)
-        var ccP1 i32 = (cc + 1) % len(cols)
-        var shm Color3 // saturated hori midpoint (tween side edges) 
-        shm = draw.GetLerpedColor3(cols[ccP0], cols[ccP1], 0.5)
-        m.Colors = append(m.Colors, cols[ccP0])
-        m.Colors = append(m.Colors, cols[ccP1])
-        m.Colors = append(m.Colors, draw.Black)
-        m.Colors = append(m.Colors, draw.Black)
-        m.Colors = append(m.Colors, draw.GetLerpedColor3(draw.Black, shm, 0.5))
-        cc = cc + 1
-
-        /* RIGHT of triangular cup
-            ccP0     = (cc    ) % len(cols)
-            ccP1     = (cc + 1) % len(cols)
-        m.Colors = append(m.Colors, cols[ccP0])
-        m.Colors = append(m.Colors, cols[ccP1])
-        m.Colors = append(m.Colors, draw.Black)
-        cc = cc + 1
-        */
-
-        /*
-        // {0} solid R,G, or B fading to black, connective-bridge tri. 
-        // (TODO: needs to be split into 2 tris on the 3rd/last stage) 
-        if i == numQX - 1 { // ...(last one) 
-            m.Colors = append(m.Colors, draw.Black)
-            m.Colors = append(m.Colors, cols[ccP1])
-            m.Colors = append(m.Colors, draw.Black)
-        }
-        
-        m.Colors     = append(m.Colors, draw.Black)
-        m.Colors     = append(m.Colors, cols[ccP1])
-        m.Colors     = append(m.Colors, draw.Black)
-        */
-        
-        // verts 
-        var p Vec2
-        
-        p = Vec2{ X: l,       Y: vm }
-        m.Points = append(
-        m.Points, p)
-
-        p = Vec2{ X: r,       Y: vm }
-        m.Points = append(
-        m.Points, p)
-
-        p = Vec2{ X: r,       Y: b }
-        m.Points = append(
-        m.Points, p)
-
-        p = Vec2{ X: l,       Y: b }
-        m.Points = append(
-        m.Points, p)
-
-        p = Vec2{ X: l+incXH, Y: vm-0.5 }
-        m.Points = append(
-        m.Points, p)
-        
-        /* RIGHT of triangular cup
-        p = Vec2{ X: r-incXH, Y: vm }
-        m.Points = append(
-        m.Points, p)
-
-        p = Vec2{ X: r,       Y: vm }
-        m.Points = append(
-        m.Points, p)
-
-        p = Vec2{ X: r-incXH, Y: b }
-        m.Points = append(
-        m.Points, p)
-        */
-
-
-        
-        /*
-        // {1} solid R,G, or B fading to black, connective-bridge tri. 
-        // (needs to be split into 2 tris on the 3rd/last stage) 
-            p = Vec2{ X: l+incXH, Y: b }
-            m.Points = append(
-            m.Points, p)
-
-            p = Vec2{ X: r,       Y: vm }
-            m.Points = append(
-            m.Points, p)
-
-            p = Vec2{ X: r+incXH, Y: b }
-            m.Points = append(
-            m.Points, p)
-            
-        if i == numQX - 1 { // ...(last one) 
-            // draw same colors on left side 
-            p = Vec2{ X: l+incXH, Y: b }
-            p.X = p.X - incX * 3.0
-            m.Points = append(
-            m.Points, p)
-
-            p = Vec2{ X: r,       Y: vm }
-            p.X = p.X - incX * 3.0
-            m.Points = append(
-            m.Points, p)
-
-            p = Vec2{ X: r+incXH, Y: b }
-            p.X = p.X - incX * 3.0
-            m.Points = append(
-            m.Points, p)
-        }
-        */
-        
-        /*
-        p = Vec2{ X: r, Y: b }
-        m.Points = append(
-        m.Points, p)
-        */
-        
-        l = l + incX
-        r = r + incX
-
-
-        // tri inds 
-        // (start with top edge, and go around clockwise edges, 
-        //  ending at center, from each edge) 
-        // 4 triangles connecting 5 verts 
-        m.TriangleIndices = append( // top left 
-        m.TriangleIndices, cti)
-        
-        m.TriangleIndices = append( // top right 
-        m.TriangleIndices, cti + 1)
-        
-        m.TriangleIndices = append( // center 
-        m.TriangleIndices, cti + 4)
-
-
-        m.TriangleIndices = append( // top right 
-        m.TriangleIndices, cti + 1)
-        
-        m.TriangleIndices = append( // bottom right 
-        m.TriangleIndices, cti + 2)
-        
-        m.TriangleIndices = append( // center 
-        m.TriangleIndices, cti + 4)
-
-
-        m.TriangleIndices = append( // bottom right 
-        m.TriangleIndices, cti + 2)
-        
-        m.TriangleIndices = append( // bottom left 
-        m.TriangleIndices, cti + 3)
-        
-        m.TriangleIndices = append(
-        m.TriangleIndices, cti + 4) // center 
-
-
-        m.TriangleIndices = append( // bottom left 
-        m.TriangleIndices, cti + 3)
-        
-        m.TriangleIndices = append( // top left 
-        m.TriangleIndices, cti)
-        
-        m.TriangleIndices = append(
-        m.TriangleIndices, cti + 4) // center 
-        
-        cti = cti + 5
+    var ct i32 // current triangle index 
+    for i := 0; i < sl; i++ {
+        ct = makeRectangularArea(i, vm, t, r, b, l, ct)
+        l  = l + incX
+        r  = r + incX
     }
     
-    makeAndReportOn(m, true)
+    makeAndReportOn(cp, true)
 }
+
+
+func makeRectangularArea (i i32, vm f32, t f32, r f32, b f32, l f32, ct i32) (ctOut i32) {
+    // to cover a rectangular region that smoothly blends colors 
+    // between it's 4 corners, we can't just use 2 triangles, 
+    // because all 4 colors need to be a factor across virtually 
+    // the whole area.  triangles can only have 3 colors each. 
+    // the ones with an edge along the white/black edges of the 
+    // area only end up with 2 colors factored in. 
+    // so i think 5 verts & 4 tris are needed. 
+    // maybe it could be only 3 tris oriented differently for the
+    // lerping-to-white and lerping-to-black bands?  
+    // i already spent a decent amount of time 
+    // making special logic for 2 triangles, so i think it's wise 
+    // to jump to 4 tris to MAKE SURE it gives the desired results. 
+    // using a few more triangles would never be noticed anyways. 
+    // 
+    // for each rectangular area, 
+    // vertices & colors are laid out like this: 
+    // 0---1 
+    // |\ /| 
+    // | 4 | 
+    // |/ \| 
+    // 3---2
+
+    // verts 
+    var p Vec2
+
+    printf("len(cp.Points): %d \n", len(cp.Points))
+
+    p = Vec2{ X: l, Y: vm }
+    cp.Points = append(
+    cp.Points, p)
+
+    p = Vec2{ X: r, Y: vm }
+    cp.Points = append(
+    cp.Points, p)
+
+    p = Vec2{ X: r, Y: b }
+    cp.Points = append(
+    cp.Points, p)
+
+    p = Vec2{ X: l, Y: b }
+    cp.Points = append(
+    cp.Points, p)
+
+    p = Vec2{ X: app.GetLerped(l, r, 0.5), Y: vm-0.5 }
+    cp.Points = append(
+    cp.Points, p)
+    
+    printf("len(cp.Points): %d \n", len(cp.Points))
+
+
+    // colors 
+    var ls   i32 = draw.GetSpectrumLen()
+    //printf("ls: %d \n", ls)
+    var ccP0 i32 = (i    ) % ls
+    var ccP1 i32 = (i + 1) % ls
+    var shm Color3 // saturated hori midpoint (tween side edges) 
+    shm = draw.GetLerpedColor3(
+        draw.Spectrum[ccP0], 
+        draw.Spectrum[ccP1], 
+        0.5)
+        
+    printf("len(cp.Colors): %d \n", len(cp.Colors))
+
+    cp.Colors = append(
+    cp.Colors, draw.Spectrum[ccP0])
+    cp.Colors = append(
+    cp.Colors, draw.Spectrum[ccP1])
+    cp.Colors = append(
+    cp.Colors, draw.Black)
+    cp.Colors = append(
+    cp.Colors, draw.Black)
+    cp.Colors = append(
+    cp.Colors, draw.GetLerpedColor3(draw.Black, shm, 0.5))
+    
+    printf("len(cp.Colors): %d \n \n \n", len(cp.Colors))
+
+
+    // tri inds 
+    // (start with top edge, and go around clockwise edges, 
+    //  ending at center, from each edge) 
+    // 4 triangles connecting 5 verts 
+    cp.TriangleIndices = append( // top left 
+    cp.TriangleIndices, ct)
+
+    cp.TriangleIndices = append( // top right 
+    cp.TriangleIndices, ct + 1)
+
+    cp.TriangleIndices = append( // center 
+    cp.TriangleIndices, ct + 4)
+
+
+    cp.TriangleIndices = append( // top right 
+    cp.TriangleIndices, ct + 1)
+
+    cp.TriangleIndices = append( // bottom right 
+    cp.TriangleIndices, ct + 2)
+
+    cp.TriangleIndices = append( // center 
+    cp.TriangleIndices, ct + 4)
+
+
+    cp.TriangleIndices = append( // bottom right 
+    cp.TriangleIndices, ct + 2)
+
+    cp.TriangleIndices = append( // bottom left 
+    cp.TriangleIndices, ct + 3)
+
+    cp.TriangleIndices = append(
+    cp.TriangleIndices, ct + 4) // center 
+
+
+    cp.TriangleIndices = append( // bottom left 
+    cp.TriangleIndices, ct + 3)
+
+    cp.TriangleIndices = append( // top left 
+    cp.TriangleIndices, ct)
+
+    cp.TriangleIndices = append(
+    cp.TriangleIndices, ct + 4) // center 
+
+    ctOut = ct + 5
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 func makeColorPickerWheel () {
@@ -263,7 +192,7 @@ func makeColorPickerWheel () {
 	var m Mesh2D
 	m = Mesh2D{ Name: "Color Picker" }
 	
-	var cti     i32 // current triangle index 
+	var ct     i32 // current triangle index 
 	var center  Vec2
 	center = Vec2{ X: 0.0, Y: 0.0 }
     
@@ -290,8 +219,8 @@ func makeColorPickerWheel () {
 
 		for qq := 0; qq < 3; qq++ {
             m.TriangleIndices = append(
-            m.TriangleIndices, cti)
-            cti = cti + 1
+            m.TriangleIndices, ct)
+            ct = ct + 1
         }
 
 		if i >= 1024 {
