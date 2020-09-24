@@ -25,8 +25,12 @@ func makeColorPickerSquare () {
     
     var ct i32 // current triangle index 
     for i := 0; i < sl; i++ {
-        ct = makeRectangularArea(i, vm, t, r, b, l, ct)
-        l  = l + incX
+        makeRectangularArea(i, t , r, vm, l, ct, draw.White, false)
+        ct = ct + 5
+        makeRectangularArea(i, vm, r, b , l, ct, draw.Black, true)
+        ct = ct + 5
+        
+        l  = r
         r  = r + incX
     }
     
@@ -34,7 +38,7 @@ func makeColorPickerSquare () {
 }
 
 
-func makeRectangularArea (i i32, vm f32, t f32, r f32, b f32, l f32, ct i32) (ctOut i32) {
+func makeRectangularArea (i i32, t f32, r f32, b f32, l f32, ct i32, col Color3, huesAlongTop bool) {
     // to cover a rectangular region that smoothly blends colors 
     // between it's 4 corners, we can't just use 2 triangles, 
     // because all 4 colors need to be a factor across virtually 
@@ -57,16 +61,16 @@ func makeRectangularArea (i i32, vm f32, t f32, r f32, b f32, l f32, ct i32) (ct
     // |/ \| 
     // 3---2
 
+
+
     // verts 
     var p Vec2
 
-    printf("len(cp.Points): %d \n", len(cp.Points))
-
-    p = Vec2{ X: l, Y: vm }
+    p = Vec2{ X: l, Y: t }
     cp.Points = append(
     cp.Points, p)
 
-    p = Vec2{ X: r, Y: vm }
+    p = Vec2{ X: r, Y: t }
     cp.Points = append(
     cp.Points, p)
 
@@ -78,11 +82,10 @@ func makeRectangularArea (i i32, vm f32, t f32, r f32, b f32, l f32, ct i32) (ct
     cp.Points = append(
     cp.Points, p)
 
-    p = Vec2{ X: app.GetLerped(l, r, 0.5), Y: vm-0.5 }
+    p = Vec2{ X: app.GetLerped(l, r, 0.5), Y: t-0.5 }
     cp.Points = append(
     cp.Points, p)
-    
-    printf("len(cp.Points): %d \n", len(cp.Points))
+
 
 
     // colors 
@@ -96,20 +99,32 @@ func makeRectangularArea (i i32, vm f32, t f32, r f32, b f32, l f32, ct i32) (ct
         draw.Spectrum[ccP1], 
         0.5)
         
-    printf("len(cp.Colors): %d \n", len(cp.Colors))
+    if huesAlongTop {
+        cp.Colors = append(
+        cp.Colors, draw.Spectrum[ccP0])
+        cp.Colors = append(
+        cp.Colors, draw.Spectrum[ccP1])
+        
+        cp.Colors = append(
+        cp.Colors, col)
+        cp.Colors = append(
+        cp.Colors, col)
+    }else{
+        cp.Colors = append(
+        cp.Colors, col)
+        cp.Colors = append(
+        cp.Colors, col)
+        
+        cp.Colors = append(
+        cp.Colors, draw.Spectrum[ccP1])
+        cp.Colors = append(
+        cp.Colors, draw.Spectrum[ccP0])
+    }
 
+    // 5th vert in the center 
     cp.Colors = append(
-    cp.Colors, draw.Spectrum[ccP0])
-    cp.Colors = append(
-    cp.Colors, draw.Spectrum[ccP1])
-    cp.Colors = append(
-    cp.Colors, draw.Black)
-    cp.Colors = append(
-    cp.Colors, draw.Black)
-    cp.Colors = append(
-    cp.Colors, draw.GetLerpedColor3(draw.Black, shm, 0.5))
-    
-    printf("len(cp.Colors): %d \n \n \n", len(cp.Colors))
+    cp.Colors, draw.GetLerpedColor3(col, shm, 0.5))
+
 
 
     // tri inds 
@@ -154,8 +169,6 @@ func makeRectangularArea (i i32, vm f32, t f32, r f32, b f32, l f32, ct i32) (ct
 
     cp.TriangleIndices = append(
     cp.TriangleIndices, ct + 4) // center 
-
-    ctOut = ct + 5
 }
 
 
