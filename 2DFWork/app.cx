@@ -236,15 +236,15 @@ func GetLerped (a f32, b f32, frac f32) (out f32) {
 
 func showWorkHoursNeeded () {
 	// current "workmonth" (pay period) goes from the 5th to the 4th of following month 
-	var today       i32 = 30 // day of current month 
-	var hoursWorked f32 = 23.5
+	var today       i32 = 25   // day of current month 
+	var hoursWorked f32 = 5.6
 
-	var hoursGoal   f32 = 60.0 // ...to work this month (pay period) 
-	var daysInMonth i32 = 31 // current month that majority of days are in 
+	var hoursGoal   f32 = 55.0 // ...to work this month (pay period) 
+	var daysInMonth i32 = 30   // current month that majority of days are in 
 	
 	
 	var daysLeft    i32 = daysInMonth - today + 4
-	var hoursLeft   f32 = hoursGoal - hoursWorked
+	var hoursLeft   f32 = hoursGoal   - hoursWorked
 	printf("============================================================================\n")
 	printf("============================================================================\n")
 	printf("====                      CorpusC's daily time goal                     ====\n")

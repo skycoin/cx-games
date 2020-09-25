@@ -272,6 +272,44 @@ func Spawn (eType i32, newEnt Entity) {
 }
 
 
+func Shoot/*InDirection*/(index i32/*, dir f32*/) {
+	/*  FROM THE DELETED "OLD-CX-EXPERIMENT" project. 
+		MIGHT COME IN HANDY FOR SHOOTING PARTICLES IN ALL 
+		DIRECTIONS, FOR PARTICLE EXPLOSIONS? 
+		SkyBOOM already has a hardwired arc range puff. 
+		merge it with this? 
+	
+	// snake center (FIXME: ATM, snake is the only thing able-to-shoot/considered-for-shooting) 
+	scX := []f32.read(X, index)
+	scY := []f32.read(Y, index) 
+
+	// distance from origin 
+	// (bump it up a bit for a little gap) 
+	d := game.CurrSnakeExtent + 
+		game.HeadRadius // FIXME: should be []f32.read(Rad, index)? 
+		+ game.BulletRadius //+ 0.01
+	
+	// offset from origin 
+	oX := d * f32.sin(game.CurrSnakeAim)
+	oY := d * f32.cos(game.CurrSnakeAim)
+	
+	fraction := 0.03 // ...of distance (for velocity) 
+
+	SpawnEntity(
+		ENT_TYPE_Bullet,
+		scX + oX, // pos 
+		scY + oY, // pos 
+		oX * fraction, // velocity 
+		oY * fraction, // velocity 
+		game.CurrSnakeAim, // FIXME when more than player needs to shoot 
+		game.BulletRadius,
+		0.0, //f64.f32(glfw.GetTime()) + 0.75, // time expiry
+		game.ScreenBoundsRight,                // distance expiry 
+		true)
+	*/
+}
+
+
 func Kill (eType i32, id i32) {
 	var aC i32 // active count 
 	aC = ActiveCounts[eType]
