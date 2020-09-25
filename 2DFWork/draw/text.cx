@@ -74,6 +74,25 @@ func LoadFontSized (fn str, size i32) { // filename
 }
 
 
+// "old-cx-experiment" (CX 0.5something) code 
+// coordinate gltext positions 
+// (has totally different coord paradigm) 
+// to match   GL space 
+func EntityAttachedText(x f32, y f32, offsetX f32, offsetY f32, s str) {
+/*
+	// dynamic text space positions 
+	midX := i32.f32(game.ScreenNumPixelsWide) / 2.0
+	midY := i32.f32(game.ScreenNumPixelsHigh) / 2.0
+	dfc := x / game.ScreenBoundsRight // distance from center 
+	x := offsetX + midX + midX * dfc
+	y := offsetY + i32.f32(game.ScreenNumPixelsHigh) - (y - game.ScreenBounds.Bottom) * midY
+
+	gl.Color4f(0.8, 0.0, 0.8, 1.0)
+	CcText(x, y, s)
+*/
+}
+
+
 // x & y are offsets 
 func printTextWithColor (s str, x f32, y f32, color i32, alpha f32) {
 	SetColorAndAlpha(color, alpha)

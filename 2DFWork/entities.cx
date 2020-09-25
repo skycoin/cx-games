@@ -272,6 +272,7 @@ func Spawn (eType i32, newEnt Entity) {
 }
 
 
+// CX 0.5something code 
 func Shoot/*InDirection*/(index i32/*, dir f32*/) {
 	/*  FROM THE DELETED "OLD-CX-EXPERIMENT" project. 
 		MIGHT COME IN HANDY FOR SHOOTING PARTICLES IN ALL 
