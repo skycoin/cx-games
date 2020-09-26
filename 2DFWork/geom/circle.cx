@@ -10,13 +10,15 @@ package geom
 
 
 
-var PI  f32 = 3.141592654
-var TAU f32 = f32.mul(2.0, PI)
-var NumGrainsOfFull360    i32 = 256 // gives 64 aim possibilities per quadrant 
-var Full360Grain          f32
-var RadianGrainForLUT     f32 
+var PI             f32 = 3.141592654
+var PI_HALF        f32 = PI / 2.0
+var TAU            f32 = f32.mul(2.0, PI) // PI * 2.0 
+var TAU_THIRD      f32 = TAU / 3.0
+var TAU_2THIRDS    f32 = TAU_THIRD * 2.0
+var NUM_TAU_GRAINS i32 = 256 // gives 64 aim possibilities per quadrant 
+var TAU_GRAIN_SIZE f32 = TAU / i32.f32(NUM_TAU_GRAINS)
 
-// 		precalculated lookup table for unit radius circular points/vertices 
+// lookup table for unit radius points/vertices in a circle 
 var NumCircleLUTPoints         i32 = 20
 var CirclePointsAngleIncrement f32
 var CirclePointsX              []f32
@@ -24,47 +26,41 @@ var CirclePointsY              []f32
 
 
 
-func Init() () {
-	setupFrequentlyUsedAngles()
-	setupCirclePointTable()
+func MakeCircleLUT () {
+	/*
+	CirclePointsAngleIncrement = TAU / i32.f32(NumCircleLUTPoints)
+
+	f := 0.0
+	for i := 0; i < NumCircleLUTPoints; i++ {
+		CirclePointsX = append(
+		CirclePointsX, f32.sin(f))
+		CirclePointsY = append(
+		CirclePointsY, f32.cos(f))
+
+		f += CirclePointsAngleIncrement
+	}
+	*/
 }
 
 
-func GetDistance(aX f32, aY f32, bX f32, bY f32) (out f32) {
-	xOff := bX - aX
-	yOff := bY - aY
-	return f32.pow((xOff ** 2.0) + (yOff ** 2.0), 0.5)
+func GetDistance (aX f32, aY f32, bX f32, bY f32) (out f32) {
+	// deltas 
+	var x f32 = bX - aX
+	var y f32 = bY - aY
+	
+	x = x ** 2.0
+	y = y ** 2.0
+	return f32.pow(x + y, 0.5)
 }
 
 
-func RotateAroundOrigin(x f32, y f32, angle f32) (outX f32, outY f32) {
-	s := f32.sin(angle)
-	c := f32.cos(angle)
+/*
+func RotateAroundOrigin (x f32, y f32, angle f32) (outX f32, outY f32) {
+	var s f32 = f32.sin(angle)
+	var c f32 = f32.cos(angle)
 
 	return
 		x * c - y * s,
 		x * s + y * c
 }
-
-
-func setupFrequentlyUsedAngles() {
-	Pi             = 3.141592654
-	HalfPi         = Pi / 2.0
-	Full360        = Pi * 2.0
-	ThirdOf360     = Full360 / 3.0
-	TwoThirdsOf360 = ThirdOf360 * 2.0
-	Full360Grain   = Full360 / i32.f32(NumGrainsOfFull360)
-}
-
-
-func setupCirclePointTable() {
-	CirclePointsAngleIncrement = Full360 / i32.f32(NumCircleLUTPoints)
-
-	f := 0.0
-	for i := 0; i < NumCircleLUTPoints; i++ {
-		CirclePointsX = []f32.append(CirclePointsX, f32.sin(f))
-		CirclePointsY = []f32.append(CirclePointsY, f32.cos(f))
-
-		f += CirclePointsAngleIncrement
-	}
-}
+*/
