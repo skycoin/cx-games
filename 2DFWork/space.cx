@@ -4,9 +4,9 @@ import "app"
 
 
 
-// FIXME: these should be updated from window change events 
-var AspectRatio     f32 // horizontal FOV (field of view) NOT in degrees  
-                        // vertical will always be 1.0, horizontal is relative to that 
+// we're ranging gl space from -1.0 to 1.0 (height & width of 2.0) 
+var AspectRatio     f32 // vertical portion of aspect ratio is always 1.0 
+						// (in the movie industry) 
 var ViewWidInPixels i32 // separate i32s cuz *GetFramebuffer*() return format 
 var ViewHeiInPixels i32
 var ViewSizeInGL    app.Vec2

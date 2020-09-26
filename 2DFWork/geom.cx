@@ -10,9 +10,6 @@ package geom
 
 
 
-var PI  f32 = 3.141592654
-var TAU f32 = f32.mul(2.0, PI)
-
 var DIR_LEFT  i32 = 0
 var DIR_RIGHT i32 = 1
 var DIR_DOWN  i32 = 2
