@@ -101,15 +101,6 @@ func BoxesOverlap (a Vec2, b Vec2, aExtents Vec2, bExtents Vec2) (out bool) {
 	return true
 }
 */
-
-
-
-
-
-
-
-
-
 func BoxesOverlap (
 	a Vec2, 
 	b Vec2, 

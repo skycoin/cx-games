@@ -3,6 +3,7 @@ package entities
 import "app"
 import "geom"
 import "inputs"
+import "map"
 import "mov"
 import "space"
 import "time"
@@ -50,17 +51,6 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	TimeToNextMode f32 // expire by time passed        (0.0 == not using) 
 	WrapView       bool // moving objects wrap/teleport to opposite side of viewport 
 
-	// FIXME: move this section into Sky Taxi 
-	GridPos        app.Vec2I
-	// cell bounds/connections 
-	CellMin        app.Vec2 // boundaries of the current cell it's in 
-	CellMax        app.Vec2 // ^ 
-	//Room     map.CarvedRoom // CAN'T FIGURE OUT WHY THIS MAKES AVATAR DISAPPEAR 
-	ExitNorth      bool
-	ExitSouth      bool
-	ExitEast       bool
-	ExitWest       bool
-	
 	// Goal/Target info. 
 	// 		by worldspace position (THIS HAS PRIORITY OVER ENTITY-BASED GOALS). 
 	//			these 2 are a unit, if both == 0.0, no ws pos goal set 
@@ -75,6 +65,7 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	DistanceX      f32 // how far entity travelled since spawning 
 	DistanceY      f32 //                    " 
 	MeshId         i32
+	RoomId         i32
 }
 
 
@@ -144,7 +135,7 @@ func Update () {
 				All[t][i].X,
 				All[t][i].Y,
 				All[t][i].VelX,
-				All[t][i].VelY = mov.ConstrainPosByMap(t, i)
+				All[t][i].VelY = map.ConstrainEntityPos(t, i)
 			}else{
 				UpdateAt(t, i)
 			}
@@ -260,6 +251,7 @@ func Spawn (eType i32, newEnt Entity) {
 		All[eType][aC].GoalEntType    = newEnt.GoalEntType
 		All[eType][aC].GoalEntId      = newEnt.GoalEntId  
 		All[eType][aC].MeshId         = newEnt.MeshId  
+		All[eType][aC].RoomId         = newEnt.RoomId  
 	}else{
 		//printf("------------- Spawn (eType: %v)     APPENDing \n", eType)
 		All[eType] = append(
@@ -352,6 +344,7 @@ func Kill (eType i32, id i32) {
 		All[eType][id].GoalEntType    = All[eType][lS].GoalEntType
 		All[eType][id].GoalEntId      = All[eType][lS].GoalEntId  
 		All[eType][id].MeshId         = All[eType][lS].MeshId
+		All[eType][id].RoomId         = All[eType][lS].RoomId
 		//printf("RECYCLED eType: %d   id: %d        \n", eType, id)
 		//printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
 	}

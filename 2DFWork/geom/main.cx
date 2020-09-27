@@ -17,7 +17,8 @@ var DIR_UP    i32 = 3
 
 
 
-func GetInvertedDir (dir i32) (out i32) { // (opposite direction) 
+ // (get opposite direction) 
+ func GetInvertedDir (dir i32) (out i32) {
 	if dir == DIR_LEFT {
 		out = DIR_RIGHT
 	}else	

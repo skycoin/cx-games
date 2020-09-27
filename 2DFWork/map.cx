@@ -29,7 +29,7 @@ import "geom"
 
 var NumCellsAcross i32 = 4 // in both dimensions 
 var WTh            f32 = 0.085 // wall thickness 
-var CellSpan       f32 = 2.0 / i32.f32(NumCellsAcross)
+var CellSpan       f32 = 1.0
 var CellSpanHalf   f32 = CellSpan / 2.0
 var Cells          [4][4]Cell   // FIXME: use constants when we can 
 var Carvs          []CarvedRoom // used/carved-out locations of the Cells grid 
@@ -49,8 +49,10 @@ type CarvedRoom struct {
 	Left   f32
 	*/
 	
-	Pos    app.Vec2I
-	Exits  []i32 // the actual room connections after map generation 
+	Pos     app.Vec2I
+	Exits   []i32 // the actual room connections after map generation 
+	MinEdge app.Vec2 // boundaries of the current cell it's in 
+	MaxEdge app.Vec2 // ^ 
 }
 
 
@@ -61,16 +63,22 @@ func Init () {
 	setupPossibleExits()
 	carveOutConnectedRooms()
 	var r i32 = i32.rand(0, len(Carvs))
-	SetPlayerRoomBounds(Carvs[r].Pos.X, Carvs[r].Pos.Y, true)
+	
+	// put player in center 
+	// SetPlayerRoomBounds(Carvs[r].Pos.X, Carvs[r].Pos.Y)
+	var roomId i32 = Cells[Carvs[r].Pos.Y][Carvs[r].Pos.X].CarvsId
+	entities.All[plr][0].RoomId = roomId
+	entities.All[plr][0].X = Carvs[roomId].MinEdge.X + CellSpanHalf
+	entities.All[plr][0].Y = Carvs[roomId].MinEdge.Y + CellSpanHalf
 }
 
 
 /*
-func GetNumCarvedOutRooms () (num i32) {
-	num = len(Carvs)
-}
 func GetRoom (id i32) (room CarvedRoom) {
 	room = Carvs[id]
+}
+func GetNumCarvedOutRooms () (num i32) {
+	num = len(Carvs)
 }
 func GetCarvsIdAt (x i32, y i32) (id i32) {
 	id = Cells[y][x].CarvsId
@@ -84,64 +92,85 @@ func GetExitAt (roomId i32, exitId i32) (num i32) {
 */ 
 
 
-func SetPlayerPos (pos app.Vec2) {
-	entities.All[plr][0].X = pos.X
-	entities.All[plr][0].Y = pos.Y
+// t = entity type 
+// i = entity id 
+func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
+	// collision bounce 
+	
+	var minE /*edge*/ f32
+	minE = entities.All[t][i].X % 1.0
+	minE = entities.All[t][i].X - minE
+	var maxE /*edge*/ f32
+	maxE = entities.All[t][i].X % 1.0
+	maxE = entities.All[t][i].X - maxE
+	
+	//		in X dimension 
+	x, velX = BounceOffWalls(
+		entities.All[t][i].X,
+		entities.All[t][i].VelX,
+		entities.All[t][i].ExtentX, 
+		minE, 
+		maxE, 
+		HasExit(geom.DIR_LEFT), 
+		HasExit(geom.DIR_RIGHT))
+	
+	//		in Y dimension 
+	y, velY = BounceOffWalls(
+		entities.All[t][i].Y, 
+		entities.All[t][i].VelY, 
+		entities.All[t][i].ExtentY, 
+		minE, 
+		maxE, 
+		HasExit(geom.DIR_DOWN), 
+		HasExit(geom.DIR_UP))
 }
-func SetPlayerRoomBounds (x i32, y i32, putInCenter bool) {
-	var roomId i32 = Cells[y][x].CarvsId
 
-	printf("SetPlayerRoomBounds (roomId: %d) =============================\n", roomId)
-	printf("    x,y: %d,%d \n", x, y)
-	var room CarvedRoom = Carvs[roomId]
-	entities.All[plr][0].GridPos = room.Pos
-	//printf("set ball.GridPos: %d,%d \n", entities.All[plr][0].GridPos.X, entities.All[plr][0].GridPos.Y)
-	
-	var minX f32 = i32.f32(room.Pos.X) * CellSpan
-	var minY f32 = i32.f32(room.Pos.Y) * CellSpan
-	
-	if putInCenter {
-		var pos app.Vec2
-		pos = app.Vec2{
-			X: minX + CellSpanHalf, 
-			Y: minY + CellSpanHalf}
-		SetPlayerPos(pos)
-	}
 
-	// set boundaries (for limiting collision checks) 
-	entities.All[plr][0].CellMin.X = minX + WTh
-	entities.All[plr][0].CellMin.Y = minY + WTh
-	entities.All[plr][0].CellMax.X = minX + CellSpan - WTh
-	entities.All[plr][0].CellMax.Y = minY + CellSpan - WTh
-	//entities.All[plr][0].Room    = room // CAN'T FIGURE OUT WHY THIS MAKES AVATAR DISAPPEAR 
-	
-	
-	// setup connection flags/boundaries 	
-	entities.All[plr][0].ExitWest  = false
-	entities.All[plr][0].ExitEast  = false
-	entities.All[plr][0].ExitSouth = false
-	entities.All[plr][0].ExitNorth = false
-	str.print("NEW room has exits in:")
-	for i := 0; i < len(room.Exits); i++ {
-		str.print(geom.GetTextForDir(room.Exits[i]))
+// args: 
+// position, velocity, radius, negative edge boundary, positive edge boundary, 
+// exit in negative direction, exit in positive direction 
+func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExit bool, posExit bool) (outPos f32, outVel f32) {
 		
-		if room.Exits[i] == geom.DIR_LEFT  {
-			entities.All[plr][0].ExitWest = true
-			entities.All[plr][0].CellMin.X = minX
-		}else
-		if room.Exits[i] == geom.DIR_RIGHT {
-			entities.All[plr][0].ExitEast = true
-			entities.All[plr][0].CellMax.X = minX + CellSpan
-		}else
-		if room.Exits[i] == geom.DIR_DOWN  {
-			entities.All[plr][0].ExitSouth = true
-			entities.All[plr][0].CellMin.Y = minY
-		}else
-		if room.Exits[i] == geom.DIR_UP    {
-			entities.All[plr][0].ExitNorth = true
-			entities.All[plr][0].CellMax.Y = minY + CellSpan
+	outPos = pos
+	outVel = vel
+
+	if vel < 0.0 {
+		if negExit {
+		}else{
+			if (pos - rad) < negEdge {
+				outPos = f32.add(negEdge, rad)
+				outVel = f32.abs(vel)
+			}
+		}
+	}else
+	if vel > 0.0 {
+		if posExit {
+		}else{
+			if (pos + rad) >= posEdge {
+				outPos = f32.sub(posEdge, rad)
+				outVel = f32.sub(0.0, f32.abs(vel))
+			}
 		}
 	}
+}
+
+
+func HasExit (dir i32) (out bool) {
+	printf("HasExit (dir: %s)?????", geom.GetTextForDir(dir))
+	
+	var id i32 = entities.All[plr][0].RoomId
+	var room CarvedRoom
+	room = Carvs[id]
+	for i := 0; i < len(room.Exits); i++ {
+		if dir == room.Exits[i] {
+			out = true
+			printf("    YES! \n")
+			return
+		}
+	}
+	
+	printf("    NO! \n")
+	out = false
 }
 
 
@@ -149,8 +178,8 @@ func SetPlayerRoomBounds (x i32, y i32, putInCenter bool) {
 // but moving it there would require series of funcs (such as
 // (GetRoom(), GetCarvsIdAt(), etc.,
 // in order to get all the data you'd need from the "map" package. 
-// since ATM, CX 0.7.0 has trouble getting values out of packages 
-// via "[package].*".  ATM CX gives lot's of unhelpful errors when 
+// since ATM, CX 0.7.0 has trouble getting values out of packages. 
+// ATM CX gives lot's of unhelpful errors when 
 // such out-of-package data access attempts are made 
 func DrawQuads () {
 	gl.Translatef(0.0-entities.All[plr][0].X, 0.0-entities.All[plr][0].Y, 0.0)
@@ -415,6 +444,14 @@ func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) 
 		nr.Exits = append(
 		nr.Exits, geom.GetInvertedDir(dir))
 		
+		// set boundaries (for limiting collision checks) 
+		var minX f32 = i32.f32(nX) * CellSpan
+		var minY f32 = i32.f32(nY) * CellSpan	
+		nr.MinEdge.X = minX + WTh
+		nr.MinEdge.Y = minY + WTh
+		nr.MaxEdge.X = minX + CellSpan - WTh
+		nr.MaxEdge.Y = minY + CellSpan - WTh
+
 		Carvs = append(
 		Carvs, nr)
 	}else{
