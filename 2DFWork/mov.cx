@@ -32,7 +32,7 @@ func GetPlayerVelocityFromInput (ivX f32, ivY f32) (ovX f32, ovY f32) {
 func dampenNegativeMovement (velocity f32, strength f32) (out f32) {
 	out = f32.add(velocity, Force * time.Delta * strength)
 
-	if out > 0.0 {
+	if  out > 0.0 {
 		out = 0.0
 	}
 }
@@ -41,7 +41,7 @@ func dampenNegativeMovement (velocity f32, strength f32) (out f32) {
 func dampenPositiveMovement (velocity f32, strength f32) (out f32) {
 	out = f32.sub(velocity, Force * time.Delta * strength)
 
-	if out < 0.0 {
+	if  out < 0.0 {
 		out = 0.0
 	}
 }
