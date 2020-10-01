@@ -115,8 +115,8 @@ func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 		entities.All[t][i].X,
 		entities.All[t][i].VelX,
 		entities.All[t][i].ExtentX, 
-		min, 
-		max, 
+		Carvs[entities.All[t][i].RoomId].MinEdge.X, 
+		Carvs[entities.All[t][i].RoomId].MaxEdge.X, 
 		HasExit(geom.DIR_LEFT), 
 		HasExit(geom.DIR_RIGHT))
 	
@@ -136,8 +136,8 @@ func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 		entities.All[t][i].Y, 
 		entities.All[t][i].VelY, 
 		entities.All[t][i].ExtentY, 
-		min, 
-		max, 
+		Carvs[entities.All[t][i].RoomId].MinEdge.Y, 
+		Carvs[entities.All[t][i].RoomId].MaxEdge.Y, 
 		HasExit(geom.DIR_DOWN), 
 		HasExit(geom.DIR_UP))
 	
@@ -170,13 +170,15 @@ func validRoomAt (x i32, y i32) (out bool) {
 // position, velocity, radius, negative edge boundary, positive edge boundary, 
 // exit in negative direction, exit in positive direction 
 func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExit bool, posExit bool) (outPos f32, outVel f32, leftRoom bool) {
-	printf("neg: %f - pos: %f --- %v %v \n", negEdge, posEdge, negExit, posExit)
+	//printf("neg: %f - pos: %f --- %v %v \n", negEdge, posEdge, negExit, posExit)
 		
 	outPos = pos
 	outVel = vel
 
 	if vel < 0.0 {
 		if negExit {
+			printf("\nnegExit\n")
+			
 			if pos < negEdge {
 				printf("\nCROSSED LESSER\n")
 				leftRoom = true
