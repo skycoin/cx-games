@@ -100,16 +100,9 @@ func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 	var leftRoom bool
 	var cellX i32 = f32.i32(entities.All[t][i].X)
 	var cellY i32 = f32.i32(entities.All[t][i].Y)
-	// edges 
-	var min f32
-	var max f32
-	
 	
 	//		in X dimension 
-	// FIXME when CX f32.modulus op is fixed 
-	min = i32.f32(cellX)
-	max = min + CellSpan
-	printf("\n")
+	//printf("\n")
 	//printf("min: %f - max: %f ", min, max)
 	x, velX, leftRoom = BounceOffWalls(
 		entities.All[t][i].X,
@@ -125,12 +118,9 @@ func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 			entities.All[t][i].RoomId = Cells[cellY][cellX].CarvsId
 		}
 	}
-	
+
 	
 	//		in Y dimension 
-	// FIXME when CX f32.modulus op is fixed 
-	min = i32.f32(cellY)
-	max = min + CellSpan
 	//printf("Y DIM --- min: %f - max: %f \n", min, max)
 	y, velY, leftRoom = BounceOffWalls(
 		entities.All[t][i].Y, 
@@ -177,7 +167,7 @@ func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExi
 
 	if vel < 0.0 {
 		if negExit {
-			printf("\nnegExit\n")
+			//printf("\n negExit \n")
 			
 			if pos < negEdge {
 				printf("\nCROSSED LESSER\n")
@@ -185,21 +175,23 @@ func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExi
 			}
 		}else{
 			if (pos - rad) < negEdge {
-				outPos = negEdge + rad
-				outVel = -vel
+				outPos =     negEdge + rad
+				outVel =     -vel
 			}
 		}
 	}else
 	if vel > 0.0 {
 		if posExit {
+			//printf("\n posExit \n")
+			
 			if pos > posEdge {
 				printf("\nCROSSED GREATER\n")
 				leftRoom = true
 			}
 		}else{
-			if (pos + rad) >= posEdge {
-				outPos = f32.sub(posEdge, rad)
-				outVel = f32.sub(0.0, f32.abs(vel))
+			if (pos + rad) > posEdge {
+				outPos =     posEdge - rad
+				outVel =     -vel
 			}
 		}
 	}
