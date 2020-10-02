@@ -139,23 +139,6 @@ func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 }
 
 
-func validRoomAt (x i32, y i32) (out bool) {
-	printf("validRoomAt(%d, %d) \n", x, y)
-
-	if  x >= 0 && x < NumCellsAcross &&
-		y >= 0 && y < NumCellsAcross &&
-		Cells[y][x].CarvsId != app.MAX_I32 {
-		
-		printf("SETTING NEW ROOM ID: %d \n", Cells[y][x].CarvsId)
-		out = true		
-	}else{
-		for i := 0; i < 12; i++ {
-			printf("############ INVALID SPACE, PLAYER SHOULDN'T BE HERE! %d, %d \n", x, y)
-		}
-	}
-}
-
-
 // args: 
 // position, velocity, radius, negative edge boundary, positive edge boundary, 
 // exit in negative direction, exit in positive direction 
@@ -368,15 +351,15 @@ func carveOutConnectedRooms () {
 			Carvs[orId].Exits = append(
 			Carvs[orId].Exits, e)
 			printf("--------------------- Carvs[orId: %d].(len)Exits: %d \n", orId, len(Carvs[orId].Exits))
-			//DrawAsciiGraphics()
+			//drawAsciiGraphics()
 		}
 	}
 
-	//DrawAsciiGraphics()
+	//drawAsciiGraphics()
 }
 
 
-func DrawAsciiGraphics () {
+func drawAsciiGraphics () {
 	// XXXXXXXX
 	//    ^^ 
 	// << 11 >> 
@@ -555,5 +538,22 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 	}
 	
 	if log { printf("------num exits INSIDE-AFTER: %d \n", len(c.Exits))
+	}
+}
+
+
+func validRoomAt (x i32, y i32) (out bool) {
+	printf("validRoomAt(%d, %d) \n", x, y)
+
+	if  x >= 0 && x < NumCellsAcross &&
+		y >= 0 && y < NumCellsAcross &&
+		Cells[y][x].CarvsId != app.MAX_I32 {
+		
+		printf("SETTING NEW ROOM ID: %d \n", Cells[y][x].CarvsId)
+		out = true		
+	}else{
+		for i := 0; i < 12; i++ {
+			printf("############ INVALID SPACE, PLAYER SHOULDN'T BE HERE! %d, %d \n", x, y)
+		}
 	}
 }
