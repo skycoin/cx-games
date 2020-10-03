@@ -1,9 +1,7 @@
 package entities
 
 import "app"
-import "geom"
 import "inputs"
-import "map"
 import "mov"
 import "space"
 import "time"
@@ -129,13 +127,17 @@ func Update () {
 				All[t][i].VelX,
 				All[t][i].VelY)
 			
+				// tentatively blindly/ghostly move via velocity 
 				UpdateAt(t, i)
-
-				// back out of any entity/entity penetration 
+				// back out of any entity/entity penetration, 
+				// or change rooms if OOBounds 
+				space.HandleAllBounds(t, i, All[t][i])
+				/*  OLD 1D DEMO LOGIC EXTENSIONS WE'LL DELETE SHORTLY 
 				All[t][i].X,
 				All[t][i].Y,
 				All[t][i].VelX,
 				All[t][i].VelY = map.ConstrainEntityPos(t, i)
+				*/
 			}else{
 				UpdateAt(t, i)
 			}

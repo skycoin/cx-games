@@ -27,13 +27,19 @@ import "geom"
 
 
 
-var NumCellsAcross i32 = 4 // in both dimensions 
-var WTh            f32 = 0.085 // wall thickness 
-var CellSpan       f32 = 1.0
-var CellSpanHalf   f32 = CellSpan / 2.0
-var Cells          [4][4]Cell   // FIXME: use constants when we can 
-var Carvs          []CarvedRoom // used/carved-out locations of the Cells grid 
-var plr            i32 = entities.ENT_PLAYER // FIXME?: this is wrong to have in "map"?
+var NumCellsAcross  i32 = 4 // in both dimensions 
+var WTh             f32 = 0.085 // wall thickness 
+var CellSpan        f32 = 1.0
+var CellSpanHalf    f32 = CellSpan / 2.0
+var Cells           [4][4]Cell   // FIXME: use constants when we can 
+var Carvs           []CarvedRoom // used/carved-out locations of the Cells grid 
+ 
+var plr             i32 = entities.ENT_PLAYER // FIXME?: this is wrong to have in "map"? 
+// collision check responses 
+var RESP_INDOORBAND i32 // the WTh strip along edge of cell 
+var RESP_OUTOFROOM  i32 = 1
+var RESP_NOTOUCH    i32 = 2
+var response        i32
 
 type Cell struct {
 	CarvsId i32 // MAX_I32 == solid rock 
@@ -58,30 +64,31 @@ type CarvedRoom struct {
 
 
 func Init () {
-	str.print("map.Init ()")
+	str.print("map.Init ()   SHOULD BE AFTER ENTITIES")
 	
 	setupPossibleExits()
 	carveOutConnectedRooms()
 	var r i32 = i32.rand(0, len(Carvs))
 	
 	// put player in center 
-	// SetPlayerRoomBounds(Carvs[r].Pos.X, Carvs[r].Pos.Y)
-	var roomId i32 = Cells[Carvs[r].Pos.Y][Carvs[r].Pos.X].CarvsId
-	entities.All[plr][0].RoomId = roomId
-	entities.All[plr][0].X = Carvs[roomId].MinEdge.X + CellSpanHalf
-	entities.All[plr][0].Y = Carvs[roomId].MinEdge.Y + CellSpanHalf
+	// random id 
+	var ri i32 = Cells[Carvs[r].Pos.Y][Carvs[r].Pos.X].CarvsId
+	entities.All[plr][0].RoomId = ri
+	entities.All[plr][0].X = Carvs[ri].MinEdge.X - WTh + CellSpanHalf
+	entities.All[plr][0].Y = Carvs[ri].MinEdge.Y - WTh + CellSpanHalf
 }
 
 
-/*
 func GetRoom (id i32) (room CarvedRoom) {
+	//printf("GetRoom(%d) len(Carvs): %d \n", id, len(Carvs))
 	room = Carvs[id]
-}
-func GetNumCarvedOutRooms () (num i32) {
-	num = len(Carvs)
 }
 func GetCarvsIdAt (x i32, y i32) (id i32) {
 	id = Cells[y][x].CarvsId
+}
+/*
+func GetNumCarvedOutRooms () (num i32) {
+	num = len(Carvs)
 }
 func GetNumExitsAt (roomId i32) (num i32) {
 	num = len(Carvs[roomId].Exits)
@@ -92,29 +99,34 @@ func GetExitAt (roomId i32, exitId i32) (num i32) {
 */ 
 
 
-// t = entity type 
-// i = entity id 
+// collision bounce 
+// 		t = entity type 
+// 		i = entity id 
 func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
-	// collision bounce 
+	x = entities.All[t][i].X
+	y = entities.All[t][i].Y
 	
-	var leftRoom bool
+	var cr    i32 // collision response 
 	var cellX i32 = f32.i32(entities.All[t][i].X)
 	var cellY i32 = f32.i32(entities.All[t][i].Y)
 	
 	//		in X dimension 
 	//printf("\n")
 	//printf("min: %f - max: %f ", min, max)
-	x, velX, leftRoom = BounceOffWalls(
-		entities.All[t][i].X,
+	x, y, velX, cr = BounceOffWalls(
+		x,
+		y,
 		entities.All[t][i].VelX,
 		entities.All[t][i].ExtentX, 
 		Carvs[entities.All[t][i].RoomId].MinEdge.X, 
 		Carvs[entities.All[t][i].RoomId].MaxEdge.X, 
+		Carvs[entities.All[t][i].RoomId].MinEdge.Y, 
+		Carvs[entities.All[t][i].RoomId].MaxEdge.Y, 
 		HasExit(geom.DIR_LEFT), 
 		HasExit(geom.DIR_RIGHT))
 	
-	if leftRoom {
-		if validRoomAt(cellX, cellY) {
+	if cr == RESP_OUTOFROOM {
+		if ValidRoomAt(cellX, cellY) {
 			entities.All[t][i].RoomId = Cells[cellY][cellX].CarvsId
 		}
 	}
@@ -122,59 +134,84 @@ func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 	
 	//		in Y dimension 
 	//printf("Y DIM --- min: %f - max: %f \n", min, max)
-	y, velY, leftRoom = BounceOffWalls(
-		entities.All[t][i].Y, 
+	y, x, velY, cr = BounceOffWalls(
+		y, 
+		x,
 		entities.All[t][i].VelY, 
 		entities.All[t][i].ExtentY, 
 		Carvs[entities.All[t][i].RoomId].MinEdge.Y, 
 		Carvs[entities.All[t][i].RoomId].MaxEdge.Y, 
+		Carvs[entities.All[t][i].RoomId].MinEdge.X, 
+		Carvs[entities.All[t][i].RoomId].MaxEdge.X, 
 		HasExit(geom.DIR_DOWN), 
 		HasExit(geom.DIR_UP))
 	
-	if leftRoom {
-		if validRoomAt(cellX, cellY) {
+	if cr == RESP_OUTOFROOM {
+		if ValidRoomAt(cellX, cellY) {
 			entities.All[t][i].RoomId = Cells[cellY][cellX].CarvsId
 		}
 	}
 }
 
 
-// args: 
-// position, velocity, radius, negative edge boundary, positive edge boundary, 
-// exit in negative direction, exit in positive direction 
-func BounceOffWalls (pos f32, vel f32, rad f32, negEdge f32, posEdge f32, negExit bool, posExit bool) (outPos f32, outVel f32, leftRoom bool) {
+// args: (md == move      dimension) 
+//       (dd == doorframe dimension) 
+// md position, 
+// dd position, 
+// velocity, 
+// radius, 
+// negative edge boundary, 
+// positive edge boundary, 
+// negative doorframe edge, 
+// positive doorframe edge, 
+// exit in negative direction, 
+// exit in positive direction 
+var doorBandCount i32
+func BounceOffWalls (mdPos f32, ddPos f32, vel f32, rad f32, negEdge f32, posEdge f32, negDF f32, posDF f32, negExit bool, posExit bool) (mdPosOut f32, ddPosOut f32, outVel f32, hitResponse i32) {
 	//printf("neg: %f - pos: %f --- %v %v \n", negEdge, posEdge, negExit, posExit)
 		
-	outPos = pos
-	outVel = vel
+	mdPosOut    = mdPos
+	ddPosOut    = ddPos
+	outVel      = vel
+	hitResponse = RESP_NOTOUCH
 
 	if vel < 0.0 {
-		if negExit {
-			//printf("\n negExit \n")
-			
-			if pos < negEdge {
-				printf("\nCROSSED LESSER\n")
-				leftRoom = true
-			}
-		}else{
-			if (pos - rad) < negEdge {
-				outPos =     negEdge + rad
-				outVel =     -vel
+		if (mdPos - rad) < negEdge { // (touching door band) 
+			if negExit {
+				if mdPos < (negEdge - WTh) {
+					printf("\n -RESP_OUTOFROOM \n")
+					hitResponse = RESP_OUTOFROOM
+				}else{
+					printf("\n -DOOR BAND count: %d \n", doorBandCount)
+					doorBandCount = 
+					doorBandCount + 1
+					hitResponse = RESP_INDOORBAND
+					ddPosOut = keepWithinDoorFrame(ddPosOut, rad, negDF, posDF)
+				}
+			}else{ // full length wall 
+				// bounce off 
+				mdPosOut = negEdge + rad
+				outVel   = -vel
 			}
 		}
 	}else
 	if vel > 0.0 {
-		if posExit {
-			//printf("\n posExit \n")
-			
-			if pos > posEdge {
-				printf("\nCROSSED GREATER\n")
-				leftRoom = true
-			}
-		}else{
-			if (pos + rad) > posEdge {
-				outPos =     posEdge - rad
-				outVel =     -vel
+		if (mdPos + rad) > posEdge { // (touching door band) 
+			if posExit {
+				if mdPos > (posEdge + WTh) {
+					printf("\n +RESP_OUTOFROOM \n")
+					hitResponse = RESP_OUTOFROOM
+				}else{
+					printf("\n +DOOR BAND count: %d \n", doorBandCount)
+					doorBandCount = 
+					doorBandCount + 1
+					hitResponse = RESP_INDOORBAND
+					ddPosOut = keepWithinDoorFrame(ddPosOut, rad, negDF, posDF)
+				}
+			}else{ // full length wall 
+				// bounce off 
+				mdPosOut = posEdge - rad
+				outVel   = -vel
 			}
 		}
 	}
@@ -542,8 +579,8 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 }
 
 
-func validRoomAt (x i32, y i32) (out bool) {
-	printf("validRoomAt(%d, %d) \n", x, y)
+func ValidRoomAt (x i32, y i32) (out bool) {
+	printf("ValidRoomAt(%d, %d) \n", x, y)
 
 	if  x >= 0 && x < NumCellsAcross &&
 		y >= 0 && y < NumCellsAcross &&
@@ -555,5 +592,17 @@ func validRoomAt (x i32, y i32) (out bool) {
 		for i := 0; i < 12; i++ {
 			printf("############ INVALID SPACE, PLAYER SHOULDN'T BE HERE! %d, %d \n", x, y)
 		}
+	}
+}
+
+
+func keepWithinDoorFrame (ddPos f32, rad f32, negDF f32, posDF f32) (ddPosOut f32) {
+	if (ddPos)   < (negDF + rad) {
+		ddPosOut =  negDF + rad
+		printf("touched neg doorframe edge: %f \n", negDF)
+	}else
+	if (ddPos)   > (posDF - rad) {
+		ddPosOut =  posDF - rad
+		printf("touched pos doorframe edge: %f \n", posDF)
 	}
 }
