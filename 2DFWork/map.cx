@@ -288,6 +288,7 @@ func DrawQuads () {
 			}
 			
 			// overlay marks to visually enumerate grid pos 
+			// 		in Y 
 			draw.SetColor3(draw.White)
 			l = l + CellSpanHalf
 			r = l + 0.02
@@ -303,6 +304,17 @@ func DrawQuads () {
 			var b f32 = f32.mul(i32.f32(y), CellSpan)
 			var r f32 = l + CellSpan
 			var t f32 = b + CellSpan
+
+			// 		in Y 
+			draw.SetColor(draw.COLOR_GRAY_DARK)
+			b = b + CellSpanHalf
+			t = b + 0.02
+			
+			for i := 0; i < y; i++ {
+				draw.UntexturedQuad(t, r, b, l)
+				b = b + 0.1
+				t = t + 0.1
+			}
 		}
 	draw.End()
 	
