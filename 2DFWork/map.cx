@@ -253,6 +253,7 @@ func DrawQuads () {
 	draw.BeginUntexturedQuads()
 		var n i32 = len(Carvs)
 		//printf("len(Carvs): %d \n", n)
+		
 		for i := 0; i < n; i++ {
 			var x i32 = Carvs[i].Pos.X
 			var y i32 = Carvs[i].Pos.Y
@@ -285,6 +286,23 @@ func DrawQuads () {
 					draw.UntexturedQuad(t,     r-WTh, b+WTh, l+WTh)
 				}
 			}
+			
+			// overlay marks to visually enumerate grid pos 
+			draw.SetColor3(draw.White)
+			l = l + CellSpanHalf
+			r = l + 0.02
+			
+			for i := 0; i < x; i++ {
+				draw.UntexturedQuad(t, r, b, l)
+				l = l + 0.1
+				r = r + 0.1
+			}
+			
+			// reset to entire cell dimensions 
+			var l f32 = f32.mul(i32.f32(x), CellSpan)
+			var b f32 = f32.mul(i32.f32(y), CellSpan)
+			var r f32 = l + CellSpan
+			var t f32 = b + CellSpan
 		}
 	draw.End()
 	
@@ -580,13 +598,13 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 
 
 func ValidRoomAt (x i32, y i32) (out bool) {
-	printf("ValidRoomAt(%d, %d) \n", x, y)
+	//printf("ValidRoomAt(%d, %d) \n", x, y)
 
 	if  x >= 0 && x < NumCellsAcross &&
 		y >= 0 && y < NumCellsAcross &&
 		Cells[y][x].CarvsId != app.MAX_I32 {
 		
-		printf("SETTING NEW ROOM ID: %d \n", Cells[y][x].CarvsId)
+		//printf("NEXT FUNC SETS NEW ROOM ID: %d \n", Cells[y][x].CarvsId)
 		out = true		
 	}else{
 		for i := 0; i < 12; i++ {

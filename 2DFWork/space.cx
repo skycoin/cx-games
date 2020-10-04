@@ -148,8 +148,6 @@ func HandleAllBounds (ti i32, ei i32, en entities.Entity) {
 	// back out of any entity/entity penetration 
 	var hit bool
 	var e   f32 = map.WTh / 2.0 // thinnest extent of a wall 
-	var nr  i32 = en.RoomId
-	//printf("CALLING from ents: map.GetRoom(%d)  \n", nr)
 	var roo map.CarvedRoom = map.GetRoom(en.RoomId)
 	// cell edges  
 	var cl f32 = roo.MinEdge.X - map.WTh
@@ -247,7 +245,7 @@ func HandleAllBounds (ti i32, ei i32, en entities.Entity) {
 		en.Y > ct {
 			
 		if map.ValidRoomAt(cX, cY) {
-			printf("cell @ cX,cY valid room - .CarvsId: %d \n", map.GetCarvsIdAt(cX, cY))
+			printf("from entities - map.ValidRoomAt(%d, %d): TRUE --- map.GetCarvsIdAt([same]) (%d) \n", cX, cY, map.GetCarvsIdAt(cX, cY))
 			entities.All[ti][ei].RoomId = map.GetCarvsIdAt(cX, cY)
 		}
 	}
