@@ -182,8 +182,9 @@ func DrawQuads () {
 				}
 			}
 			
-			// overlay marks to visually enumerate grid pos 
-			// 		in Y 
+			/*
+			// DEBUG overlay line-marks to visually enumerate grid pos 
+			// 		in X 
 			draw.SetColor3(draw.White)
 			l = l + CellSpanHalf
 			r = l + 0.02
@@ -210,6 +211,7 @@ func DrawQuads () {
 				b = b + 0.03
 				t = t + 0.03
 			}
+			*/
 		}
 	draw.End()
 	
