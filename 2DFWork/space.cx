@@ -145,6 +145,18 @@ func RectsOverlap (
 
 
 func HandleAllBounds (ti i32, ei i32) {
+	// abort if not in valid room 
+	// 		cell ids 
+	var cX i32 = f32.i32(entities.All[ti][ei].X)
+	var cY i32 = f32.i32(entities.All[ti][ei].Y)
+	printf("cX, cY: %d, %d) \n", cX, cY)
+	
+	if bool.not(map.ValidRoomAt(cX, cY)) {
+		return ////////////////////////////////////////
+	}
+
+
+
 	// back out of any entity/entity penetration 
 	var hit bool
 	var e  f32 = map.WTh / 2.0 // thinnest extent of a wall 
@@ -230,30 +242,6 @@ func HandleAllBounds (ti i32, ei i32) {
 	if hit {
 		entities.All[ti][ei].X    = entities.All[ti][ei].OldX
 		entities.All[ti][ei].VelX = 0.0
-	}
-
-
-	
-	//changeRoom()
-	// float shortcuts 
-	var fX f32 = entities.All[ti][ei].X
-	var fY f32 = entities.All[ti][ei].Y
-	// cell ids 
-	var cX i32 = f32.i32(fX)
-	var cY i32 = f32.i32(fY)
-	/*
-	printf("fX, fY: %f, %f)   ", fX, fY)
-	printf("cX, cY: %d, %d) \n", cX, cY)
-	*/
-	
-	if  fX < cl ||
-		fX > cr ||
-		fY < cb ||
-		fY > ct {
-			
-		if map.ValidRoomAt(cX, cY) {
-			//printf("entities.map.ValidRoomAt(%d, %d) \n", cX, cY)
-		}
 	}
 }
 
