@@ -68,14 +68,19 @@ func Init () {
 	
 	setupPossibleExits()
 	carveOutConnectedRooms()
-	var r i32 = i32.rand(0, len(Carvs))
+	var ri /* random id */ i32 = i32.rand(0, len(Carvs))
 	
 	// put player in center 
-	// random id 
-	var ri i32 = Cells[Carvs[r].Pos.Y][Carvs[r].Pos.X].CarvsId
 	entities.All[plr][0].RoomId = ri
 	entities.All[plr][0].X = Carvs[ri].MinEdge.X - WTh + CellSpanHalf
 	entities.All[plr][0].Y = Carvs[ri].MinEdge.Y - WTh + CellSpanHalf
+	
+	printf("PLAYER'S 1st ROOM %d, %d \n", 
+		Carvs[ri].Pos.X, 
+		Carvs[ri].Pos.Y)
+	printf("PLAYER'S 1st POS  %f, %f \n", 
+		entities.All[plr][0].X, 
+		entities.All[plr][0].Y)
 }
 
 
@@ -295,8 +300,8 @@ func DrawQuads () {
 			
 			for i := 0; i < x; i++ {
 				draw.UntexturedQuad(t, r, b, l)
-				l = l + 0.1
-				r = r + 0.1
+				l = l + 0.03
+				r = r + 0.03
 			}
 			
 			// reset to entire cell dimensions 
@@ -312,8 +317,8 @@ func DrawQuads () {
 			
 			for i := 0; i < y; i++ {
 				draw.UntexturedQuad(t, r, b, l)
-				b = b + 0.1
-				t = t + 0.1
+				b = b + 0.03
+				t = t + 0.03
 			}
 		}
 	draw.End()
@@ -610,7 +615,7 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 
 
 func ValidRoomAt (x i32, y i32) (out bool) {
-	//printf("ValidRoomAt(%d, %d) \n", x, y)
+	printf("map.ValidRoomAt(%d, %d) \n", x, y)
 
 	if  x >= 0 && x < NumCellsAcross &&
 		y >= 0 && y < NumCellsAcross &&
