@@ -74,7 +74,7 @@ func PointInBox (p Vec2, box Vec2, extentX f32, extentY f32) (out bool) {
 
 
 /* FROM OLD COLLISION.CX 
-func BoxesOverlap (a Vec2, b Vec2, aExtents Vec2, bExtents Vec2) (out bool) {
+func RectsOverlap (a Vec2, b Vec2, aExtents Vec2, bExtents Vec2) (out bool) {
 	var padX f32 // minimum distance between centerpoints (before overlap occurs) 
 	var padY f32
 	var bX f32 // B's local position (in A's space) 
@@ -104,7 +104,7 @@ func BoxesOverlap (a Vec2, b Vec2, aExtents Vec2, bExtents Vec2) (out bool) {
 	return true
 }
 */
-func BoxesOverlap (
+func RectsOverlap (
 	aX f32, 
 	aY f32, 
 	bX f32, // local position (in A's space) 
@@ -175,7 +175,7 @@ func HandleAllBounds (ti i32, ei i32) {
 	}
 	
 	
-	if BoxesOverlap( // S wall 
+	if RectsOverlap( // S wall 
 		entities.All[ti][ei].X,
 		entities.All[ti][ei].Y,
 		cl + map.CellSpanHalf,
@@ -186,7 +186,7 @@ func HandleAllBounds (ti i32, ei i32) {
 		e) {
 		
 		hit = true
-		printf("TWAS HIT \n")
+		printf("S wall HIT \n")
 	}
 	
 	if hit {
@@ -200,7 +200,7 @@ func HandleAllBounds (ti i32, ei i32) {
 	
 	
 	
-	if BoxesOverlap( // E wall 
+	if RectsOverlap( // E wall 
 		entities.All[ti][ei].X,
 		entities.All[ti][ei].Y,
 		cr - e,
@@ -211,9 +211,9 @@ func HandleAllBounds (ti i32, ei i32) {
 		map.CellSpan) {
 		
 		hit = true
-		printf("TWAS HIT \n")
+		printf("E wall HIT \n")
 	}
-	if BoxesOverlap( // W wall 
+	if RectsOverlap( // W wall 
 		entities.All[ti][ei].X,
 		entities.All[ti][ei].Y,
 		cl + e,
@@ -224,7 +224,7 @@ func HandleAllBounds (ti i32, ei i32) {
 		map.CellSpan) {
 		
 		hit = true
-		printf("TWAS HIT \n")
+		printf("W wall HIT \n")
 	}
 	
 	if hit {
@@ -241,8 +241,10 @@ func HandleAllBounds (ti i32, ei i32) {
 	// cell ids 
 	var cX i32 = f32.i32(fX)
 	var cY i32 = f32.i32(fY)
-	printf("        fX, fY : %f, %f)           ", fX,          fY)
-	printf("f32.i32(fX, fY): %d, %d) \n", f32.i32(fX), f32.i32(fY))
+	/*
+	printf("fX, fY: %f, %f)   ", fX, fY)
+	printf("cX, cY: %d, %d) \n", cX, cY)
+	*/
 	
 	if  fX < cl ||
 		fX > cr ||
@@ -250,7 +252,7 @@ func HandleAllBounds (ti i32, ei i32) {
 		fY > ct {
 			
 		if map.ValidRoomAt(cX, cY) {
-			printf("entities.map.ValidRoomAt(%d, %d) \n", cX, cY)
+			//printf("entities.map.ValidRoomAt(%d, %d) \n", cX, cY)
 		}
 	}
 }
@@ -262,12 +264,12 @@ func hitOrGoThruWallTo (dir i32, ti i32, ei i32,
 	/* extents: */ narrow f32, wide f32) (hit bool) {
 		
 	var en entities.Entity = entities.All[ti][ei]
-	var plX f32 = entities.All[ti][ei].X
-	var plY f32 = entities.All[ti][ei].Y
+	//var plX f32 = entities.All[ti][ei].X
+	//var plY f32 = entities.All[ti][ei].Y
 	
 	if map.HasExit(dir, ti, ei) {
 	/*
-		if BoxesOverlap(en.X, en.Y, // N left nub 
+		if RectsOverlap(en.X, en.Y, // N left nub 
 			l,
 			t, en.ExtentX, en.ExtentY,
 			narrow,
@@ -275,7 +277,7 @@ func hitOrGoThruWallTo (dir i32, ti i32, ei i32,
 			
 			hit = true
 		}
-		if BoxesOverlap(en.X, en.Y, // N right nub 
+		if RectsOverlap(en.X, en.Y, // N right nub 
 			r,
 			t, en.ExtentX, en.ExtentY,
 			narrow,
@@ -285,7 +287,7 @@ func hitOrGoThruWallTo (dir i32, ti i32, ei i32,
 		}
 	*/
 	}else{
-		if BoxesOverlap(en.X, en.Y, // N wall 
+		if RectsOverlap(en.X, en.Y, // N wall 
 			midLR,
 			t, en.ExtentX, en.ExtentY,
 			wide,

@@ -131,12 +131,6 @@ func Update () {
 				// back out of any entity/entity penetration, 
 				// or change rooms if OOBounds 
 				space.HandleAllBounds(t, i)
-				/*  OLD 1D DEMO LOGIC EXTENSIONS WE'LL DELETE SHORTLY 
-				All[t][i].X,
-				All[t][i].Y,
-				All[t][i].VelX,
-				All[t][i].VelY = map.ConstrainEntityPos(t, i)
-				*/
 			}else{
 				UpdateAt(t, i)
 			}

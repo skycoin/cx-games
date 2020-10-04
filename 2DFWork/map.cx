@@ -68,15 +68,21 @@ func Init () {
 	
 	setupPossibleExits()
 	carveOutConnectedRooms()
-	var ri /* random id */ i32 = i32.rand(0, len(Carvs))
+	
+	// center player in random room 
+	var x  i32
+	var y  i32
+	var c  Cell
+	var ri i32  // random room id 
+	x, y, c, ri = getRandomCarvedRoom()
 	
 	// put player in center 
-	entities.All[plr][0].X = Carvs[ri].MinEdge.X - WTh + CellSpanHalf
-	entities.All[plr][0].Y = Carvs[ri].MinEdge.Y - WTh + CellSpanHalf
+	entities.All[plr][0].X = i32.f32(x) * CellSpan + CellSpanHalf
+	entities.All[plr][0].Y = i32.f32(y) * CellSpan + CellSpanHalf
 	
 	printf("PLAYER'S 1st ROOM %d, %d \n", 
-		Carvs[ri].Pos.X, 
-		Carvs[ri].Pos.Y)
+		x, 
+		y)
 	printf("PLAYER'S 1st POS  %f, %f \n", 
 		entities.All[plr][0].X, 
 		entities.All[plr][0].Y)
@@ -228,22 +234,24 @@ func BounceOffWalls (mdPos f32, ddPos f32, vel f32, rad f32, negEdge f32, posEdg
 
 
 func HasExit (dir i32, ti i32, ei i32) (out bool) {
-	//printf("HasExit (dir: %s)?????", geom.GetTextForDir(dir))
-	
+	printf("map.HasExit (%s)?????   ", geom.GetTextForDir(dir))
 	var x i32 = f32.i32(entities.All[ti][ei].X)
 	var y i32 = f32.i32(entities.All[ti][ei].Y)
-	printf("map.HasExit() - x, y: %d, %d) \n", x, y)
+	printf(" - x, y: %d, %d) \n", x, y)
+	
+	var ci i32 = Cells[y][x].CarvsId
 	var r CarvedRoom
-	r = Carvs[Cells[y][x].CarvsId]
+	r = Carvs[ci]
+	
 	for i := 0; i < len(r.Exits); i++ {
 		if dir == r.Exits[i] {
+			printf("    YES! \n")
 			out = true
-			//printf("    YES! \n")
 			return
 		}
 	}
 	
-	//printf("    NO! \n")
+	printf("    NO! \n")
 	out = false
 }
 
@@ -368,11 +376,11 @@ func setupPossibleExits () {
 }
 
 
-func getRandomCarvedRoom () (x i32, y i32, c Cell, carvedRoomId i32) {
-	carvedRoomId = i32.rand(0, len(Carvs))
-	//printf("getRandomCarvedRoom: %d \n", carvedRoomId)
-	x = Carvs[carvedRoomId].Pos.X
-	y = Carvs[carvedRoomId].Pos.Y
+func getRandomCarvedRoom () (x i32, y i32, c Cell, roomId i32) {
+	roomId = i32.rand(0, len(Carvs))
+	printf("getRandomCarvedRoom () - roomId: %d \n", roomId)
+	x = Carvs[roomId].Pos.X
+	y = Carvs[roomId].Pos.Y
 	c = Cells[y][x]
 }
 
