@@ -3,7 +3,7 @@ package mesh
 
 
 func AddNewTriangleInEditor () { // just tri indices to existing global (ATM) EditorMesh 
-	str.print("mesh.AddNewTriangleInEditor(1st 3 PickedVerts)")
+	str.print("mesh.AddNewTriangleInEditor () --- (the 1st 3 PickedVerts)")
 	
 	
 	// feedback BEFORE 

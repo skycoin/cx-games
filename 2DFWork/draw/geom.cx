@@ -52,6 +52,7 @@ func TexturedQuad   (t f32, r f32, b f32, l f32) {
 }
 
 
+// "SLOW"?  PER-FRAME CALC OF EACH POINT 
 func OneCircle (inX f32, inY f32, extX f32, extY f32, colorId i32, alpha f32, drawAt0 bool) {
 	var x  f32
 	var y  f32
@@ -76,5 +77,3 @@ func OneCircle (inX f32, inY f32, extX f32, extY f32, colorId i32, alpha f32, dr
 		}
 	gl.End()
 }
-
-

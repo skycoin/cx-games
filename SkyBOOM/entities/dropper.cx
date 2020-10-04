@@ -44,7 +44,7 @@ func dropCoins () {
 		nextDrop = time.Now + dropDelay
 		
 		coin = entities.Entity{
-			Mode:    ENT_MODE_DROPPING,
+			Mode:    ENTMODE_DROPPING,
 			X:       entities.All[ENT_DROPPER][0].X,
 			Y:       coinDropHeight, 
 			ExtentX: coinExtent,

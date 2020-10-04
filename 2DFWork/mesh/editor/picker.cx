@@ -49,7 +49,7 @@ func BakeMeshPickerButtonGrid () {
 	ext = Vec2{ X: extent, Y: extent }
 
 	n = len(RawMeshes)
-	InitToolBar(MESH_PICKER, n)
+	InitToolBar(TOOLBAR_MESH_PICKER, n)
 
 	for i := 0; i32.lt(i, n); i++ {
 		gX = i32.mod(i, numFit)
@@ -60,15 +60,15 @@ func BakeMeshPickerButtonGrid () {
 		pos.X = f32.add(x, f32.mul(i32.f32(gX), currSpan))
 		pos.Y = f32.add(y, f32.mul(i32.f32(-gY), currSpan))
 		
-		tBars[MESH_PICKER].Items[i].Pos = pos
-		tBars[MESH_PICKER].Items[i].Extents = ext
+		tBars[TOOLBAR_MESH_PICKER].Items[i].Pos = pos
+		tBars[TOOLBAR_MESH_PICKER].Items[i].Extents = ext
 		
 		// FIXME?: assumes this is the 2nd menu 
 		var bakeId i32 
-		bakeId = len(tBars[EDIT_TOOLBAR].Items)
+		bakeId = len(tBars[TOOLBAR_EDIT].Items)
 		bakeId = i32.mul(2, bakeId) // each has background + icon meshes 
 		bakeId = i32.add(bakeId, i)
-		tBars[MESH_PICKER].Items[i].BakedIcon = bakeId
+		tBars[TOOLBAR_MESH_PICKER].Items[i].BakedIcon = bakeId
 		bakeUICellFromRaw(pos, ext, i, bakeId) 
 	}
 }

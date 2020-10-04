@@ -1,12 +1,15 @@
 package space
 
 import "app"
+import "entities"
+import "geom"
+import "map"
 
 
 
-// FIXME: these should be updated from window change events 
-var AspectRatio     f32 // horizontal FOV (field of view) NOT in degrees  
-                        // vertical will always be 1.0, horizontal is relative to that 
+// we're ranging gl space from -1.0 to 1.0 (height & width of 2.0) 
+var AspectRatio     f32 // vertical portion of aspect ratio is always 1.0 
+						// (in the movie industry) 
 var ViewWidInPixels i32 // separate i32s cuz *GetFramebuffer*() return format 
 var ViewHeiInPixels i32
 var ViewSizeInGL    app.Vec2
@@ -30,7 +33,7 @@ func Init () {
 
 // for full resolution ViewEdge64 vars (fed to gl.Ortho() ) 
 var AspectRatio64 f64
-func SetSize (wid i32, hei i32) () {
+func SetSize (wid i32, hei i32) {
 	printf("space.SetSize () \n")
 
 	AspectRatio64 = i32.f64(wid) / i32.f64(hei)
@@ -71,7 +74,7 @@ func PointInBox (p Vec2, box Vec2, extentX f32, extentY f32) (out bool) {
 
 
 /* FROM OLD COLLISION.CX 
-func BoxesOverlap (a Vec2, b Vec2, aExtents Vec2, bExtents Vec2) (out bool) {
+func RectsOverlap (a Vec2, b Vec2, aExtents Vec2, bExtents Vec2) (out bool) {
 	var padX f32 // minimum distance between centerpoints (before overlap occurs) 
 	var padY f32
 	var bX f32 // B's local position (in A's space) 
@@ -101,18 +104,11 @@ func BoxesOverlap (a Vec2, b Vec2, aExtents Vec2, bExtents Vec2) (out bool) {
 	return true
 }
 */
-
-
-
-
-
-
-
-
-
-func BoxesOverlap (
-	a Vec2, 
-	b Vec2, 
+func RectsOverlap (
+	aX f32, 
+	aY f32, 
+	bX f32, // local position (in A's space) 
+	bY f32, 
 	aExtentX f32, 
 	aExtentY f32, 
 	bExtentX f32, 
@@ -120,29 +116,184 @@ func BoxesOverlap (
 		
 	var padX f32 // minimum distance between centerpoints (before overlap occurs) 
 	var padY f32
-	var bX f32 // B's local position (in A's space) 
-	var bY f32
+	var x    f32 
+	var y    f32
 	
 	padX = f32.add(aExtentX, bExtentX)
 	padY = f32.add(aExtentY, bExtentY)
-	bX = f32.sub(b.X, a.X) 
-	bY = f32.sub(b.Y, a.Y)
+	x    = f32.sub(bX, aX) 
+	y    = f32.sub(bY, aY)
 	
-	if bX > padX {
+	if x > padX {
 		return false
 	}
 	
-	if bX < -padX {
+	if x < -padX {
 		return false
 	}
 	
-	if bY > padY {
+	if y > padY {
 		return false
 	}
 	
-	if bY < -padY {
+	if y < -padY {
 		return false
 	}
 	
 	return true
+}
+
+
+func HandleAllBounds (ti i32, ei i32) {
+	// back out of any entity/entity penetration 
+	var hit bool
+	var e  f32 = map.WTh / 2.0 // thinnest extent of a wall 
+	// cell edges  
+	var cl f32 = i32.f32(f32.i32(entities.All[ti][ei].X))
+	var cr f32 = cl + map.CellSpan
+	var cb f32 = i32.f32(f32.i32(entities.All[ti][ei].Y))
+	printf("cl: %f - cb: %f \n", cl, cb)
+	var ct f32 = cb + map.CellSpan
+	
+	
+	if hitOrGoThruWallTo(geom.DIR_UP, ti, ei,
+		cl + e, // l nub 
+		cl + map.CellSpanHalf, // full N/S wall 
+		cr - e, // r nub 
+
+		cb + e, // b nub 
+		cb + map.CellSpanHalf, // full E/W wall 
+		ct - e, // t nub
+		
+		e,
+		map.CellSpan) {
+		
+		
+		
+		hit = true
+		printf("UP HIT \n")
+	}
+	
+	
+	if RectsOverlap( // S wall 
+		entities.All[ti][ei].X,
+		entities.All[ti][ei].Y,
+		cl + map.CellSpanHalf,
+		cb + e,
+		entities.All[ti][ei].ExtentX,
+		entities.All[ti][ei].ExtentY,
+		map.CellSpan,
+		e) {
+		
+		hit = true
+		printf("S wall HIT \n")
+	}
+	
+	if hit {
+		entities.All[ti][ei].Y    = entities.All[ti][ei].OldY
+		entities.All[ti][ei].VelY = 0.0
+	}
+	
+	
+	
+	hit = false
+	
+	
+	
+	if RectsOverlap( // E wall 
+		entities.All[ti][ei].X,
+		entities.All[ti][ei].Y,
+		cr - e,
+		cb + map.CellSpanHalf,
+		entities.All[ti][ei].ExtentX,
+		entities.All[ti][ei].ExtentY,
+		e,
+		map.CellSpan) {
+		
+		hit = true
+		printf("E wall HIT \n")
+	}
+	if RectsOverlap( // W wall 
+		entities.All[ti][ei].X,
+		entities.All[ti][ei].Y,
+		cl + e,
+		cb + map.CellSpanHalf,					
+		entities.All[ti][ei].ExtentX,
+		entities.All[ti][ei].ExtentY,
+		e,
+		map.CellSpan) {
+		
+		hit = true
+		printf("W wall HIT \n")
+	}
+	
+	if hit {
+		entities.All[ti][ei].X    = entities.All[ti][ei].OldX
+		entities.All[ti][ei].VelX = 0.0
+	}
+
+
+	
+	//changeRoom()
+	// float shortcuts 
+	var fX f32 = entities.All[ti][ei].X
+	var fY f32 = entities.All[ti][ei].Y
+	// cell ids 
+	var cX i32 = f32.i32(fX)
+	var cY i32 = f32.i32(fY)
+	/*
+	printf("fX, fY: %f, %f)   ", fX, fY)
+	printf("cX, cY: %d, %d) \n", cX, cY)
+	*/
+	
+	if  fX < cl ||
+		fX > cr ||
+		fY < cb ||
+		fY > ct {
+			
+		if map.ValidRoomAt(cX, cY) {
+			//printf("entities.map.ValidRoomAt(%d, %d) \n", cX, cY)
+		}
+	}
+}
+
+
+func hitOrGoThruWallTo (dir i32, ti i32, ei i32,
+	l f32, midLR f32, r f32, // left/right 
+	b f32, midBT f32, t f32, // bottom/top 
+	/* extents: */ narrow f32, wide f32) (hit bool) {
+		
+	var en entities.Entity = entities.All[ti][ei]
+	//var plX f32 = entities.All[ti][ei].X
+	//var plY f32 = entities.All[ti][ei].Y
+	
+	if map.HasExit(dir, ti, ei) {
+	/*
+		if RectsOverlap(en.X, en.Y, // N left nub 
+			l,
+			t, en.ExtentX, en.ExtentY,
+			narrow,
+			narrow) {
+			
+			hit = true
+		}
+		if RectsOverlap(en.X, en.Y, // N right nub 
+			r,
+			t, en.ExtentX, en.ExtentY,
+			narrow,
+			narrow) {
+			
+			hit = true
+		}
+	*/
+	}else{
+		if RectsOverlap(en.X, en.Y, // N wall 
+			midLR,
+			t, en.ExtentX, en.ExtentY,
+			wide,
+			narrow) {
+			
+			hit = true
+		}
+	}
 }

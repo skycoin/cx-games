@@ -1,4 +1,4 @@
-package inputs
+package inputs // "input" must be reserved?  it gave me errors 
 
 import "glfw"
 import "app"

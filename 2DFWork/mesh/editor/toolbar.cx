@@ -13,7 +13,7 @@ type MenuItem struct {
 	// if not, set these to ids in the mesh.___Meshes (slices) 
 	BakedBackground  i32
 	BakedIcon        i32
-	MeshForHoverText i32
+	Text             TextGL
 }
 
 type Menu struct {
@@ -22,12 +22,17 @@ type Menu struct {
 	Hovered i32 // id of item mouse pointer is over 
 }
 
-// menu ids 
-var EDIT_TOOLBAR   i32 = 0
-var MESH_PICKER    i32 = 1
+// toolbar ids 
+// TOOLBAR_MESH_PICKER IS JUST A MULTI-ROW/MULI-COLUMN toolbar that 
+//		takes up the rest of the screen 
+//		(outside of TOOLBAR_EDIT) 
+var TOOLBAR_EDIT        i32 = 0
+var TOOLBAR_MESH_PICKER i32 = 1
 
-var tBars          []Menu
-var ToolButtonSpan f32 = 0.2
+var ToolButtonSpan      f32 = 0.2
+var TextHei             i32
+
+var tBars               []Menu
 
 // toolbar 
 // (Menu item button ids... 
@@ -59,27 +64,12 @@ func InitToolBar (id i32, numItems i32) { // menu id
 					mi = MenuItem{ BakedBackground: app.MAX_I32, Name: "common init string" }
 					tBars[id].Items = append(
 					tBars[id].Items, mi)
-					printf("    + toolbar %d item \n", id)
-					printf("    len: %d \n", len(tBars[id].Items))
+					printf("    + toolbar %d item ", id)
+					printf("%d \n", len(tBars[id].Items))
 				}
 			}
 		}
 	}
-
-
-		// editor toolbar 
-		////// might use .Name as prefix to the hover-text of the button 
-		////// ("edit " + "colors/vertices" for example) 
-	//	tBars[id].Name = "Edit" 
-
-	//	"Edit Vertices"
-	//	"Edit Triangles"
-	//	"Edit Colors"
-	//	"Mesh Picker"
-	//	"Gen Init Func"
-	//	"Snap-To-Grid"
-	//	"Wipe Layer"
-	//	"PLAY"
 }
 
 
@@ -244,7 +234,7 @@ func bakeUICellFromRaw (pos Vec2, extents Vec2, rawId i32, bakedId i32) {
 
 
 func getTouchedToolbarItem (mouse Vec2) (touched bool, id i32) {
-	touched, id = getTouchedToolbarItemFrom(EDIT_TOOLBAR, mouse)
+	touched, id = getTouchedToolbarItemFrom(TOOLBAR_EDIT, mouse)
 	if touched {
 		//printf("getTouchedToolbarItem (): %d \n", id)
 	}
@@ -282,7 +272,7 @@ func getTouchedToolbarItemFrom (barId i32, mouse Vec2) (touched bool, id i32) {
 
 
 func respondToItem (i i32) {
-	printf("pressed toolbar item %s \n", tBars[EDIT_TOOLBAR].Items[i].Name)
+	printf("pressed toolbar item %s \n", tBars[TOOLBAR_EDIT].Items[i].Name)
 	
 	if i < app.EDITMODE_MAX { // change EditMode
 		app.EditMode = i
@@ -294,7 +284,7 @@ func respondToItem (i i32) {
 		}
 	}else{ // perform one-time actions 
 		if i == TOOLITEM_GEN_FUNC {
-			GenerateMeshInitFunc ("Icon")
+			GenerateMeshInitFunc ("RawMesh")
 		}else
 		if i == TOOLITEM_SNAP_TO_GRID {
 			SnapToGrid = !SnapToGrid

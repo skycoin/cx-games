@@ -2,6 +2,10 @@ package mesh
 
 
 
+var VertNodeExtent f32 = 0.01
+
+
+
 func DeleteVertexNode (layerId i32, ir i32) { // id (to) remove 
 	if app.Mode != app.MODE_EDITOR {		
 		return
@@ -97,16 +101,15 @@ func getValidId (trashVert i32, currVert i32) (out i32) {
 
 
 func getTouchedVertexNode (p Vec2) (touched bool, layId i32, vertId i32) {
+	str.print("getTouchedVertexNode()")
 	touched = false
-	str.print("RE-ENABLES getTouchedVertexNode()")
 	
-	/*
 	for    li := 0; li < len(EditLayers);           li++ {
 		for i := 0;  i < len(EditLayers[li].Points); i++ {
 			var v Vec2
 			v = EditLayers[li].Points[i]
 			
-			if space.PointInBox(p, v, NodeExtentX, NodeExtentY) {			
+			if space.PointInBox(p, v, VertNodeExtent, VertNodeExtent) {			
 				touched = true
 				layId = li			
 				vertId = i			
@@ -114,7 +117,6 @@ func getTouchedVertexNode (p Vec2) (touched bool, layId i32, vertId i32) {
 			}
 		}
 	}
-	*/
 }
 
 

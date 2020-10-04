@@ -9,6 +9,16 @@ import "geom"
 import "menu"
 import "space"
 
+/*
+	// gl.Ortho() multiplies existing matrix 
+	var mulL f64 = space.ViewEdgeL / oldL
+	var mulR f64 = space.ViewEdgeR / oldR
+	mulL = -mulL
+	gl.Ortho(mulL, mulR, -1.0D, 1.0D, 1.0D, -1.0D)
+	//printf("OLD screen edges: %f, %f \n", oldL, oldR)
+	//printf("      mulL, mulR: %f, %f \n", mulL, mulR)
+*/
+
 
 
 var BaseAssetDir str = "../2DFWork/draw/assets/"

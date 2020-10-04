@@ -112,7 +112,7 @@ func drawTexturedBatches () {
 			for i := 0; i < n; i++ {
 				var ac f32 = 1.0 // alpha channel 
 				
-				if entities.All[et][i].Mode == ENT_MODE_FADING {
+				if entities.All[et][i].Mode == ENTMODE_FADING {
 					ac = 1.0 - entities.All[et][i].ExtentY * 1.0
 				}
 			

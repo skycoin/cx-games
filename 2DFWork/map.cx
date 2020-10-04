@@ -27,17 +27,23 @@ import "geom"
 
 
 
-var NumCellsAcross i32 = 4 // in both dimensions 
-var WTh            f32 = 0.085 // wall thickness 
-var CellSpan       f32 = 2.0 / i32.f32(NumCellsAcross)
-var CellSpanHalf   f32 = CellSpan / 2.0
-var Cells          [4][4]Cell   // FIXME: use constants when we can 
-var Carvs          []CarvedRoom // used/carved-out locations of the Cells grid 
-var plr            i32 = entities.ENT_PLAYER // FIXME?: this is wrong to have in "map"?
+var NumCellsAcross  i32 = 4 // in both dimensions 
+var WTh             f32 = 0.085 // wall thickness 
+var CellSpan        f32 = 1.0
+var CellSpanHalf    f32 = CellSpan / 2.0
+var Cells           [4][4]Cell   // FIXME: use constants when we can 
+var Carvs           []CarvedRoom // used/carved-out locations of the Cells grid 
+ 
+var plr             i32 = entities.ENT_PLAYER // FIXME?: this is wrong to have in "map"? 
+// collision check responses 
+var RESP_INDOORBAND i32 // the WTh strip along edge of cell 
+var RESP_OUTOFROOM  i32 = 1
+var RESP_NOTOUCH    i32 = 2
+var response        i32
 
 type Cell struct {
 	CarvsId i32 // MAX_I32 == solid rock 
-	Exits    []i32 // initial possibilities that point to all valid grid slot neighbor cells 
+	Exits   []i32 // initial possibilities that point to all valid grid slot neighbor cells 
 }
 
 type CarvedRoom struct {
@@ -49,31 +55,50 @@ type CarvedRoom struct {
 	Left   f32
 	*/
 	
-	Pos    app.Vec2I
-	Exits  []i32 // the actual room connections after map generation 
+	Pos     app.Vec2I
+	Exits   []i32 // the actual room connections after map generation 
+	MinEdge app.Vec2 // boundaries of the current cell it's in 
+	MaxEdge app.Vec2 // ^ 
 }
 
 
 
 func Init () {
-	str.print("map.Init ()")
+	str.print("map.Init ()   SHOULD BE AFTER ENTITIES")
 	
 	setupPossibleExits()
 	carveOutConnectedRooms()
-	var r i32 = i32.rand(0, len(Carvs))
-	SetPlayerRoomBounds(Carvs[r].Pos.X, Carvs[r].Pos.Y, true)
+	
+	// center player in random room 
+	var x  i32
+	var y  i32
+	var c  Cell
+	var ri i32  // random room id 
+	x, y, c, ri = getRandomCarvedRoom()
+	
+	// put player in center 
+	entities.All[plr][0].X = i32.f32(x) * CellSpan + CellSpanHalf
+	entities.All[plr][0].Y = i32.f32(y) * CellSpan + CellSpanHalf
+	
+	printf("PLAYER'S 1st ROOM %d, %d \n", 
+		x, 
+		y)
+	printf("PLAYER'S 1st POS  %f, %f \n", 
+		entities.All[plr][0].X, 
+		entities.All[plr][0].Y)
 }
 
 
+func GetRoom (id i32) (room CarvedRoom) {
+	//printf("GetRoom(%d) len(Carvs): %d \n", id, len(Carvs))
+	room = Carvs[id]
+}
+func GetRoomIdAt (x i32, y i32) (id i32) {
+	id = Cells[y][x].CarvsId
+}
 /*
 func GetNumCarvedOutRooms () (num i32) {
 	num = len(Carvs)
-}
-func GetRoom (id i32) (room CarvedRoom) {
-	room = Carvs[id]
-}
-func GetCarvsIdAt (x i32, y i32) (id i32) {
-	id = Cells[y][x].CarvsId
 }
 func GetNumExitsAt (roomId i32) (num i32) {
 	num = len(Carvs[roomId].Exits)
@@ -84,73 +109,159 @@ func GetExitAt (roomId i32, exitId i32) (num i32) {
 */ 
 
 
-func SetPlayerPos (pos app.Vec2) {
-	entities.All[plr][0].X = pos.X
-	entities.All[plr][0].Y = pos.Y
-}
-func SetPlayerRoomBounds (x i32, y i32, putInCenter bool) {
-	var roomId i32 = Cells[y][x].CarvsId
-
-	printf("SetPlayerRoomBounds (roomId: %d) =============================\n", roomId)
-	printf("    x,y: %d,%d \n", x, y)
-	var room CarvedRoom = Carvs[roomId]
-	entities.All[plr][0].GridPos = room.Pos
-	//printf("set ball.GridPos: %d,%d \n", entities.All[plr][0].GridPos.X, entities.All[plr][0].GridPos.Y)
+// collision bounce 
+// 		t = entity type 
+// 		i = entity id 
+func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
+	x = entities.All[t][i].X
+	y = entities.All[t][i].Y
 	
-	var minX f32 = i32.f32(room.Pos.X) * CellSpan
-	var minY f32 = i32.f32(room.Pos.Y) * CellSpan
+	var cr    i32 // collision response 
+	var cellX i32 = f32.i32(entities.All[t][i].X)
+	var cellY i32 = f32.i32(entities.All[t][i].Y)
 	
-	if putInCenter {
-		var pos app.Vec2
-		pos = app.Vec2{
-			X: minX + CellSpanHalf, 
-			Y: minY + CellSpanHalf}
-		SetPlayerPos(pos)
+	//		in X dimension 
+	//printf("\n")
+	//printf("min: %f - max: %f ", min, max)
+	x, y, velX, cr = BounceOffWalls(
+		x,
+		y,
+		entities.All[t][i].VelX,
+		entities.All[t][i].ExtentX, 
+		
+		0.0, 0.0, 0.0, 0.0, 
+		/* GOT RID OF ROOMID
+		Carvs[entities.All[t][i].RoomId].MinEdge.X, 
+		Carvs[entities.All[t][i].RoomId].MaxEdge.X, 
+		Carvs[entities.All[t][i].RoomId].MinEdge.Y, 
+		Carvs[entities.All[t][i].RoomId].MaxEdge.Y, 
+		*/
+		HasExit(geom.DIR_LEFT , t, i), 
+		HasExit(geom.DIR_RIGHT, t, i))
+	
+	if cr == RESP_OUTOFROOM {
+		if ValidRoomAt(cellX, cellY) {
+		}
 	}
 
-	// set boundaries (for limiting collision checks) 
-	entities.All[plr][0].CellMin.X = minX + WTh
-	entities.All[plr][0].CellMin.Y = minY + WTh
-	entities.All[plr][0].CellMax.X = minX + CellSpan - WTh
-	entities.All[plr][0].CellMax.Y = minY + CellSpan - WTh
-	//entities.All[plr][0].Room    = room // CAN'T FIGURE OUT WHY THIS MAKES AVATAR DISAPPEAR 
 	
+	//		in Y dimension 
+	//printf("Y DIM --- min: %f - max: %f \n", min, max)
+	y, x, velY, cr = BounceOffWalls(
+		y, 
+		x,
+		entities.All[t][i].VelY, 
+		entities.All[t][i].ExtentY, 
+		0.0, 0.0, 0.0, 0.0, 
+		/* GOT RID OF ROOMID
+		Carvs[entities.All[t][i].RoomId].MinEdge.Y, 
+		Carvs[entities.All[t][i].RoomId].MaxEdge.Y, 
+		Carvs[entities.All[t][i].RoomId].MinEdge.X, 
+		Carvs[entities.All[t][i].RoomId].MaxEdge.X, 
+		*/
+		HasExit(geom.DIR_DOWN, t, i), 
+		HasExit(geom.DIR_UP  , t, i))
 	
-	// setup connection flags/boundaries 	
-	entities.All[plr][0].ExitWest  = false
-	entities.All[plr][0].ExitEast  = false
-	entities.All[plr][0].ExitSouth = false
-	entities.All[plr][0].ExitNorth = false
-	str.print("NEW room has exits in:")
-	for i := 0; i < len(room.Exits); i++ {
-		str.print(geom.GetTextForDir(room.Exits[i]))
-		
-		if room.Exits[i] == geom.DIR_LEFT  {
-			entities.All[plr][0].ExitWest = true
-			entities.All[plr][0].CellMin.X = minX
-		}else
-		if room.Exits[i] == geom.DIR_RIGHT {
-			entities.All[plr][0].ExitEast = true
-			entities.All[plr][0].CellMax.X = minX + CellSpan
-		}else
-		if room.Exits[i] == geom.DIR_DOWN  {
-			entities.All[plr][0].ExitSouth = true
-			entities.All[plr][0].CellMin.Y = minY
-		}else
-		if room.Exits[i] == geom.DIR_UP    {
-			entities.All[plr][0].ExitNorth = true
-			entities.All[plr][0].CellMax.Y = minY + CellSpan
+	if cr == RESP_OUTOFROOM {
+		if ValidRoomAt(cellX, cellY) {
 		}
 	}
 }
 
 
+// args: (md == move      dimension) 
+//       (dd == doorframe dimension) 
+// md position, 
+// dd position, 
+// velocity, 
+// radius, 
+// negative edge boundary, 
+// positive edge boundary, 
+// negative doorframe edge, 
+// positive doorframe edge, 
+// exit in negative direction, 
+// exit in positive direction 
+var doorBandCount i32
+func BounceOffWalls (mdPos f32, ddPos f32, vel f32, rad f32, negEdge f32, posEdge f32, negDF f32, posDF f32, negExit bool, posExit bool) (mdPosOut f32, ddPosOut f32, outVel f32, hitResponse i32) {
+	//printf("neg: %f - pos: %f --- %v %v \n", negEdge, posEdge, negExit, posExit)
+		
+	mdPosOut    = mdPos
+	ddPosOut    = ddPos
+	outVel      = vel
+	hitResponse = RESP_NOTOUCH
+
+	if vel < 0.0 {
+		if (mdPos - rad) < negEdge { // (touching door band) 
+			if negExit {
+				if mdPos < (negEdge - WTh) {
+					printf("\n -RESP_OUTOFROOM \n")
+					hitResponse = RESP_OUTOFROOM
+				}else{
+					printf("\n -DOOR BAND count: %d \n", doorBandCount)
+					doorBandCount = 
+					doorBandCount + 1
+					hitResponse = RESP_INDOORBAND
+					ddPosOut = keepWithinDoorFrame(ddPosOut, rad, negDF, posDF)
+				}
+			}else{ // full length wall 
+				// bounce off 
+				mdPosOut = negEdge + rad
+				outVel   = -vel
+			}
+		}
+	}else
+	if vel > 0.0 {
+		if (mdPos + rad) > posEdge { // (touching door band) 
+			if posExit {
+				if mdPos > (posEdge + WTh) {
+					printf("\n +RESP_OUTOFROOM \n")
+					hitResponse = RESP_OUTOFROOM
+				}else{
+					printf("\n +DOOR BAND count: %d \n", doorBandCount)
+					doorBandCount = 
+					doorBandCount + 1
+					hitResponse = RESP_INDOORBAND
+					ddPosOut = keepWithinDoorFrame(ddPosOut, rad, negDF, posDF)
+				}
+			}else{ // full length wall 
+				// bounce off 
+				mdPosOut = posEdge - rad
+				outVel   = -vel
+			}
+		}
+	}
+}
+
+
+func HasExit (dir i32, ti i32, ei i32) (out bool) {
+	printf("map.HasExit (%s)?????   ", geom.GetTextForDir(dir))
+	var x i32 = f32.i32(entities.All[ti][ei].X)
+	var y i32 = f32.i32(entities.All[ti][ei].Y)
+	printf(" - x, y: %d, %d) \n", x, y)
+	
+	var ci i32 = Cells[y][x].CarvsId
+	var r CarvedRoom
+	r = Carvs[ci]
+	
+	for i := 0; i < len(r.Exits); i++ {
+		if dir == r.Exits[i] {
+			printf("    YES! \n")
+			out = true
+			return
+		}
+	}
+	
+	printf("    NO! \n")
+	out = false
+}
+
+
 // ideally, the below func would be in "sky-taxi/draw.cx", 
 // but moving it there would require series of funcs (such as
-// (GetRoom(), GetCarvsIdAt(), etc.,
+// (GetRoom(), etc.,
 // in order to get all the data you'd need from the "map" package. 
-// since ATM, CX 0.7.0 has trouble getting values out of packages 
-// via "[package].*".  ATM CX gives lot's of unhelpful errors when 
+// since ATM, CX 0.7.0 has trouble getting values out of packages. 
+// ATM CX gives lot's of mystery errors when 
 // such out-of-package data access attempts are made 
 func DrawQuads () {
 	gl.Translatef(0.0-entities.All[plr][0].X, 0.0-entities.All[plr][0].Y, 0.0)
@@ -161,6 +272,7 @@ func DrawQuads () {
 	draw.BeginUntexturedQuads()
 		var n i32 = len(Carvs)
 		//printf("len(Carvs): %d \n", n)
+		
 		for i := 0; i < n; i++ {
 			var x i32 = Carvs[i].Pos.X
 			var y i32 = Carvs[i].Pos.Y
@@ -192,6 +304,35 @@ func DrawQuads () {
 				if ex == geom.DIR_UP {
 					draw.UntexturedQuad(t,     r-WTh, b+WTh, l+WTh)
 				}
+			}
+			
+			// overlay marks to visually enumerate grid pos 
+			// 		in Y 
+			draw.SetColor3(draw.White)
+			l = l + CellSpanHalf
+			r = l + 0.02
+			
+			for i := 0; i < x; i++ {
+				draw.UntexturedQuad(t, r, b, l)
+				l = l + 0.03
+				r = r + 0.03
+			}
+			
+			// reset to entire cell dimensions 
+			var l f32 = f32.mul(i32.f32(x), CellSpan)
+			var b f32 = f32.mul(i32.f32(y), CellSpan)
+			var r f32 = l + CellSpan
+			var t f32 = b + CellSpan
+
+			// 		in Y 
+			draw.SetColor(draw.COLOR_GRAY_DARK)
+			b = b + CellSpanHalf
+			t = b + 0.02
+			
+			for i := 0; i < y; i++ {
+				draw.UntexturedQuad(t, r, b, l)
+				b = b + 0.03
+				t = t + 0.03
 			}
 		}
 	draw.End()
@@ -235,11 +376,11 @@ func setupPossibleExits () {
 }
 
 
-func getRandomCarvedRoom () (x i32, y i32, c Cell, carvedRoomId i32) {
-	carvedRoomId = i32.rand(0, len(Carvs))
-	//printf("getRandomCarvedRoom: %d \n", carvedRoomId)
-	x = Carvs[carvedRoomId].Pos.X
-	y = Carvs[carvedRoomId].Pos.Y
+func getRandomCarvedRoom () (x i32, y i32, c Cell, roomId i32) {
+	roomId = i32.rand(0, len(Carvs))
+	printf("getRandomCarvedRoom () - roomId: %d \n", roomId)
+	x = Carvs[roomId].Pos.X
+	y = Carvs[roomId].Pos.Y
 	c = Cells[y][x]
 }
 
@@ -296,15 +437,15 @@ func carveOutConnectedRooms () {
 			Carvs[orId].Exits = append(
 			Carvs[orId].Exits, e)
 			printf("--------------------- Carvs[orId: %d].(len)Exits: %d \n", orId, len(Carvs[orId].Exits))
-			//DrawAsciiGraphics()
+			//drawAsciiGraphics()
 		}
 	}
 
-	//DrawAsciiGraphics()
+	//drawAsciiGraphics()
 }
 
 
-func DrawAsciiGraphics () {
+func drawAsciiGraphics () {
 	// XXXXXXXX
 	//    ^^ 
 	// << 11 >> 
@@ -415,6 +556,14 @@ func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) 
 		nr.Exits = append(
 		nr.Exits, geom.GetInvertedDir(dir))
 		
+		// set boundaries (for limiting collision checks) 
+		var minX f32 = i32.f32(nX) * CellSpan
+		var minY f32 = i32.f32(nY) * CellSpan	
+		nr.MinEdge.X = minX + WTh
+		nr.MinEdge.Y = minY + WTh
+		nr.MaxEdge.X = minX + CellSpan - WTh
+		nr.MaxEdge.Y = minY + CellSpan - WTh
+
 		Carvs = append(
 		Carvs, nr)
 	}else{
@@ -475,5 +624,35 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 	}
 	
 	if log { printf("------num exits INSIDE-AFTER: %d \n", len(c.Exits))
+	}
+}
+
+
+func ValidRoomAt (x i32, y i32) (out bool) {
+	printf("map.ValidRoomAt(%d, %d)  \n", x, y)
+	printf("map.ValidRoomAt(%d, %d) %f,%f \n", x, y, entities.All[plr][0].X, entities.All[plr][0].Y)
+
+	if  x >= 0 && x < NumCellsAcross &&
+		y >= 0 && y < NumCellsAcross &&
+		Cells[y][x].CarvsId != app.MAX_I32 {
+		
+		//printf("NEXT FUNC SETS NEW ROOM ID: %d \n", Cells[y][x].CarvsId)
+		out = true		
+	}else{
+		for i := 0; i < 12; i++ {
+			printf("############ INVALID SPACE, PLAYER SHOULDN'T BE HERE! %d, %d \n", x, y)
+		}
+	}
+}
+
+
+func keepWithinDoorFrame (ddPos f32, rad f32, negDF f32, posDF f32) (ddPosOut f32) {
+	if (ddPos)   < (negDF + rad) {
+		ddPosOut =  negDF + rad
+		printf("touched neg doorframe edge: %f \n", negDF)
+	}else
+	if (ddPos)   > (posDF - rad) {
+		ddPosOut =  posDF - rad
+		printf("touched pos doorframe edge: %f \n", posDF)
 	}
 }

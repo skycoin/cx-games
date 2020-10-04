@@ -23,8 +23,9 @@ var Mid    f32 = 0.5
 var Dark   f32 = 0.3
 var Darker f32 = 0.2
 
-// 		rainbow spectrum 
-var Colors []Color3 
+// 		palettes 
+var Colors   []Color3 // colors hand-chosen for CXtris blocks 
+var Spectrum []Color3 // rainbow of 6 pure-bright hues 
 
 
 type Color3 struct {
@@ -80,6 +81,13 @@ func SetColor4 (color Color3, alpha f32) {
 }
 
 
+func GetLerpedColor3 (a Color3, b Color3, frac f32) (out Color3) {
+	out.R = app.GetLerped(a.R, b.R, frac)
+	out.G = app.GetLerped(a.G, b.G, frac)
+	out.B = app.GetLerped(a.B, b.B, frac)
+}
+
+
 func SetSequentiallyCycledColor (i i32) {
 	var l i32 = len(Colors)
 	var c i32 = i % l
@@ -88,6 +96,11 @@ func SetSequentiallyCycledColor (i i32) {
 		Colors[c].R,
 		Colors[c].G,
 		Colors[c].B)
+}
+
+
+func GetSpectrumLen() (l i32) {
+	l = len(Spectrum)
 }
 
 
@@ -104,6 +117,34 @@ func initColor () {
 	addColor(1.0, 0.5, 0.0)          // orange 
 	addColor(0.0, 1.0, 1.0)          // cyan  
 	addColor(Darker, Darker, Darker) // gray 
+
+
+	// 6 basic max brightness hues 
+	var c Color3
+    
+    c = Color3{ R: 1.0, G: 0.0, B: 0.0 }
+    Spectrum = append(
+    Spectrum, c)
+    
+    c = Color3{ R: 1.0, G: 1.0, B: 0.0 }
+    Spectrum = append(
+    Spectrum, c)
+    
+    c = Color3{ R: 0.0, G: 1.0, B: 0.0 }
+    Spectrum = append(
+    Spectrum, c)
+    
+    c = Color3{ R: 0.0, G: 1.0, B: 1.0 }
+    Spectrum = append(
+    Spectrum, c)
+    
+    c = Color3{ R: 0.0, G: 0.0, B: 1.0 }
+    Spectrum = append(
+    Spectrum, c)
+    
+    c = Color3{ R: 1.0, G: 0.0, B: 1.0 }
+    Spectrum = append(
+    Spectrum, c)
 }
 
 

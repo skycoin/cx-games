@@ -13,8 +13,8 @@ var ENT_PARTICLE_0     i32 = entities.ENT_MAX_OF_2DFW + 4
 var ENT_PARTICLE_1     i32 = entities.ENT_MAX_OF_2DFW + 5
 var ENT_MAX_OF_GAME    i32 = entities.ENT_MAX_OF_2DFW + 6
 // 		modes 
-var ENT_MODE_DROPPING  i32 = entities.ENT_MODE_MAX_OF_2DFW
-var ENT_MODE_FADING    i32 = entities.ENT_MODE_MAX_OF_2DFW + 1
+var ENTMODE_DROPPING  i32 = entities.ENTMODE_MAX_OF_2DFW
+var ENTMODE_FADING    i32 = entities.ENTMODE_MAX_OF_2DFW + 1
 
 
 
@@ -55,10 +55,10 @@ func entitiesUpdate () {
 			if     b >  1.0 { // (above top of viewport) 
 				entities.Kill(et, i)
 			}else
-			if entities.All[et][i].Mode == ENT_MODE_DROPPING {
+			if entities.All[et][i].Mode == ENTMODE_DROPPING {
 				if b < -1.0 { // touched floor/detonators/whatev 
 					// change coin dir, size, fade 
-					entities.All[et][i].Mode = ENT_MODE_FADING
+					entities.All[et][i].Mode = ENTMODE_FADING
 					entities.All[et][i].VelY = 2.6 // fly up 
 					
 					// remove 1 player paddle/wallet 
@@ -99,7 +99,7 @@ func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 		//var exp f32 = f32.add(time.Now, 0.9)
 		
 		nTic = entities.Entity{
-			Mode:        entities.ENT_MODE_MOVING_TO_POS,
+			Mode:        entities.ENTMODE_MOVING_TO_POS,
 			GoalEntType: plr,
 			GoalEntId:   0,
 			GoalX:       gX,
@@ -114,7 +114,7 @@ func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
 			DistanceY:   0.0, 
 			ExtentX:     0.015, 
 			ExtentY:     0.03}
-			//ExpiryTime:  exp}				
+			//TimeToNextMode:  exp}				
 		
 
 

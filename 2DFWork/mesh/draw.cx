@@ -1,17 +1,15 @@
 package mesh
 
 import "gl"
+import "gltext"
 
 import "app"
 import "draw"
+import "mesh"
 import "time"
 
 
-var currX           f32
-var span            f32
-
 // single color channel intensities 
-var currGreen       f32 // component of terrain fill color 
 var minCI           f32 = 0.0
 var darkCI          f32 = 0.2
 var maxCI           f32 = 1.0
@@ -31,29 +29,50 @@ func DrawEditor () {
 
 	pre()
 	
-	if app.EditMode == app.EDITMODE_VERTICES {
-		trianglesForAll(EditLayers)
-		//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
-	}else
-	if app.EditMode == app.EDITMODE_TRIANGLES {
-	}else
-	if app.EditMode == app.EDITMODE_COLORS {
-		trianglesForOne(RawMeshes, ColorWheel)
-	}else
-	if app.EditMode == app.EDITMODE_MESH_PICKER {
-		trianglesForToolbar(BakedUIMeshes, MESH_PICKER)
-	}
+	gl.Begin(gl.TRIANGLES)
+		if app.EditMode == app.EDITMODE_VERTICES {
+			trianglesForAll(EditLayers)
+			//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
+		}else
+		if app.EditMode == app.EDITMODE_TRIANGLES {
+			trianglesForAll(EditLayers)
+		}else
+		if app.EditMode == app.EDITMODE_COLORS {
+			trianglesForOne(RawMeshes, ColorWheel)
+		}
+		
+		
+		// toolbar (or BOTH toolbars, of the 2 that exist ATM) 
+		if app.EditMode == app.EDITMODE_MESH_PICKER {
+			trianglesForAll(BakedUIMeshes)
+		}else{
+			trianglesForToolbar(BakedUIMeshes, TOOLBAR_EDIT)
+		}
+	gl.End()
 
 	post()
 		
-	// TODO: ADAPT THIS TO HIGHLIGHT MULTIPLE MESHES/SEPARATIONS WHEN IMPLEMENTED 
-	// 		(THIS WILL ALLOW SHARED VERTEX COORDS WITH DIFFERENT COLORS SO
-	// 		THERE CAN BE HARD COLOR CONTRAST BETWEEN MESHES THAT APPEAR CONNECTED) 
-			
-	// // draws loop from all entity positions 
-	// gl.Begin(gl.LINE_LOOP) //////////////
-	// 	simpleVertexSequence(0.5)
-	// gl.End()
+	if app.EditMode != app.EDITMODE_MESH_PICKER {
+		colorPalette()
+	}
+	
+	// text for hovered item 
+	var y f32 = 0.0
+	var hov i32 = tBars[TOOLBAR_EDIT].Hovered
+	var name str
+	var w i32
+	var h i32
+	if hov != app.MAX_I32 {
+		name = RawMeshes[hov].Name
+		w, h = gltext.Metrics("Roboto58", name)
+		
+		draw.SetColor(draw.COLOR_CYAN)
+		gltext.Printf(
+			"Roboto58",
+			i32.f32(space.ViewWidInPixels - w),
+			0.0,
+			name)
+	}
 }
 
 
@@ -65,11 +84,6 @@ func pre () {
 		
 		gridLines()
 	}
-
-	gl.Begin(gl.TRIANGLES)
-		//trianglesForToolbar(BakedUIMeshes, EDIT_TOOLBAR)
-		trianglesForAll(BakedUIMeshes)
-	gl.End()
 }
 
 
@@ -80,24 +94,59 @@ func post () {
 		editorQuads()
 		
 		gl.Begin(gl.LINES)
-			//maybeDragBox()				
+			maybeDragBox()				
 		gl.End()
 	}
 }
 
 
+func colorPalette () {
+	var l i32 = len(draw.Colors)
+	var d i32 = l // doubled amount 
+	d = d * 2 // for DOUBLing SIZE OF draw.COLORS SLICE 
+	
+	var ext f32 = 2.0 / i32.f32(d) * 0.5 // swatch extent 
+	//printf("ext: %f \n", ext)
+	
+	var pos app.Vec2
+	  pos = app.Vec2{ 
+		X: space.ViewEdgeL + ext, 
+		Y: 1.0             - ext }
+
+	draw.BeginUntexturedQuads()
+	
+	for i := 0; i < d; i++ {
+		//printf("i: %d \n", i)
+		var a i32 = i / 2
+		var b i32 = a + 1
+		b = b % l
+		
+		if i % 2 == 0 {
+			draw.SetColor(a)
+		}else{
+			draw.SetColor3(draw.GetLerpedColor3(draw.Colors[a], draw.Colors[b], 0.5))
+		}
+		
+		draw.AddRect(pos, ext, ext)
+		pos.Y = pos.Y - ext * 2.0
+	}
+	
+	draw.End()
+}
+
+
 func pumpTheBlinking () {
-	timeLocalToDraw = f32.add(timeLocalToDraw, time.Delta)	
-	for f32.lteq(nextBlinkFlip, timeLocalToDraw) {
-		nextBlinkFlip = f32.add(timeLocalToDraw, blinkDelay)
-		pickedNodesAreBright = bool.not(pickedNodesAreBright)
+	timeLocalToDraw = timeLocalToDraw + time.Delta
+	
+	for nextBlinkFlip <= timeLocalToDraw {
+		nextBlinkFlip  = timeLocalToDraw + blinkDelay
+		pickedNodesAreBright = !pickedNodesAreBright
 	}
 }
 
 
-/*
 func maybeDragBox() {
-	if ccInput.Dragging { //&&
+	if mesh.Dragging { //&&
 		//app.EditMode != app.EDITMODE_TRIANGLES {
 		
 		if pickedNodesAreBright {
@@ -107,26 +156,25 @@ func maybeDragBox() {
 		}
 		
 		// horizontal lines 
-		gl.Vertex2f(ccInput.DragStart.X,    ccInput.DragStart.Y)
-		gl.Vertex2f(ccInput.MousePointer.X, ccInput.DragStart.Y)
+		gl.Vertex2f(mesh.DragStart.X,      mesh.DragStart.Y)
+		gl.Vertex2f(inputs.MousePointer.X, mesh.DragStart.Y)
 		
-		gl.Vertex2f(ccInput.DragStart.X,    ccInput.MousePointer.Y)
-		gl.Vertex2f(ccInput.MousePointer.X, ccInput.MousePointer.Y)
+		gl.Vertex2f(mesh.DragStart.X,      inputs.MousePointer.Y)
+		gl.Vertex2f(inputs.MousePointer.X, inputs.MousePointer.Y)
 		
 		// vertical lines 
-		gl.Vertex2f(ccInput.DragStart.X,    ccInput.DragStart.Y)
-		gl.Vertex2f(ccInput.DragStart.X,    ccInput.MousePointer.Y)
+		gl.Vertex2f(mesh.DragStart.X,    mesh.DragStart.Y)
+		gl.Vertex2f(mesh.DragStart.X,    inputs.MousePointer.Y)
 		
-		gl.Vertex2f(ccInput.MousePointer.X, ccInput.DragStart.Y)
-		gl.Vertex2f(ccInput.MousePointer.X, ccInput.MousePointer.Y)
+		gl.Vertex2f(inputs.MousePointer.X, mesh.DragStart.Y)
+		gl.Vertex2f(inputs.MousePointer.X, inputs.MousePointer.Y)
 	}
 }
-*/
 
 
 func trianglesForAll (meshes []Mesh2D) {
-	for i := 0; i32.lt(i, len(meshes)); i++ {
-		if i/2 == tBars[EDIT_TOOLBAR].Hovered {
+	for i := 0; i < len(meshes); i++ {
+		if i/2 == tBars[TOOLBAR_EDIT].Hovered {
 			trianglesForOneColored(meshes, i, draw.Colors[draw.COLOR_CYAN])
 		}else{
 			trianglesForOne(meshes, i)
@@ -137,36 +185,19 @@ func trianglesForAll (meshes []Mesh2D) {
 
 // tbId == toolbar id 
 func trianglesForToolbar (meshes []Mesh2D, tbId i32) {
-	if len(meshes) < 1 {
-		printf("NO MESHES IN THAT SLICE!   -   tbId: %d \n", tbId)
+	if tbId >= len(tBars) {
+		printf("NO MESHES FOR THAT TOOLBAR! (tbId: %d)! \n", tbId)
 		return //////////////////////////////////////////
 	}
 	
-	//if tbId != 0 {
-		printf("trianglesForToolbar (meshes, %d) \n", tbId)
-	//}
-	
 	for j := 0; j < len(tBars[tbId].Items); j++ {
-		/*
-		if j >= 1 && j <= 5 {
-			continue ///////////////////////////////////////////
+		if j == tBars[tbId].Hovered {
+			trianglesForOneColored(meshes, j * 2  , draw.Colors[draw.COLOR_CYAN])
+			trianglesForOneColored(meshes, j * 2+1, draw.Colors[draw.COLOR_CYAN])
+		}else{
+			trianglesForOne       (meshes, j * 2)
+			trianglesForOne       (meshes, j * 2+1)
 		}
-		*/
-		
-		var bi i32 // baked mesh id 
-		bi = tBars[tbId].Items[j].BakedBackground
-		printf("BakedBackground - bi: %d \n", bi)
-		
-		// background 
-		if bi != app.MAX_I32 {
-			trianglesForOne(meshes, bi)
-		}
-		
-		// icon 
-		bi = tBars[tbId].Items[j].BakedIcon
-		printf("BakedIcon       - bi: %d \n", bi)
-		
-		trianglesForOne(meshes, bi)
 	}
 }
 
@@ -196,7 +227,7 @@ func trianglesForOne (meshes []Mesh2D, i i32) {
 
 
 func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
-	//printf("trianglesForOne () id of given []Mesh2D: %d \n", i)
+	//printf("trianglesForOneColored () id of given []Mesh2D: %d \n", i)
 	
 	var m Mesh2D
 	m = meshes[i]
@@ -207,17 +238,7 @@ func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
 		var pId i32 // point id (from tri ids) 
 		pId = m.TriangleIndices[j]
 		
-		var c Color3
-		c = m.Colors[pId]
-		
-		var r f32 = (c.R - col.R) * 0.5 // color channel deltas 
-		var g f32 = (c.G - col.G) * 0.5
-		var b f32 = (c.B - col.B) * 0.5
-		
-		gl.Color3f( // blend colors 
-			col.R + r, 
-			col.G + g, 
-			col.B + b)
+		draw.SetColor3(draw.GetLerpedColor3(m.Colors[pId], col, 0.5))
 		
 		var v Vec2
 		v = m.Points[pId]
@@ -227,16 +248,15 @@ func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
 }
 
 
-/*
-func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) () {
+func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) {
 	//str.print("trianglesForOneWithPos ()")
 	
 	var m Mesh2D
 	m = meshes[i]
 
-	ReportBadTriCount("trianglesForOneWithPos", len(m.TriangleIndices))
+	ReportBadTriCount("trianglesForOneWithPos", i, len(m.TriangleIndices))
 
-	for j := 0; i32.lt(j, len(m.TriangleIndices)); j++ {
+	for j := 0; j < len(m.TriangleIndices); j++ {
 		var pId i32 // point id (from tri ids) 
 		pId = m.TriangleIndices[j]
 		
@@ -256,15 +276,16 @@ func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) () {
 func simpleVertexSequence (colorChanIntensity f32) () {
 	gl.Color3f(colorChanIntensity, colorChanIntensity, colorChanIntensity)
 
-	var i i32
-	for i = 0; i32.lt(i, len(entity.Ents)); i++ {
+	/*
+	for i := 0; i < len(entity.Ents); i++ {
 		var e Entity
 		e = entity.Ents[i]
 
 		gl.Vertex2f(e.Pos.X, e.Pos.Y)
 	}
+	*/
 }
-*/
+
 
 func gridLines () {
 	gl.Begin(gl.LINES)
@@ -338,7 +359,7 @@ func editorQuads () {
 			}
 			
 			
-			draw.AddRect(EditLayers[li].Points[i], 0.01, 0.01)
+			draw.AddRect(EditLayers[li].Points[i], VertNodeExtent, VertNodeExtent)
 		}
 	}
 	

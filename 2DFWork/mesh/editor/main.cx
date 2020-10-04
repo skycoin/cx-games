@@ -34,9 +34,9 @@ func respondToPointerEvents () {
 		touchedMenuItem, i = getTouchedToolbarItem(inputs.MousePointer)
 		
 		if touchedMenuItem {
-			tBars[EDIT_TOOLBAR].Hovered = i
+			tBars[TOOLBAR_EDIT].Hovered = i
 		}else{
-			tBars[EDIT_TOOLBAR].Hovered = app.MAX_I32
+			tBars[TOOLBAR_EDIT].Hovered = app.MAX_I32
 		}
 	}
 }
@@ -128,7 +128,7 @@ func doSecondaryOrTertiaryAction(button i32) {
 }
 
 
-func wipePickedVerts () () {
+func wipePickedVerts () {
 	var cleanSlate []i32
 	cleanSlate = []i32{}
 	PickedVerts = cleanSlate
@@ -192,8 +192,8 @@ func doValidGridSpaceSecondary () {
 		}
 
 		if i32.gteq(len(PickedVerts), 3) {
-			str.print("RE-ENABLE   AddNewTriangleInEditor()")
-			str.print("RE-ENABLE   wipePickedVerts()")
+			AddNewTriangleInEditor()
+			wipePickedVerts()
 		}
 	}
 }

@@ -10,7 +10,7 @@ func editorInit () {
 	str.print("    editorInit ()")
 
 	tBars = []Menu{} // prep all tBars 
-	InitToolBar(EDIT_TOOLBAR, 8) // just 1 
+	InitToolBar(TOOLBAR_EDIT, 8) // just 1 
 
 	// canvas 
 	var m Mesh2D
@@ -20,6 +20,10 @@ func editorInit () {
 	
 	// vertex pick/selection 
 	PickedVerts = []i32{}
+
+	// text 
+	TextHei = f32.i32(ToolButtonSpan / space.PixelSize.Y)
+	draw.LoadFontSized(draw.FontPath, mesh.TextHei)
 }
 
 

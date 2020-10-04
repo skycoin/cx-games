@@ -60,7 +60,8 @@ func Init () {
 	makeIconEditTriangles()
 
 	ColorWheel = len(RawMeshes)
-	makeColorPickerWheelResource()
+	//makeColorPickerWheel()
+	makeColorPickerSquare()
 
 	makeIconMeshPicker()
 	makeIconGenerateFunc()
@@ -89,7 +90,7 @@ func Init () {
 	
 	// finish 
 	makeBarButtonBackground ()
-	BakeToolButtonArray(tBars[EDIT_TOOLBAR].Items, false, true)
+	BakeToolButtonArray(tBars[TOOLBAR_EDIT].Items, false, true)
 }
 
 
@@ -263,7 +264,7 @@ func makeSizedMesh (rawId i32, extents Vec2) () {
 // NON-editor tri 
 //func MakeNewTriangle (a Vec2, b Vec2, c Vec2) () {
 //	////////////////// UNTESTED \\\\\\\\\\\\\\\\\\\\\
-//	str.print("mesh.MakeNewTriangle()   (NON-editor)")
+//	str.print("MakeNewTriangle()   (NON-editor)")
 //	
 //	var m Mesh2D
 //	m = Mesh2D{ Name: "NON-editor triangle" }
