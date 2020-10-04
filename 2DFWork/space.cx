@@ -219,9 +219,9 @@ func HandleAllBounds (ti i32, ei i32) {
 	
 	
 	if hitOrGoThruWallTo(geom.DIR_LEFT, ti, ei,
-		cb + e, // b nub 
+		cb + e, // nega nub 
 		cb + map.CellSpanHalf, // full N/S wall 
-		ct - e, // t nub 
+		ct - e, // posi nub 
 
 		cl + e,
 		
@@ -235,9 +235,9 @@ func HandleAllBounds (ti i32, ei i32) {
 	}
 	
 	if hitOrGoThruWallTo(geom.DIR_RIGHT, ti, ei,
-		cb + e, // b nub 
+		cb + e, // nega nub 
 		cb + map.CellSpanHalf, // full N/S wall 
-		ct - e, // t nub 
+		ct - e, // posi nub 
 
 		cr - e,
 		
@@ -249,34 +249,6 @@ func HandleAllBounds (ti i32, ei i32) {
 		hit = true
 		printf("W wall  HIT \n")
 	}
-	/*
-	if RectsOverlap( // E wall 
-		entities.All[ti][ei].X,
-		entities.All[ti][ei].Y,
-		cr - e,
-		cb + map.CellSpanHalf,
-		entities.All[ti][ei].ExtentX,
-		entities.All[ti][ei].ExtentY,
-		e,
-		map.CellSpan) {
-		
-		hit = true
-		printf("E wall HIT \n")
-	}
-	if RectsOverlap( // W wall 
-		entities.All[ti][ei].X,
-		entities.All[ti][ei].Y,
-		cl + e,
-		cb + map.CellSpanHalf,					
-		entities.All[ti][ei].ExtentX,
-		entities.All[ti][ei].ExtentY,
-		e,
-		map.CellSpan) {
-		
-		hit = true
-		printf("W wall HIT \n")
-	}
-	*/
 	
 	if hit {
 		entities.All[ti][ei].X    = entities.All[ti][ei].OldX
@@ -293,25 +265,61 @@ func hitOrGoThruWallTo (dir i32, ti i32, ei i32,
 		
 	
 	if map.HasExit(dir, ti, ei) {
-	/*
-		if RectsOverlap(en.X, en.Y,
-			l,
-			uni,        en.ExtentX, en.ExtentY,
-			narrow,
-			narrow) {
-			
-			hit = true
+		// nega nub 
+		if  dir == geom.DIR_DOWN ||
+			dir == geom.DIR_UP {
+				
+			if RectsOverlap(entities.All[ti][ei].X,
+							entities.All[ti][ei].Y,
+				nega,
+				uni,        entities.All[ti][ei].ExtentX, 
+							entities.All[ti][ei].ExtentY,
+				narrow,
+				narrow) {
+				
+				hit = true
+			}
+		}else{ // left/right 
+			if RectsOverlap(entities.All[ti][ei].X,
+							entities.All[ti][ei].Y,
+				uni,
+				nega,       entities.All[ti][ei].ExtentX, 
+							entities.All[ti][ei].ExtentY,
+				narrow,
+				narrow) {
+				
+				hit = true
+			}
 		}
-		if RectsOverlap(en.X, en.Y,
-			r,
-			uni,        en.ExtentX, en.ExtentY,
-			narrow,
-			narrow) {
-			
-			hit = true
+
+
+		// posa nub 
+		if  dir == geom.DIR_DOWN ||
+			dir == geom.DIR_UP {
+				
+			if RectsOverlap(entities.All[ti][ei].X,
+							entities.All[ti][ei].Y,
+				posi,
+				uni,        entities.All[ti][ei].ExtentX, 
+							entities.All[ti][ei].ExtentY,
+				narrow,
+				narrow) {
+				
+				hit = true
+			}
+		}else{ // left/right 
+			if RectsOverlap(entities.All[ti][ei].X,
+							entities.All[ti][ei].Y,
+				uni,
+				posi,       entities.All[ti][ei].ExtentX, 
+							entities.All[ti][ei].ExtentY,
+				narrow,
+				narrow) {
+				
+				hit = true
+			}
 		}
-	*/
-	}else{
+	}else{ // full length wall 
 		if  dir == geom.DIR_DOWN ||
 			dir == geom.DIR_UP {
 				
@@ -325,7 +333,7 @@ func hitOrGoThruWallTo (dir i32, ti i32, ei i32,
 				
 				hit = true
 			}
-		}else{
+		}else{ // left/right 
 			if RectsOverlap(entities.All[ti][ei].X,
 							entities.All[ti][ei].Y,
 				uni,
