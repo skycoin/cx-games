@@ -144,19 +144,19 @@ func BoxesOverlap (
 }
 
 
-func HandleAllBounds (ti i32, ei i32, en entities.Entity) {
+func HandleAllBounds (ti i32, ei i32) {
 	// back out of any entity/entity penetration 
 	var hit bool
-	var e   f32 = map.WTh / 2.0 // thinnest extent of a wall 
-	var roo map.CarvedRoom = map.GetRoom(en.RoomId)
+	var e  f32 = map.WTh / 2.0 // thinnest extent of a wall 
 	// cell edges  
-	var cl f32 = roo.MinEdge.X - map.WTh
-	var cr f32 = roo.MaxEdge.X + map.WTh
-	var cb f32 = roo.MinEdge.Y - map.WTh
-	var ct f32 = roo.MaxEdge.Y + map.WTh
+	var cl f32 = i32.f32(f32.i32(entities.All[ti][ei].X))
+	var cr f32 = cl + map.CellSpan
+	var cb f32 = i32.f32(f32.i32(entities.All[ti][ei].Y))
+	printf("cl: %f - cb: %f \n", cl, cb)
+	var ct f32 = cb + map.CellSpan
 	
 	
-	if hitOrGoThruWallTo(geom.DIR_UP, en,
+	if hitOrGoThruWallTo(geom.DIR_UP, ti, ei,
 		cl + e, // l nub 
 		cl + map.CellSpanHalf, // full N/S wall 
 		cr - e, // r nub 
@@ -176,12 +176,12 @@ func HandleAllBounds (ti i32, ei i32, en entities.Entity) {
 	
 	
 	if BoxesOverlap( // S wall 
-		en.X,
-		en.Y,
+		entities.All[ti][ei].X,
+		entities.All[ti][ei].Y,
 		cl + map.CellSpanHalf,
 		cb + e,
-		en.ExtentX,
-		en.ExtentY,
+		entities.All[ti][ei].ExtentX,
+		entities.All[ti][ei].ExtentY,
 		map.CellSpan,
 		e) {
 		
@@ -190,7 +190,7 @@ func HandleAllBounds (ti i32, ei i32, en entities.Entity) {
 	}
 	
 	if hit {
-		entities.All[ti][ei].Y    = en.OldY
+		entities.All[ti][ei].Y    = entities.All[ti][ei].OldY
 		entities.All[ti][ei].VelY = 0.0
 	}
 	
@@ -201,12 +201,12 @@ func HandleAllBounds (ti i32, ei i32, en entities.Entity) {
 	
 	
 	if BoxesOverlap( // E wall 
-		en.X,
-		en.Y,
+		entities.All[ti][ei].X,
+		entities.All[ti][ei].Y,
 		cr - e,
 		cb + map.CellSpanHalf,
-		en.ExtentX,
-		en.ExtentY,
+		entities.All[ti][ei].ExtentX,
+		entities.All[ti][ei].ExtentY,
 		e,
 		map.CellSpan) {
 		
@@ -214,12 +214,12 @@ func HandleAllBounds (ti i32, ei i32, en entities.Entity) {
 		printf("TWAS HIT \n")
 	}
 	if BoxesOverlap( // W wall 
-		en.X,
-		en.Y,
+		entities.All[ti][ei].X,
+		entities.All[ti][ei].Y,
 		cl + e,
 		cb + map.CellSpanHalf,					
-		en.ExtentX,
-		en.ExtentY,
+		entities.All[ti][ei].ExtentX,
+		entities.All[ti][ei].ExtentY,
 		e,
 		map.CellSpan) {
 		
@@ -228,36 +228,45 @@ func HandleAllBounds (ti i32, ei i32, en entities.Entity) {
 	}
 	
 	if hit {
-		entities.All[ti][ei].X    = en.OldX
+		entities.All[ti][ei].X    = entities.All[ti][ei].OldX
 		entities.All[ti][ei].VelX = 0.0
 	}
 
 
 	
 	//changeRoom()
+	// float shortcuts 
+	var fX f32 = entities.All[ti][ei].X
+	var fY f32 = entities.All[ti][ei].Y
 	// cell ids 
-	var cX i32 = f32.i32(en.X)
-	var cY i32 = f32.i32(en.Y)
+	var cX i32 = f32.i32(fX)
+	var cY i32 = f32.i32(fY)
+	printf("        fX, fY : %f, %f)           ", fX,          fY)
+	printf("f32.i32(fX, fY): %d, %d) \n", f32.i32(fX), f32.i32(fY))
 	
-	if  en.X < cl ||
-		en.X > cr ||
-		en.Y < cb ||
-		en.Y > ct {
+	if  fX < cl ||
+		fX > cr ||
+		fY < cb ||
+		fY > ct {
 			
 		if map.ValidRoomAt(cX, cY) {
-			printf("from entities - map.ValidRoomAt(%d, %d): TRUE --- map.GetCarvsIdAt([same]) (%d) \n", cX, cY, map.GetCarvsIdAt(cX, cY))
-			entities.All[ti][ei].RoomId = map.GetCarvsIdAt(cX, cY)
+			printf("entities.map.ValidRoomAt(%d, %d) \n", cX, cY)
 		}
 	}
 }
 
 
-func hitOrGoThruWallTo (dir i32, en Entity, 
-	l f32, midLR f32, r f32, // left/right inner/outer 
-	b f32, midBT f32, t f32, // bottom/top inner/outer 
+func hitOrGoThruWallTo (dir i32, ti i32, ei i32,
+	l f32, midLR f32, r f32, // left/right 
+	b f32, midBT f32, t f32, // bottom/top 
 	/* extents: */ narrow f32, wide f32) (hit bool) {
 		
-	if map.HasExit(dir) {
+	var en entities.Entity = entities.All[ti][ei]
+	var plX f32 = entities.All[ti][ei].X
+	var plY f32 = entities.All[ti][ei].Y
+	
+	if map.HasExit(dir, ti, ei) {
+	/*
 		if BoxesOverlap(en.X, en.Y, // N left nub 
 			l,
 			t, en.ExtentX, en.ExtentY,
@@ -274,6 +283,7 @@ func hitOrGoThruWallTo (dir i32, en Entity,
 			
 			hit = true
 		}
+	*/
 	}else{
 		if BoxesOverlap(en.X, en.Y, // N wall 
 			midLR,

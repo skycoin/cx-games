@@ -63,7 +63,6 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	DistanceX      f32 // how far entity travelled since spawning 
 	DistanceY      f32 //                    " 
 	MeshId         i32
-	RoomId         i32
 }
 
 
@@ -131,7 +130,7 @@ func Update () {
 				UpdateAt(t, i)
 				// back out of any entity/entity penetration, 
 				// or change rooms if OOBounds 
-				space.HandleAllBounds(t, i, All[t][i])
+				space.HandleAllBounds(t, i)
 				/*  OLD 1D DEMO LOGIC EXTENSIONS WE'LL DELETE SHORTLY 
 				All[t][i].X,
 				All[t][i].Y,
@@ -253,7 +252,6 @@ func Spawn (eType i32, newEnt Entity) {
 		All[eType][aC].GoalEntType    = newEnt.GoalEntType
 		All[eType][aC].GoalEntId      = newEnt.GoalEntId  
 		All[eType][aC].MeshId         = newEnt.MeshId  
-		All[eType][aC].RoomId         = newEnt.RoomId  
 	}else{
 		//printf("------------- Spawn (eType: %v)     APPENDing \n", eType)
 		All[eType] = append(
@@ -346,7 +344,6 @@ func Kill (eType i32, id i32) {
 		All[eType][id].GoalEntType    = All[eType][lS].GoalEntType
 		All[eType][id].GoalEntId      = All[eType][lS].GoalEntId  
 		All[eType][id].MeshId         = All[eType][lS].MeshId
-		All[eType][id].RoomId         = All[eType][lS].RoomId
 		//printf("RECYCLED eType: %d   id: %d        \n", eType, id)
 		//printf("(========== copied values from lS: %d ---> id: %d \n", lS, id)
 	}

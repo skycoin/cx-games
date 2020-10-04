@@ -71,7 +71,6 @@ func Init () {
 	var ri /* random id */ i32 = i32.rand(0, len(Carvs))
 	
 	// put player in center 
-	entities.All[plr][0].RoomId = ri
 	entities.All[plr][0].X = Carvs[ri].MinEdge.X - WTh + CellSpanHalf
 	entities.All[plr][0].Y = Carvs[ri].MinEdge.Y - WTh + CellSpanHalf
 	
@@ -88,7 +87,7 @@ func GetRoom (id i32) (room CarvedRoom) {
 	//printf("GetRoom(%d) len(Carvs): %d \n", id, len(Carvs))
 	room = Carvs[id]
 }
-func GetCarvsIdAt (x i32, y i32) (id i32) {
+func GetRoomIdAt (x i32, y i32) (id i32) {
 	id = Cells[y][x].CarvsId
 }
 /*
@@ -123,16 +122,19 @@ func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 		y,
 		entities.All[t][i].VelX,
 		entities.All[t][i].ExtentX, 
+		
+		0.0, 0.0, 0.0, 0.0, 
+		/* GOT RID OF ROOMID
 		Carvs[entities.All[t][i].RoomId].MinEdge.X, 
 		Carvs[entities.All[t][i].RoomId].MaxEdge.X, 
 		Carvs[entities.All[t][i].RoomId].MinEdge.Y, 
 		Carvs[entities.All[t][i].RoomId].MaxEdge.Y, 
-		HasExit(geom.DIR_LEFT), 
-		HasExit(geom.DIR_RIGHT))
+		*/
+		HasExit(geom.DIR_LEFT , t, i), 
+		HasExit(geom.DIR_RIGHT, t, i))
 	
 	if cr == RESP_OUTOFROOM {
 		if ValidRoomAt(cellX, cellY) {
-			entities.All[t][i].RoomId = Cells[cellY][cellX].CarvsId
 		}
 	}
 
@@ -144,16 +146,18 @@ func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
 		x,
 		entities.All[t][i].VelY, 
 		entities.All[t][i].ExtentY, 
+		0.0, 0.0, 0.0, 0.0, 
+		/* GOT RID OF ROOMID
 		Carvs[entities.All[t][i].RoomId].MinEdge.Y, 
 		Carvs[entities.All[t][i].RoomId].MaxEdge.Y, 
 		Carvs[entities.All[t][i].RoomId].MinEdge.X, 
 		Carvs[entities.All[t][i].RoomId].MaxEdge.X, 
-		HasExit(geom.DIR_DOWN), 
-		HasExit(geom.DIR_UP))
+		*/
+		HasExit(geom.DIR_DOWN, t, i), 
+		HasExit(geom.DIR_UP  , t, i))
 	
 	if cr == RESP_OUTOFROOM {
 		if ValidRoomAt(cellX, cellY) {
-			entities.All[t][i].RoomId = Cells[cellY][cellX].CarvsId
 		}
 	}
 }
@@ -223,14 +227,16 @@ func BounceOffWalls (mdPos f32, ddPos f32, vel f32, rad f32, negEdge f32, posEdg
 }
 
 
-func HasExit (dir i32) (out bool) {
+func HasExit (dir i32, ti i32, ei i32) (out bool) {
 	//printf("HasExit (dir: %s)?????", geom.GetTextForDir(dir))
 	
-	var id i32 = entities.All[plr][0].RoomId
-	var room CarvedRoom
-	room = Carvs[id]
-	for i := 0; i < len(room.Exits); i++ {
-		if dir == room.Exits[i] {
+	var x i32 = f32.i32(entities.All[ti][ei].X)
+	var y i32 = f32.i32(entities.All[ti][ei].Y)
+	printf("map.HasExit() - x, y: %d, %d) \n", x, y)
+	var r CarvedRoom
+	r = Carvs[Cells[y][x].CarvsId]
+	for i := 0; i < len(r.Exits); i++ {
+		if dir == r.Exits[i] {
 			out = true
 			//printf("    YES! \n")
 			return
@@ -244,10 +250,10 @@ func HasExit (dir i32) (out bool) {
 
 // ideally, the below func would be in "sky-taxi/draw.cx", 
 // but moving it there would require series of funcs (such as
-// (GetRoom(), GetCarvsIdAt(), etc.,
+// (GetRoom(), etc.,
 // in order to get all the data you'd need from the "map" package. 
 // since ATM, CX 0.7.0 has trouble getting values out of packages. 
-// ATM CX gives lot's of unhelpful errors when 
+// ATM CX gives lot's of mystery errors when 
 // such out-of-package data access attempts are made 
 func DrawQuads () {
 	gl.Translatef(0.0-entities.All[plr][0].X, 0.0-entities.All[plr][0].Y, 0.0)
@@ -615,7 +621,8 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 
 
 func ValidRoomAt (x i32, y i32) (out bool) {
-	printf("map.ValidRoomAt(%d, %d) \n", x, y)
+	printf("map.ValidRoomAt(%d, %d)  \n", x, y)
+	printf("map.ValidRoomAt(%d, %d) %f,%f \n", x, y, entities.All[plr][0].X, entities.All[plr][0].Y)
 
 	if  x >= 0 && x < NumCellsAcross &&
 		y >= 0 && y < NumCellsAcross &&
