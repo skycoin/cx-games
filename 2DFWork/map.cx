@@ -109,130 +109,6 @@ func GetExitAt (roomId i32, exitId i32) (num i32) {
 */ 
 
 
-// collision bounce 
-// 		t = entity type 
-// 		i = entity id 
-func ConstrainEntityPos (t i32, i i32) (x f32, y f32, velX f32, velY f32) {
-	x = entities.All[t][i].X
-	y = entities.All[t][i].Y
-	
-	var cr    i32 // collision response 
-	var cellX i32 = f32.i32(entities.All[t][i].X)
-	var cellY i32 = f32.i32(entities.All[t][i].Y)
-	
-	//		in X dimension 
-	//printf("\n")
-	//printf("min: %f - max: %f ", min, max)
-	x, y, velX, cr = BounceOffWalls(
-		x,
-		y,
-		entities.All[t][i].VelX,
-		entities.All[t][i].ExtentX, 
-		
-		0.0, 0.0, 0.0, 0.0, 
-		/* GOT RID OF ROOMID
-		Carvs[entities.All[t][i].RoomId].MinEdge.X, 
-		Carvs[entities.All[t][i].RoomId].MaxEdge.X, 
-		Carvs[entities.All[t][i].RoomId].MinEdge.Y, 
-		Carvs[entities.All[t][i].RoomId].MaxEdge.Y, 
-		*/
-		HasExit(geom.DIR_LEFT , t, i), 
-		HasExit(geom.DIR_RIGHT, t, i))
-	
-	if cr == RESP_OUTOFROOM {
-		if ValidRoomAt(cellX, cellY) {
-		}
-	}
-
-	
-	//		in Y dimension 
-	//printf("Y DIM --- min: %f - max: %f \n", min, max)
-	y, x, velY, cr = BounceOffWalls(
-		y, 
-		x,
-		entities.All[t][i].VelY, 
-		entities.All[t][i].ExtentY, 
-		0.0, 0.0, 0.0, 0.0, 
-		/* GOT RID OF ROOMID
-		Carvs[entities.All[t][i].RoomId].MinEdge.Y, 
-		Carvs[entities.All[t][i].RoomId].MaxEdge.Y, 
-		Carvs[entities.All[t][i].RoomId].MinEdge.X, 
-		Carvs[entities.All[t][i].RoomId].MaxEdge.X, 
-		*/
-		HasExit(geom.DIR_DOWN, t, i), 
-		HasExit(geom.DIR_UP  , t, i))
-	
-	if cr == RESP_OUTOFROOM {
-		if ValidRoomAt(cellX, cellY) {
-		}
-	}
-}
-
-
-// args: (md == move      dimension) 
-//       (dd == doorframe dimension) 
-// md position, 
-// dd position, 
-// velocity, 
-// radius, 
-// negative edge boundary, 
-// positive edge boundary, 
-// negative doorframe edge, 
-// positive doorframe edge, 
-// exit in negative direction, 
-// exit in positive direction 
-var doorBandCount i32
-func BounceOffWalls (mdPos f32, ddPos f32, vel f32, rad f32, negEdge f32, posEdge f32, negDF f32, posDF f32, negExit bool, posExit bool) (mdPosOut f32, ddPosOut f32, outVel f32, hitResponse i32) {
-	//printf("neg: %f - pos: %f --- %v %v \n", negEdge, posEdge, negExit, posExit)
-		
-	mdPosOut    = mdPos
-	ddPosOut    = ddPos
-	outVel      = vel
-	hitResponse = RESP_NOTOUCH
-
-	if vel < 0.0 {
-		if (mdPos - rad) < negEdge { // (touching door band) 
-			if negExit {
-				if mdPos < (negEdge - WTh) {
-					printf("\n -RESP_OUTOFROOM \n")
-					hitResponse = RESP_OUTOFROOM
-				}else{
-					printf("\n -DOOR BAND count: %d \n", doorBandCount)
-					doorBandCount = 
-					doorBandCount + 1
-					hitResponse = RESP_INDOORBAND
-					ddPosOut = keepWithinDoorFrame(ddPosOut, rad, negDF, posDF)
-				}
-			}else{ // full length wall 
-				// bounce off 
-				mdPosOut = negEdge + rad
-				outVel   = -vel
-			}
-		}
-	}else
-	if vel > 0.0 {
-		if (mdPos + rad) > posEdge { // (touching door band) 
-			if posExit {
-				if mdPos > (posEdge + WTh) {
-					printf("\n +RESP_OUTOFROOM \n")
-					hitResponse = RESP_OUTOFROOM
-				}else{
-					printf("\n +DOOR BAND count: %d \n", doorBandCount)
-					doorBandCount = 
-					doorBandCount + 1
-					hitResponse = RESP_INDOORBAND
-					ddPosOut = keepWithinDoorFrame(ddPosOut, rad, negDF, posDF)
-				}
-			}else{ // full length wall 
-				// bounce off 
-				mdPosOut = posEdge - rad
-				outVel   = -vel
-			}
-		}
-	}
-}
-
-
 func HasExit (dir i32, ti i32, ei i32) (out bool) {
 	printf("map.HasExit (%s)?????   ", geom.GetTextForDir(dir))
 	var x i32 = f32.i32(entities.All[ti][ei].X)
@@ -306,8 +182,9 @@ func DrawQuads () {
 				}
 			}
 			
-			// overlay marks to visually enumerate grid pos 
-			// 		in Y 
+			/*
+			// DEBUG overlay line-marks to visually enumerate grid pos 
+			// 		in X 
 			draw.SetColor3(draw.White)
 			l = l + CellSpanHalf
 			r = l + 0.02
@@ -334,6 +211,7 @@ func DrawQuads () {
 				b = b + 0.03
 				t = t + 0.03
 			}
+			*/
 		}
 	draw.End()
 	
