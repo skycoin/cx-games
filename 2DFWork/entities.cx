@@ -10,6 +10,7 @@ import "time"
 
 var AutoUpdatePlayerEnts bool = true // can be multiple entities 
                                      // (like player paddles in SkyBOOM) 
+var Gravity f32 = 0.0 // in Y space (use negative number for falling) 
 
 // "enums"   FIXME: when CX has enums or constants 
 var ENT_PLAYER                 i32
@@ -365,15 +366,15 @@ func moveByVelocity (et i32, i i32) {
 	All[et][i].OldX = All[et][i].X
 	All[et][i].OldY = All[et][i].Y
 	
-	var vX f32 
-	var vY f32 
-	vX = All[et][i].VelX
-	vY = All[et][i].VelY
-
-	var dX f32 
-	var dY f32 
-	dX = f32.mul(vX, time.Delta)
-	dY = f32.mul(vY, time.Delta)
+	if Gravity != 0.0 {
+		var t f32 = time.Delta * Gravity
+		All[et][i].VelY = 
+		All[et][i].VelY + t
+	}
+	
+	// deltas 
+	var dX f32 = All[et][i].VelX * time.Delta
+	var dY f32 = All[et][i].VelY * time.Delta
 
 	if  et == ENT_MAX_OF_2DFW + 4 ||
 		et == ENT_MAX_OF_2DFW + 5 {
