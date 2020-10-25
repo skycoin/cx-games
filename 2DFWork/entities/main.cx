@@ -14,7 +14,9 @@ var Gravity f32 = 0.0 // in Y space (use negative number for falling)
 
 // "enums"   FIXME: when CX has enums or constants 
 var ENT_PLAYER                 i32
-var ENT_MAX_OF_2DFW            i32 = 1
+var ENT_PARTICLE_0             i32 = 1
+var ENT_PARTICLE_1             i32 = 2
+var ENT_MAX_OF_2DFW            i32 = 3
 // 		modes 
 var ENTMODE_STATIONARY         i32
 var ENTMODE_DYNAMIC_MOVER      i32 = 1
