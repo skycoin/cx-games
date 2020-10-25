@@ -11,7 +11,7 @@ var ENT_MAX_OF_GAME i32 = entities.ENT_MAX_OF_2DFW + 2
 
 func entitiesInit () {
 	entities.Init(ENT_MAX_OF_GAME)
-	entities.Gravity = -3.4 //-9.8
+	entities.Gravity = -7.0 //-9.8
 }
 
 

@@ -7,7 +7,6 @@ import "draw"
 import "entities"
 import "inputs"
 import "map"
-import "mov"
 
 
 

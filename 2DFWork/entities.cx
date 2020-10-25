@@ -2,7 +2,7 @@ package entities
 
 import "app"
 import "inputs"
-import "mov"
+import "move"
 import "space"
 import "time"
 
@@ -93,8 +93,6 @@ func Init (maxEntTypes i32) {
 		Y:       0.0,
 		ExtentX: 0.05,
 		ExtentY: 0.05,
-		//VelX:      0.10,
-		//VelY:      0.10,
 		Gravity: 0.01}
 		
 	Spawn(ENT_PLAYER, ne)
@@ -123,7 +121,7 @@ func Update () {
 				// 		USE TimeToNextMode/DIST FIELDS 
 				//		(CUZ NOW IT COLLIDES AFTER Kill() IN UpdateAt() )
 				All[t][i].VelX,
-				All[t][i].VelY = mov.GetPlayerVelocityFromInput(
+				All[t][i].VelY = move.GetPlayerVelocityFromInput(
 				All[t][i].VelX,
 				All[t][i].VelY)
 			
@@ -207,7 +205,7 @@ func UpdateAt (et i32, i i32) { // entity type, id
 	
 	
 	// expire any ents that timeout 
-	if All[et][i].TimeToNextMode != 0.0 {
+	if     All[et][i].TimeToNextMode != 0.0 {
 		if All[et][i].TimeToNextMode <= time.Now {
 			Kill(et, i)
 		}		

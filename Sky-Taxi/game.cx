@@ -70,25 +70,26 @@ func respondToKeyEvents () {
 
 
 func oneTimeOnly (key i32) {
-	if inputs.OpenedMenu(key) {
-	}else{
+	if bool.not(
+		inputs.OpenedMenu(key)) {
+			
 		inputs.CloseAppOnDeveloperShortcut(key)
 	}
 }
 
 
-func repeaters (key i32) {
+func repeaters (key i32) { 
 	if app.Mode == app.MODE_PLAYING {
 		if inputs.EventMoveLeft(key) {
-		} else
+		}else
 		if inputs.EventMoveRight(key) {
-		} else
+		}else
 		if inputs.EventMoveUp(key) {
-		} else
+		}else
 		if inputs.EventMoveDown(key) {
-		} else
+		}else
 		if inputs.EventAbilityLeft(key) {
-		} else
+		}else
 		if inputs.EventAbilityRight(key) {
 		}
 	}

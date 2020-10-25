@@ -1,4 +1,4 @@
-package mov
+package move
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
@@ -23,9 +23,48 @@ var Force f32 = 4.0
 
 // in, out (velocity) 
 func GetPlayerVelocityFromInput (ivX f32, ivY f32) (ovX f32, ovY f32) {
-	ovX = getVelocity(ivX, inputs.HoldingGoLeft(), inputs.HoldingGoRight())
-	ovY = getVelocity(ivY, inputs.HoldingGoDown(), inputs.HoldingGoUp())
+	ovX = getVelocity(ivX, inputs.HoldingGoLeft(), inputs.HoldingGoRight(), false)
+	ovY = getVelocity(ivY, inputs.HoldingGoDown(), inputs.HoldingGoUp   (), true)
 	//printf("ovX,ovY: %v,%v \n", ovX, ovY)
+}
+
+// velocity 
+// (holding) negative direction key 
+// (holding) positive direction key 
+// y axis 
+func getVelocity (vel f32, neg bool, pos bool, y bool) (out f32) {
+	out = vel
+
+	//____________________________________________ 
+	if pos { // _________ (holding positive direction key) 
+		if  out < 0.0 {
+			out = dampenNegativeMovement(out, 4.0)
+		}
+
+		var f f32 = Force
+		
+		if entities.Gravity < 0.0 {
+			f = f * 1.9
+		}
+		
+		out = f32.add(out, f * time.Delta)
+	}else
+	if neg { // _________ (holding negative direction key) 
+		if  out > 0.0 {
+			out = dampenPositiveMovement(out, 4.0)
+		}
+
+		out = f32.sub(out, Force * time.Delta)
+	}else{ // ___________ slow down (no player direction) 
+		if !y || entities.Gravity /* GetGravity() */ == 0.0 {		
+			if  out > 0.0 {
+				out = dampenPositiveMovement(out, 1.0)
+			}else
+			if  out < 0.0 {
+				out = dampenNegativeMovement(out, 1.0)
+			}
+		}
+	}
 }
 
 
@@ -43,33 +82,5 @@ func dampenPositiveMovement (velocity f32, strength f32) (out f32) {
 
 	if  out < 0.0 {
 		out = 0.0
-	}
-}
-
-
-func getVelocity (velocity f32, negative bool, positive bool) (out f32) {
-	out = velocity
-
-	//____________________________________________ 
-	if positive { // _________ speed up positively 
-		if out < 0.0 {
-			out = dampenNegativeMovement(out, 4.0)
-		}
-
-		out = f32.add(out, Force * time.Delta)
-	} else
-	if negative { // _________ speed up negatively 
-		if out > 0.0 {
-			out = dampenPositiveMovement(out, 4.0)
-		}
-
-		out = f32.sub(out, Force * time.Delta)
-	}else{ // ________________ slow down 
-		if out > 0.0 {
-			out = dampenPositiveMovement(out, 1.0)
-		} else
-		if out < 0.0 {
-			out = dampenNegativeMovement(out, 1.0)
-		}
 	}
 }
