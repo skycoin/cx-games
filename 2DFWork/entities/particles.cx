@@ -1,0 +1,59 @@
+package entities
+
+
+
+var nTic      Entity // new particle 
+var isOne     bool
+var distGrain f32 = 0.025
+func SpawnParticlePuffFrom (et i32 /* entity type */, i i32) {
+	for id := 0; id < 8; id++ {
+		var r  i32 = i32.rand(-16, 17)
+		var oX f32 = f32.mul(distGrain, i32.f32(r)) // goal offset/delta 
+		var gX f32 = f32.add(All[et][i].X, oX) // total goal pos 
+		
+		    r      = i32.rand(  2, 17)
+		var oY f32 = f32.mul(distGrain, i32.f32(r)) // ^ 
+		var gY f32 = f32.add(All[et][i].Y, oY)     // ^ 
+		
+		//var exp f32 = f32.add(time.Now, 0.9)
+		
+		nTic = Entity{
+			Mode:        ENTMODE_MOVING_TO_POS,
+			GoalEntType: ENT_PLAYER,
+			GoalEntId:   0,
+			GoalX:       gX,
+			GoalY:       gY,
+			OldX:        All[et][i].X, 
+			OldY:        All[et][i].Y, 
+			X:           All[et][i].X, 
+			Y:           All[et][i].Y, 
+			VelX:        oX * 2.2, 
+			VelY:        oY * 2.2,
+			DistanceX:   0.0, 
+			DistanceY:   0.0, 
+			ExtentX:     0.015, 
+			ExtentY:     0.03}
+			//TimeToNextMode:  exp}				
+		
+
+
+		//printf("r (for Y): %v   gY: %v \n", r, gY)
+		/*
+		printf("All[et][i].Y: %f   oY: %f    gY: %f   nTic.GoalY: %f \n", 
+			All[et][i].Y,
+			oY,
+			gY,
+			nTic.GoalY)
+		*/
+
+
+
+		if isOne {
+			Spawn(ENT_PARTICLE_1, nTic)
+		}else{
+			Spawn(ENT_PARTICLE_0, nTic)
+		}
+		
+		isOne = !isOne
+	}
+}

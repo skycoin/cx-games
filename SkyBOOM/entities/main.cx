@@ -9,9 +9,7 @@ var ENT_DROPPER        i32 = entities.ENT_MAX_OF_2DFW     // coin ENT_DROPPER
 var ENT_GAME_COIN      i32 = entities.ENT_MAX_OF_2DFW + 1
 var ENT_BACKDROP_COIN  i32 = entities.ENT_MAX_OF_2DFW + 2 // for menu backdrop 
 var ENT_BACKDROP_CLOUD i32 = entities.ENT_MAX_OF_2DFW + 3 // gameplay backdrop 
-var ENT_PARTICLE_0     i32 = entities.ENT_MAX_OF_2DFW + 4
-var ENT_PARTICLE_1     i32 = entities.ENT_MAX_OF_2DFW + 5
-var ENT_MAX_OF_GAME    i32 = entities.ENT_MAX_OF_2DFW + 6
+var ENT_MAX_OF_GAME    i32 = entities.ENT_MAX_OF_2DFW + 4
 // 		modes 
 var ENTMODE_DROPPING  i32 = entities.ENTMODE_MAX_OF_2DFW
 var ENTMODE_FADING    i32 = entities.ENTMODE_MAX_OF_2DFW + 1
@@ -79,63 +77,6 @@ func entitiesUpdate () {
 				}
 			}
 		}
-	}
-}
-
-
-var nTic      entities.Entity // new particle 
-var isOne     bool
-var distGrain f32 = 0.025
-func spawnParticlePuffFrom (et i32 /* entity type */, i i32) {
-	for id := 0; id < 8; id++ {
-		var r  i32 = i32.rand(-16, 17)
-		var oX f32 = f32.mul(distGrain, i32.f32(r)) // goal offset/delta 
-		var gX f32 = f32.add(entities.All[et][i].X, oX)     // total goal pos 
-		
-		    r      = i32.rand(  2, 17)
-		var oY f32 = f32.mul(distGrain, i32.f32(r)) // ^ 
-		var gY f32 = f32.add(entities.All[et][i].Y, oY)     // ^ 
-		
-		//var exp f32 = f32.add(time.Now, 0.9)
-		
-		nTic = entities.Entity{
-			Mode:        entities.ENTMODE_MOVING_TO_POS,
-			GoalEntType: plr,
-			GoalEntId:   0,
-			GoalX:       gX,
-			GoalY:       gY,
-			OldX:        entities.All[et][i].X, 
-			OldY:        entities.All[et][i].Y, 
-			X:           entities.All[et][i].X, 
-			Y:           entities.All[et][i].Y, 
-			VelX:        oX * 2.2, 
-			VelY:        oY * 2.2,
-			DistanceX:   0.0, 
-			DistanceY:   0.0, 
-			ExtentX:     0.015, 
-			ExtentY:     0.03}
-			//TimeToNextMode:  exp}				
-		
-
-
-		//printf("r (for Y): %v   gY: %v \n", r, gY)
-		/*
-		printf("entities.All[et][i].Y: %f   oY: %f    gY: %f   nTic.GoalY: %f \n", 
-			entities.All[et][i].Y,
-			oY,
-			gY,
-			nTic.GoalY)
-		*/
-
-
-
-		if isOne {
-			entities.Spawn(ENT_PARTICLE_1, nTic)
-		}else{
-			entities.Spawn(ENT_PARTICLE_0, nTic)
-		}
-		
-		isOne = !isOne
 	}
 }
 

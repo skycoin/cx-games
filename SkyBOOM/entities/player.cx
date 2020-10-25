@@ -21,7 +21,7 @@ func playerEntsInit () {
 	
 	var f f32  = 0.07
 	var y f32  = f - 1.0
-	var et i32 = entities.ENT_PLAYER
+	var et i32 = plr
 
 	// wallets/paddles/buckets 
 	//		bottom 
@@ -104,12 +104,12 @@ func maybeCollideWithCoin (et i32, i i32, coinTop f32, coinRight f32, coinBottom
 
 			if     caughtCoin(i, pL, pR, coinLeft) { // edge 
 					addToScore()
-					spawnParticlePuffFrom(et, i)
+					entities.SpawnParticlePuffFrom(et, i)
 					entities.Kill(et, i)
 			}else{
 				if caughtCoin(i, pL, pR, coinRight) { // edge 
 					addToScore()
-					spawnParticlePuffFrom(et, i)
+					entities.SpawnParticlePuffFrom(et, i)
 					entities.Kill(et, i)
 				}
 			}
