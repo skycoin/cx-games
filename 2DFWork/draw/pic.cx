@@ -89,6 +89,7 @@ func ScaledRotatedPic (picId i32, x f32, y f32, scaleX f32, scaleY f32, angle f3
 	if angle != 0.0 {
 		gl.Rotatef(angle, 0.0, 0.0, 1.0)
 	}
+	
 	gl.Translatef(x, y, 0.0)
 	gl.Scalef(scaleX, scaleY, 0.0)
 	

@@ -25,15 +25,20 @@ func drawAll () {
 	if app.Mode == app.MODE_EDITOR {
 		mesh.DrawEditor()
 	}else{ // gameplay 
+		// move "camera" position (centered on player) 
+		gl.Translatef(
+			0.0-entities.All[plr][0].X, 
+			0.0-entities.All[plr][0].Y, 
+			0.0)
+			
 		map.DrawQuads()
 		draw.OneCircle(
-			entities.All[entities.ENT_PLAYER][0].X, 
-			entities.All[entities.ENT_PLAYER][0].Y, 
-			entities.All[entities.ENT_PLAYER][0].ExtentX, 
-			entities.All[entities.ENT_PLAYER][0].ExtentY, 
+			entities.All[plr][0].X, 
+			entities.All[plr][0].Y, 
+			entities.All[plr][0].ExtentX, 
+			entities.All[plr][0].ExtentY, 
 			draw.COLOR_CYAN, 
-			1.0, 
-			true)	
+			1.0)	
 			
 		// particles 
 		gl.Enable(gl.TEXTURE_2D)

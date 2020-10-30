@@ -43,7 +43,7 @@ var response        i32
 
 type Cell struct {
 	CarvsId i32 // MAX_I32 == solid rock 
-	Exits   []i32 // initial possibilities that point to all valid grid slot neighbor cells 
+	Exits []i32 // initial possibilities that point to all valid grid slot neighbor cells 
 }
 
 type CarvedRoom struct {
@@ -140,8 +140,6 @@ func HasExit (dir i32, ti i32, ei i32) (out bool) {
 // ATM CX gives lot's of mystery errors when 
 // such out-of-package data access attempts are made 
 func DrawQuads () {
-	gl.Translatef(0.0-entities.All[plr][0].X, 0.0-entities.All[plr][0].Y, 0.0)
-	
 	var x f32
 	var y f32
 
@@ -214,8 +212,6 @@ func DrawQuads () {
 			*/
 		}
 	draw.End()
-	
-	gl.LoadIdentity()
 }
 
 

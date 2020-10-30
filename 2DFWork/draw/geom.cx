@@ -53,24 +53,19 @@ func TexturedQuad   (t f32, r f32, b f32, l f32) {
 
 
 // "SLOW"?  PER-FRAME CALC OF EACH POINT 
-func OneCircle (inX f32, inY f32, extX f32, extY f32, colorId i32, alpha f32, drawAt0 bool) {
+func OneCircle (inX f32, inY f32, extX f32, extY f32, colorId i32, alpha f32) {
 	var x  f32
 	var y  f32
-	var eX f32
-	var eY f32
+	var angleGrain f32 = geom.TAU / 20.0
 
-	if !drawAt0 {
-		eX = inX
-		eY = inY
-	}
-	
 	SetColorAndAlpha(colorId, alpha)
 
 	gl.Begin(gl.POLYGON)
-		var i f32
-		for i = 0.0; f32.lt(i, 20.0); i = f32.add(i, 1.0) {
-			x = f32.add(eX, f32.mul(extX, f32.cos(f32.div(f32.mul(i, geom.TAU), 20.0))))
-			y = f32.add(eY, f32.mul(extY, f32.sin(f32.div(f32.mul(i, geom.TAU), 20.0))))
+		for f := 0.0; f < 20.0; f = f + 1.0 {
+			var s f32 = f32.sin(f * angleGrain)
+			var c f32 = f32.cos(f * angleGrain)
+			x = f32.add(inX, extX * c)
+			y = f32.add(inY, extY * s)
 
 			gl.Vertex2f(x, y)
 			//printf("\n %f,%f: ", x, y)
