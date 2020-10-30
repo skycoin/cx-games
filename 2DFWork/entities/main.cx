@@ -10,7 +10,6 @@ import "time"
 
 var AutoUpdatePlayerEnts bool = true // can be multiple entities 
                                      // (like player paddles in SkyBOOM) 
-var Gravity f32 = 0.0 // in Y space (use negative number for falling) 
 
 // "enums"   FIXME: when CX has enums or constants 
 var ENT_PLAYER                 i32
@@ -45,7 +44,7 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	ExtentY        f32
 	VelX           f32 // velocity 
 	VelY           f32 // velocity 
-	Gravity        f32
+	Gravity        f32 // in Y space (negative number for falling) 
 	Mode           i32
 	NextMode       i32
 	DistToNextMode f32 // expire by distance travelled (0.0 == not using) 
@@ -354,6 +353,11 @@ func GetCountOf (entType i32) (c i32) {
 }
 
 
+func GetPlayerGravity () (g f32) {
+	g = All[ENT_PLAYER][0].Gravity
+}
+
+
 func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
 	t = All[entType][id].Y + All[entType][id].ExtentY
 	r = All[entType][id].X + All[entType][id].ExtentX
@@ -366,8 +370,8 @@ func moveByVelocity (et i32, i i32) {
 	All[et][i].OldX = All[et][i].X
 	All[et][i].OldY = All[et][i].Y
 	
-	if Gravity != 0.0 {
-		var t f32 = time.Delta * Gravity
+	if All[et][i].Gravity != 0.0 {
+		var t f32 = time.Delta * All[et][i].Gravity
 		All[et][i].VelY = 
 		All[et][i].VelY + t
 	}

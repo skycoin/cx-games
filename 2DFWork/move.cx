@@ -35,7 +35,7 @@ func GetPlayerVelocityFromInput (ivX f32, ivY f32) (ovX f32, ovY f32) {
 func getVelocity (vel f32, neg bool, pos bool, y bool) (out f32) {
 	out = vel
 
-	//____________________________________________ 
+	//___________________________________________________ 
 	if pos { // _________ (holding positive direction key) 
 		if  out < 0.0 {
 			out = dampenNegativeMovement(out, 4.0)
@@ -43,7 +43,7 @@ func getVelocity (vel f32, neg bool, pos bool, y bool) (out f32) {
 
 		var f f32 = Force
 		
-		if entities.Gravity < 0.0 {
+		if entities.GetPlayerGravity() < 0.0 {
 			f = f * 1.9
 		}
 		
@@ -56,7 +56,7 @@ func getVelocity (vel f32, neg bool, pos bool, y bool) (out f32) {
 
 		out = f32.sub(out, Force * time.Delta)
 	}else{ // ___________ slow down (no player direction) 
-		if !y || entities.Gravity /* GetGravity() */ == 0.0 {		
+		if !y || entities.GetPlayerGravity() == 0.0 {		
 			if  out > 0.0 {
 				out = dampenPositiveMovement(out, 1.0)
 			}else

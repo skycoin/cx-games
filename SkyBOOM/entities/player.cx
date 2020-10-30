@@ -104,12 +104,12 @@ func maybeCollideWithCoin (et i32, i i32, coinTop f32, coinRight f32, coinBottom
 
 			if     caughtCoin(i, pL, pR, coinLeft) { // edge 
 					addToScore()
-					entities.SpawnParticlePuffFrom(et, i)
+					entities.SpawnParticlePuffFrom(et, i, entities.ENTMODE_MOVING_TO_POS, 0.0, 0.0)
 					entities.Kill(et, i)
 			}else{
 				if caughtCoin(i, pL, pR, coinRight) { // edge 
 					addToScore()
-					entities.SpawnParticlePuffFrom(et, i)
+					entities.SpawnParticlePuffFrom(et, i, entities.ENTMODE_MOVING_TO_POS, 0.0, 0.0)
 					entities.Kill(et, i)
 				}
 			}

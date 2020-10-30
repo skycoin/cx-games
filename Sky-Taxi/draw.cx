@@ -4,8 +4,14 @@ import "draw"
 
 
 
+var Pic0Char  i32
+
+
+
 func drawInit () {
 	draw.Init()
+	Pic0Char  = draw.AddPic("0.png")
+	            draw.InitPics()
 }
 
 
@@ -14,6 +20,7 @@ func drawAll () {
 
 	pre()
 	gl.Disable(gl.TEXTURE_2D)
+	//gl.LoadIdentity()
 	
 	if app.Mode == app.MODE_EDITOR {
 		mesh.DrawEditor()
@@ -26,11 +33,15 @@ func drawAll () {
 			entities.All[entities.ENT_PLAYER][0].ExtentY, 
 			draw.COLOR_CYAN, 
 			1.0, 
-			true)			
+			true)	
+			
+		// particles 
+		gl.Enable(gl.TEXTURE_2D)
+		drawParticles()
 	}
 	
 	if  menu.IsOpen() {		
-		//gl.Enable(gl.TEXTURE_2D)
+		gl.Enable(gl.TEXTURE_2D)
 		//gl.Enable(gl.DEPTH_TEST)
 		menu.Draw()
 	}
@@ -50,4 +61,23 @@ func pre () {
 	gl.MatrixMode(gl.MODELVIEW)
 
 	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
+}
+
+
+func drawParticles () {
+	var t  f32 // rect edges 
+	var r  f32
+	var b  f32
+	var l  f32
+
+	var et i32 = entities.ENT_PARTICLE_0
+	var n  i32 = entities.GetCountOf(et)
+	draw.SetColor3(draw.White)
+	
+	draw.BeginTexturedQuads(Pic0Char)
+		for i := 0; i < n; i++ {
+			t, r, b, l = entities.GetRect(et, i)
+			draw.TexturedQuad(t, r, b, l)
+		}
+	draw.End()
 }
