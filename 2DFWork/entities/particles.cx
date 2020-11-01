@@ -16,25 +16,31 @@ func SpawnParticlePuffFrom (et i32, i i32, mode i32, x f32, y f32) {
 		var oY f32 = f32.mul(distGrain, i32.f32(r)) // ^ 
 		var gY f32 = f32.add(All[et][i].Y, oY)     // ^ 
 		
-		//var exp f32 = f32.add(time.Now, 0.9)
+		// calc time delay (until mode change), if needed 
+		    r      = i32.rand(  0, 10)
+		var time f32 = 0.0
+		
+		if mode == ENTMODE_MOVING_BY_VELOCITY {
+			time = f32.add(time.Now, i32.f32(r) * 0.1)
+		}
 		
 		nTic = Entity{
-			Mode:        mode,
-			GoalEntType: ENT_PLAYER,
-			GoalEntId:   0,
-			GoalX:       gX,
-			GoalY:       gY,
-			OldX:        All[et][i].X, 
-			OldY:        All[et][i].Y, 
-			X:           All[et][i].X, 
-			Y:           All[et][i].Y, 
-			VelX:        oX * 2.2, 
-			VelY:        oY * 2.2,
-			DistanceX:   0.0, 
-			DistanceY:   0.0, 
-			ExtentX:     0.015, 
-			ExtentY:     0.03}
-			//TimeToNextMode:  exp}				
+			Mode:           mode,
+			TimeToNextMode: time,				
+			GoalEntType:    ENT_PLAYER,
+			GoalEntId:      0,
+			GoalX:          gX,
+			GoalY:          gY,
+			OldX:           All[et][i].X, 
+			OldY:           All[et][i].Y, 
+			X:              All[et][i].X, 
+			Y:              All[et][i].Y, 
+			VelX:           oX * 2.2, 
+			VelY:           oY * 2.2,
+			DistanceX:      0.0, 
+			DistanceY:      0.0, 
+			ExtentX:        0.015, 
+			ExtentY:        0.03}
 		
 
 
