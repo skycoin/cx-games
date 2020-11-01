@@ -23,16 +23,16 @@ func entitiesUpdate () {
 	// thruster particles 
 	var f f32 = 0.1
 	if inputs.HoldingGoLeft () {
-		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, -f, 0.0)
-	}
-	if inputs.HoldingGoRight() {
 		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY,  f, 0.0)
 	}
+	if inputs.HoldingGoRight() {
+		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, -f, 0.0)
+	}
 	if inputs.HoldingGoDown () {
-		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, 0.0, -f)
+		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, 0.0,  f)
 	}
 	if inputs.HoldingGoUp   () {
-		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, 0.0,  f)
+		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, 0.0, -f)
 	}				
 }
 
