@@ -47,8 +47,8 @@ func SpawnParticlePuffFrom (et i32, i i32, mode i32, x f32, y f32) {
 			OldY:           All[et][i].Y, 
 			X:              All[et][i].X, 
 			Y:              All[et][i].Y, 
-			VelX:           oX, 
-			VelY:           oY,
+			VelX:           getVelocityForMinorAxis(oX),
+			VelY:           getVelocityForMinorAxis(oY),
 			DistanceX:      0.0, 
 			DistanceY:      0.0, 
 			ExtentX:        eX, 
@@ -74,5 +74,20 @@ func SpawnParticlePuffFrom (et i32, i i32, mode i32, x f32, y f32) {
 		}
 		
 		isOne = !isOne
+	}
+}
+
+
+func getVelocityForMinorAxis (velIn f32) (vel f32) {
+	vel = velIn
+	
+	if  vel == 0.0 {
+	    var r i32 = i32.rand(0, 10)
+		vel = i32.f32(r) * 0.02
+	    r         = i32.rand(0,  2)
+	    
+	    if r == 0 {
+	    	vel = -vel
+	    }
 	}
 }

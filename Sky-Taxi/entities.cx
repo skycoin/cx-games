@@ -21,7 +21,7 @@ func entitiesUpdate () {
 	entities.Update()
 	
 	// thruster particles 
-	var f f32 = 0.1
+	var f f32 = 0.5
 	if inputs.HoldingGoLeft () {
 		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY,  f, 0.0)
 	}

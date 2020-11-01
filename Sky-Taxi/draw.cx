@@ -19,8 +19,6 @@ func drawAll () {
 	//str.print("drawAll")
 
 	pre()
-	gl.Disable(gl.TEXTURE_2D)
-	//gl.LoadIdentity()
 	
 	if app.Mode == app.MODE_EDITOR {
 		mesh.DrawEditor()
@@ -30,25 +28,28 @@ func drawAll () {
 			0.0-entities.All[plr][0].X, 
 			0.0-entities.All[plr][0].Y, 
 			0.0)
-			
+
 		map.DrawQuads()
+			
+		// particles 
+		gl.Enable (gl.TEXTURE_2D)
+			drawParticles()
+		gl.Disable(gl.TEXTURE_2D)
+
 		draw.OneCircle(
 			entities.All[plr][0].X, 
 			entities.All[plr][0].Y, 
 			entities.All[plr][0].ExtentX, 
 			entities.All[plr][0].ExtentY, 
 			draw.COLOR_CYAN, 
-			1.0)	
-			
-		// particles 
-		gl.Enable(gl.TEXTURE_2D)
-		drawParticles()
+			1.0)
 	}
 	
 	if  menu.IsOpen() {		
-		gl.Enable(gl.TEXTURE_2D)
+		gl.Enable (gl.TEXTURE_2D)
 		//gl.Enable(gl.DEPTH_TEST)
-		menu.Draw()
+			menu.Draw()
+		gl.Disable(gl.TEXTURE_2D)
 	}
 }
 
@@ -65,6 +66,7 @@ func pre () {
 		space.ViewHeiInPixels)
 	gl.MatrixMode(gl.MODELVIEW)
 
+	gl.Disable(gl.TEXTURE_2D)
 	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
 }
 
