@@ -129,9 +129,9 @@ func gameInit () {
 
 func gameUpdate () {
 	time.Update()
-	respondToPointerEvents() // updates player paddles with deltas 
-	respondToButtonEvents()
-	respondToKeyEvents()
+	actOnPointerQueue() // updates player paddles with deltas 
+	actOnButtonQueue()
+	actOnKeyQueue()
 	entitiesUpdate()
 }
 
