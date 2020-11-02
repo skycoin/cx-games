@@ -50,6 +50,8 @@ func drawAll () {
 		//gl.Enable(gl.DEPTH_TEST)
 			menu.Draw()
 		gl.Disable(gl.TEXTURE_2D)
+	}else{
+		gl.LoadIdentity()
 	}
 }
 
