@@ -36,13 +36,7 @@ func drawAll () {
 			drawParticles()
 		gl.Disable(gl.TEXTURE_2D)
 
-		draw.OneCircle(
-			entities.All[plr][0].X, 
-			entities.All[plr][0].Y, 
-			entities.All[plr][0].ExtentX, 
-			entities.All[plr][0].ExtentY, 
-			draw.COLOR_CYAN, 
-			1.0)
+		drawPlayer()
 	}
 	
 	if  menu.IsOpen() {		
@@ -70,6 +64,27 @@ func pre () {
 
 	gl.Disable(gl.TEXTURE_2D)
 	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
+}
+
+
+func drawPlayer () {
+	gl.Begin(gl.TRIANGLES)
+		mesh.TrisForOneMeshAtPos(
+			mesh.SizedMeshes,
+			0,
+			entities.All[plr][0].X,
+			entities.All[plr][0].Y)
+		
+		/*
+		draw.OneCircle(
+			entities.All[plr][0].X, 
+			entities.All[plr][0].Y, 
+			entities.All[plr][0].ExtentX, 
+			entities.All[plr][0].ExtentY, 
+			draw.COLOR_CYAN, 
+			1.0)
+		*/
+	gl.End()
 }
 
 
