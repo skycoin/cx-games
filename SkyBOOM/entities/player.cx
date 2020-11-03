@@ -5,44 +5,46 @@ package main
 var ONE_UP_SCORE_DELTA i32 = 10 // get this many to replace any missing wallet paddles 
 
 var walletAspectRatio  f32 = 828.0 / 364.0 // multiply this with desired height 
+
+// player 
 var plr                i32 = entities.ENT_PLAYER
 var score              i32
 var scoreAtLastLoss    i32 // loss of a wallet paddle (from missing a coin) 
+
 // edges of wallet paddles 
-var pT /* top      */  f32
-var pB /* bottom   */  f32
-var pL /* left     */  f32
-var pR /* right    */  f32
+var pT /* top       */ f32
+var pB /* bottom    */ f32
+var pL /* left      */ f32
+var pR /* right     */ f32
 	
 
 
 func playerEntsInit (xY f32) { // extent Y 
 	entities.AutoUpdatePlayerEnts = false
-	
-	var y f32 = -1.0
+	var xX f32 = xY * walletAspectRatio
+	var y  f32 = -1.0
 	y = y + xY
-
-	// wallets/paddles/buckets 
-	//		bottom 
-	//		(1st player entity is autocreated) 
+	
+	// wallets/paddles 
+	//		bottom   (1st player entity was autocreated) 
 	entities.All[plr][0].Y       = y
-	entities.All[plr][0].ExtentX = xY * walletAspectRatio
+	entities.All[plr][0].ExtentX = xX
 	
 	var ne entities.Entity	
 	
-	// middle 
+	//		middle 
 	y = f32.add(y, f32.mul(xY, 3.0))
 	ne = entities.Entity{
 		Y:       y,
-		ExtentX: xY * walletAspectRatio,
+		ExtentX: xX,
 		ExtentY: xY}
 	entities.Spawn(plr, ne)
 
-	// top 
+	//		top 
 	y = f32.add(y, f32.mul(xY, 3.0))
 	ne = entities.Entity{
 		Y:       y, 
-		ExtentX: xY * walletAspectRatio,
+		ExtentX: xX,
 		ExtentY: xY}
 	entities.Spawn(plr, ne)
 

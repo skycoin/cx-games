@@ -89,16 +89,15 @@ func Init (maxEntTypes i32, plrExtentX f32, plrExtentY f32) {
 	printf("    Created %v slices (1 for each entity type) \n", maxEntTypes)
 
 
-	// new Entity 
-	var ne Entity
-	  ne = Entity{
+	var newE Entity
+	  newE = Entity{
 		X:       0.0,
 		Y:       0.0,
 		ExtentX: plrExtentX,
 		ExtentY: plrExtentY,
 		Gravity: 0.0}
 		
-	Spawn(ENT_PLAYER, ne)
+	Spawn(ENT_PLAYER, newE)
 }
 
 
