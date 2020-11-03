@@ -16,37 +16,36 @@ var pR /* right    */  f32
 	
 
 
-func playerEntsInit () {
+func playerEntsInit (xY f32) { // extent Y 
 	entities.AutoUpdatePlayerEnts = false
 	
-	var f f32  = 0.07
-	var y f32  = f - 1.0
-	var et i32 = plr
+	var y f32  = -1.0
+	y = f32.add(y, xY)
 
 	// wallets/paddles/buckets 
 	//		bottom 
 	//		(1st player entity is autocreated) 
-	entities.All[et][0].Y       = y
-	entities.All[et][0].ExtentX = f * walletAspectRatio
-	entities.All[et][0].ExtentY = f
+	entities.All[plr][0].Y       = y
+	entities.All[plr][0].ExtentX = xY * walletAspectRatio
+	entities.All[plr][0].ExtentY = xY
 	
 	var ne entities.Entity	
 	
 	// middle 
-	y = f32.add(y, f32.mul(f, 3.0))
+	y = f32.add(y, f32.mul(xY, 3.0))
 	ne = entities.Entity{
 		Y:       y,
-		ExtentX: f * walletAspectRatio,
-		ExtentY: f}
-	entities.Spawn(et, ne)
+		ExtentX: xY * walletAspectRatio,
+		ExtentY: xY}
+	entities.Spawn(plr, ne)
 
 	// top 
-	y = f32.add(y, f32.mul(f, 3.0))
+	y = f32.add(y, f32.mul(xY, 3.0))
 	ne = entities.Entity{
 		Y:       y, 
-		ExtentX: f * walletAspectRatio,
-		ExtentY: f}
-	entities.Spawn(et, ne)
+		ExtentX: xY * walletAspectRatio,
+		ExtentY: xY}
+	entities.Spawn(plr, ne)
 
 	pT = f32.add(ne.Y, ne.ExtentY)					
 	pB = -1.0

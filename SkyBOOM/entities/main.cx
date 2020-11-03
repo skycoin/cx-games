@@ -17,8 +17,8 @@ var ENTMODE_FADING    i32 = entities.ENTMODE_MAX_OF_2DFW + 1
 
 
 func entitiesInit () {
-	entities.Init(ENT_MAX_OF_GAME)
-	playerEntsInit()
+	entities.Init(ENT_MAX_OF_GAME, 0.07, 0.07)
+	playerEntsInit(0.07)
 	dropperInit()		   
 	spawnCloudsBackdrop()
 	spawnMenuBackdropCoins()

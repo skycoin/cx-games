@@ -12,6 +12,7 @@ var AutoUpdatePlayerEnts bool = true // can be multiple entities
                                      // (like player paddles in SkyBOOM) 
 
 // "enums"   FIXME: when CX has enums or constants 
+//		types 
 var ENT_PLAYER                 i32
 var ENT_PARTICLE_0             i32 = 1
 var ENT_PARTICLE_1             i32 = 2
@@ -29,7 +30,7 @@ var ENTMODE_DEAD               i32 = 8
 var ENTMODE_MAX_OF_2DFW        i32 = 9
 // consider that maybe a corpse/wreckage needs to... 
 // 		...remain visible, then *_DEAD would... 
-//		!= inactive/disabled (as used in the Unity3D Engine) 
+//		!= inactive/disabled (the terms used in the Unity3D Engine) 
 
 var All          [][]Entity // all entities (1st index is for ENT_* type) 
 var ActiveCounts []i32      // corresponds with "All" slices 
@@ -69,7 +70,8 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 
 
 
-func Init (maxEntTypes i32) {
+// player extents 
+func Init (maxEntTypes i32, plrExtentX f32, plrExtentY f32) {
 	printf("entities.Init () - ent TYPES: %d", maxEntTypes)
 	
 	// add all slices needed for entity types 
@@ -87,14 +89,14 @@ func Init (maxEntTypes i32) {
 	printf("    Created %v slices (1 for each entity type) \n", maxEntTypes)
 
 
-	// ENT_PLAYER 
+	// new Entity 
 	var ne Entity
 	  ne = Entity{
 		X:       0.0,
 		Y:       0.0,
-		ExtentX: 0.05,
-		ExtentY: 0.05,
-		Gravity: 0.01}
+		ExtentX: plrExtentX,
+		ExtentY: plrExtentY,
+		Gravity: 0.0}
 		
 	Spawn(ENT_PLAYER, ne)
 }
