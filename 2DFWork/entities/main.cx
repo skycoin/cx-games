@@ -130,7 +130,7 @@ func Update () {
 				UpdateAt(t, i)
 				// back out of any entity/entity penetration, 
 				// or change rooms if OOBounds 
-				space.HandleAllBounds(t, i)
+				space.HandleAllRoomBounds(t, i)
 			}else{
 				UpdateAt(t, i)
 			}

@@ -110,10 +110,11 @@ func GetExitAt (roomId i32, exitId i32) (num i32) {
 
 
 func HasExit (dir i32, ti i32, ei i32) (out bool) {
-	printf("map.HasExit (%s)?????   ", geom.GetTextForDir(dir))
+	//printf("map.HasExit (%s)?????   ", geom.GetTextForDir(dir))
+	
 	var x i32 = f32.i32(entities.All[ti][ei].X)
 	var y i32 = f32.i32(entities.All[ti][ei].Y)
-	printf(" - x, y: %d, %d) \n", x, y)
+	//printf(" - x, y: %d, %d) \n", x, y)
 	
 	var ci i32 = Cells[y][x].CarvsId
 	var r CarvedRoom
@@ -121,13 +122,13 @@ func HasExit (dir i32, ti i32, ei i32) (out bool) {
 	
 	for i := 0; i < len(r.Exits); i++ {
 		if dir == r.Exits[i] {
-			printf("    YES! \n")
+			//printf("    YES! \n")
 			out = true
 			return
 		}
 	}
 	
-	printf("    NO! \n")
+	//printf("    NO! \n")
 	out = false
 }
 
@@ -503,8 +504,7 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 
 
 func ValidRoomAt (x i32, y i32) (out bool) {
-	printf("map.ValidRoomAt(%d, %d)  \n", x, y)
-	printf("map.ValidRoomAt(%d, %d) %f,%f \n", x, y, entities.All[plr][0].X, entities.All[plr][0].Y)
+	//printf("map.ValidRoomAt(%d, %d) %f,%f \n", x, y, entities.All[plr][0].X, entities.All[plr][0].Y)
 
 	if  x >= 0 && x < NumCellsAcross &&
 		y >= 0 && y < NumCellsAcross &&

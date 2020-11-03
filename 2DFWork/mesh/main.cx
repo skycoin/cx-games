@@ -72,7 +72,7 @@ func Init () {
 	
 	// gameplay 
 	var exts app.Vec2
-	    exts=app.Vec2{ X: 0.2, Y: 0.2 }
+	    exts=app.Vec2{ X: 0.12, Y: 0.1 }
 	
 	makePlayerShip() // (is also a toolbar Editor-EXIT icon) 
 	makeSizedMesh(len(RawMeshes) - 1, exts)

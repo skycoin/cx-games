@@ -144,12 +144,12 @@ func RectsOverlap (
 }
 
 
-func HandleAllBounds (ti i32, ei i32) {
+func HandleAllRoomBounds (ti i32, ei i32) {
 	// abort if not in valid room 
 	// 		cell ids 
 	var cX i32 = f32.i32(entities.All[ti][ei].X)
 	var cY i32 = f32.i32(entities.All[ti][ei].Y)
-	printf("cX, cY: %d, %d) \n", cX, cY)
+	//printf("cX, cY: %d, %d) \n", cX, cY)
 	
 	if bool.not(map.ValidRoomAt(cX, cY)) {
 		return ////////////////////////////////////////
@@ -164,7 +164,7 @@ func HandleAllBounds (ti i32, ei i32) {
 	var cl f32 = i32.f32(f32.i32(entities.All[ti][ei].X))
 	var cr f32 = cl + map.CellSpan
 	var cb f32 = i32.f32(f32.i32(entities.All[ti][ei].Y))
-	printf("cl: %f - cb: %f \n", cl, cb)
+	//printf("cl: %f - cb: %f \n", cl, cb)
 	var ct f32 = cb + map.CellSpan
 	
 	
