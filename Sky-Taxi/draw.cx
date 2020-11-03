@@ -68,6 +68,8 @@ func pre () {
 
 
 func drawPlayer () {
+	draw.SetColor3(draw.Gray)
+	
 	gl.Begin(gl.TRIANGLES)
 		mesh.TrisForOneMeshAtPos(
 			mesh.SizedMeshes,

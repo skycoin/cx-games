@@ -13,10 +13,10 @@ func gameInit () {
 	//space.Init()
 	drawInit()
 	inputs.Init(true)
-	mesh.Init()
 	menuInit()
 	entitiesInit()
 	map.Init()
+	mesh.Init()
 }
 
 

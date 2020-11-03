@@ -359,6 +359,16 @@ func GetPlayerGravity () (g f32) {
 }
 
 
+func GetPlayerExtentX () (e f32) {
+	e = All[ENT_PLAYER][0].ExtentX
+}
+
+
+func GetPlayerExtentY () (e f32) {
+	e = All[ENT_PLAYER][0].ExtentY
+}
+
+
 func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
 	t = All[entType][id].Y + All[entType][id].ExtentY
 	r = All[entType][id].X + All[entType][id].ExtentX
