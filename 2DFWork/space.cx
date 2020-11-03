@@ -231,7 +231,7 @@ func HandleAllRoomBounds (ti i32, ei i32) {
 		
 		
 		hit = true
-		printf("E wall  HIT \n")
+		printf("W wall  HIT \n")
 	}
 	
 	if hitOrGoThruWallTo(geom.DIR_RIGHT, ti, ei,
@@ -247,7 +247,7 @@ func HandleAllRoomBounds (ti i32, ei i32) {
 		
 		
 		hit = true
-		printf("W wall  HIT \n")
+		printf("E wall  HIT \n")
 	}
 	
 	if hit {

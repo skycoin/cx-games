@@ -3,11 +3,12 @@ package main
 
 
 // "enums"               FIXME: when CX has enums or constants 
-var ENT_CUSTOMER    i32 = entities.ENT_MAX_OF_2DFW
-var ENT_DESTINATION i32 = entities.ENT_MAX_OF_2DFW + 1
-var ENT_MAX_OF_GAME i32 = entities.ENT_MAX_OF_2DFW + 2
+var ENT_CUSTOMER     i32  = entities.ENT_MAX_OF_2DFW
+var ENT_DESTINATION  i32  = entities.ENT_MAX_OF_2DFW + 1
+var ENT_MAX_OF_GAME  i32  = entities.ENT_MAX_OF_2DFW + 2
 
-var plr             i32 = entities.ENT_PLAYER
+var plr              i32  = entities.ENT_PLAYER
+var playerFacingWest bool
 
 
 
@@ -24,9 +25,11 @@ func entitiesUpdate () {
 	var f f32 = 0.5
 	if inputs.HoldingGoLeft () {
 		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY,  f, 0.0)
+		playerFacingWest = true
 	}
 	if inputs.HoldingGoRight() {
 		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, -f, 0.0)
+		playerFacingWest = false
 	}
 	if inputs.HoldingGoDown () {
 		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, 0.0,  f)

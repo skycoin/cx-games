@@ -70,7 +70,7 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 
 
 func Init (maxEntTypes i32) {
-	str.print("entities.Init ()")
+	printf("entities.Init () - ent TYPES: %d", maxEntTypes)
 	
 	// add all slices needed for entity types 
 	var newEnts []Entity

@@ -21,7 +21,7 @@ func SpawnParticlePuffFrom (et i32, i i32, mode i32, x f32, y f32) {
 		var time f32 = 0.0
 		
 		// extents 
-		//		ATM, this is a hardwired hack where:
+		//		FIXME: this is a hardwired hack where: 
 		//			Sky-Taxi uses perfect cubes 
 		//			SkyBOOM uses character dimensions 
 		//				(taller than wide) 

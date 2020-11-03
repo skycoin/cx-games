@@ -248,7 +248,7 @@ func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
 }
 
 
-func TrisForOneMeshAtPos (meshes []Mesh2D, i i32, x f32, y f32) {
+func TrisForOneMeshAtPos (meshes []Mesh2D, i i32, x f32, y f32, facingWest bool) {
 	//str.print("TrisForOneMeshAtPos ()")
 	
 	var m Mesh2D
@@ -268,8 +268,13 @@ func TrisForOneMeshAtPos (meshes []Mesh2D, i i32, x f32, y f32) {
 		var v Vec2
 		v = m.Points[pId]
 		
-		gl.Vertex2f(x + v.X,
-					y + v.Y)
+		if facingWest {
+			gl.Vertex2f(x - v.X,
+						y + v.Y)
+		}else{
+			gl.Vertex2f(x + v.X,
+						y + v.Y)
+		}
 	}
 }
 

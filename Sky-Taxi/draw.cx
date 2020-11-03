@@ -73,7 +73,8 @@ func drawPlayer () {
 			mesh.SizedMeshes,
 			0,
 			entities.All[plr][0].X,
-			entities.All[plr][0].Y)
+			entities.All[plr][0].Y,
+			playerFacingWest)
 		
 		/*
 		draw.OneCircle(
