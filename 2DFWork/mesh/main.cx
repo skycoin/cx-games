@@ -179,10 +179,6 @@ func GenerateMeshInitFunc (s str) {
 
 
 func makeSizedMesh (rawId i32, extentX f32, extentY f32) {
-	// changes after copy/paste:
-	// don't receive pos, 
-	// don't add the pos
-	// save to SizedMeshes
 	var minX    f32
 	var maxX    f32
 	var minY    f32
@@ -220,10 +216,10 @@ func makeSizedMesh (rawId i32, extentX f32, extentY f32) {
 		}
 	}
 
-	fitWid  = f32.sub(maxX, minX)
-	fitHei  = f32.sub(maxY, minY)
-	fitExtX = f32.div(fitWid, 2.0)
-	fitExtY = f32.div(fitHei, 2.0)
+	fitWid  = maxX - minX
+	fitHei  = maxY - minY
+	fitExtX = fitWid / 2.0
+	fitExtY = fitHei / 2.0
 
 	// write colors & scaled verts 
 	for k := 0; k < len(RawMeshes[rawId].Points); k++ {

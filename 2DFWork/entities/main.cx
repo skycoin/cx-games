@@ -43,13 +43,13 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	OldY           f32
 	ExtentX        f32
 	ExtentY        f32
-	VelX           f32 // velocity 
-	VelY           f32 // velocity 
-	Gravity        f32 // in Y space (negative number for falling) 
-	Mode           i32
-	NextMode       i32
-	DistToNextMode f32 // expire by distance travelled (0.0 == not using) 
-	TimeToNextMode f32 // expire by time passed        (0.0 == not using) 
+	VelX           f32  // velocity 
+	VelY           f32  // velocity 
+	Gravity        f32  // in Y space (negative number for falling) 
+	Mode           i32 
+	NextMode       i32 
+	DistToNextMode f32  // expire by distance travelled (0.0 == not using) 
+	TimeToNextMode f32  // expire by time passed        (0.0 == not using) 
 	WrapView       bool // moving objects wrap/teleport to opposite side of viewport 
 
 	// Goal/Target info. 
@@ -91,11 +91,8 @@ func Init (maxEntTypes i32, plrExtentX f32, plrExtentY f32) {
 
 	var newE Entity
 	  newE = Entity{
-		X:       0.0,
-		Y:       0.0,
 		ExtentX: plrExtentX,
-		ExtentY: plrExtentY,
-		Gravity: 0.0}
+		ExtentY: plrExtentY}
 		
 	Spawn(ENT_PLAYER, newE)
 }

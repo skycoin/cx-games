@@ -19,9 +19,13 @@ var pR /* right     */ f32
 	
 
 
-func playerEntsInit (xY f32) { // extent Y 
+func playerEntsInit () {
 	entities.AutoUpdatePlayerEnts = false
+	
+	// extents 
+	var xY f32 = entities.All[plr][0].ExtentY
 	var xX f32 = xY * walletAspectRatio
+	// pos 
 	var y  f32 = -1.0
 	y = y + xY
 	
