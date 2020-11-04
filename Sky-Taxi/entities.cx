@@ -13,7 +13,7 @@ var playerFacingWest bool
 
 
 func entitiesInit () {
-	entities.Init(ENT_MAX_OF_GAME, 0.12, 0.1)
+	entities.Init(ENT_MAX_OF_GAME, 0.12, 0.075)
 	entities.All[plr][0].Gravity = -7.0 //-9.8
 }
 

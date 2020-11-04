@@ -204,7 +204,7 @@ func makeSizedMesh (rawId i32, extentX f32, extentY f32) {
 	var m Mesh2D
 	m = Mesh2D{ Name: "sizedGameMeshFromRaw" }
 
-	// colors/verts 
+	// calc inner min/max rect box that tightly fits verts 
 	for k := 0; k < len(RawMeshes[rawId].Points); k++ {
 		if  minX > RawMeshes[rawId].Points[k].X {
 			minX = RawMeshes[rawId].Points[k].X
@@ -212,8 +212,8 @@ func makeSizedMesh (rawId i32, extentX f32, extentY f32) {
 		if  maxX < RawMeshes[rawId].Points[k].X {
 			maxX = RawMeshes[rawId].Points[k].X
 		}
-		if  minY > RawMeshes[rawId].Points[k].X {
-			minY = RawMeshes[rawId].Points[k].X
+		if  minY > RawMeshes[rawId].Points[k].Y {
+			minY = RawMeshes[rawId].Points[k].Y
 		}
 		if  maxY < RawMeshes[rawId].Points[k].Y {
 			maxY = RawMeshes[rawId].Points[k].Y
@@ -225,15 +225,12 @@ func makeSizedMesh (rawId i32, extentX f32, extentY f32) {
 	fitExtX = f32.div(fitWid, 2.0)
 	fitExtY = f32.div(fitHei, 2.0)
 
+	// write colors & scaled verts 
 	for k := 0; k < len(RawMeshes[rawId].Points); k++ {
 		var c Color3
 		var p Vec2
 		c = RawMeshes[rawId].Colors[k]
 		p = RawMeshes[rawId].Points[k]
-		
-		//  
-		//p.X = f32.sub(p.X, fitExtX)
-		//p.Y = f32.sub(p.Y, fitExtY)
 		
 		fracX = f32.div(p.X, fitExtX)
 		fracY = f32.div(p.Y, fitExtY)
