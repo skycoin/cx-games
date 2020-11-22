@@ -27,11 +27,11 @@ import "geom"
 
 
 
-var NumCellsAcross  i32 = 4 // in both dimensions 
+var NumCellsAcross  i32 = 5     // in both dimensions 
 var WTh             f32 = 0.085 // wall thickness 
 var CellSpan        f32 = 1.0
 var CellSpanHalf    f32 = CellSpan / 2.0
-var Cells           [4][4]Cell   // FIXME: use constants when we can 
+var Cells           [5][5]Cell   // FIXME: use "NumCellsAcross" constants when we CAN 
 var Carvs           []CarvedRoom // used/carved-out locations of the Cells grid 
  
 var plr             i32 = entities.ENT_PLAYER // FIXME?: this is wrong to have in "map"? 
@@ -47,19 +47,11 @@ type Cell struct {
 }
 
 type CarvedRoom struct {
-	// insets (from room bounds) 
-	/*
-	Top    f32
-	Right  f32
-	Bottom f32
-	Left   f32
-	*/
-	
 	Pos     app.Vec2I
-	Exits   []i32 // the actual room connections after map generation 
+	Exits   []i32      // the actual room connections after map generation 
 	Walls   []app.Rect // barriers in the CENTER of the room (NOT between cells) 
-	MinEdge app.Vec2 // boundaries of the current cell it's in 
-	MaxEdge app.Vec2 // ^ 
+	MinEdge app.Vec2   // inner bounds of cell's air space (assuming no exits) 
+	MaxEdge app.Vec2   // ^ 
 }
 
 
@@ -199,6 +191,7 @@ func DrawQuads () {
 			}
 			
 			// center barrier rects 
+			/*
 			draw.SetSequentiallyCycledColor(cc)
 			var w Rect // wall 
 			
@@ -206,6 +199,7 @@ func DrawQuads () {
 				w =             Carvs[i].Walls[j]
 				draw.UntexturedQuad(w.T, w.R, w.B, w.L)
 			}
+			*/
 			
 			/*
 			// DEBUG overlay line-marks to visually enumerate grid pos 
@@ -457,7 +451,7 @@ func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) 
 		nr.Exits = append(
 		nr.Exits, geom.GetInvertedDir(dir))
 		
-		// set boundaries (for limiting collision checks) 
+		// set inner bounds (for limiting collision checks) 
 		var minX f32 = i32.f32(nX) * CellSpan
 		var minY f32 = i32.f32(nY) * CellSpan	
 		nr.MinEdge.X = minX + WTh
@@ -465,18 +459,41 @@ func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) 
 		nr.MaxEdge.X = minX + CellSpan - WTh
 		nr.MaxEdge.Y = minY + CellSpan - WTh
 
+
+
 		// setup center barriers 
+		// (COULDN'T FINISH, SYNTH ORDERED ME TO STOP, 
+		// & WORK ON AI AGENT ENVIRONMENT GAMES ONLY) 
+		var numGrains  i32 = 3
+		var rX         i32 = i32.rand(0, numGrains + 1) // random X start 
+		var centerSpan f32 = CellSpan - WTh * 2.0
+		var grainSpan  f32 = centerSpan / i32.f32(numGrains)
+		var l          f32 = f32.add(nr.MinEdge.X, i32.f32(rX) * grainSpan)
+
+		for j := 0; j < 4; j++ {
+			if j == geom.DIR_LEFT {
+			}else	
+			if j == geom.DIR_RIGHT {
+			}else	
+			if j == geom.DIR_DOWN {
+			}else	
+			if j == geom.DIR_UP {
+			}
+		}
+
 		var rec Rect
 		rec = Rect{ 
 			T: nr.MaxEdge.Y - WTh, 
-			R: nr.MaxEdge.X - WTh, 
-			B: nr.MinEdge.Y + WTh, 
-			L: nr.MinEdge.X + WTh}
+			R: nr.MaxEdge.X, 
+			B: nr.MaxEdge.Y - 0.2,
+			L: l}
 		nr.Walls = append(
-		nr.Walls, rec)
+		nr.Walls,  rec)
+
+
 
 		Carvs = append(
-		Carvs, nr)
+		Carvs,  nr)
 	}else{
 		if show {
 			str.print("DRILL WALL")
