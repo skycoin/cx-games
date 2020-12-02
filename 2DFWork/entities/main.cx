@@ -2,7 +2,7 @@ package entities
 
 import "app"
 import "inputs"
-import "mov"
+import "move"
 import "space"
 import "time"
 
@@ -12,8 +12,11 @@ var AutoUpdatePlayerEnts bool = true // can be multiple entities
                                      // (like player paddles in SkyBOOM) 
 
 // "enums"   FIXME: when CX has enums or constants 
+//		types 
 var ENT_PLAYER                 i32
-var ENT_MAX_OF_2DFW            i32 = 1
+var ENT_PARTICLE_0             i32 = 1
+var ENT_PARTICLE_1             i32 = 2
+var ENT_MAX_OF_2DFW            i32 = 3
 // 		modes 
 var ENTMODE_STATIONARY         i32
 var ENTMODE_DYNAMIC_MOVER      i32 = 1
@@ -27,7 +30,7 @@ var ENTMODE_DEAD               i32 = 8
 var ENTMODE_MAX_OF_2DFW        i32 = 9
 // consider that maybe a corpse/wreckage needs to... 
 // 		...remain visible, then *_DEAD would... 
-//		!= inactive/disabled (as used in the Unity3D Engine) 
+//		!= inactive/disabled (the terms used in the Unity3D Engine) 
 
 var All          [][]Entity // all entities (1st index is for ENT_* type) 
 var ActiveCounts []i32      // corresponds with "All" slices 
@@ -40,13 +43,13 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 	OldY           f32
 	ExtentX        f32
 	ExtentY        f32
-	VelX           f32 // velocity 
-	VelY           f32 // velocity 
-	Gravity        f32
-	Mode           i32
-	NextMode       i32
-	DistToNextMode f32 // expire by distance travelled (0.0 == not using) 
-	TimeToNextMode f32 // expire by time passed        (0.0 == not using) 
+	VelX           f32  // velocity 
+	VelY           f32  // velocity 
+	Gravity        f32  // in Y space (negative number for falling) 
+	Mode           i32 
+	NextMode       i32 
+	DistToNextMode f32  // expire by distance travelled (0.0 == not using) 
+	TimeToNextMode f32  // expire by time passed        (0.0 == not using) 
 	WrapView       bool // moving objects wrap/teleport to opposite side of viewport 
 
 	// Goal/Target info. 
@@ -67,8 +70,9 @@ type Entity struct { // WHENEVEVER ADDING NEW FIELDS ADD THEM TO KILL() & SPAWN(
 
 
 
-func Init (maxEntTypes i32) {
-	str.print("entities.Init ()")
+// player extents 
+func Init (maxEntTypes i32, plrExtentX f32, plrExtentY f32) {
+	printf("entities.Init () - ent TYPES: %d", maxEntTypes)
 	
 	// add all slices needed for entity types 
 	var newEnts []Entity
@@ -85,18 +89,12 @@ func Init (maxEntTypes i32) {
 	printf("    Created %v slices (1 for each entity type) \n", maxEntTypes)
 
 
-	// ENT_PLAYER 
-	var ne Entity
-	  ne = Entity{
-		X:       0.0,
-		Y:       0.0,
-		ExtentX: 0.05,
-		ExtentY: 0.05,
-		//VelX:      0.10,
-		//VelY:      0.10,
-		Gravity: 0.01}
+	var newE Entity
+	  newE = Entity{
+		ExtentX: plrExtentX,
+		ExtentY: plrExtentY}
 		
-	Spawn(ENT_PLAYER, ne)
+	Spawn(ENT_PLAYER, newE)
 }
 
 
@@ -122,7 +120,7 @@ func Update () {
 				// 		USE TimeToNextMode/DIST FIELDS 
 				//		(CUZ NOW IT COLLIDES AFTER Kill() IN UpdateAt() )
 				All[t][i].VelX,
-				All[t][i].VelY = mov.GetPlayerVelocityFromInput(
+				All[t][i].VelY = move.GetPlayerVelocityFromInput(
 				All[t][i].VelX,
 				All[t][i].VelY)
 			
@@ -130,7 +128,7 @@ func Update () {
 				UpdateAt(t, i)
 				// back out of any entity/entity penetration, 
 				// or change rooms if OOBounds 
-				space.HandleAllBounds(t, i)
+				space.HandleAllRoomBounds(t, i)
 			}else{
 				UpdateAt(t, i)
 			}
@@ -206,7 +204,7 @@ func UpdateAt (et i32, i i32) { // entity type, id
 	
 	
 	// expire any ents that timeout 
-	if All[et][i].TimeToNextMode != 0.0 {
+	if     All[et][i].TimeToNextMode != 0.0 {
 		if All[et][i].TimeToNextMode <= time.Now {
 			Kill(et, i)
 		}		
@@ -353,6 +351,21 @@ func GetCountOf (entType i32) (c i32) {
 }
 
 
+func GetPlayerGravity () (g f32) {
+	g = All[ENT_PLAYER][0].Gravity
+}
+
+
+func GetPlayerExtentX () (e f32) {
+	e = All[ENT_PLAYER][0].ExtentX
+}
+
+
+func GetPlayerExtentY () (e f32) {
+	e = All[ENT_PLAYER][0].ExtentY
+}
+
+
 func GetRect (entType i32, id i32) (t f32, r f32, b f32, l f32) {
 	t = All[entType][id].Y + All[entType][id].ExtentY
 	r = All[entType][id].X + All[entType][id].ExtentX
@@ -365,15 +378,15 @@ func moveByVelocity (et i32, i i32) {
 	All[et][i].OldX = All[et][i].X
 	All[et][i].OldY = All[et][i].Y
 	
-	var vX f32 
-	var vY f32 
-	vX = All[et][i].VelX
-	vY = All[et][i].VelY
-
-	var dX f32 
-	var dY f32 
-	dX = f32.mul(vX, time.Delta)
-	dY = f32.mul(vY, time.Delta)
+	if All[et][i].Gravity != 0.0 {
+		var t f32 = time.Delta * All[et][i].Gravity
+		All[et][i].VelY = 
+		All[et][i].VelY + t
+	}
+	
+	// deltas 
+	var dX f32 = All[et][i].VelX * time.Delta
+	var dY f32 = All[et][i].VelY * time.Delta
 
 	if  et == ENT_MAX_OF_2DFW + 4 ||
 		et == ENT_MAX_OF_2DFW + 5 {

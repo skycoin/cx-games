@@ -212,6 +212,13 @@ type Vec2F64 struct {
 	Y f64
 }
 
+type Rect struct {
+	T f32 // top 
+	R f32 // right 
+	B f32 // bottom 
+	L f32 // left 
+}
+
 
 
 func Init (name str, controls str) {
@@ -228,6 +235,12 @@ func CliIntro () {
 }
 
 
+func ModF32(num f32, op f32) (out f32) {
+	//FIXME/DELETEME? when CX mod() is fixed 
+	out = num - i32.f32(f32.i32(num))
+}
+
+
 func GetLerped (a f32, b f32, frac f32) (out f32) {
 	var delta f32 = (a - b) * frac
 	out = b + delta
@@ -236,10 +249,10 @@ func GetLerped (a f32, b f32, frac f32) (out f32) {
 
 func showWorkHoursNeeded () {
 	// current "workmonth" (pay period) goes from the 5th to the 4th of following month 
-	var today       i32 = 25   // day of current month 
-	var hoursWorked f32 = 5.6
+	var today       i32 = 9   // day of current month 
+	var hoursWorked f32 = 3.5
 
-	var hoursGoal   f32 = 55.0 // ...to work this month (pay period) 
+	var hoursGoal   f32 = 50.0 // ...to work this month (pay period) 
 	var daysInMonth i32 = 30   // current month that majority of days are in 
 	
 	

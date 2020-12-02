@@ -1,0 +1,93 @@
+package entities
+
+
+
+var nTic      Entity // new particle 
+var isOne     bool
+var distGrain f32 = 0.025
+// entity type, id, mode, velocity X/Y 
+func SpawnParticlePuffFrom (et i32, i i32, mode i32, x f32, y f32) {
+	for id := 0; id < 8; id++ {
+		var r  i32 = i32.rand(-16, 17)
+		var oX f32 = f32.mul(distGrain, i32.f32(r)) * 2.2 // goal offset/delta 
+		var gX f32 = f32.add(All[et][i].X, oX) // total goal pos 
+		
+		    r      = i32.rand(  2, 17)
+		var oY f32 = f32.mul(distGrain, i32.f32(r)) * 2.2 // ^ 
+		var gY f32 = f32.add(All[et][i].Y, oY)     // ^ 
+		
+		// calc time delay (until mode change), if needed 
+		    r      = i32.rand(  0, 10)
+		var time f32 = 0.0
+		
+		// extents 
+		//		FIXME: this is a hardwired hack where: 
+		//			Sky-Taxi uses perfect cubes 
+		//			SkyBOOM uses character dimensions 
+		//				(taller than wide) 
+		var eX f32 = 0.015
+		var eY f32 = 0.03
+		
+		if mode == ENTMODE_MOVING_BY_VELOCITY {
+			time = f32.add(time.Now, i32.f32(r) * 0.1)
+			eX   = 0.017
+			eY   = eX
+			oX   = x
+			oY   = y
+		}
+
+		nTic = Entity{
+			Mode:           mode,
+			TimeToNextMode: time,				
+			GoalEntType:    ENT_PLAYER,
+			GoalEntId:      0,
+			GoalX:          gX,
+			GoalY:          gY,
+			OldX:           All[et][i].X, 
+			OldY:           All[et][i].Y, 
+			X:              All[et][i].X, 
+			Y:              All[et][i].Y, 
+			VelX:           getVelocityForMinorAxis(oX),
+			VelY:           getVelocityForMinorAxis(oY),
+			DistanceX:      0.0, 
+			DistanceY:      0.0, 
+			ExtentX:        eX, 
+			ExtentY:        eY}
+		
+
+
+		//printf("r (for Y): %v   gY: %v \n", r, gY)
+		/*
+		printf("All[et][i].Y: %f   oY: %f    gY: %f   nTic.GoalY: %f \n", 
+			All[et][i].Y,
+			oY,
+			gY,
+			nTic.GoalY)
+		*/
+
+
+
+		if isOne {
+			Spawn(ENT_PARTICLE_1, nTic)
+		}else{
+			Spawn(ENT_PARTICLE_0, nTic)
+		}
+		
+		isOne = !isOne
+	}
+}
+
+
+func getVelocityForMinorAxis (velIn f32) (vel f32) {
+	vel = velIn
+	
+	if  vel == 0.0 {
+	    var r i32 = i32.rand(0, 10)
+		vel = i32.f32(r) * 0.02
+	    r         = i32.rand(0,  2)
+	    
+	    if r == 0 {
+	    	vel = -vel
+	    }
+	}
+}

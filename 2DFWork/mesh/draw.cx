@@ -32,7 +32,7 @@ func DrawEditor () {
 	gl.Begin(gl.TRIANGLES)
 		if app.EditMode == app.EDITMODE_VERTICES {
 			trianglesForAll(EditLayers)
-			//trianglesForOneWithPos(SizedMeshes, e.Type, e.Pos)
+			//TrisForOneMeshAtPos(SizedMeshes, e.Type, e.Pos.X, e.Pos.Y)
 		}else
 		if app.EditMode == app.EDITMODE_TRIANGLES {
 			trianglesForAll(EditLayers)
@@ -248,13 +248,13 @@ func trianglesForOneColored (meshes []Mesh2D, i i32, col Color3) {
 }
 
 
-func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) {
-	//str.print("trianglesForOneWithPos ()")
+func TrisForOneMeshAtPos (meshes []Mesh2D, i i32, x f32, y f32, facingWest bool) {
+	//str.print("TrisForOneMeshAtPos ()")
 	
 	var m Mesh2D
 	m = meshes[i]
 
-	ReportBadTriCount("trianglesForOneWithPos", i, len(m.TriangleIndices))
+	ReportBadTriCount("TrisForOneMeshAtPos", i, len(m.TriangleIndices))
 
 	for j := 0; j < len(m.TriangleIndices); j++ {
 		var pId i32 // point id (from tri ids) 
@@ -268,7 +268,13 @@ func trianglesForOneWithPos (meshes []Mesh2D, i i32, pos Vec2) {
 		var v Vec2
 		v = m.Points[pId]
 		
-		gl.Vertex2f(pos.X + v.X,   pos.Y + v.Y)
+		if facingWest {
+			gl.Vertex2f(x - v.X,
+						y + v.Y)
+		}else{
+			gl.Vertex2f(x + v.X,
+						y + v.Y)
+		}
 	}
 }
 

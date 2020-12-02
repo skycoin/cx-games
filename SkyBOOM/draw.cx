@@ -161,7 +161,7 @@ func drawTexturedBatches () {
 	// 1s & 0s particles 
 	draw.SetColor(draw.COLOR_BLUE)
 	
-	et = ENT_PARTICLE_0
+	et = entities.ENT_PARTICLE_0
 	n  = entities.GetCountOf(et)
 
 	draw.BeginTexturedQuads(Pic0Char)
@@ -171,7 +171,7 @@ func drawTexturedBatches () {
 		}
 	draw.End()
 	
-	et = ENT_PARTICLE_1
+	et = entities.ENT_PARTICLE_1
 	n  = entities.GetCountOf(et)
 
 	draw.BeginTexturedQuads(Pic1Char)

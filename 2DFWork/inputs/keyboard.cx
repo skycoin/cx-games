@@ -42,30 +42,30 @@ func CloseAppOnDeveloperShortcut (key i32) {
 
 // polling 
 func HoldingGoLeft () (out bool) {
-	if  i32.eq(glfw.GetKey(app.Name, GLFW_KEY_A),    1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_LEFT), 1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_Y),    1) {
+	if  glfw.GetKey(app.Name, GLFW_KEY_A)    == 1 ||
+		glfw.GetKey(app.Name, GLFW_KEY_LEFT) == 1 ||
+		glfw.GetKey(app.Name, GLFW_KEY_Y)    == 1 {
 		out = true
 	}
 }
 func HoldingGoRight () (out bool) {
-	if  i32.eq(glfw.GetKey(app.Name, GLFW_KEY_D),     1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_RIGHT), 1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_N),     1) {
+	if  glfw.GetKey(app.Name, GLFW_KEY_D)     == 1 ||
+		glfw.GetKey(app.Name, GLFW_KEY_RIGHT) == 1 ||
+		glfw.GetKey(app.Name, GLFW_KEY_N)     == 1 {
 		out = true
 	}
 }
 func HoldingGoDown () (out bool) {
-	if  i32.eq(glfw.GetKey(app.Name, GLFW_KEY_S),    1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_DOWN), 1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_F2),   1) {
+	if  glfw.GetKey(app.Name, GLFW_KEY_S)    == 1 ||
+		glfw.GetKey(app.Name, GLFW_KEY_DOWN) == 1 ||
+		glfw.GetKey(app.Name, GLFW_KEY_F2)   == 1 {
 		out = true
 	}
 }
 func HoldingGoUp () (out bool) {
-	if  i32.eq(glfw.GetKey(app.Name, GLFW_KEY_W),  1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_UP), 1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_F3), 1) {
+	if  glfw.GetKey(app.Name, GLFW_KEY_W)  == 1 ||
+		glfw.GetKey(app.Name, GLFW_KEY_UP) == 1 ||
+		glfw.GetKey(app.Name, GLFW_KEY_F3) == 1 {
 		out = true
 	}
 }
@@ -87,50 +87,56 @@ func OpenedMenu (key i32) (out bool) {
 
 // 		directions 
 func EventMoveLeft (key i32) (out bool) {
-  if i32.eq(key, GLFW_KEY_A) ||
-    i32.eq(key, GLFW_KEY_LEFT) {
-    out = true
-  }
+	if  key == GLFW_KEY_A ||
+		key == GLFW_KEY_LEFT {
+			
+		out = true
+	}
 }
 func EventMoveRight (key i32) (out bool) {
-  if i32.eq(key, GLFW_KEY_D) ||
-    i32.eq(key, GLFW_KEY_RIGHT) {
-    out = true
-  }
+	if  key == GLFW_KEY_D ||
+		key == GLFW_KEY_RIGHT {
+			
+		out = true
+	}
 }
 func EventMoveDown (key i32) (out bool) {
-  if i32.eq(key, GLFW_KEY_S) ||
-    i32.eq(key, GLFW_KEY_DOWN) {
-    out = true
-  }
+	if  key == GLFW_KEY_S ||
+		key == GLFW_KEY_DOWN {
+		out = true
+	}
 }
 func EventMoveUp (key i32) (out bool) {
-  if i32.eq(key, GLFW_KEY_W) ||
-    i32.eq(key, GLFW_KEY_UP) {
-    out = true
-  }
+	if  key == GLFW_KEY_W ||
+		key == GLFW_KEY_UP {
+			
+		out = true
+	}
 }
 
 func EventAbilityLeft (key i32) (out bool) {
-  if i32.eq(key, GLFW_KEY_Q) ||
-  	i32.eq(key, GLFW_KEY_LEFT_CONTROL) ||
-    i32.eq(key, GLFW_KEY_RIGHT_ALT) {
-    out = true
-  }
+	if  key == GLFW_KEY_Q ||
+		key == GLFW_KEY_LEFT_CONTROL ||
+		key == GLFW_KEY_RIGHT_ALT {
+			
+		out = true
+	}
 }
 
 func EventAbilityRight (key i32) (out bool) {
-  if i32.eq(key, GLFW_KEY_E) ||
-  	i32.eq(key, GLFW_KEY_LEFT_ALT) ||
-    i32.eq(key, GLFW_KEY_RIGHT_CONTROL) {
-    out = true
-  }
+	if  key == GLFW_KEY_E ||
+		key == GLFW_KEY_LEFT_ALT ||
+		key == GLFW_KEY_RIGHT_CONTROL {
+			
+		out = true
+	}
 }
 
 
 func eventIsBackOrEscape (key i32) (out bool) {
-	if i32.eq(glfw.GetKey(app.Name, GLFW_KEY_ESCAPE), 1) ||
-		i32.eq(glfw.GetKey(app.Name, GLFW_KEY_HOME), 1) {
+	if  glfw.GetKey(app.Name, GLFW_KEY_ESCAPE) == 1 ||
+		glfw.GetKey(app.Name, GLFW_KEY_HOME)   == 1 {
+			
 		out = true
 	}
 }

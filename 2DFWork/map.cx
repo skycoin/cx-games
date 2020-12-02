@@ -27,11 +27,11 @@ import "geom"
 
 
 
-var NumCellsAcross  i32 = 4 // in both dimensions 
+var NumCellsAcross  i32 = 4     // in both dimensions 
 var WTh             f32 = 0.085 // wall thickness 
 var CellSpan        f32 = 1.0
 var CellSpanHalf    f32 = CellSpan / 2.0
-var Cells           [4][4]Cell   // FIXME: use constants when we can 
+var Cells           [4][4]Cell   // FIXME: use "NumCellsAcross" constants when we CAN 
 var Carvs           []CarvedRoom // used/carved-out locations of the Cells grid 
  
 var plr             i32 = entities.ENT_PLAYER // FIXME?: this is wrong to have in "map"? 
@@ -43,22 +43,15 @@ var response        i32
 
 type Cell struct {
 	CarvsId i32 // MAX_I32 == solid rock 
-	Exits   []i32 // initial possibilities that point to all valid grid slot neighbor cells 
+	Exits []i32 // possible valid exits 
 }
 
 type CarvedRoom struct {
-	// insets (from room bounds) 
-	/*
-	Top    f32
-	Right  f32
-	Bottom f32
-	Left   f32
-	*/
-	
 	Pos     app.Vec2I
-	Exits   []i32 // the actual room connections after map generation 
-	MinEdge app.Vec2 // boundaries of the current cell it's in 
-	MaxEdge app.Vec2 // ^ 
+	Exits   []i32      // the actual room connections after map generation 
+	Walls   []app.Rect // barriers in the CENTER of the room (NOT between cells) 
+	MinEdge app.Vec2   // inner bounds of cell's air space (assuming no exits) 
+	MaxEdge app.Vec2   // ^ 
 }
 
 
@@ -75,8 +68,6 @@ func Init () {
 	var c  Cell
 	var ri i32  // random room id 
 	x, y, c, ri = getRandomCarvedRoom()
-	
-	// put player in center 
 	entities.All[plr][0].X = i32.f32(x) * CellSpan + CellSpanHalf
 	entities.All[plr][0].Y = i32.f32(y) * CellSpan + CellSpanHalf
 	
@@ -109,11 +100,29 @@ func GetExitAt (roomId i32, exitId i32) (num i32) {
 */ 
 
 
+func ValidRoomAt (x i32, y i32) (out bool) {
+	//printf("map.ValidRoomAt(%d, %d) %f,%f \n", x, y, entities.All[plr][0].X, entities.All[plr][0].Y)
+
+	if  x >= 0 && x < NumCellsAcross &&
+		y >= 0 && y < NumCellsAcross &&
+		Cells[y][x].CarvsId != app.MAX_I32 {
+		
+		//printf("NEXT FUNC SETS NEW ROOM ID: %d \n", Cells[y][x].CarvsId)
+		out = true		
+	}else{
+		for i := 0; i < 12; i++ {
+			printf("############ INVALID SPACE, PLAYER SHOULDN'T BE HERE! %d, %d \n", x, y)
+		}
+	}
+}
+
+
 func HasExit (dir i32, ti i32, ei i32) (out bool) {
-	printf("map.HasExit (%s)?????   ", geom.GetTextForDir(dir))
+	//printf("map.HasExit (%s)?????   ", geom.GetTextForDir(dir))
+	
 	var x i32 = f32.i32(entities.All[ti][ei].X)
 	var y i32 = f32.i32(entities.All[ti][ei].Y)
-	printf(" - x, y: %d, %d) \n", x, y)
+	//printf(" - x, y: %d, %d) \n", x, y)
 	
 	var ci i32 = Cells[y][x].CarvsId
 	var r CarvedRoom
@@ -121,13 +130,13 @@ func HasExit (dir i32, ti i32, ei i32) (out bool) {
 	
 	for i := 0; i < len(r.Exits); i++ {
 		if dir == r.Exits[i] {
-			printf("    YES! \n")
+			//printf("    YES! \n")
 			out = true
 			return
 		}
 	}
 	
-	printf("    NO! \n")
+	//printf("    NO! \n")
 	out = false
 }
 
@@ -140,8 +149,6 @@ func HasExit (dir i32, ti i32, ei i32) (out bool) {
 // ATM CX gives lot's of mystery errors when 
 // such out-of-package data access attempts are made 
 func DrawQuads () {
-	gl.Translatef(0.0-entities.All[plr][0].X, 0.0-entities.All[plr][0].Y, 0.0)
-	
 	var x f32
 	var y f32
 
@@ -153,20 +160,21 @@ func DrawQuads () {
 			var x i32 = Carvs[i].Pos.X
 			var y i32 = Carvs[i].Pos.Y
 			
-			var l f32 = f32.mul(i32.f32(x), CellSpan)
-			var b f32 = f32.mul(i32.f32(y), CellSpan)
+			var l f32 = i32.f32(x) * CellSpan
+			var b f32 = i32.f32(y) * CellSpan
 			var r f32 = l + CellSpan
 			var t f32 = b + CellSpan
 			
-			draw.SetSequentiallyCycledColor(i32.add(x, i32.mul(y, NumCellsAcross)))
+			var cc i32 = i32.add(x, y * NumCellsAcross)
+			draw.SetSequentiallyCycledColor(cc)
 			draw.UntexturedQuad(t, r, b, l)
 			
 			// connection rects 
-			draw.SetColorByRGB(0.0, 0.0, 0.0) // black 
+			draw.SetColor3(draw.Black)
 			var ex i32 // exit 
 			
 			for j := 0; j < len(Carvs[i].Exits); j++ {
-				var ex i32 = Carvs[i].Exits[j]
+				ex =            Carvs[i].Exits[j]
 
 				if ex == geom.DIR_LEFT {
 					draw.UntexturedQuad(t-WTh, r-WTh, b+WTh, l)
@@ -181,6 +189,17 @@ func DrawQuads () {
 					draw.UntexturedQuad(t,     r-WTh, b+WTh, l+WTh)
 				}
 			}
+			
+			// center barrier rects 
+			/*
+			draw.SetSequentiallyCycledColor(cc)
+			var w Rect // wall 
+			
+			for j := 0; j < len(Carvs[i].Walls); j++ {
+				w =             Carvs[i].Walls[j]
+				draw.UntexturedQuad(w.T, w.R, w.B, w.L)
+			}
+			*/
 			
 			/*
 			// DEBUG overlay line-marks to visually enumerate grid pos 
@@ -214,8 +233,6 @@ func DrawQuads () {
 			*/
 		}
 	draw.End()
-	
-	gl.LoadIdentity()
 }
 
 
@@ -274,22 +291,22 @@ func carveOutConnectedRooms () {
 	var n i32 = NumCellsAcross * NumCellsAcross - numUncarved
 	
 	for i := 0; i < n; i++ {
-		if /* 1st room */ i == 0 {
+		if i == 0 { // (1st room) 
 			// make anywhere 
 			x = i32.rand(0, NumCellsAcross)
 			y = i32.rand(0, NumCellsAcross)
 			var cr CarvedRoom = carveOutRoom(x, y, len(Carvs))
 	
-			
-			
 			Carvs = append(
 			Carvs, cr)
 			printf("carved FIRST new @ %d, %d   -   len(Carvs): %d \n", x, y, len(Carvs))
 		}else{
-			// old cell, old (carved) room id 
+			// try 1st random 
+			// 		old cell, old (carved) room id 
 			x, y, oc, orId = getRandomCarvedRoom()
 			//printf("carveOutConnectedRooms() len(r.Exits): %d \n", len(r.Exits))
 			
+			// keep trying until we get 1 with a possible exit 
 			for len(oc.Exits) < 1 {
 				x, y, oc, orId = getRandomCarvedRoom()
 			}
@@ -434,7 +451,7 @@ func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) 
 		nr.Exits = append(
 		nr.Exits, geom.GetInvertedDir(dir))
 		
-		// set boundaries (for limiting collision checks) 
+		// set inner bounds (for limiting collision checks) 
 		var minX f32 = i32.f32(nX) * CellSpan
 		var minY f32 = i32.f32(nY) * CellSpan	
 		nr.MinEdge.X = minX + WTh
@@ -442,8 +459,41 @@ func drillConnectingWallsAndMaybeRoom (oX i32, oY i32, dir i32, nX i32, nY i32) 
 		nr.MaxEdge.X = minX + CellSpan - WTh
 		nr.MaxEdge.Y = minY + CellSpan - WTh
 
+
+
+		// setup center barriers 
+		// (COULDN'T FINISH, SYNTH ORDERED ME TO STOP, 
+		// & WORK ON AI AGENT ENVIRONMENT GAMES ONLY) 
+		var numGrains  i32 = 3
+		var rX         i32 = i32.rand(0, numGrains + 1) // random X start 
+		var centerSpan f32 = CellSpan - WTh * 2.0
+		var grainSpan  f32 = centerSpan / i32.f32(numGrains)
+		var l          f32 = f32.add(nr.MinEdge.X, i32.f32(rX) * grainSpan)
+
+		for j := 0; j < 4; j++ {
+			if j == geom.DIR_LEFT {
+			}else	
+			if j == geom.DIR_RIGHT {
+			}else	
+			if j == geom.DIR_DOWN {
+			}else	
+			if j == geom.DIR_UP {
+			}
+		}
+
+		var rec Rect
+		rec = Rect{ 
+			T: nr.MaxEdge.Y - WTh, 
+			R: nr.MaxEdge.X, 
+			B: nr.MaxEdge.Y - 0.2,
+			L: l}
+		nr.Walls = append(
+		nr.Walls,  rec)
+
+
+
 		Carvs = append(
-		Carvs, nr)
+		Carvs,  nr)
 	}else{
 		if show {
 			str.print("DRILL WALL")
@@ -502,24 +552,6 @@ func removeExitFromGrid (x i32, y i32, dir i32) {
 	}
 	
 	if log { printf("------num exits INSIDE-AFTER: %d \n", len(c.Exits))
-	}
-}
-
-
-func ValidRoomAt (x i32, y i32) (out bool) {
-	printf("map.ValidRoomAt(%d, %d)  \n", x, y)
-	printf("map.ValidRoomAt(%d, %d) %f,%f \n", x, y, entities.All[plr][0].X, entities.All[plr][0].Y)
-
-	if  x >= 0 && x < NumCellsAcross &&
-		y >= 0 && y < NumCellsAcross &&
-		Cells[y][x].CarvsId != app.MAX_I32 {
-		
-		//printf("NEXT FUNC SETS NEW ROOM ID: %d \n", Cells[y][x].CarvsId)
-		out = true		
-	}else{
-		for i := 0; i < 12; i++ {
-			printf("############ INVALID SPACE, PLAYER SHOULDN'T BE HERE! %d, %d \n", x, y)
-		}
 	}
 }
 

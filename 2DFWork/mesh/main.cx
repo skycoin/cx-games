@@ -4,6 +4,7 @@ import "glfw"
 
 import "app"
 import "draw"
+import "entities"
 
 
 
@@ -71,17 +72,16 @@ func Init () {
 	
 	
 	// gameplay 
-	var exts app.Vec2
-	    exts=app.Vec2{ X: 0.2, Y: 0.2 }
-	
 	makePlayerShip() // (is also a toolbar Editor-EXIT icon) 
-	makeSizedMesh(len(RawMeshes) - 1, exts)
+	makeSizedMesh(len(RawMeshes) - 1,
+		entities.GetPlayerExtentX(),
+		entities.GetPlayerExtentY())
 	
 	makeMissileMesh()
-	makeSizedMesh(len(RawMeshes) - 1, exts)
+	makeSizedMesh(len(RawMeshes) - 1, 0.4, 0.1)
 	
 	InitRocketMesh()
-	makeSizedMesh(len(RawMeshes) - 1, exts)
+	makeSizedMesh(len(RawMeshes) - 1, 0.1, 0.4)
 
 	GameOver = len(RawMeshes)
 	makeGameOverMesh()
@@ -178,11 +178,7 @@ func GenerateMeshInitFunc (s str) {
 }
 
 
-func makeSizedMesh (rawId i32, extents Vec2) () {
-	// changes after copy/paste:
-	// don't receive pos, 
-	// don't add the pos
-	// save to SizedMeshes
+func makeSizedMesh (rawId i32, extentX f32, extentY f32) {
 	var minX    f32
 	var maxX    f32
 	var minY    f32
@@ -194,17 +190,17 @@ func makeSizedMesh (rawId i32, extents Vec2) () {
 	var fitExtX f32 // extents of inner bounding box 
 	var fitExtY f32
 
-	minX = 1.0
-	minY = 1.0
+	minX =  1.0 // init values to opposite extremes 
+	minY =  1.0
 	maxX = -1.0
 	maxY = -1.0
 
-	str.print("        makeSizedMesh ()")
+	printf("        makeSizedMesh (): %d \n", rawId)
 			
 	var m Mesh2D
 	m = Mesh2D{ Name: "sizedGameMeshFromRaw" }
 
-	// colors/verts 
+	// calc inner min/max rect box that tightly fits verts 
 	for k := 0; k < len(RawMeshes[rawId].Points); k++ {
 		if  minX > RawMeshes[rawId].Points[k].X {
 			minX = RawMeshes[rawId].Points[k].X
@@ -212,35 +208,32 @@ func makeSizedMesh (rawId i32, extents Vec2) () {
 		if  maxX < RawMeshes[rawId].Points[k].X {
 			maxX = RawMeshes[rawId].Points[k].X
 		}
-		if  minY > RawMeshes[rawId].Points[k].X {
-			minY = RawMeshes[rawId].Points[k].X
+		if  minY > RawMeshes[rawId].Points[k].Y {
+			minY = RawMeshes[rawId].Points[k].Y
 		}
 		if  maxY < RawMeshes[rawId].Points[k].Y {
 			maxY = RawMeshes[rawId].Points[k].Y
 		}
 	}
 
-	fitWid = f32.sub(maxX, minX)
-	fitHei = f32.sub(maxY, minY)
-	fitExtX = f32.div(fitWid, 2.0)
-	fitExtY = f32.div(fitHei, 2.0)
+	fitWid  = maxX - minX
+	fitHei  = maxY - minY
+	fitExtX = fitWid / 2.0
+	fitExtY = fitHei / 2.0
 
+	// write colors & scaled verts 
 	for k := 0; k < len(RawMeshes[rawId].Points); k++ {
 		var c Color3
 		var p Vec2
 		c = RawMeshes[rawId].Colors[k]
 		p = RawMeshes[rawId].Points[k]
 		
-		//  
-		//p.X = f32.sub(p.X, fitExtX)
-		//p.Y = f32.sub(p.Y, fitExtY)
-		
 		fracX = f32.div(p.X, fitExtX)
 		fracY = f32.div(p.Y, fitExtY)
 
 		// scale 
-		p.X = f32.mul(fracX, extents.X)
-		p.Y = f32.mul(fracY, extents.Y)
+		p.X = f32.mul(fracX, extentX)
+		p.Y = f32.mul(fracY, extentY)
 		
 		m.Colors = append(
 		m.Colors, c)

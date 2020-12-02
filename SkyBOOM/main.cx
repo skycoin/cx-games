@@ -6,7 +6,7 @@ import "glfw"
 import "app"
 import "draw"
 import "map"
-import "mov"
+import "move"
 
 
 

@@ -1,10 +1,10 @@
-# CXTRIS
+# SKY TAXI
 
-![CXTRIS](https://github.com/SkycoinProject/cx-games/blob/master/CXtris/assets/screenshots/CXtris-1.png)
-![CXTRIS](https://github.com/SkycoinProject/cx-games/blob/master/CXtris/assets/screenshots/CXtris-2.png)
-![CXTRIS](https://github.com/SkycoinProject/cx-games/blob/master/CXtris/assets/screenshots/CXtris-3.png)
+![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/Sky-Taxi/assets/screenshots/Sky-Taxi-1.png)
+![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/Sky-Taxi/assets/screenshots/Sky-Taxi-2.png)
+![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/Sky-Taxi/assets/screenshots/Sky-Taxi-3.png)
 
-CXTRIS is a game powered by the CX programming language.
+SKY TAXI is a game powered by the CX programming language.
 Along with a common 2D framework library (2DFWork) that CorpusC's games use.
 Appropriate functionality that was needed for these games, was made into generalized
 systems that can be used by any future 2D games developed by anyone.
@@ -22,7 +22,7 @@ You can find more info on:
   - The github repo of CX - https://github.com/SkycoinProject/cx
 
 # Installation
-CXTRIS supports [CX v0.7.0](https://github.com/SkycoinProject/cx/releases/tag/v0.7.0).
+SKY TAXI supports [CX v0.7.0](https://github.com/SkycoinProject/cx/releases/tag/v0.7.0).
 The binaries for CX are available at:
   - [linux-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-linux-x64.zip)
   - [mac-os-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-macos-x64.zip)
@@ -35,7 +35,7 @@ $ git clone https://github.com/SkycoinProject/cx-games.git
 Wait for the cloning process to finish and navigate to the cloned directory...
 
 ```sh
-$ cd cx-games/CXtris
+$ cd cx-games/Sky-Taxi
 ```
 
 The game should be ready to run.
@@ -53,5 +53,4 @@ For other operating systems, use:
 cx ..\2DFWork\. .
 ```
 
-Use the arrow keys (or WASDF, or mouse movement) to move the falling pieces.
-Use Ctrl & Alt keys (or Q & E, or mouse buttons) to rotate falling pieces.
+Use the arrow keys (or WASDF) to move the player.

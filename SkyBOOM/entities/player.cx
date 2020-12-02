@@ -5,48 +5,52 @@ package main
 var ONE_UP_SCORE_DELTA i32 = 10 // get this many to replace any missing wallet paddles 
 
 var walletAspectRatio  f32 = 828.0 / 364.0 // multiply this with desired height 
+
+// player 
 var plr                i32 = entities.ENT_PLAYER
 var score              i32
 var scoreAtLastLoss    i32 // loss of a wallet paddle (from missing a coin) 
+
 // edges of wallet paddles 
-var pT /* top      */  f32
-var pB /* bottom   */  f32
-var pL /* left     */  f32
-var pR /* right    */  f32
+var pT /* top       */ f32
+var pB /* bottom    */ f32
+var pL /* left      */ f32
+var pR /* right     */ f32
 	
 
 
 func playerEntsInit () {
 	entities.AutoUpdatePlayerEnts = false
 	
-	var f f32  = 0.07
-	var y f32  = f - 1.0
-	var et i32 = entities.ENT_PLAYER
-
-	// wallets/paddles/buckets 
-	//		bottom 
-	//		(1st player entity is autocreated) 
-	entities.All[et][0].Y       = y
-	entities.All[et][0].ExtentX = f * walletAspectRatio
-	entities.All[et][0].ExtentY = f
+	// extents 
+	var xY f32 = entities.All[plr][0].ExtentY
+	var xX f32 = xY * walletAspectRatio
+	// pos 
+	var y  f32 = -1.0
+	y = y + xY
+	
+	// wallets/paddles 
+	//		bottom   (1st player entity was autocreated) 
+	entities.All[plr][0].Y       = y
+	entities.All[plr][0].ExtentX = xX
 	
 	var ne entities.Entity	
 	
-	// middle 
-	y = f32.add(y, f32.mul(f, 3.0))
+	//		middle 
+	y = f32.add(y, f32.mul(xY, 3.0))
 	ne = entities.Entity{
 		Y:       y,
-		ExtentX: f * walletAspectRatio,
-		ExtentY: f}
-	entities.Spawn(et, ne)
+		ExtentX: xX,
+		ExtentY: xY}
+	entities.Spawn(plr, ne)
 
-	// top 
-	y = f32.add(y, f32.mul(f, 3.0))
+	//		top 
+	y = f32.add(y, f32.mul(xY, 3.0))
 	ne = entities.Entity{
 		Y:       y, 
-		ExtentX: f * walletAspectRatio,
-		ExtentY: f}
-	entities.Spawn(et, ne)
+		ExtentX: xX,
+		ExtentY: xY}
+	entities.Spawn(plr, ne)
 
 	pT = f32.add(ne.Y, ne.ExtentY)					
 	pB = -1.0
@@ -104,12 +108,12 @@ func maybeCollideWithCoin (et i32, i i32, coinTop f32, coinRight f32, coinBottom
 
 			if     caughtCoin(i, pL, pR, coinLeft) { // edge 
 					addToScore()
-					spawnParticlePuffFrom(et, i)
+					entities.SpawnParticlePuffFrom(et, i, entities.ENTMODE_MOVING_TO_POS, 0.0, 0.0)
 					entities.Kill(et, i)
 			}else{
 				if caughtCoin(i, pL, pR, coinRight) { // edge 
 					addToScore()
-					spawnParticlePuffFrom(et, i)
+					entities.SpawnParticlePuffFrom(et, i, entities.ENTMODE_MOVING_TO_POS, 0.0, 0.0)
 					entities.Kill(et, i)
 				}
 			}
