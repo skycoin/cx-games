@@ -1,20 +1,57 @@
-# CXtris 
+# CXTRIS
 
-Make sure you have this entire subfolder (of the "cx-games" repo) on your hard drive.  Also it's name must be exactly "CXtris".
-Then run it with the command "cx .", from the main folder of the game.
-This assumes you copied the CX.EXE file there, or that you have it in your path (environment variable).  Otherwise you need to supply the path (to CX) on the command line:
-("[___your_PATH_goes_here___]\cx .")
+![CXTRIS](https://github.com/SkycoinProject/cx-games/blob/master/CXtris/assets/screenshots/CXtris-1.png)
+![CXTRIS](https://github.com/SkycoinProject/cx-games/blob/master/CXtris/assets/screenshots/CXtris-2.png)
+![CXTRIS](https://github.com/SkycoinProject/cx-games/blob/master/CXtris/assets/screenshots/CXtris-3.png)
 
+CXTRIS is a game powered by the CX programming language.
+Along with a common 2D framework library (2DFWork) that CorpusC's games use.
+Appropriate functionality that was needed for these games, was made into generalized
+systems that can be used by any future 2D games developed by anyone.
+This game (and framework) is being developed with the following objectives:
 
-The file with the version of CX.EXE that is most certain to work is:
-(cx-0.7.0-bin-[___your_OS_goes_here___]-x64.zip)
+  - Demonstrate the capabilities of CX
+  - Obtain feedback on the language
+  - Increase awareness for the Skycoin Project (developers of CX)
 
+# What is CX?
+CX is a general purpose, interpreted and compiled programming language, with a very strict type system and a syntax similar to Golang's. CX provides a new programming paradigm based on the concept of affordances, where the user can ask the programming language at runtime what can be done with a CX object (functions, expressions, packages, etc.), and interactively or automatically choose one of the affordances to be applied.
 
-It can be downloaded at the bottom of this webpage: https://github.com/skycoin/cx/releases/tag/v0.7.0
+You can find more info on:
+  - The official website of Skycoin - https://www.skycoin.com/
+  - The github repo of CX - https://github.com/SkycoinProject/cx
 
+# Installation
+CXTRIS supports [CX v0.7.0](https://github.com/SkycoinProject/cx/releases/tag/v0.7.0).
+The binaries for CX are available at:
+  - [linux-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-linux-x64.zip)
+  - [mac-os-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-macos-x64.zip)
+  - [windows-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-windows-x64.zip)
 
+```sh
+$ git clone https://github.com/SkycoinProject/cx-games.git
+```
 
-# Note
-After deleting the 2 abandoned, non-functional Tetris-clone folders, I went back in the repo history to see what kind of textures the game had.  After looking at the textures, I started thinking about the logic involved in this kind of game, and thought it might be fairly easy to write (from scratch) without taking too much time.
+Wait for the cloning process to finish and navigate to the cloned directory...
 
--CorpusC
+```sh
+$ cd cx-games/CXtris
+```
+
+The game should be ready to run.
+
+# Running the game
+In Windows, type the following command:
+
+```sh
+run
+```
+
+For other operating systems, use:
+
+```sh
+cx ..\2DFWork\. .
+```
+
+Use the arrow keys (or WASDF, or mouse movement) to move the falling pieces.
+Use Ctrl & Alt keys (or Q & E, or mouse buttons) to rotate falling pieces.
