@@ -27,11 +27,11 @@ import "geom"
 
 
 
-var NumCellsAcross  i32 = 5     // in both dimensions 
+var NumCellsAcross  i32 = 4     // in both dimensions 
 var WTh             f32 = 0.085 // wall thickness 
 var CellSpan        f32 = 1.0
 var CellSpanHalf    f32 = CellSpan / 2.0
-var Cells           [5][5]Cell   // FIXME: use "NumCellsAcross" constants when we CAN 
+var Cells           [4][4]Cell   // FIXME: use "NumCellsAcross" constants when we CAN 
 var Carvs           []CarvedRoom // used/carved-out locations of the Cells grid 
  
 var plr             i32 = entities.ENT_PLAYER // FIXME?: this is wrong to have in "map"? 
@@ -43,7 +43,7 @@ var response        i32
 
 type Cell struct {
 	CarvsId i32 // MAX_I32 == solid rock 
-	Exits []i32 // initial possibilities that point to all valid grid slot neighbor cells 
+	Exits []i32 // possible valid exits 
 }
 
 type CarvedRoom struct {
@@ -297,16 +297,16 @@ func carveOutConnectedRooms () {
 			y = i32.rand(0, NumCellsAcross)
 			var cr CarvedRoom = carveOutRoom(x, y, len(Carvs))
 	
-			
-			
 			Carvs = append(
 			Carvs, cr)
 			printf("carved FIRST new @ %d, %d   -   len(Carvs): %d \n", x, y, len(Carvs))
 		}else{
-			// old cell, old (carved) room id 
+			// try 1st random 
+			// 		old cell, old (carved) room id 
 			x, y, oc, orId = getRandomCarvedRoom()
 			//printf("carveOutConnectedRooms() len(r.Exits): %d \n", len(r.Exits))
 			
+			// keep trying until we get 1 with a possible exit 
 			for len(oc.Exits) < 1 {
 				x, y, oc, orId = getRandomCarvedRoom()
 			}
