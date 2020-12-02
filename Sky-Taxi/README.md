@@ -1,8 +1,8 @@
 # SKY TAXI
 
-![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/sky-taxi/assets/screenshots/sky-taxi-1.png)
-![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/sky-taxi/assets/screenshots/sky-taxi-2.png)
-![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/sky-taxi/assets/screenshots/sky-taxi-3.png)
+![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/Sky-Taxi/assets/screenshots/Sky-Taxi-1.png)
+![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/Sky-Taxi/assets/screenshots/Sky-Taxi-2.png)
+![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/Sky-Taxi/assets/screenshots/Sky-Taxi-3.png)
 
 SKY TAXI is a game powered by the CX programming language.
 Along with a common 2D framework library (2DFWork) that CorpusC's games use.
