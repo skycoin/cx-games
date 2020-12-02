@@ -1,15 +1,16 @@
-# SKY TAXI
+# SNAKE ARENA
 
-![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/Sky-Taxi/assets/screenshots/Sky-Taxi-1.png)
-![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/Sky-Taxi/assets/screenshots/Sky-Taxi-2.png)
-![SKY TAXI](https://github.com/SkycoinProject/cx-games/blob/master/Sky-Taxi/assets/screenshots/Sky-Taxi-3.png)
+![SNAKE ARENA](https://github.com/SkycoinProject/cx-games/blob/master/Snake-Arena/assets/screenshots/Snake-Arena-1.png)
+![SNAKE ARENA](https://github.com/SkycoinProject/cx-games/blob/master/Snake-Arena/assets/screenshots/Snake-Arena-2.png)
+![SNAKE ARENA](https://github.com/SkycoinProject/cx-games/blob/master/Snake-Arena/assets/screenshots/Snake-Arena-3.png)
 
-SKY TAXI is a game powered by the CX programming language.
+SNAKE ARENA is a game powered by the CX programming language.
 Along with a common 2D framework library (2DFWork) that CorpusC's games use.
 Appropriate functionality that was needed for these games, was made into generalized
 systems that can be used by any future 2D games developed by anyone.
 This game (and framework) is being developed with the following objectives:
 
+  - Designed for AI agents to play against each other and evolve strategies.
   - Demonstrate the capabilities of CX
   - Obtain feedback on the language
   - Increase awareness for the Skycoin Project (developers of CX)
@@ -22,7 +23,7 @@ You can find more info on:
   - The github repo of CX - https://github.com/SkycoinProject/cx
 
 # Installation
-SKY TAXI supports [CX v0.7.0](https://github.com/SkycoinProject/cx/releases/tag/v0.7.0).
+SNAKE ARENA supports [CX v0.7.0](https://github.com/SkycoinProject/cx/releases/tag/v0.7.0).
 The binaries for CX are available at:
   - [linux-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-linux-x64.zip)
   - [mac-os-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-macos-x64.zip)
@@ -35,7 +36,7 @@ $ git clone https://github.com/SkycoinProject/cx-games.git
 Wait for the cloning process to finish and navigate to the cloned directory...
 
 ```sh
-$ cd cx-games/Sky-Taxi
+$ cd cx-games/Snake-Arena
 ```
 
 The game should be ready to run.

@@ -1,0 +1,110 @@
+package main
+
+import "draw"
+
+
+
+var Pic0Char  i32
+
+
+
+func drawInit () {
+	draw.Init()
+	Pic0Char  = draw.AddPic("0.png")
+	            draw.InitPics()
+}
+
+
+func drawAll () {
+	//str.print("drawAll")
+
+	pre()
+	
+	if app.Mode == app.MODE_EDITOR {
+		mesh.DrawEditor()
+	}else{ // gameplay 
+		// move "camera" position (centered on player) 
+		gl.Translatef(
+			0.0-entities.All[plr][0].X, 
+			0.0-entities.All[plr][0].Y, 
+			0.0)
+
+		map.DrawQuads()
+			
+		// particles 
+		gl.Enable (gl.TEXTURE_2D)
+			drawParticles()
+		gl.Disable(gl.TEXTURE_2D)
+
+		drawPlayer()
+	}
+	
+	if  menu.IsOpen() {		
+		gl.Enable (gl.TEXTURE_2D)
+		//gl.Enable(gl.DEPTH_TEST)
+			menu.Draw()
+		gl.Disable(gl.TEXTURE_2D)
+	}else{
+		gl.LoadIdentity()
+	}
+}
+
+
+func pre () {
+	gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.MatrixMode(gl.PROJECTION)
+	gl.LoadIdentity()
+	gl.Ortho(
+		space.ViewEdgeL64, 
+		space.ViewEdgeR64, -1.0D, 1.0D, 1.0D, -1.0D)
+	gl.Viewport(0, 0, 
+		space.ViewWidInPixels, 
+		space.ViewHeiInPixels)
+	gl.MatrixMode(gl.MODELVIEW)
+
+	gl.Disable(gl.TEXTURE_2D)
+	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
+}
+
+
+func drawPlayer () {
+	draw.SetColor3(draw.Gray)
+	
+	gl.Begin(gl.TRIANGLES)
+		mesh.TrisForOneMeshAtPos(
+			mesh.SizedMeshes,
+			0,
+			entities.All[plr][0].X,
+			entities.All[plr][0].Y,
+			playerFacingWest)
+		
+		/*
+		draw.OneCircle(
+			entities.All[plr][0].X, 
+			entities.All[plr][0].Y, 
+			entities.All[plr][0].ExtentX, 
+			entities.All[plr][0].ExtentY, 
+			draw.COLOR_CYAN, 
+			1.0)
+		*/
+	gl.End()
+}
+
+
+func drawParticles () {
+	var t  f32 // rect edges 
+	var r  f32
+	var b  f32
+	var l  f32
+
+	var et i32 = entities.ENT_PARTICLE_0
+	var n  i32 = entities.GetCountOf(et)
+	draw.SetColor3(draw.White)
+	
+	draw.BeginTexturedQuads(Pic0Char)
+		for i := 0; i < n; i++ {
+			t, r, b, l = entities.GetRect(et, i)
+			draw.TexturedQuad(t, r, b, l)
+		}
+	draw.End()
+}

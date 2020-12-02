@@ -1,0 +1,42 @@
+package main
+
+
+
+// "enums"           FIXME: when CX has enums or constants 
+var ENT_CUSTOMER     i32  = entities.ENT_MAX_OF_2DFW
+var ENT_DESTINATION  i32  = entities.ENT_MAX_OF_2DFW + 1
+var ENT_MAX_OF_GAME  i32  = entities.ENT_MAX_OF_2DFW + 2
+
+var plr              i32  = entities.ENT_PLAYER
+var playerFacingWest bool
+
+
+
+func entitiesInit () {
+	entities.Init(ENT_MAX_OF_GAME, 0.12, 0.075)
+	entities.All[plr][0].Gravity = -7.0 //-9.8
+}
+
+
+func entitiesUpdate () {
+	entities.Update()
+	
+	// thruster particles 
+	var f f32 = 0.5 // velocity 
+	if inputs.HoldingGoLeft () {
+		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY,  f, 0.0)
+		playerFacingWest = true
+	}
+	if inputs.HoldingGoRight() {
+		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, -f, 0.0)
+		playerFacingWest = false
+	}
+	if inputs.HoldingGoDown () {
+		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, 0.0,  f)
+	}
+	if inputs.HoldingGoUp   () {
+		entities.SpawnParticlePuffFrom(plr, 0, entities.ENTMODE_MOVING_BY_VELOCITY, 0.0, -f)
+	}				
+}
+
+
