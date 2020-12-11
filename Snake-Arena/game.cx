@@ -8,14 +8,24 @@ import "time"
 
 
 
+type Cell struct {
+	X i32
+	Y i32
+}
+
+var NumCellsAcross i32 = 20
+var CellSpan       f32 = 2.0 / i32.f32(NumCellsAcross)
+var Cells          [][]Cell
+
+
+
 func gameInit () {
-	app.Init("S K Y   T A X I", "Move with the W,A,S,D keys.")
+	app.Init("S n a k e   A r e n a", "Move with the W,A,S,D (or arrow) keys.")
 	//space.Init()
 	drawInit()
 	inputs.Init(true)
 	menuInit()
 	entitiesInit()
-	map.Init()
 	mesh.Init()
 }
 

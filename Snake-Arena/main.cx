@@ -6,7 +6,6 @@ import "glfw"
 import "draw"
 import "entities"
 import "inputs"
-import "map"
 
 
 

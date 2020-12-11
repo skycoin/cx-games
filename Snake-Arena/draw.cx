@@ -20,24 +20,22 @@ func drawAll () {
 
 	pre()
 	
-	if app.Mode == app.MODE_EDITOR {
-		mesh.DrawEditor()
-	}else{ // gameplay 
-		// move "camera" position (centered on player) 
-		gl.Translatef(
-			0.0-entities.All[plr][0].X, 
-			0.0-entities.All[plr][0].Y, 
-			0.0)
+	mesh.GridLines(false)
+	
+	// gameplay 	
+	gl.Translatef( // move "camera" position (centered on player) 
+		0.0-entities.All[plr][0].X, 
+		0.0-entities.All[plr][0].Y, 
+		0.0)
 
-		map.DrawQuads()
-			
-		// particles 
-		gl.Enable (gl.TEXTURE_2D)
-			drawParticles()
-		gl.Disable(gl.TEXTURE_2D)
+	// particles 
+	gl.Enable (gl.TEXTURE_2D)
+		drawParticles()
+	gl.Disable(gl.TEXTURE_2D)
 
-		drawPlayer()
-	}
+	drawPlayer()
+
+
 	
 	if  menu.IsOpen() {		
 		gl.Enable (gl.TEXTURE_2D)

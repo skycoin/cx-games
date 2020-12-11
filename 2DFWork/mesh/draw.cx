@@ -82,7 +82,7 @@ func pre () {
 	if  app.EditMode != app.EDITMODE_COLORS &&
 		app.EditMode != app.EDITMODE_MESH_PICKER {
 		
-		gridLines()
+		GridLines(true)
 	}
 }
 
@@ -293,7 +293,7 @@ func simpleVertexSequence (colorChanIntensity f32) () {
 }
 
 
-func gridLines () {
+func GridLines (wanting2shades bool) {
 	gl.Begin(gl.LINES)
 
 	var l f32
@@ -312,7 +312,12 @@ func gridLines () {
 	var fx f32
 	fx = l
 	for x := 0; x <= numLines; x++ {
-		setColor(x)		
+		if (wanting2shades) {
+			setColor(x)		
+		}else{
+			gl.Color3f(darkCI, darkCI, darkCI)
+		}
+			
 		gl.Vertex3f(fx, l, z)
 		gl.Vertex3f(fx, r, z)
 		
@@ -323,7 +328,12 @@ func gridLines () {
 	var fy f32
 	fy = l
 	for y := 0; y <= numLines; y++ {
-		setColor(y)		
+		if (wanting2shades) {
+			setColor(y)		
+		}else{
+			gl.Color3f(darkCI, darkCI, darkCI)
+		}
+
 		gl.Vertex3f(l, fy, z)
 		gl.Vertex3f(r, fy, z)
 		
@@ -338,7 +348,7 @@ var othCol f32 = darkCI / 2.0
 func setColor (i i32) {	
 	if i % 4 == 0 {
 		gl.Color3f(darkCI, darkCI, darkCI)
-	} else {
+	}else{
 		gl.Color3f(othCol, othCol, othCol)
 	}
 }
