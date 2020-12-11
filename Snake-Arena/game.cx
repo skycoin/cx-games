@@ -8,14 +8,29 @@ import "time"
 
 
 
-type Cell struct {
-	X i32
-	Y i32
+var NUM_CELLS_ACROSS i32 = 20
+
+// "enums" 
+var OCCUPANT_NONE    i32
+var OCCUPANT_FRUIT   i32 = 1
+var OCCUPANT_PLAYER1 i32 = 2 // players start here... 
+                             // ...can have an "unlimited" number, 
+                             // just keep adding 1 per extra player 
+
+
+// player 
+type Player struct {
+	Head   app.Vec2I
+	Tail []app.Vec2I // segments 
 }
 
-var NumCellsAcross i32 = 20
-var CellSpan       f32 = 2.0 / i32.f32(NumCellsAcross)
-var Cells          [][]Cell
+
+// map 
+var Players          []Player
+var CellSpan         f32 = 2.0 / i32.f32(NUM_CELLS_ACROSS)
+var Cells            [20][20]i32 // wanted to use NUM_CELLS_ACROSS 
+                                 // FIXME when CX has constants, 
+                                 // & allows them as indices in brackets 
 
 
 
