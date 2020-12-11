@@ -1,9 +1,9 @@
 # SKYBOOM
 
-![SKYBOOM](https://github.com/SkycoinProject/cx-games/blob/master/SkyBOOM/assets/screenshots/SkyBOOM-1.png)
-![SKYBOOM](https://github.com/SkycoinProject/cx-games/blob/master/SkyBOOM/assets/screenshots/SkyBOOM-2.png)
-![SKYBOOM](https://github.com/SkycoinProject/cx-games/blob/master/SkyBOOM/assets/screenshots/SkyBOOM-3.png)
-![SKYBOOM](https://github.com/SkycoinProject/cx-games/blob/master/SkyBOOM/assets/screenshots/SkyBOOM-4.png)
+![SKYBOOM](https://github.com/skycoin/cx-games/blob/master/SkyBOOM/assets/screenshots/SkyBOOM-1.png)
+![SKYBOOM](https://github.com/skycoin/cx-games/blob/master/SkyBOOM/assets/screenshots/SkyBOOM-2.png)
+![SKYBOOM](https://github.com/skycoin/cx-games/blob/master/SkyBOOM/assets/screenshots/SkyBOOM-3.png)
+![SKYBOOM](https://github.com/skycoin/cx-games/blob/master/SkyBOOM/assets/screenshots/SkyBOOM-4.png)
 
 SKYBOOM is a game powered by the CX programming language.
 Along with a common 2D framework library (2DFWork) that CorpusC's games use.
@@ -20,17 +20,17 @@ CX is a general purpose, interpreted and compiled programming language, with a v
 
 You can find more info on:
   - The official website of Skycoin - https://www.skycoin.com/
-  - The github repo of CX - https://github.com/SkycoinProject/cx
+  - The github repo of CX - https://github.com/skycoin/cx
 
 # Installation
-SKYBOOM supports [CX v0.7.0](https://github.com/SkycoinProject/cx/releases/tag/v0.7.0).
+SKYBOOM supports [CX v0.7.0](https://github.com/skycoin/cx/releases/tag/v0.7.0).
 The binaries for CX are available at:
-  - [linux-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-linux-x64.zip)
-  - [mac-os-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-macos-x64.zip)
-  - [windows-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.0/cx-0.7.0-bin-windows-x64.zip)
+  - [linux-x64](https://github.com/skycoin/cx/releases/download/v0.7.0/cx-0.7.0-bin-linux-x64.zip)
+  - [mac-os-x64](https://github.com/skycoin/cx/releases/download/v0.7.0/cx-0.7.0-bin-macos-x64.zip)
+  - [windows-x64](https://github.com/skycoin/cx/releases/download/v0.7.0/cx-0.7.0-bin-windows-x64.zip)
 
 ```sh
-$ git clone https://github.com/SkycoinProject/cx-games.git
+$ git clone https://github.com/skycoin/cx-games.git
 ```
 
 Wait for the cloning process to finish and navigate to the cloned directory...
