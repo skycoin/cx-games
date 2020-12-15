@@ -22,13 +22,24 @@ func drawAll () {
 	
 	draw.GridLines(false)
 	
-	// gameplay 	
-
-	// particles 
-	gl.Enable (gl.TEXTURE_2D)
-	gl.Disable(gl.TEXTURE_2D)
-
-	//drawPlayer()
+	// gameplay 
+	draw.BeginUntexturedQuads() 
+	
+	for i := 0; i < len(fruits); i++ {
+		draw.AddRectByGrid(fruits[i].X, fruits[i].Y, cellSpan, cellSpanHalf)
+	}
+	for     s := 0; s < len(snakes);    s++ { // s == snake,   g == segment 
+		for g := 0; g < len(snakes[s]); g++ {
+			draw.AddRectByGrid(
+				snakes[s][g].X, 
+				snakes[s][g].Y, 
+				cellSpan, 
+				cellSpanHalf)
+			//printf("%d, %d \n", snakes[s][g].X, snakes[s][g].Y)
+		}
+	}
+	
+	draw.End()
 
 
 	

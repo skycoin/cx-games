@@ -20,11 +20,13 @@ func AddRect (pos app.Vec2, extentX f32, extentY f32) {
 
 
 // based on grid indices, perfectly square shapes (tile/cell-based motion) 
-func AddRectByGrid (pos app.Vec2I, cellSpan f32, cellSpanHalf f32) {
-	var startEdge       f32 = -1.0 + cellSpanHalf
+func AddRectByGrid (x i32, y i32, cellSpan f32, cellSpanHalf f32) {
+	//printf("AddRectByGrid()   %d, %d \n", pos.X, pos.Y)
+
+	var startEdge       f32 = -1.0 //+ cellSpanHalf
 	
-	var fX              f32 = i32.f32(pos.X) * cellSpan
-	var fY              f32 = i32.f32(pos.Y) * cellSpan
+	var fX              f32 = i32.f32(x) * cellSpan
+	var fY              f32 = i32.f32(y) * cellSpan
 
 	var lX /* left   */ f32 = startEdge + fX
 	var bY /* bottom */ f32 = startEdge + fY

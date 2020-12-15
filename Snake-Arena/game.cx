@@ -7,20 +7,19 @@ import "time"
 
 
 
-// "enums" 
-var OCCUPANT_NONE    i32
-var OCCUPANT_FRUIT   i32 = 1
-var OCCUPANT_PLAYER1 i32 = 2 // players start here... 
-                             // ...can have an "unlimited" number, 
-                             // just keep adding 1 per extra player 
+// "enums"           FIXME: when CX has enums or constants 
+var ENTITY_NONE  i32
+var ENTITY_FRUIT i32 = 1
+var ENTITY_SNAKE i32 = 2 // snakes start here, just keep adding 1 per extra snake 
 
 
 
 // map 
 var NUM_CELLS_ACROSS i32 = 20
 
-var CellSpan         f32 = 2.0 / i32.f32(NUM_CELLS_ACROSS)
-var Cells            [20][20]i32 // wanted to use NUM_CELLS_ACROSS 
+var cellSpan         f32 = 2.0 / i32.f32(NUM_CELLS_ACROSS)
+var cellSpanHalf     f32 = cellSpan / 2.0
+var cells            [20][20]i32 // wanted to use NUM_CELLS_ACROSS 
                                  // FIXME when CX has constants, 
                                  // & allows them as indices in brackets 
 
@@ -28,6 +27,8 @@ var Cells            [20][20]i32 // wanted to use NUM_CELLS_ACROSS
 
 func gameInit () {
 	app.Init("S n a k e   A r e n a", "Move with the W,A,S,D (or arrow) keys.")
+	app.Mode = app.MODE_PLAYING
+	
 	//space.Init()
 	drawInit()
 	inputs.Init(true)
@@ -38,6 +39,7 @@ func gameInit () {
 
 func gameUpdate () {
 	time.Update()
+	drawAll()
 	actOnButtonQueue()
 	actOnKeyQueue()
 	entitiesUpdate()

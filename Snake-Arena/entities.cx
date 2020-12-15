@@ -3,31 +3,82 @@ package main
 import "app"
 
 
-// "enums"           FIXME: when CX has enums or constants 
-// player 
-type Player struct {
-	Head   app.Vec2I
-	Tail []app.Vec2I // segments 
-}
-var Players          []Player
+
+var snakes [][]app.Vec2I // 1st index is the snake id, 2nd is the segment (0 is the head) 
+var fruits   []app.Vec2I
 
 
 
 func entitiesInit () {
+	fruits = append(
+	fruits, getRandUnusedPos())
+	
+	var v []Vec2I
+	  v = []Vec2I{}
+	
+	snakes = append(
+	snakes, v)
+	snakes = append(
+	snakes, v)
+	
+	snakes[0] = append(
+	snakes[0], getRandUnusedPos())
+	snakes[1] = append(
+	snakes[1], getRandUnusedPos())
 }
 
 
+var nextMove f32
 func entitiesUpdate () {
-	// thruster particles 
-	var f f32 = 0.5 // velocity 
-	if inputs.HoldingGoLeft () {
+	if (nextMove < time.Now) {
+		nextMove = time.Now + 0.1
+		
+		if inputs.HoldingGoLeft () {
+			snakes[0][0].X = 
+			snakes[0][0].X - 1
+			
+			if  snakes[0][0].X < 0 {
+				snakes[0][0].X = 0
+			}
+		}
+		if inputs.HoldingGoRight() {
+			snakes[0][0].X = 
+			snakes[0][0].X + 1
+			
+			if  snakes[0][0].X >= NUM_CELLS_ACROSS {
+				snakes[0][0].X  = NUM_CELLS_ACROSS-1
+			}
+		}
+		if inputs.HoldingGoDown () {
+			snakes[0][0].Y = 
+			snakes[0][0].Y - 1
+			
+			if  snakes[0][0].Y < 0 {
+				snakes[0][0].Y = 0
+			}
+		}
+		if inputs.HoldingGoUp   () {
+			snakes[0][0].Y = 
+			snakes[0][0].Y + 1
+			
+			if  snakes[0][0].Y >= NUM_CELLS_ACROSS {
+				snakes[0][0].Y  = NUM_CELLS_ACROSS-1
+			}
+		}				
 	}
-	if inputs.HoldingGoRight() {
+	
+	var f f32 = 0.5 // velocity 	
+}
+
+
+func getRandUnusedPos () (pos app.Vec2I) {
+	pos.X = i32.rand(0, NUM_CELLS_ACROSS)
+	pos.Y = i32.rand(0, NUM_CELLS_ACROSS)
+	
+	for cells[pos.Y][pos.X] != ENTITY_NONE {
+		pos.X = i32.rand(0, NUM_CELLS_ACROSS)
+		pos.Y = i32.rand(0, NUM_CELLS_ACROSS)
 	}
-	if inputs.HoldingGoDown () {
-	}
-	if inputs.HoldingGoUp   () {
-	}				
 }
 
 
