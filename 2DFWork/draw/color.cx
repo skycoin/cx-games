@@ -19,10 +19,12 @@ var White Color3
 var Gray  Color3
 
 // 		channel intensities 
+var Max    f32 = 1.0
 var Light  f32 = 0.75
 var Mid    f32 = 0.5
 var Dark   f32 = 0.3
 var Darker f32 = 0.2
+var Min    f32 = 0.0
 
 // 		palettes 
 var Colors   []Color3 // colors hand-chosen for CXtris blocks 

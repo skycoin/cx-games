@@ -2,13 +2,10 @@ package main
 
 import "app"
 import "inputs"
-import "mesh"
 import "space"
 import "time"
 
 
-
-var NUM_CELLS_ACROSS i32 = 20
 
 // "enums" 
 var OCCUPANT_NONE    i32
@@ -18,15 +15,10 @@ var OCCUPANT_PLAYER1 i32 = 2 // players start here...
                              // just keep adding 1 per extra player 
 
 
-// player 
-type Player struct {
-	Head   app.Vec2I
-	Tail []app.Vec2I // segments 
-}
-
 
 // map 
-var Players          []Player
+var NUM_CELLS_ACROSS i32 = 20
+
 var CellSpan         f32 = 2.0 / i32.f32(NUM_CELLS_ACROSS)
 var Cells            [20][20]i32 // wanted to use NUM_CELLS_ACROSS 
                                  // FIXME when CX has constants, 
@@ -41,13 +33,11 @@ func gameInit () {
 	inputs.Init(true)
 	menuInit()
 	entitiesInit()
-	mesh.Init()
 }
 
 
 func gameUpdate () {
 	time.Update()
-	mesh.UpdateEditor()
 	actOnButtonQueue()
 	actOnKeyQueue()
 	entitiesUpdate()

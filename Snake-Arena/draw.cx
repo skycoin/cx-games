@@ -20,20 +20,15 @@ func drawAll () {
 
 	pre()
 	
-	mesh.GridLines(false)
+	draw.GridLines(false)
 	
 	// gameplay 	
-	gl.Translatef( // move "camera" position (centered on player) 
-		0.0-entities.All[plr][0].X, 
-		0.0-entities.All[plr][0].Y, 
-		0.0)
 
 	// particles 
 	gl.Enable (gl.TEXTURE_2D)
-		drawParticles()
 	gl.Disable(gl.TEXTURE_2D)
 
-	drawPlayer()
+	//drawPlayer()
 
 
 	
@@ -62,47 +57,4 @@ func pre () {
 
 	gl.Disable(gl.TEXTURE_2D)
 	//gl.Disable(gl.DEPTH_TEST) // done drawing fonts 
-}
-
-
-func drawPlayer () {
-	draw.SetColor3(draw.Gray)
-	
-	gl.Begin(gl.TRIANGLES)
-		mesh.TrisForOneMeshAtPos(
-			mesh.SizedMeshes,
-			0,
-			entities.All[plr][0].X,
-			entities.All[plr][0].Y,
-			playerFacingWest)
-		
-		/*
-		draw.OneCircle(
-			entities.All[plr][0].X, 
-			entities.All[plr][0].Y, 
-			entities.All[plr][0].ExtentX, 
-			entities.All[plr][0].ExtentY, 
-			draw.COLOR_CYAN, 
-			1.0)
-		*/
-	gl.End()
-}
-
-
-func drawParticles () {
-	var t  f32 // rect edges 
-	var r  f32
-	var b  f32
-	var l  f32
-
-	var et i32 = entities.ENT_PARTICLE_0
-	var n  i32 = entities.GetCountOf(et)
-	draw.SetColor3(draw.White)
-	
-	draw.BeginTexturedQuads(Pic0Char)
-		for i := 0; i < n; i++ {
-			t, r, b, l = entities.GetRect(et, i)
-			draw.TexturedQuad(t, r, b, l)
-		}
-	draw.End()
 }

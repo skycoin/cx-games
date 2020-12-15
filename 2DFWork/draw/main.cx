@@ -55,6 +55,67 @@ func OnFramebufferSize (window str, wid i32, hei i32) {
 }
 
 
+func GridLines (wanting2shades bool) {
+	gl.Begin(gl.LINES)
+
+	var l f32
+	l = -1.0
+	
+	var r f32
+	r = 1.0
+	
+	numLines := 20
+	var unitSpan f32
+	unitSpan = f32.mul(r, 2.0)
+	unitSpan = f32.div(unitSpan, i32.f32(numLines))
+	z := 0.2
+
+	// vertical 
+	var fx f32
+	fx = l
+	for x := 0; x <= numLines; x++ {
+		if (wanting2shades) {
+			setLineColor(x)		
+		}else{
+			gl.Color3f(Darker, Darker, Darker)
+		}
+			
+		gl.Vertex3f(fx, l, z)
+		gl.Vertex3f(fx, r, z)
+		
+		fx = f32.add(fx, unitSpan)
+	}
+	
+	// horizontal 
+	var fy f32
+	fy = l
+	for y := 0; y <= numLines; y++ {
+		if (wanting2shades) {
+			setLineColor(y)		
+		}else{
+			gl.Color3f(Darker, Darker, Darker)
+		}
+
+		gl.Vertex3f(l, fy, z)
+		gl.Vertex3f(r, fy, z)
+		
+		fy = f32.add(fy, unitSpan)
+	}
+	
+	gl.End()
+}
+
+
+var othCol f32 = Darker / 2.0
+func setLineColor (i i32) {	
+	if i % 4 == 0 {
+		gl.Color3f(Darker, Darker, Darker)
+	}else{
+		gl.Color3f(othCol, othCol, othCol)
+	}
+}
+
+
 func initGL () {
 	glfw.Init()
 	glfw.CreateWindow(

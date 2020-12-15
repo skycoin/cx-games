@@ -4,7 +4,6 @@ import "gl"
 import "glfw"
 
 import "draw"
-import "entities"
 import "inputs"
 
 

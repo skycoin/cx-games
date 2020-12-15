@@ -92,8 +92,6 @@ You could also keep track of len manually in a var and never call resize
 
 
 
-i dunno that i understood Inge's advice to Moses, but it made me think of this way of handling dead/alive entities:
-
 * 2 vars used in conjunction with the entity slice: 
 	var numDead i32 
 	var spawnValues Entity // fresh new spawn defaults 
