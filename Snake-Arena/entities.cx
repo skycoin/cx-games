@@ -1,11 +1,13 @@
 package main
 
 import "app"
+import "geom"
 
 
 
-var snakes [][]app.Vec2I // 1st index is the snake id, 2nd is the segment (0 is the head) 
-var fruits   []app.Vec2I
+var numSnakes i32 = 5
+var snakes  [][]app.Vec2I // 1st index is the snake id, 2nd is the segment (0 is the head) 
+var fruits    []app.Vec2I
 
 
 
@@ -16,58 +18,79 @@ func entitiesInit () {
 	var v []Vec2I
 	  v = []Vec2I{}
 	
-	snakes = append(
-	snakes, v)
-	snakes = append(
-	snakes, v)
-	
-	snakes[0] = append(
-	snakes[0], getRandUnusedPos())
-	snakes[1] = append(
-	snakes[1], getRandUnusedPos())
+	for i := 0; i < numSnakes; i++ {
+		snakes = append(
+		snakes, v)
+		
+		snakes[i] = append(
+		snakes[i], getRandUnusedPos())
+	}
 }
 
 
 var nextMove f32
 func entitiesUpdate () {
+	
 	if (nextMove < time.Now) {
 		nextMove = time.Now + 0.1
 		
+		// randomly move non-player snakes 
+		for i := 1; i < len(snakes); i++ {
+			var dir i32 = i32.rand(0, 4)
+			moveSnake(i, dir)
+		}
+
+
+		// player controlled snake 
 		if inputs.HoldingGoLeft () {
-			snakes[0][0].X = 
-			snakes[0][0].X - 1
-			
-			if  snakes[0][0].X < 0 {
-				snakes[0][0].X = 0
-			}
+			moveSnake(0, geom.DIR_LEFT)
 		}
 		if inputs.HoldingGoRight() {
-			snakes[0][0].X = 
-			snakes[0][0].X + 1
-			
-			if  snakes[0][0].X >= NUM_CELLS_ACROSS {
-				snakes[0][0].X  = NUM_CELLS_ACROSS-1
-			}
+			moveSnake(0, geom.DIR_RIGHT)
 		}
 		if inputs.HoldingGoDown () {
-			snakes[0][0].Y = 
-			snakes[0][0].Y - 1
-			
-			if  snakes[0][0].Y < 0 {
-				snakes[0][0].Y = 0
-			}
+			moveSnake(0, geom.DIR_DOWN)
 		}
 		if inputs.HoldingGoUp   () {
-			snakes[0][0].Y = 
-			snakes[0][0].Y + 1
-			
-			if  snakes[0][0].Y >= NUM_CELLS_ACROSS {
-				snakes[0][0].Y  = NUM_CELLS_ACROSS-1
-			}
+			moveSnake(0, geom.DIR_UP)
 		}				
 	}
-	
-	var f f32 = 0.5 // velocity 	
+}
+
+
+func moveSnake (i i32, dir i32) {
+	if dir == geom.DIR_LEFT {
+		snakes[i][0].X = 
+		snakes[i][0].X - 1
+		
+		if  snakes[i][0].X < 0 {
+			snakes[i][0].X = 0
+		}
+	}else	
+	if dir == geom.DIR_RIGHT {
+		snakes[i][0].X = 
+		snakes[i][0].X + 1
+		
+		if  snakes[i][0].X >= NUM_CELLS_ACROSS {
+			snakes[i][0].X  = NUM_CELLS_ACROSS-1
+		}
+	}else	
+	if dir == geom.DIR_DOWN {
+		snakes[i][0].Y = 
+		snakes[i][0].Y - 1
+		
+		if  snakes[i][0].Y < 0 {
+			snakes[i][0].Y = 0
+		}
+	}else	
+	if dir == geom.DIR_UP {
+		snakes[i][0].Y = 
+		snakes[i][0].Y + 1
+		
+		if  snakes[i][0].Y >= NUM_CELLS_ACROSS {
+			snakes[i][0].Y  = NUM_CELLS_ACROSS-1
+		}
+	}
 }
 
 

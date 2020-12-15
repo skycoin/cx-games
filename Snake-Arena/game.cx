@@ -12,14 +12,12 @@ var ENTITY_NONE  i32
 var ENTITY_FRUIT i32 = 1
 var ENTITY_SNAKE i32 = 2 // snakes start here, just keep adding 1 per extra snake 
 
-
-
 // map 
 var NUM_CELLS_ACROSS i32 = 20
 
-var cellSpan         f32 = 2.0 / i32.f32(NUM_CELLS_ACROSS)
-var cellSpanHalf     f32 = cellSpan / 2.0
-var cells            [20][20]i32 // wanted to use NUM_CELLS_ACROSS 
+var cellSpan     f32 = 2.0 / i32.f32(NUM_CELLS_ACROSS)
+var cellSpanHalf f32 = cellSpan / 2.0
+var cells        [20][20]i32 // wanted to use NUM_CELLS_ACROSS 
                                  // FIXME when CX has constants, 
                                  // & allows them as indices in brackets 
 
