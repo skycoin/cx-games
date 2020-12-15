@@ -25,11 +25,19 @@ func drawAll () {
 	// gameplay 
 	draw.BeginUntexturedQuads() 
 	
+	draw.SetColor3(draw.Red)
 	for i := 0; i < len(fruits); i++ {
 		draw.AddRectByGrid(fruits[i].X, fruits[i].Y, cellSpan, cellSpanHalf)
 	}
+	
 	for     s := 0; s < len(snakes);    s++ { // s == snake,   g == segment 
 		for g := 0; g < len(snakes[s]); g++ {
+			if s == 0 {
+				draw.SetColor3(draw.White)
+			}else{
+				draw.SetColor3(draw.Green)					
+			}
+			
 			draw.AddRectByGrid(
 				snakes[s][g].X, 
 				snakes[s][g].Y, 

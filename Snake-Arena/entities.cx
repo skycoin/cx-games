@@ -91,6 +91,26 @@ func moveSnake (i i32, dir i32) {
 			snakes[i][0].Y  = NUM_CELLS_ACROSS-1
 		}
 	}
+	
+	// any fruits touched, grows the touching snake 
+	for     f := 0; f < len(fruits); f++ {
+		for s := 0; s < len(snakes); s++ {
+			if  snakes[s][0].X == fruits[f].X &&
+				snakes[s][0].Y == fruits[f].Y {
+					
+				fruits[f] = getRandUnusedPos()
+				
+				var n i32 = len(snakes[s])
+				var v Vec2I
+				  v = Vec2I{}
+				v.X = snakes[s][n-1].X
+				v.Y = snakes[s][n-1].Y
+				
+				snakes[s] = append(
+				snakes[s], v)
+			}
+		}
+	}
 }
 
 
