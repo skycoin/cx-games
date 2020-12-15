@@ -59,6 +59,8 @@ func entitiesUpdate () {
 
 
 func moveSnake (i i32, dir i32) {
+	makeTailTrail(i)
+
 	if dir == geom.DIR_LEFT {
 		snakes[i][0].X = 
 		snakes[i][0].X - 1
@@ -110,6 +112,16 @@ func moveSnake (i i32, dir i32) {
 				snakes[s], v)
 			}
 		}
+	}
+}
+
+
+func makeTailTrail (s i32) {
+	// "> 0" to skip 0 (head), cuz it moves (by it's OWN rules) rather than trailing \\
+	var st i32 = len(snakes[s])-1
+	for i := st; i > 0; i-- {
+		snakes[s][i].X = snakes[s][i-1].X
+		snakes[s][i].Y = snakes[s][i-1].Y
 	}
 }
 
