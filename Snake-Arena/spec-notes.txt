@@ -1,0 +1,591 @@
+1> whole board is an array of numbers
+
+2> NxM, board dimension
+
+3> State of is 
+- -1 for the fruit
+- 0 for empty
+- 1 for player one
+- 2 for player two
+
+and agent is inputed
+- x,y dimension of board
+- x,y position of snake
+- x,y position of the fruit
+
+- x,y position of enemy enemy (player two)
+
+and each tick
+- agent outputs (up,down,left, right) and snake moves one forward
+
+
+
+
+
+
+
+he linked Amaury's 4:45 length video
+
+
+
+
+
+
+
+
+Synth, [16.11.20 01:52]
+!!!
+
+- agent take in a vector of numbers or a stuck (the game state)
+
+- the agent outputs a struct or numbers for their decision
+
+Synth, [16.11.20 01:52]
+every round
+
+Synth, [16.11.20 01:53]
+3> there has to be a scoring function
+
+Synth, [16.11.20 01:53]
+1> agent take in a vector of numbers or a stuck (the game state)
+
+2> the agent outputs a struct or numbers for their decision
+
+3> there has to be a scoring function (how well the agent did)
+
+4> Single player is fine. But best is game with two (or more players). Only two players for snake
+
+
+
+
+
+
+
+
+
+Synth, [16.11.20 02:06]
+That is for snake game (for 1 agent, or two agents)
+
+Synth, [16.11.20 02:07]
+Then I want "rock/paper sissors" N rounds
+- between two agents
+
+output is 1,2,3 (Rock,paper, sissors)
+
+agent loses for invalid output
+
+win is +1 point, lose is -1 point, draw is 0 points
+
+Synth, [16.11.20 02:07]
+for two agents
+
+Synth, [16.11.20 02:07]
+---
+
+Synth, [16.11.20 02:08]
+@jcromerohdz send me example of agent input and the output. 
+
+The vector and format.
+
+Show the code so benjamin knows what has to be inputed each round and what agents output each round.
+
+
+Synth, [16.11.20 02:17]
+@jcromerohdz Has to document what the input format and output format is for the agents.
+
+
+
+
+
+
+
+
+
+
+
+
+Synth, [16.11.20 02:06]
+That is for snake game (for 1 agent, or two agents)
+
+Synth, [16.11.20 02:07]
+Then I want "rock/paper sissors" N rounds
+- between two agents
+
+output is 1,2,3 (Rock,paper, sissors)
+
+agent loses for invalid output
+
+win is +1 point, lose is -1 point, draw is 0 points
+
+Synth, [16.11.20 02:07]
+for two agents
+
+Synth, [16.11.20 02:07]
+---
+
+Synth, [16.11.20 02:08]
+@jcromerohdz send me example of agent input and the output. 
+
+The vector and format.
+
+Show the code so benjamin knows what has to be inputed each round and what agents output each round.
+
+Synth, [16.11.20 02:17]
+[In reply to Synth]
+@corpusc Do you watch this video?
+
+Synth, [16.11.20 02:17]
+@jcromerohdz Has to document what the input format and output format is for the agents.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Synth, [16.11.20 02:29]
+and another game is called "prisoners dilemna"
+
+Synth, [16.11.20 02:29]
+where each agent outputs 0 or 1, and is paired against another Agent and plays game N rounds against the same agent
+
+Synth, [16.11.20 02:30]
+[ Photo ]
+
+Synth, [16.11.20 02:30]
+and its this, is the score
+
+Synth, [16.11.20 02:30]
+if they both choose 0, or one chooses 0 and one chooses 1, or both choose 1
+
+Synth, [16.11.20 02:30]
+this is score matrix
+
+Synth, [16.11.20 02:30]
+and they play N rounds
+
+Synth, [16.11.20 02:31]
+[ Photo ]
+
+Synth, [16.11.20 02:32]
+---
+
+Synth, [16.11.20 02:33]
+benjamin, get specs for inputs and outputs for the agent
+
+Synth, [16.11.20 02:33]
+and then see if we can setup a game environment
+
+Synth, [16.11.20 02:33]
+some of these just have text output to a text file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Synth, [16.11.20 02:40]
+these are the simplest games
+
+Synth, [16.11.20 02:40]
+later, we are adding a program stack
+
+Synth, [16.11.20 02:40]
+[In reply to Benjamin Rice]
+choose one
+
+Synth, [16.11.20 02:40]
+make ticket
+
+Synth, [16.11.20 02:40]
+write down all details
+
+Synth, [16.11.20 02:40]
+send to me for review
+
+Synth, [16.11.20 02:40]
+then choose one
+
+Synth, [16.11.20 02:41]
+BUT most important is to send me documentation for what program input/output has to look like
+
+Synth, [16.11.20 02:41]
+for the agents
+
+Benjamin Rice, [16.11.20 02:44]
+i choose one and then write down the details of JUST that chosen one?
+
+Synth, [16.11.20 03:50]
+the one you are going to do, yes
+
+
+
+
+
+
+
+
+
+
+
+
+
+Synth, [16.11.20 07:12]
+you choose the easiest thing
+
+Synth, [16.11.20 07:12]
+probably taking in CX program
+
+Synth, [16.11.20 07:12]
+that plays snake
+
+Synth, [16.11.20 07:12]
+he generates random program and then you make it so it can play snake
+
+Synth, [16.11.20 07:12]
+and show result
+
+Synth, [16.11.20 07:13]
+as text output and maybe animation; which is trivial
+
+Synth, [16.11.20 07:13]
+and then do 2 player snake with two AI agents
+
+Synth, [16.11.20 07:13]
+is that easy?
+
+Synth, [16.11.20 07:13]
+for NxM grid?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Synth, [18.11.20 08:04]
+---
+
+Synth, [18.11.20 08:04]
+do you know an algo for maze generation?
+
+Synth, [18.11.20 08:04]
+like dwarf frotress or just normal mazes on a grid
+
+Synth, [18.11.20 08:04]
+for discrete positions
+
+
+
+Synth, [16.11.20 01:52]
+!!!
+
+- agent take in a vector of numbers or a stuck (the game state)
+
+- the agent outputs a struct or numbers for their decision
+
+Synth, [16.11.20 01:52]
+every round
+
+Synth, [16.11.20 01:53]
+3> there has to be a scoring function
+
+Synth, [16.11.20 01:53]
+1> agent take in a vector of numbers or a stuck (the game state)
+
+2> the agent outputs a struct or numbers for their decision
+
+3> there has to be a scoring function (how well the agent did)
+
+4> Single player is fine. But best is game with two (or more players). Only two players for snake
+
+Synth, [16.11.20 01:53]
+"ai-gym"
+
+Synth, [18.11.20 08:04]
+---
+
+Synth, [18.11.20 08:04]
+do you know an algo for maze generation?
+
+Synth, [18.11.20 08:04]
+like dwarf frotress or just normal mazes on a grid
+
+Synth, [18.11.20 08:04]
+for discrete positions
+
+Synth, [18.11.20 08:29]
+ok
+
+Synth, [18.11.20 08:29]
+after done with snake, do maze generator
+
+Synth, [18.11.20 08:29]
+so we can test agents in maze
+
+Synth, [18.11.20 08:30]
+make ticket
+
+Synth, [18.11.20 08:30]
+starting position is random
+
+Synth, [18.11.20 08:30]
+and then have fixed exit position
+
+Synth, [18.11.20 08:30]
+agent is run N times through same maze, from same starting position.
+
+And we see if the time it takes to run maze, decreases between successive runs
+
+Synth, [18.11.20 08:35]
+and we want to see decrease in time between runs
+
+Synth, [18.11.20 08:35]
+and if it decreases on average
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Synth, [18.11.20 03:20]
+Snake
+
+1> The whole game stat is an array or a struct
+- x,y size of board
+- array of positions/state (a single array)
+- turn number (starts at 1 and increments every move)
+
+There are three things
+
+1> Board state
+
+2> function that draws the board state from the array
+
+3> function that takes in the move from the agent (up,down, left,right) and the board state struct and returns the next state
+
+Synth, [18.11.20 03:21]
+@corpusc split into its three parts as above
+
+1> struct for game state
+2> function that draws board from game state
+3> function that takes in move and the board state and outputs a new board state
+
+Synth, [18.11.20 05:28]
+and write me detailed description of game state
+
+Synth, [18.11.20 05:28]
+and write me how you draw the game state from the struct
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Synth, [18.11.20 03:20]
+Snake
+
+1> The whole game stat is an array or a struct
+- x,y size of board
+- array of positions/state (a single array)
+- turn number (starts at 1 and increments every move)
+
+There are three things
+
+1> Board state
+
+2> function that draws the board state from the array
+
+3> function that takes in the move from the agent (up,down, left,right) and the board state struct and returns the next state
+
+Synth, [18.11.20 03:21]
+@corpusc split into its three parts as above
+
+1> struct for game state
+2> function that draws board from game state
+3> function that takes in move and the board state and outputs a new board state
+
+Synth, [18.11.20 05:28]
+and write me detailed description of game state
+
+Synth, [18.11.20 05:28]
+and write me how you draw the game state from the struct
+
+Synth, [18.11.20 05:29]
+[In reply to Christian]
+you can use sublime text for IDE, with golang plugin
+
+Synth, [18.11.20 05:30]
+[In reply to Benjamin Rice]
+this is mathematical snake
+
+Benjamin Rice, [18.11.20 06:28]
+[In reply to Synth]
+not sure what that means.
+
+Benjamin Rice, [18.11.20 06:30]
+i understand that i'm making an environment for Christian's agent to run in.  
+
+the agent needs input (info about the environment).
+
+the agent needs to know what commands it can output to interact with the environment.
+
+Synth, [18.11.20 06:34]
+1> struct for game state
+2> function that draws board from game state
+3> function that takes in move and the board state and outputs a new board state
+
+Synth, [18.11.20 06:35]
+4> ability to replay the moves, to update the game state, to draw animation of the game
+
+Benjamin Rice, [18.11.20 06:37]
+ok.  so i guess you were meaning it needs to be able to do the simulation independent of drawing it on the screen.  so many simulations can be run as fast as possible.
+
+Synth, [18.11.20 06:37]
+I mean, those three things are independent demostration of capacities
+
+Synth, [18.11.20 06:37]
+those four things
+
+Synth, [18.11.20 06:37]
+do each one independently
+
+Benjamin Rice, [18.11.20 06:38]
+ok
+
+Synth, [18.11.20 06:38]
+[In reply to Benjamin Rice]
+ya, instead of implementing a game; implement the state of the game board and a function that draws the game board from the state
+
+Synth, [18.11.20 06:38]
+and a function that takes in a move and updates the state to the new state
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------from video "Neural Network Learns to Play Snake" 
+				(https://www.youtube.com/watch?v=zIkBYwdkuTk)
+				
+each snake has a neural net with:
+	24 input neurons
+	2 X 18 hidden neurons
+	4 output neurons
+	
+snake looks in 8 directions
+	in each dir, it looks for distances:
+		to food
+		to it's tail
+		to the wall
+		
+
+each generation has 2000 snakes
+for every gen, some of the best are selected to reproduce

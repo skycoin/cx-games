@@ -29,36 +29,35 @@ func entitiesInit () {
 
 
 var nextMove f32
-func entitiesUpdate () {
-	
+func entitiesUpdate () {	
 	if (nextMove < time.Now) {
-		nextMove = time.Now + 0.1
+		nextMove = time.Now + 0.15
 		
 		// randomly move non-player snakes 
 		for i := 1; i < len(snakes); i++ {
 			var dir i32 = i32.rand(0, 4)
-			moveSnake(i, dir)
+			var ms bool = movedSnake(i, dir)
 		}
 
 
 		// player controlled snake 
 		if inputs.HoldingGoLeft () {
-			moveSnake(0, geom.DIR_LEFT)
+			var ms bool = movedSnake(0, geom.DIR_LEFT)
 		}
 		if inputs.HoldingGoRight() {
-			moveSnake(0, geom.DIR_RIGHT)
+			var ms bool = movedSnake(0, geom.DIR_RIGHT)
 		}
 		if inputs.HoldingGoDown () {
-			moveSnake(0, geom.DIR_DOWN)
+			var ms bool = movedSnake(0, geom.DIR_DOWN)
 		}
 		if inputs.HoldingGoUp   () {
-			moveSnake(0, geom.DIR_UP)
+			var ms bool = movedSnake(0, geom.DIR_UP)
 		}				
 	}
 }
 
 
-func moveSnake (i i32, dir i32) {
+func movedSnake (i i32, dir i32) (moved bool) {
 	makeTailTrail(i)
 
 	if dir == geom.DIR_LEFT {
@@ -118,7 +117,7 @@ func moveSnake (i i32, dir i32) {
 
 func makeTailTrail (s i32) {
 	// "> 0" to skip 0 (head), cuz it moves (by it's OWN rules) rather than trailing \\
-	var st i32 = len(snakes[s])-1
+	var st i32 = len(snakes[s])-1 // issue report this (how it can't be in the 1st line of the for loop) 
 	for i := st; i > 0; i-- {
 		snakes[s][i].X = snakes[s][i-1].X
 		snakes[s][i].Y = snakes[s][i-1].Y

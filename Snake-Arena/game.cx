@@ -8,12 +8,15 @@ import "time"
 
 
 // "enums"           FIXME: when CX has enums or constants 
+// possible entities/occupants of each grid cell 
+var ENTITY_FRUIT i32 = -1
 var ENTITY_NONE  i32
-var ENTITY_FRUIT i32 = 1
-var ENTITY_SNAKE i32 = 2 // snakes start here, just keep adding 1 per extra snake 
+var ENTITY_SNAKE i32 =  1 // use this var PLUS snake index, to have unlimited snakes 
 
 // map 
-var NUM_CELLS_ACROSS i32 = 20
+var NUM_CELLS_ACROSS i32 = 20 // FIXME if changing this value is desired (& still wanting grid line drawing). 
+							  //	ATM, draw.GridLines is hardwired to this value, since that was 
+							  //	appropriate for it's sole original use (guidelines in 2D Mesh Editor) 
 
 var cellSpan     f32 = 2.0 / i32.f32(NUM_CELLS_ACROSS)
 var cellSpanHalf f32 = cellSpan / 2.0
