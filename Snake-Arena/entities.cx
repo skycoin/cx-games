@@ -33,25 +33,27 @@ func entitiesUpdate () {
 	if (nextMove < time.Now) {
 		nextMove = time.Now + 0.15
 		
+		var ms bool
+		
 		// randomly move non-player snakes 
 		for i := 1; i < len(snakes); i++ {
 			var dir i32 = i32.rand(0, 4)
-			var ms bool = movedSnake(i, dir)
+			ms = movedSnake(i, dir)
 		}
 
 
 		// player controlled snake 
 		if inputs.HoldingGoLeft () {
-			var ms bool = movedSnake(0, geom.DIR_LEFT)
-		}
+			ms = movedSnake(0, geom.DIR_LEFT)
+		}else
 		if inputs.HoldingGoRight() {
-			var ms bool = movedSnake(0, geom.DIR_RIGHT)
-		}
+			ms = movedSnake(0, geom.DIR_RIGHT)
+		}else
 		if inputs.HoldingGoDown () {
-			var ms bool = movedSnake(0, geom.DIR_DOWN)
-		}
+			ms = movedSnake(0, geom.DIR_DOWN)
+		}else
 		if inputs.HoldingGoUp   () {
-			var ms bool = movedSnake(0, geom.DIR_UP)
+			ms = movedSnake(0, geom.DIR_UP)
 		}				
 	}
 }
