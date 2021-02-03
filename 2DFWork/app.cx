@@ -45,10 +45,10 @@
 		-_- 
 		no friendly errors / warnings trying to use unimported packages 
 		
-		-_- 
+		-_-  ENHANCEMENT 
 		we need math package, or things like i32.maxvalue
 		
-		-_- 
+		-_-  ENHANCEMENT 
 		no nil
 		
 		-_- 
@@ -91,8 +91,6 @@ You could also keep track of len manually in a var and never call resize
 
 
 
-
-i dunno that i understood Inge's advice to Moses, but it made me think of this way of handling dead/alive entities:
 
 * 2 vars used in conjunction with the entity slice: 
 	var numDead i32 

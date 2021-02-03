@@ -5,11 +5,34 @@ import "entities"
 
 
 
+// float positioning, and variable extent ratios (for smooth motion games) 
 func AddRect (pos app.Vec2, extentX f32, extentY f32) {
 	var lX /* left   */ f32 = f32.sub(pos.X, extentX)
 	var rX /* right  */ f32 = f32.add(pos.X, extentX)
 	var bY /* bottom */ f32 = f32.sub(pos.Y, extentY)
 	var tY /* top    */ f32 = f32.add(pos.Y, extentY)
+
+	gl.Vertex3f(lX, bY, 0.0)
+	gl.Vertex3f(lX, tY, 0.0)
+	gl.Vertex3f(rX, tY, 0.0)
+	gl.Vertex3f(rX, bY, 0.0)
+}
+
+
+// based on grid indices, perfectly square shapes (tile/cell-based motion) 
+func AddRectByGrid (x i32, y i32, cellSpan f32, cellSpanHalf f32) {
+	//printf("AddRectByGrid()   %d, %d \n", pos.X, pos.Y)
+
+	var startEdge       f32 = -1.0 //+ cellSpanHalf
+	
+	var fX              f32 = i32.f32(x) * cellSpan
+	var fY              f32 = i32.f32(y) * cellSpan
+
+	var lX /* left   */ f32 = startEdge + fX
+	var bY /* bottom */ f32 = startEdge + fY
+
+	var rX /* right  */ f32 = lX + cellSpan
+	var tY /* top    */ f32 = bY + cellSpan
 
 	gl.Vertex3f(lX, bY, 0.0)
 	gl.Vertex3f(lX, tY, 0.0)
