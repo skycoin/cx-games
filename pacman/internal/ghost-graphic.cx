@@ -1,5 +1,7 @@
 package graphical2d
 
+import "gl"
+
 func drawGhost (position Position2D, radius f32, color Color, frame f32) {
   var full_angle f32
   full_angle = f32.mul(2.0, 3.141592654)

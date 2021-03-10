@@ -58,16 +58,16 @@ func keyboardEvent(window str, key i32, scancode i32, action i32, mods i32) {
   if gameMode == GAMEMODE_PLAYING {
     if action == 1 {
       if eventingRight(key) {
-        movePlayer(RIGHT)
+        movePlayer(playerpac.RIGHT)
       }
       if eventingLeft(key) {
-        movePlayer(LEFT)
+        movePlayer(playerpac.LEFT)
       }
       if eventingDown(key) {
-        movePlayer(DOWN)
+        movePlayer(playerpac.DOWN)
       }
       if eventingUp(key) {
-        movePlayer(UP)
+        movePlayer(playerpac.UP)
       }
     }
   }
@@ -78,16 +78,16 @@ func keyboardEvent(window str, key i32, scancode i32, action i32, mods i32) {
 */
 func movePlayerByHeldKeys() {
   if heldKeyforRight() {
-    movePlayer(RIGHT)
+    movePlayer(playerpac.RIGHT)
   } else
   if heldKeyforLeft() {
-    movePlayer(LEFT)
+    movePlayer(playerpac.LEFT)
   } else
   if heldKeyforDown() {
-    movePlayer(DOWN)
+    movePlayer(playerpac.DOWN)
   } else
   if heldKeyforUp() {
-    movePlayer(UP)
+    movePlayer(playerpac.UP)
   }
 }
 

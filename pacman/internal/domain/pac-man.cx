@@ -3,6 +3,7 @@ package main
 import "gl"
 import "glfw"
 import "graphical2d"
+import "playerpac"
 
 var x_cells i32 = 28
 var y_cells i32 = 31
@@ -37,20 +38,6 @@ var POINT_COLOR_RED f32 = 1.0
 var POINT_COLOR_GREEN f32 = 1.0
 var POINT_COLOR_BLUE f32 = 1.0
 
-// Directions
-var UP i32 = 0
-var DOWN i32 = 1
-var LEFT i32 = 2
-var RIGHT i32 = 3
-
-// Player constants
-var PLAYER_FACING i32 = LEFT
-var PLAYER_COLOR_RED f32 = 1.0
-var PLAYER_COLOR_GREEN f32 = 1.0
-var PLAYER_COLOR_BLUE f32 = 0.0
-var PLAYER_RADIUS f32 = 0.025
-var PLAYER_SPAWN_LINE i32 = 23
-var PLAYER_SPAWN_COLUMN i32 = 13
 
 // Player vars
 var SCORE i32 = 0
@@ -136,13 +123,13 @@ func newPlayer (line i32, column i32, rad f32) (pl Player) {
   pos = coords2position(line, column)
 
   var col graphical2d.Color
-  col = graphical2d.newColor(PLAYER_COLOR_RED, PLAYER_COLOR_GREEN, PLAYER_COLOR_BLUE)
+  col = graphical2d.newColor(playerpac.PLAYER_COLOR_RED, playerpac.PLAYER_COLOR_GREEN, playerpac.PLAYER_COLOR_BLUE)
 
   pl = Player{
     position: pos,
     color: col,
     radius: rad,
-    direction: RIGHT,
+    direction: playerpac.RIGHT,
     index_x: column,
     index_y: line}
 }
@@ -191,7 +178,7 @@ func newGhost(line i32, column i32, gt i32, ghost_mode i32) (ghost Ghost) {
     radius: GHOST_RADIUS,
     index_x: column,
     index_y: line,
-    direction: UP,
+    direction: playerpac.UP,
     gtype: gt,
     status: ghost_mode}
 }
@@ -286,16 +273,16 @@ func getGhostColor (gtype i32) (color graphical2d.Color) {
    Description  : Checks if a game object located at (line/column) can move in the input (direction).
 */
 func canMove(direction i32, line i32, column i32) (can_move bool)  {
-  if bool.and(i32.eq(direction, UP), i32.eq(cells[i32.sub(line, 1)][column].ctype, PATH_CELL)) {
+  if bool.and(i32.eq(direction, playerpac.UP), i32.eq(cells[i32.sub(line, 1)][column].ctype, PATH_CELL)) {
     can_move = true
   }
-  if bool.and(i32.eq(direction, DOWN), i32.eq(cells[i32.add(line, 1)][column].ctype, PATH_CELL)) {
+  if bool.and(i32.eq(direction, playerpac.DOWN), i32.eq(cells[i32.add(line, 1)][column].ctype, PATH_CELL)) {
     can_move = true
   }
-  if bool.and(i32.eq(direction, LEFT), i32.eq(cells[line][i32.sub(column, 1)].ctype, PATH_CELL)) {
+  if bool.and(i32.eq(direction, playerpac.LEFT), i32.eq(cells[line][i32.sub(column, 1)].ctype, PATH_CELL)) {
     can_move = true
   }
-  if bool.and(i32.eq(direction, RIGHT), i32.eq(cells[line][i32.add(column, 1)].ctype, PATH_CELL)) {
+  if bool.and(i32.eq(direction, playerpac.RIGHT), i32.eq(cells[line][i32.add(column, 1)].ctype, PATH_CELL)) {
     can_move = true
   }
 }
@@ -306,23 +293,23 @@ func canMove(direction i32, line i32, column i32) (can_move bool)  {
 */
 func movePlayer(direction i32) () {
   latestPlayerMoveEvent = glfw.GetTime()
-  PLAYER_FACING = direction
+  playerpac.PLAYER_FACING = direction
 
   if bool.eq(canMove(direction, player.index_y, player.index_x), true) {
     // Move Up
-    if i32.eq(direction, UP) {
+    if i32.eq(direction, playerpac.UP) {
       player.index_y = i32.sub(player.index_y, 1)
     }
     // Move Down
-    if i32.eq(direction, DOWN) {
+    if i32.eq(direction, playerpac.DOWN) {
       player.index_y = i32.add(player.index_y, 1)
     }
     // Move Left
-    if i32.eq(direction, LEFT) {
+    if i32.eq(direction, playerpac.LEFT) {
       player.index_x = i32.sub(player.index_x, 1)
     }
     // Move Right
-    if i32.eq(direction, RIGHT) {
+    if i32.eq(direction, playerpac.RIGHT) {
       player.index_x = i32.add(player.index_x, 1)
     }
     // Update the current player direction

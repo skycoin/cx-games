@@ -1,28 +1,10 @@
 package main
 
-func getTimeBasedOffset () (out f32) { // in the range of 0.0 to 0.5
-  out = f64.f32(glfw.GetTime())
-  out = getValueUnderMax(out, 0.5)
-
-  if out > 0.25 {
-    out = f32.sub(0.25, out) // get oscillating range from -0.25 to +0.25
-  }
-}
-
-func getValueUnderMax(in f32, max f32) (out f32) {
-  for in >= max {
-    in = f32.sub(in, max)
-  }
-
-  out = in
-}
-
 func isTimerOver(timer f64, limit f64) (is_over bool) {
   if gteq(f64.sub(glfw.GetTime(), timer), limit) {
     is_over = true
   }
 }
-
 
 
 // Collision manager functions
@@ -37,7 +19,7 @@ func checkPlayerGhostCollision(ghost Ghost) () {
 
     if bool.or(i32.eq(ghost.status, GHOST_MODE_CHASE), i32.eq(ghost.status, GHOST_MODE_SCATTER)) {
       PLAYER_LIVES = i32.sub(PLAYER_LIVES, 1)
-      PLAYER_FACING = LEFT
+      playerpac.PLAYER_FACING = playerpac.LEFT
       nextLifePos = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, PLAYER_LIVES - 1))
       GETREADY_TIMER = glfw.GetTime()
       gameMode = GAMEMODE_GETREADY
@@ -46,7 +28,7 @@ func checkPlayerGhostCollision(ghost Ghost) () {
         GAME_OVER = true
         str.print("------ GAME OVER ------") // FIX ME add game over screen
       } else {
-        player = newPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLUMN, PLAYER_RADIUS)
+        player = newPlayer(playerpac.PLAYER_SPAWN_LINE, playerpac.PLAYER_SPAWN_COLUMN, playerpac.PLAYER_RADIUS)
       }
     }
   }
