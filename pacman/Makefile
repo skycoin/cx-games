@@ -8,9 +8,9 @@ all:
 	pkg/graphical2d/ghost-graphic.cx \
 	pkg/playerpac/playerpac.cx \
 	\
-	internal/domain/board.cx \
-	internal/domain/ghost.cx \
-	internal/domain/pac-man.cx \
+	internal/board.cx \
+	internal/ghost.cx \
+	internal/pac-man.cx \
 	\
 	cmd/init-and-input.cx \
 	cmd/time-and-space.cx \
