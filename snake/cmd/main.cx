@@ -90,11 +90,11 @@ func initTextures() (){
 	var wd str
 	wd = os.GetWorkingDirectory()
 
-	snakeHeadTex = gl.NewTexture(sprintf("%s../assets/textures/snake_new-head.png",wd))
-	snakeBodyTex = gl.NewTexture(sprintf("%s../assets/textures/snake_new-body.png",wd))
-	snakeTailTex = gl.NewTexture(sprintf("%s../assets/textures/snake-tail.png",wd))
-	foodTex = gl.NewTexture(sprintf("%s../assets/textures/food-white.png",wd))
-	backgroundTex = gl.NewTexture(sprintf("%s../assets/textures/background.png",wd))
+	snakeHeadTex = gl.NewTexture(sprintf("../assets/textures/snake_new-head.png"))
+	snakeBodyTex = gl.NewTexture(sprintf("../assets/textures/snake_new-body.png"))
+	snakeTailTex = gl.NewTexture(sprintf("../assets/textures/snake-tail.png"))
+	foodTex = gl.NewTexture(sprintf("../assets/textures/food-white.png"))
+	backgroundTex = gl.NewTexture(sprintf("../assets/textures/background.png"))
 }
 
 func setupCellSpecs() (){
@@ -512,13 +512,12 @@ func allowedToMove()(allowed bool){
 		nextPos.realX = i32.sub(nextPos.realX,1)
     }
 
-	var tempBodyArr [99]stuff.Cell
-	tempBodyArr = player.body
+	stuff.tempBodyArr = player.body
 	//check if the player would collide with himself
 	var i i32
 	var max i32 = i32.sub(player.size,1)
 	for i=0; i<max;i++{
-		currPart = tempBodyArr[i]
+		currPart = stuff.tempBodyArr[i]
 		currPos = currPart.position
 		if bool.and(i32.eq(nextPos.realY,currPos.realY),i32.eq(nextPos.realX,currPos.realX)){
 			allowed = false
@@ -538,6 +537,7 @@ func allowedToMove()(allowed bool){
 	Output		 :
    	Desctription : Checks if the player is on the same position as the food
 */
+
 func checkForFood() {
 	var foodPos stuff.Position2D = food.position
     var headPlayer stuff.Cell = player.head
@@ -551,6 +551,8 @@ func checkForFood() {
 	}
 }
 
+//os.open function not working properly at the moment
+/*
 func initFonts() {
 	var wd str
 	wd = os.GetWorkingDirectory()
@@ -567,7 +569,6 @@ func initFonts() {
 	os.Open(fontFile)
 	gltext.LoadTrueType("Roboto30", fontFile, 30, 32, 127, gltext.LeftToRight)
 	os.Close(fontFile)
-
 }
 
 func drawAllOutlinedGlText(scale f32) {
@@ -586,6 +587,7 @@ func drawAllOutlinedGlText(scale f32) {
 	printTextWithColor(0.0, 0.0, 1.0, 0.55, 0.0, alpha)
 }
 
+
 // x & y are offsets
 func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
 	gl.Color4f(r, g, b, a)
@@ -603,13 +605,14 @@ func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
 		}
 	}
 }
+*/
 
 func main() {
     initGlfw("window")
     initGl()
 	initGlCommands()
 	initTextures()
-	initFonts()
+	//initFonts()
 	stuff.initTextData()
 
 	new_game:
@@ -625,7 +628,7 @@ func main() {
 		gl.Disable(gl.DEPTH_TEST)
 		renderScreen()
 		gl.Enable(gl.DEPTH_TEST)
-		drawAllOutlinedGlText(20.0)
+		//drawAllOutlinedGlText(20.0)
 
 		if (player.alive == true) {
 			checkForFood()
