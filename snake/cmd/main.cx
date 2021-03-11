@@ -90,11 +90,11 @@ func initTextures() (){
 	var wd str
 	wd = os.GetWorkingDirectory()
 
-	snakeHeadTex = gl.NewTexture(sprintf("../assets/textures/snake_new-head.png"))
-	snakeBodyTex = gl.NewTexture(sprintf("../assets/textures/snake_new-body.png"))
-	snakeTailTex = gl.NewTexture(sprintf("../assets/textures/snake-tail.png"))
-	foodTex = gl.NewTexture(sprintf("../assets/textures/food-white.png"))
-	backgroundTex = gl.NewTexture(sprintf("../assets/textures/background.png"))
+	snakeHeadTex = gl.NewTexture(sprintf("%s../assets/textures/snake_new-head.png", wd))
+	snakeBodyTex = gl.NewTexture(sprintf("%s../assets/textures/snake_new-body.png", wd))
+	snakeTailTex = gl.NewTexture(sprintf("%s../assets/textures/snake-tail.png", wd))
+	foodTex = gl.NewTexture(sprintf("%s../assets/textures/food-white.png", wd))
+	backgroundTex = gl.NewTexture(sprintf("%s../assets/textures/background.png", wd))
 }
 
 func setupCellSpecs() (){
