@@ -144,6 +144,6 @@ func initTextData () {
 func getOffsetX (font str, text str) (out f32) {
     var w i32 // width
     var h i32 // height
-    //w, h = gltext.Metrics(font, text)
+    w, h = gltext.Metrics(font, text)
     out = i32.f32(stuff_WINDOW_WIDTH - w) / 2.0
 }
