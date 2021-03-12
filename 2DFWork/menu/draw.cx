@@ -77,8 +77,8 @@ func texts () {
 
 		gltext.Printf(
 			Items[m][i].FontId, 
-			Items[m][i].Left, 
-			Items[m][i].Top, 
+			f32.i32(Items[m][i].Left), 
+			f32.i32(Items[m][i].Top), 
 			Items[m][i].Text)
 	}
 }
