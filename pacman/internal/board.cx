@@ -1,6 +1,7 @@
 package main
 
 import "graphical2d"
+import "playerpac"
 
 /* Function     : initScene
    Description  : Initializes all game objects including the board cells, the
@@ -19,7 +20,7 @@ func initScene() () {
   }
 
   // Initialize player
-  player = newPlayer(PLAYER_SPAWN_LINE, PLAYER_SPAWN_COLUMN, PLAYER_RADIUS)
+  player = newPlayer(playerpac.PLAYER_SPAWN_LINE, playerpac.PLAYER_SPAWN_COLUMN, playerpac.PLAYER_RADIUS)
   nextLifePos = coords2position(LIFE_SPAWN_LINE, i32.sub(LIFE_SPAWN_COLUMN, PLAYER_LIVES - 1))
 
   // Initialize ghosts

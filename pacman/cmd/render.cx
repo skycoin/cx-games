@@ -1,5 +1,7 @@
 package main
 
+import "graphical2d"
+
 // Game Object render functions
 
 /* Function     : renderGame

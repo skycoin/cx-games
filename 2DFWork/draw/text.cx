@@ -57,20 +57,23 @@ func OutlinedText (s str, color i32, x f32, y f32, scale f32) {
 func LoadFontSized (fn str, size i32) { // filename 
 	var s str = str.concat("Roboto", sprintf("%d", size))
 	
-	os.Open(fn)
-	gltext.LoadTrueType(s, fn, size, 32, 127, gltext.LeftToRight)
-	os.Close(fn)
+	var osHand i32
+	var closeHand bool
+
+	osHand = os.Open(fn)
+	gltext.LoadTrueType(osHand, s, size, 32, 127, gltext.LeftToRight)
+	closeHand = os.Close(osHand)
 	
 	/*   THE "s" below should actually be "fn" maybe?
 	     2DBUG's screenshot wasn't drawing 'CXtris' text 
-	     
+	*/   
 	var handle i32 = os.Open(fn)
 	if handle >= 0 {
 		gltext.LoadTrueType(handle, s, size, 32, 127, gltext.LeftToRight)
 		if os.Close(handle) {
 		}
 	}
-	*/
+	
 }
 
 
@@ -96,5 +99,5 @@ func EntityAttachedText(x f32, y f32, offsetX f32, offsetY f32, s str) {
 // x & y are offsets 
 func printTextWithColor (s str, x f32, y f32, color i32, alpha f32) {
 	SetColorAndAlpha(color, alpha)
-	gltext.Printf("Roboto100", x, y, s)
+	gltext.Printf("Roboto100", f32.i32(x), f32.i32(y), s)
 }

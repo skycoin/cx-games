@@ -13,7 +13,7 @@ This game is being developed with the following objectives:
 CX is a general purpose, interpreted and compiled programming language, with a very strict type system and a syntax similar to Golang's. CX provides a new programming paradigm based on the concept of affordances, where the user can ask the programming language at runtime what can be done with a CX object (functions, expressions, packages, etc.), and interactively or automatically choose one of the affordances to be applied.
 
 You can find more info on:
-  - The github page on CX - https://github.com/SkycoinProject/cx
+  - The github page on CX - https://github.com/skycoin/cx
   - The official website of Skycoin - https://www.skycoin.com/
 
 # Installation
@@ -36,10 +36,20 @@ $ cd cx-games/pacman
 The game should be ready to run.
 
 # Running the game
+
 In order to run the game type the following command:
+### MacOS
 
 ```sh
 $ make
+```
+
+### Windows
+Move pacman/pkg folders to %CXPATH%/src directory first
+
+Run following command from Command Prompt while in cx-games/pacman directory
+```
+cx cmd/game-loop.cx cmd/init-and-input.cx cmd/render.cx cmd/time-and-space.cx internal/board.cx internal/ghost.cx internal/pac-man.cx
 ```
 
 Use the arrows to move the player.

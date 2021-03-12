@@ -36,8 +36,16 @@ The game should be ready to run.
 # Running the game
 In order to run the game type the following command:
 
+### Unix/MacOS
 ```sh
 $ make
+```
+
+### Windows
+First, move or copy ./internal folders to %CXPATH%/src
+Then, in order to run game, navigate to ./cmd folder and type the following command:
+```
+cx main.cx
 ```
 
 Use the arrows to move the player and try to eat the food, while not eating yourself.

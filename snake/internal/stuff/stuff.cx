@@ -3,6 +3,10 @@ package stuff
 import "gltext"
 import "main"
 
+//WindowSize
+var stuff_WINDOW_WIDTH i32 = 600
+var stuff_WINDOW_HEIGHT i32 = 600
+
 type Position2D struct {
     x f32
     y f32
@@ -56,6 +60,7 @@ type Cell struct {
 	lastDirection i32
 	rotation f32
 }
+var tempBodyArr [99]Cell
 
 func (c Cell) getPosition (pos Position2D) (out Position2D) {
 	out = c.position
@@ -89,7 +94,6 @@ func newPlayer () (player Player) {
         scoreText: "0",
 		alive: true}
 }
-
 
 // text
 type TextData struct {
@@ -135,10 +139,11 @@ func initTextData () {
     Texts, td)
 }
 
+
 // for centering text, according to it's size
 func getOffsetX (font str, text str) (out f32) {
     var w i32 // width
     var h i32 // height
     w, h = gltext.Metrics(font, text)
-    out = i32.f32(main.WINDOW_WIDTH - w) / 2.0
+    out = i32.f32(stuff_WINDOW_WIDTH - w) / 2.0
 }
