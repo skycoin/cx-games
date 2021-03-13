@@ -38,18 +38,9 @@ The game should be ready to run.
 # Running the game
 
 In order to run the game type the following command:
-### MacOS
 
-```sh
-$ make
 ```
-
-### Windows
-Move pacman/pkg folders to %CXPATH%/src directory first
-
-Run following command from Command Prompt while in cx-games/pacman directory
-```
-cx cmd/game-loop.cx cmd/init-and-input.cx cmd/render.cx cmd/time-and-space.cx internal/board.cx internal/ghost.cx internal/pac-man.cx
+cx .\.
 ```
 
 Use the arrows to move the player.

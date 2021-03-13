@@ -116,15 +116,15 @@ func drawKeyCapTexts () {
 		// primary set 
 		gltext.Printf(
 			keySetPri[i].FontId, 
-			keySetPri[i].Left, 
-			keySetPri[i].Top,
+			f32.i32(keySetPri[i].Left), 
+			f32.i32(keySetPri[i].Top),
 			keySetPri[i].Text)
 			
 		// secondary set 
 		gltext.Printf(
 			keySetSec[i].FontId, 
-			keySetSec[i].Left, 
-			keySetSec[i].Top - psSpan + keySetSec[i].Hei,
+			f32.i32(keySetSec[i].Left), 
+			f32.i32(keySetSec[i].Top - psSpan + keySetSec[i].Hei),
 			keySetSec[i].Text)
 	}
 }
