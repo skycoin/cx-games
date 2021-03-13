@@ -90,11 +90,11 @@ func initTextures() (){
 	var wd str
 	wd = os.GetWorkingDirectory()
 
-	snakeHeadTex = gl.NewTexture(sprintf("%s../assets/textures/snake_new-head.png", wd))
-	snakeBodyTex = gl.NewTexture(sprintf("%s../assets/textures/snake_new-body.png", wd))
-	snakeTailTex = gl.NewTexture(sprintf("%s../assets/textures/snake-tail.png", wd))
-	foodTex = gl.NewTexture(sprintf("%s../assets/textures/food-white.png", wd))
-	backgroundTex = gl.NewTexture(sprintf("%s../assets/textures/background.png", wd))
+	snakeHeadTex = gl.NewTexture(sprintf("%s/../assets/textures/snake_new-head.png", wd))
+	snakeBodyTex = gl.NewTexture(sprintf("%s/../assets/textures/snake_new-body.png", wd))
+	snakeTailTex = gl.NewTexture(sprintf("%s/../assets/textures/snake-tail.png", wd))
+	foodTex = gl.NewTexture(sprintf("%s/../assets/textures/food-white.png", wd))
+	backgroundTex = gl.NewTexture(sprintf("%s/../assets/textures/background.png", wd))
 }
 
 func setupCellSpecs() (){
@@ -554,7 +554,7 @@ func checkForFood() {
 func initFonts() {
 	var wd str
 	wd = os.GetWorkingDirectory()
-	fontFile := str.concat(wd, "../assets/fonts/roboto-light.ttf")
+	fontFile := str.concat(wd, "/../assets/fonts/roboto-light.ttf")
 
 	var handle i32
 	var closeHandle bool
