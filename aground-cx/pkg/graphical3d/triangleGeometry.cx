@@ -10,12 +10,17 @@ type TriangleGeometry struct {
 	material Material
 }
 
-func newTriangleGeometry(vertice1 Vector3f, vertice2 Vector3f, vertice3 Vector3f, material Material) (tg) {
-	tg = TriangleGeometry{
-		position:newVector3f(0.0, 0.0, 0.0),
-		vertices:[3]Vector3f{vertice1, vertice2, vertice3},
-		rotation:newVector3f(0.0, 0.0, 0.0),
-		material:material}
+func newTriangleGeometry(vertice1 Vector3f, vertice2 Vector3f, vertice3 Vector3f, material Material) (tg TriangleGeometry) {
+	var vec [3]Vector3f
+	vec[0] = vertice1
+	vec[1] = vertice2
+	vec[2] = vertice3
+	
+	tg.position = newVector3f(0.0, 0.0, 0.0)
+	tg.vertices = vec
+	tg.rotation = newVector3f(0.0, 0.0, 0.0)
+	tg.material = material
+
 	return tg
 }
 
@@ -28,7 +33,7 @@ func (tg TriangleGeometry) render () {
 
 
 	// TODO fix texture mapping
-	if pg.material.textured {
+	if tg.material.textured {
 		gl.BindTexture(gl.TEXTURE_2D, tg.material.texture)
 
 		gl.Begin(gl.QUADS);

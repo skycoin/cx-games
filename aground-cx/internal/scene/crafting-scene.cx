@@ -56,8 +56,8 @@ func NewCraftingFrontScreen(screen_width i32, screen_height i32) (screen screen_
         button_pkg.newButton(
             "craft-button",
             0.0, -0.75, 240, 70,
-            "static/texture/btn/select-button-inactive.png",
-            "static/texture/btn/select-button-active.png"))
+            "./static/texture/btn/select-button-inactive.png",
+            "./static/texture/btn/select-button-active.png"))
 
     screen = screen.addLayer(crafting_layer)
 }

@@ -594,14 +594,14 @@ func printTextWithColor(x f32, y f32, r f32, g f32, b f32, a f32) {
 	gl.Color4f(r, g, b, a)
 	var lm f32 // left margin (gap from left edge of window)
 	lm = stuff.getOffsetX("Roboto50", player.scoreText)
-	gltext.Printf("Roboto50", f32.i32(lm + x), f32.i32(0.0 + y), player.scoreText)
+	gltext.Printf("Roboto50", lm + x, 0.0 + y, player.scoreText)
 
 	if (player.alive == false) {
 		for i := 0; i32.lt(i, len(stuff.Texts)); i++ {
 			gltext.Printf(
 				stuff.Texts[i].font,
-				f32.i32(f32.add(stuff.Texts[i].x, x)),
-				f32.i32(f32.add(stuff.Texts[i].y, y)),
+				f32.add(stuff.Texts[i].x, x),
+				f32.add(stuff.Texts[i].y, y),
 				stuff.Texts[i].text)
 		}
 	}

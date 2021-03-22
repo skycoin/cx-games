@@ -22,11 +22,11 @@ You can find more info on:
   - The github repo of CX - https://github.com/skycoin/cx
 
 # Installation
-CXTRIS supports [CX v0.7.0](https://github.com/skycoin/cx/releases/tag/v0.7.0).
-The binaries for CX are available at:
-  - [linux-x64](https://github.com/skycoin/cx/releases/download/v0.7.0/cx-0.7.0-bin-linux-x64.zip)
-  - [mac-os-x64](https://github.com/skycoin/cx/releases/download/v0.7.0/cx-0.7.0-bin-macos-x64.zip)
-  - [windows-x64](https://github.com/skycoin/cx/releases/download/v0.7.0/cx-0.7.0-bin-windows-x64.zip)
+Snake was developed for [CX v0.7.1](https://github.com/SkycoinProject/cx/releases/tag/v0.7.1).
+The binaries for this version are available at:
+  - [linux-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.1/cx-0.7.1-bin-linux-x64.zip)
+  - [mac-os-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.1/cx-0.7.1-bin-macos-x64.zip)
+  - [windows-x64](https://github.com/SkycoinProject/cx/releases/download/v0.7.1/cx-0.7.1-bin-windows-x64.zip)
 
 ```sh
 $ git clone https://github.com/skycoin/cx-games.git
@@ -41,13 +41,7 @@ $ cd cx-games/CXtris
 The game should be ready to run.
 
 # Running the game
-In Windows, type the following command:
-
-```sh
-run
-```
-
-For other operating systems, use:
+In order to run the game type the following command:
 
 ```sh
 cx ..\2DFWork\. .
