@@ -1,0 +1,76 @@
+package main
+
+import "gl"
+import "graphical"
+
+var item_textures [10]i32
+var item_textures_loaded bool = false
+
+type Item struct {
+    id i32
+    class i32
+
+    geometry graphical.PlaneGeometry
+}
+
+func NewItem(id i32, class i32) (item Item) {
+    item.id = id
+    item.class = class
+
+    if bool.not(item_textures_loaded) {
+        for i:=0; i<10; i++ {
+            cell_textures[i] = gl.NewTexture(
+              sprintf("assets/textures/items/item-%d.png", i))
+        }
+    }
+    item_textures_loaded = true
+
+    var mat graphical.Material
+    mat = graphical.newMaterial(0.0, 0.0, 0.0)
+    mat = mat.setTexture(cell_textures[id]) // FIXME id
+    item.geometry = graphical.newPlaneGeometry(
+      graphical.newVector3f(0.0, 0.0, 0.0),
+      graphical.newVector3f(CELL_WIDTH*0.75, CELL_HEIGHT*0.75, 0.0),
+      mat)
+}
+
+func ItemUse(item Item, target_x i32, target_y i32) {
+    if (item.class == ITEM_CLASS_WEAPON) {
+        useWeapon(item, target_x, target_y)
+    } else if (item.class == ITEM_CLASS_BLOCK) {
+        useBlock(item, target_x, target_y)
+    } else if (item.class == ITEM_CLASS_CONSUMABLE) {
+        useConsumable(item, target_x, target_y)
+    }
+}
+
+func useWeapon(item Item, target_x i32, target_y i32) {
+    g_world[target_x][target_y] = CellHit(g_world[target_x][target_y])
+
+}
+
+func useBlock(item Item, target_x i32, target_y i32) {
+    if (g_world[target_x][target_y].tp != CELL_TYPE_EMPTY) {
+        return;
+    }
+    g_world[target_x][target_y] = NewCell(target_x, target_y, CELL_TYPE_LADDER)
+}
+
+func useConsumable(item Item, target_x i32, target_y i32) {
+    // TODO
+}
+
+func itemToCell(item Item) (cell_type i32) {
+    if (item.id == ITEM_TYPE_LADDER) {
+        cell_type = CELL_TYPE_LADDER
+    }
+}
+
+func ItemRender(item Item)  {
+    /*if item.class == ITEM_CLASS_VOID {
+      return;
+    }*/
+    var geometry graphical.PlaneGeometry
+    geometry = item.geometry;
+    geometry.render()
+}
