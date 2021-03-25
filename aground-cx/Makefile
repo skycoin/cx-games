@@ -1,5 +1,6 @@
+CX=cx
 run:
-	cx\
+	$(CX)\
 		pkg/graphical2d/graphical.cx\
 		pkg/graphical2d/screens.cx\
 		\
@@ -28,7 +29,7 @@ run:
 		cmd/aground.cx
 
 tests:
-	cx\
+	$(CX)\
 		pkg/graphical2d/graphical.cx\
 		pkg/graphical2d/screens.cx\
 		\

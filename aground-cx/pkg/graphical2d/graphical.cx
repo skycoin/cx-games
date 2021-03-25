@@ -43,7 +43,7 @@ import "dimensions_pkg"
 func loadTexture(relative_path str) (texture i32) {
   var wd str
 	wd = os.GetWorkingDirectory()
-  texture = gl.NewTexture(sprintf("%s%s", wd, relative_path))
+  texture = gl.NewTexture(sprintf("%s/%s", wd, relative_path))
 }
 
 func scale(value i32, max i32) (scaled f32) {

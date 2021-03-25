@@ -1,4 +1,4 @@
-CX = ./cx
+CX = cx
 CXFLAGS =
 
 all:

@@ -66,8 +66,8 @@ func DrawEditor () {
 		draw.SetColor(draw.COLOR_CYAN)
 		gltext.Printf(
 			"Roboto58",
-			space.ViewWidInPixels - w,
-			0,
+			i32.f32(space.ViewWidInPixels - w),
+			0.0,
 			name)
 	}
 }
