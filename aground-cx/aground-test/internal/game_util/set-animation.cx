@@ -1,0 +1,48 @@
+package util
+
+import "gl"
+
+var BASE_TIMER f64 = 20.0D
+
+type Animation struct {
+  num_frames i32
+  textures []i32
+
+  current_frame i32
+  timer Timer
+
+  over bool
+}
+
+func NewAnimation(path str, extension str, frames i32) (anim Animation) {
+  anim.num_frames = frames
+  for i:=0; i<frames; i++ {
+    anim.textures = append(anim.textures, gl.NewTexture(sprintf("%s%d.%s", path, i, extension)))
+  }
+  anim.current_frame = 0
+  anim.timer = NewTimer(BASE_TIMER)
+  anim.over = false
+}
+
+func UpdateAnimation(anim Animation, time f64) (anim Animation) {
+  if (TimerOver(anim.timer, time)) {
+    anim.current_frame = anim.current_frame + 1
+    anim.over = anim.current_frame == anim.num_frames
+
+    if (anim.over) {
+      anim.current_frame = 0
+    } else {
+      anim.timer = TimerReset(anim.timer, time)
+    }
+  }
+}
+
+func GetAnimationFrame(anim Animation) (frame i32) {
+  frame = anim.textures[anim.current_frame]
+}
+
+func ResetAnimation(anim Animation) (anim Animation) {
+  anim.current_frame = 0
+  anim.timer = NewTimer(BASE_TIMER)
+  anim.over = false
+}

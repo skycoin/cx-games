@@ -1,0 +1,209 @@
+package main
+
+var PLAYER_SPAWN_X i32 = 50
+var PLAYER_SPAWN_Y i32 = 20
+
+var PLAYER_STATE_IDLE i32 = 0
+var PLAYER_STATE_WALKING i32 = 1
+var PLAYER_STATE_ATTACKING i32 = 2
+var PLAYER_STATE_FALLING i32 = 3
+
+import "graphical"
+import "util"
+
+var g_player Player
+
+type Player struct {
+  x i32
+  y i32
+
+  dir_x i32
+  dir_y i32
+  reversed bool
+
+  xtarget i32
+  ytarget i32
+
+  item i32
+
+  state i32
+
+  anims []util.Animation
+  idle_anim util.Animation
+  walking_anim util.Animation
+  geometry graphical.PlaneGeometry
+}
+
+func NewPlayer() (pl Player) {
+  pl.x = PLAYER_SPAWN_X
+  pl.y = PLAYER_SPAWN_Y
+
+  pl.dir_x = 1
+  pl.dir_y = 0
+
+  pl.xtarget = pl.x
+  pl.ytarget =pl.y
+
+  pl.item = ITEM_TYPE_LADDER
+
+  pl.state = PLAYER_STATE_IDLE
+  pl.anims = append(pl.anims, util.NewAnimation("assets/sprites/Golem_01/Idle/Golem_01_Idle_", "png", 12))
+  pl.anims = append(pl.anims, util.NewAnimation("assets/sprites/Golem_01/Walking/Golem_01_Walking_", "png", 18))
+  pl.anims = append(pl.anims, util.NewAnimation("assets/sprites/Golem_01/Attacking/Golem_01_Attacking_", "png", 12))
+  pl.anims = append(pl.anims, util.NewAnimation("assets/sprites/Golem_01/Jump_Loop/Golem_01_Jump_Loop_", "png", 6))
+
+  var mat graphical.Material
+  mat = graphical.newMaterial(0.0, 0.0, 0.0)
+  mat = mat.setTexture(util.GetAnimationFrame(pl.anims[pl.state]))
+
+  pl.geometry = graphical.newPlaneGeometry(
+    getPlayerPosition(pl.x, pl.y),
+    graphical.newVector3f(CELL_WIDTH, CELL_HEIGHT, 0.0),
+    mat)
+}
+
+func getPlayerPosition(x i32, y i32) (v graphical.Vector3f) {
+  var base_x f32
+  base_x = -1.0*((CELL_WIDTH*i32.f32(WORLD_X_MAX))/2.0)
+
+  var base_y f32
+  base_y = -1.0*((CELL_HEIGHT*i32.f32(WORLD_Y_MAX))/2.0)
+
+  pos_x := f32.add(base_x, f32.mul(i32.f32(x), CELL_WIDTH))
+  pos_y := f32.add(base_y, f32.mul(i32.f32(y), CELL_HEIGHT))
+	v = graphical.newVector3f(pos_x, pos_y, 0.0)
+}
+
+func PlayerMove(pl Player) (pl Player) {
+  var walking_anim util.Animation
+  walking_anim = pl.anims[PLAYER_STATE_WALKING]
+
+  var base_pos graphical.Vector3f
+  base_pos = getPlayerPosition(pl.x, pl.y)
+
+  var step f32
+  step = CELL_WIDTH/i32.f32(walking_anim.num_frames)
+
+  pl.geometry.position.x = f32.add(base_pos.x, i32.f32(pl.dir_x)*i32.f32(walking_anim.current_frame)*step)
+  pl.geometry.position.y = f32.add(base_pos.y, i32.f32(pl.dir_y)*i32.f32(walking_anim.current_frame)*step)
+  // BUG crashes pl.geometry.position.y = base_pos.y + i32.f32(pl.dir_y)*i32.f32(walking_anim.current_frame)*step
+
+  if (walking_anim.over) {
+    pl.x = pl.x + pl.dir_x//pl.xtarget
+    pl.y = pl.y + pl.dir_y//pl.ytarget
+    pl.geometry.position = getPlayerPosition(pl.x, pl.y)
+    pl = setPlayerState(pl, PLAYER_STATE_IDLE)
+  }
+}
+
+func PlayerFall(pl Player) (pl Player) {
+  var falling_anim util.Animation
+  falling_anim = pl.anims[PLAYER_STATE_FALLING]
+
+  var base_pos graphical.Vector3f
+  base_pos = getPlayerPosition(pl.x, pl.y)
+
+  var step f32
+  step = CELL_WIDTH/i32.f32(falling_anim.num_frames)
+
+  pl.geometry.position.y = f32.add(base_pos.y, i32.f32(falling_anim.current_frame)*step)
+
+  if (falling_anim.over) {
+    pl.y = pl.y + 1
+    pl.geometry.position = getPlayerPosition(pl.x, pl.y)
+    pl = setPlayerState(pl, PLAYER_STATE_IDLE)
+  }
+}
+
+func SetPlayerDirection(pl Player, xdir i32, ydir i32) (pl Player) {
+  // if the current player direction corresponds to the new one
+  if (pl.dir_x == xdir && pl.dir_y == ydir) {
+    // horizontal movement
+    if (pl.dir_y == 0) {
+      if (g_world[pl.y][pl.x+xdir].tp == 0 || g_world[pl.y][pl.x+xdir].tp == CELL_TYPE_LADDER) {
+        pl = setPlayerState(pl, PLAYER_STATE_WALKING)
+      }
+
+    // TODO vertical movement
+    } else if (pl.dir_x == 0) {
+      if (g_world[pl.y][pl.x].tp == CELL_TYPE_LADDER) {
+        pl = setPlayerState(pl, PLAYER_STATE_WALKING)
+      }
+    }
+
+  // otherwise
+  } else {
+    // update the player direction
+    pl.dir_x = xdir
+    pl.dir_y = ydir
+
+    if (ydir == 0) {
+      pl.geometry.material.flipped = i32.eq(xdir, -1)
+    }
+  }
+}
+
+func PlayerHit(pl Player) (pl Player) {
+  pl = setPlayerState(pl, PLAYER_STATE_ATTACKING)
+}
+
+func setPlayerState(pl Player, state i32) (pl Player) {
+  if (state == PLAYER_STATE_IDLE) {
+    pl.state = state
+    pl.anims[pl.state] = util.ResetAnimation(pl.anims[pl.state])
+
+  } else if pl.state == PLAYER_STATE_IDLE && pl.state != state {
+    pl.state = state
+    pl.anims[pl.state] = util.ResetAnimation(pl.anims[pl.state])
+
+    if (pl.state == PLAYER_STATE_ATTACKING) {
+      pl.xtarget = pl.x + pl.dir_x
+      pl.ytarget = pl.y + pl.dir_y
+
+    } else if (pl.state == PLAYER_STATE_WALKING) {
+      pl.xtarget = pl.x + pl.dir_x
+      pl.ytarget = pl.y + pl.dir_y
+    }
+  }
+}
+
+func PlayerUse(pl Player) (pl Player) {
+  target_x := pl.x + pl.dir_x
+  target_y := pl.y + pl.dir_y
+
+  if (pl.item == ITEM_TYPE_LADDER && g_world[target_y][target_x].tp == 0) {
+    g_world[target_y][target_x] = NewCell(target_x, target_y, CELL_TYPE_LADDER)
+  }
+}
+
+func PlayerUpdate(pl Player, time f64) (pl Player) {
+  if (pl.state == PLAYER_STATE_ATTACKING && pl.anims[pl.state].over) {
+     //ItemUse(ItemCollectionGetEquiped(g_hotbar), pl.xtarget, pl.ytarget)
+    g_world[pl.ytarget][pl.xtarget] = CellHit(g_world[pl.ytarget][pl.xtarget])
+    if (g_world[pl.ytarget][pl.xtarget].tp == 0) {
+      pl.state = PLAYER_STATE_IDLE
+    } else {
+      pl.anims[pl.state] = util.ResetAnimation(pl.anims[pl.state])
+    }
+  } else if (pl.state == PLAYER_STATE_WALKING) {
+    pl = PlayerMove(pl)
+  } else if (pl.state == PLAYER_STATE_FALLING) {
+    pl = PlayerFall(pl)
+  }
+
+  if (pl.state == PLAYER_STATE_IDLE) {
+    if (g_world[pl.y+1][pl.x].tp == 0) {
+      pl = setPlayerState(pl, PLAYER_STATE_FALLING)
+    }
+  }
+
+  pl.anims[pl.state] = util.UpdateAnimation(pl.anims[pl.state], time)
+}
+
+func PlayerRender(pl Player) {
+  pl.geometry.material.texture = util.GetAnimationFrame(pl.anims[pl.state])
+
+  var geometry graphical.PlaneGeometry
+  geometry = pl.geometry;
+  geometry.render()
+}

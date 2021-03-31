@@ -35,7 +35,7 @@ The game should be ready to run.
 In order to run the game type the following command:
 
 ```sh
-$ make
+cx .
 ```
 
 Control SynthCat by pressing left and right on your keyboard.

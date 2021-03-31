@@ -37,7 +37,5 @@ The game should be ready to run.
 In order to run the game type the following command:
 
 ```sh
-$ make
+cx .
 ```
-
-Use the arrows to move the player.

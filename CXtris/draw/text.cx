@@ -97,5 +97,5 @@ func scoreText () {
 	var sY f32 = i32.f32(93) //app.START_HEIGHT)
 	gl.LoadIdentity()
 	gl.Color3f(1.0, 1.0, 1.0)
-	gltext.Printf("Roboto28", f32.i32(sX), f32.i32(sY), shape.PlayerScoreTxt)
+	gltext.Printf("Roboto28", sX, sY, shape.PlayerScoreTxt)
 }

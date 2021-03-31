@@ -1,5 +1,0 @@
-package pkg
-
-func FuncInPkg () {
-	str.print("FuncInPkg called WITH NO PARENTHESES")
-}
